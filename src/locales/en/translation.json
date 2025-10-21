@@ -1,0 +1,140 @@
+{
+  "header": {
+    "logo": "RepairHub",
+    "login": "Login",
+    "register": "Register"
+  },
+  "landing": {
+    "hero": {
+      "title": "Get Clients, Not Boss Conditions",
+      "subtitle": "Receive Orders Directly to Your Account",
+      "description": "We prepare the orders, you do the work, money goes to your account. No middlemen, no commission dealers. Just you and your client.",
+      "cta": "Start Earning",
+      "cta_secondary": "Already Registered",
+      "benefits": {
+        "commission": "Commission Only 5-10%",
+        "fair": "Fair Terms",
+        "daily": "Daily Payouts"
+      }
+    },
+    "orders": {
+      "instruction": "Click on order to see details",
+      "ordersFalling": "Orders Fall on You",
+      "repairType0": "iPhone Repair",
+      "repairType1": "Screen Replacement",
+      "repairType2": "Water Cleaning",
+      "repairType3": "Battery Replacement",
+      "repairType4": "MacBook Repair"
+    },
+    "escrow": {
+      "title": "Secure Escrow System",
+      "subtitle": "Funds Locked Until Work is Complete",
+      "what_is": "What is Escrow?",
+      "what_is_desc": "— it's a protected system where money is held by a third party (us) until the work is completed. Client pays, funds are locked, master does the work, then money goes to the master.",
+      "safe": "Everything is transparent and safe!",
+      "payment_methods": {
+        "title": "Payment Methods",
+        "card": "Bank Cards (Visa, Mastercard)",
+        "monobank": "Monobank",
+        "crypto": "Cryptocurrency (Bitcoin, Ethereum, USDT)"
+      },
+      "guarantee": {
+        "title": "Guarantee",
+        "safe": "Funds Protected on Escrow",
+        "no_access": "No Third Party Access",
+        "automatic": "Automatic Settlement"
+      },
+      "fast": {
+        "title": "Fast and Reliable",
+        "instant": "Instant Crypto Payouts",
+        "commission": "Commission Only 5-10%",
+        "no_delays": "No Delays"
+      },
+      "crypto": {
+        "title": "Cryptocurrency for Fast Payments",
+        "bitcoin": "Bitcoin",
+        "ethereum": "Ethereum",
+        "usdt": "USDT (Tether)",
+        "description": "Get paid in minutes, no middleman fees"
+      }
+    },
+    "features": {
+      "title": "Powerful Features",
+      "subtitle": "Everything you need to manage your repair business"
+    }
+  },
+  "features": {
+    "manageOrders": {
+      "title": "Order Management",
+      "description": "Full control over orders with instant notifications and status tracking"
+    },
+    "findWorkers": {
+      "title": "Find Masters",
+      "description": "Find the best professionals with ratings, portfolios, and reviews"
+    },
+    "analytics": {
+      "title": "Analytics",
+      "description": "Detailed reports and statistics to monitor your business"
+    },
+    "security": {
+      "title": "Security",
+      "description": "Reliable encryption system and personal data protection"
+    },
+    "chat": {
+      "title": "Communication",
+      "description": "Built-in chat for direct contact with masters and clients"
+    },
+    "mobileVersion": {
+      "title": "Mobile Version",
+      "description": "Full functionality available on any device"
+    }
+  },
+  "auth": {
+    "client": "Client",
+    "master": "Master",
+    "searching_master": "Looking for a Master",
+    "offering_services": "Offering Services",
+    "login": "Login",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "city": "City",
+    "register": "Register",
+    "login_button": "Login",
+    "have_account": "Already have an account?",
+    "no_account": "Don't have an account?",
+    "agree_terms": "I agree with Terms and Policy",
+    "success": "Success!",
+    "redirecting": "Your account created. Redirecting..."
+  },
+  "orders": {
+    "order_details": "Accept Order",
+    "close": "Close",
+    "location": "Location",
+    "price": "Price",
+    "status": "Status",
+    "status_new": "New",
+    "status_ready": "Ready",
+    "status_urgent": "Urgent"
+  },
+  "footer": {
+    "product": "Product",
+    "features": "Features",
+    "pricing": "Pricing",
+    "security": "Security",
+    "company": "Company",
+    "about": "About Us",
+    "blog": "Blog",
+    "contact": "Contact",
+    "legal": "Legal",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "cookies": "Cookies",
+    "contacts": "Contact Us",
+    "phone": "+38 044 334 40 41",
+    "email": "info@repairhub.ua",
+    "copyright": "© 2025 RepairHub Pro. All rights reserved."
+  }
+}

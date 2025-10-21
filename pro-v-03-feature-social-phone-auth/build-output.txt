@@ -1,0 +1,13 @@
+
+> repair-hub-pro@1.0.0 build
+> vite build
+
+vite v4.5.14 building for production...
+тЬУ 0 modules transformed.
+тЬУ built in 14ms
+Could not resolve entry module "index.html".
+error during build:
+RollupError: Could not resolve entry module "index.html".
+    at error (file:///C:/Users/dmitr/Desktop/REPAIR-MASTER-PROD/node_modules/rollup/dist/es/shared/node-entry.js:2287:30)
+    at ModuleLoader.loadEntryModule (file:///C:/Users/dmitr/Desktop/REPAIR-MASTER-PROD/node_modules/rollup/dist/es/shared/node-entry.js:24881:20)
+    at async Promise.all (index 0)
