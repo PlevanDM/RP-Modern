@@ -30,6 +30,7 @@ import { AdminDashboard } from './components/features/admin/AdminDashboard/Admin
 import { FinancialDashboard } from './components/features/finance/FinancialDashboard';
 import { SettingsPanel } from './components/features/admin/SettingsPanel';
 import { JarvisChat } from './components/features/ai/JarvisChat';
+import { useProposalManagement } from './hooks/useProposalManagement';
 // 🧪 Import database tests
 
 function App() {
@@ -43,7 +44,13 @@ function App() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [, setViewedOrders] = useState<Set<string>>(new Set());
-  const [proposals, setProposals] = useState<Proposal[]>(mockProposals);
+  const {
+    proposals,
+    setProposals,
+    createProposal,
+    acceptProposal,
+    rejectProposal,
+  } = useProposalManagement(orders, setOrders, mockProposals);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showProposalModal, setShowProposalModal] = useState(false);
   const [selectedOrderForProposal, setSelectedOrderForProposal] =
@@ -139,119 +146,6 @@ function App() {
       return ordersWithProposals.length;
     }
     return 0;
-  };
-
-  const handleSubmitProposal = (
-    orderId: string,
-    price: number,
-    description: string
-  ) => {
-    const newProposal: Proposal = {
-      id: `prop_${Date.now()}`,
-      orderId: orderId,
-      masterId: currentUser?.id || '',
-      masterName: currentUser?.name || currentUser?.fullName || '',
-      masterRating: currentUser?.rating || 4.8,
-      price: price,
-      description: description,
-      status: 'pending',
-      createdAt: new Date(),
-      estimatedDays: 1,
-      masterAvatar: currentUser?.avatar || '',
-    };
-
-    // Обновляем статус заказа с "open" на "awaiting_client_confirmation"
-    const updatedOrders = orders.map(order =>
-      order.id === orderId
-        ? {
-            ...order,
-            status: 'awaiting_client_confirmation' as const,
-            updatedAt: new Date(),
-          }
-        : order
-    );
-
-    setOrders(updatedOrders);
-    setProposals([...proposals, newProposal]);
-    
-    // Сохраняем обновленные заказы в localStorage
-    saveOrdersToStorage(updatedOrders);
-    localStorage.setItem('repairHubProposals', JSON.stringify([...proposals, newProposal]));
-    
-    success('✅ Пропозицію успішно відправлено!');
-    setShowProposalModal(false);
-    setSelectedOrderForProposal(null);
-  };
-
-  const handleUpdateProposal = (proposalId: string, updates: Partial<Proposal>) => {
-    setProposals(
-      proposals.map((proposal) =>
-        proposal.id === proposalId ? { ...proposal, ...updates } : proposal
-      )
-    );
-  };
-
-  const handleAcceptProposal = (proposalId: string) => {
-    const proposal = proposals.find(p => p.id === proposalId);
-    if (!proposal) return;
-
-    // Обновляем статус предложения на 'accepted'
-    const updatedProposals = proposals.map(p => 
-      p.id === proposalId 
-        ? { ...p, status: 'accepted' as const }
-        : p
-    );
-
-    // Обновляем статус заказа на 'in_progress'
-    const updatedOrders = orders.map(order => 
-      order.id === proposal.orderId 
-        ? { ...order, status: 'in_progress' as const, updatedAt: new Date() }
-        : order
-    );
-
-    setProposals(updatedProposals);
-    setOrders(updatedOrders);
-
-    // Сохраняем в localStorage
-    localStorage.setItem('repairHubProposals', JSON.stringify(updatedProposals));
-    saveOrdersToStorage(updatedOrders);
-
-    success('✅ Пропозицію прийнято! Замовлення переведено в роботу.');
-  };
-
-  const handleRejectProposal = (proposalId: string) => {
-    const proposal = proposals.find(p => p.id === proposalId);
-    if (!proposal) return;
-
-    // Обновляем статус предложения на 'rejected'
-    const updatedProposals = proposals.map(p => 
-      p.id === proposalId 
-        ? { ...p, status: 'rejected' as const }
-        : p
-    );
-
-    // Возвращаем статус заказа на 'open' если это было единственное предложение
-    const otherProposals = proposals.filter(p => p.orderId === proposal.orderId && p.id !== proposalId);
-    const hasOtherPendingProposals = otherProposals.some(p => p.status === 'pending' || p.status === 'accepted');
-    
-    const updatedOrders = orders.map(order => 
-      order.id === proposal.orderId 
-        ? { 
-            ...order, 
-            status: hasOtherPendingProposals ? ('proposed' as const) : ('open' as const),
-            updatedAt: new Date() 
-          }
-        : order
-    );
-
-    setProposals(updatedProposals);
-    setOrders(updatedOrders);
-
-    // Сохраняем в localStorage
-    localStorage.setItem('repairHubProposals', JSON.stringify(updatedProposals));
-    saveOrdersToStorage(updatedOrders);
-
-    success('❌ Пропозицію відхилено!');
   };
 
   const handleCompleteWork = (orderId: string) => {
@@ -682,10 +576,23 @@ function App() {
               ) as Proposal[]}
               orders={orders}
               isMaster={currentUser?.role === 'master'}
-              onSubmitProposal={handleSubmitProposal}
-              onUpdateProposal={handleUpdateProposal}
-              onAcceptProposal={handleAcceptProposal}
-              onRejectProposal={handleRejectProposal}
+              onSubmitProposal={(orderId, price, description) => {
+                createProposal({
+                  orderId,
+                  price,
+                  description,
+                  masterId: currentUser?.id || '',
+                  masterName: currentUser?.name || '',
+                  masterRating: currentUser?.rating || 0,
+                  masterAvatar: currentUser?.avatar || '',
+                  estimatedDays: 1,
+                });
+                setShowProposalModal(false);
+                setSelectedOrderForProposal(null);
+                success('✅ Пропозицію успішно відправлено!');
+              }}
+              onAcceptProposal={acceptProposal}
+              onRejectProposal={rejectProposal}
               onShowToast={success}
             />
           )}
@@ -934,13 +841,21 @@ function App() {
           orderTitle={selectedOrderForProposal.title}
           clientName={selectedOrderForProposal.clientName}
           budget={selectedOrderForProposal.budget}
-          onSubmit={(price, description) =>
-            handleSubmitProposal(
-              selectedOrderForProposal.id,
+          onSubmit={(price, description) => {
+            createProposal({
+              orderId: selectedOrderForProposal.id,
               price,
-              description
-            )
-          }
+              description,
+              masterId: currentUser?.id || '',
+              masterName: currentUser?.name || '',
+              masterRating: currentUser?.rating || 0,
+              masterAvatar: currentUser?.avatar || '',
+              estimatedDays: 1,
+            });
+            setShowProposalModal(false);
+            setSelectedOrderForProposal(null);
+            success('✅ Пропозицію успішно відправлено!');
+          }}
         />
       )}
       <JarvisChat />
