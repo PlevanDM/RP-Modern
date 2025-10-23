@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
-import SaveIcon from '@mui/icons-material/Save';
-import CloseIcon from '@mui/icons-material/Close';
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import EditIcon from '@mui/icons-material/Edit';
-import VerifiedIcon from '@mui/icons-material/Verified';
-import EmailIcon from '@mui/icons-material/Email';
-import PhoneIcon from '@mui/icons-material/Phone';
-import LocationCityIcon from '@mui/icons-material/LocationCity';
-import WorkIcon from '@mui/icons-material/Work';
-import SchoolIcon from '@mui/icons-material/School';
-import { User, WorkExperience } from '../types/models';
-import { WorkExperienceSection } from './features/master/WorkExperience';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Edit3,
+  Save,
+  X,
+  Camera,
+  Shield,
+  Star,
+  Award,
+  Briefcase,
+  MessageSquare,
+  Heart,
+  Share2
+} from 'lucide-react';
+import { User as UserType } from '../types/models';
 
 interface ProfileData {
   name: string;
@@ -20,63 +27,28 @@ interface ProfileData {
   avatar: string;
   role: 'client' | 'master' | 'service';
   bio?: string;
-  skills?: string[];
-  verified?: boolean;
-  experience?: WorkExperience[];
+  rating?: number;
+  completedOrders?: number;
+  memberSince?: string;
 }
 
 interface ProfileProps {
-  currentUser: User | undefined;
+  currentUser: UserType | undefined;
 }
-
-const AVAILABLE_SKILLS = [
-  'Apple',
-  'Samsung',
-  'Xiaomi',
-  'OnePlus',
-  'Google Pixel',
-  'Motorola',
-  'iPhone ремонт',
-  'iPad ремонт',
-  'MacBook ремонт',
-  'Ремонт екрану',
-  'Заміна батареї',
-  'Чистка від вологи',
-  'Заміна компонентів',
-  'Діагностика',
-  'Гарантія',
-  'Професійна чистка',
-  'Розбір і складання',
-  'Заміна матриці',
-  'Ремонт материнської плати',
-  'Заміна роз\'єму',
-  'Ремонт екрану (заміна)',
-  'Заміна дисплею',
-  'Видалення вирусів',
-  'Оновлення ПО',
-  'Прошивка пристрою',
-  'Розблокування',
-  'Видання даних',
-  'Заміна сим-лотка',
-  'Ремонт камери',
-  'Заміна мікрофона',
-  'Заміна динаміка',
-  'Ремонт сенсора',
-];
 
 export function Profile({ currentUser }: ProfileProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
-    name: currentUser?.name || 'User',
+    name: currentUser?.name || 'Користувач',
     email: currentUser?.email || 'user@example.com',
-    phone: currentUser?.phone || '+380 00 000 00 00',
+    phone: currentUser?.phone || '+380 50 000 00 00',
     city: currentUser?.city || 'Київ',
-    avatar: currentUser?.avatar || 'https://i.pravatar.cc/150?img=10',
+    avatar: currentUser?.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=User',
     role: currentUser?.role || 'client',
-    bio: currentUser?.bio || 'Опишіть себе...',
-    skills: currentUser?.skills || ['Apple', 'Ремонт екрану'],
-    verified: currentUser?.verified || false,
-    experience: currentUser?.experience || []
+    bio: currentUser?.bio || 'Моя біографія...',
+    rating: currentUser?.rating || 4.8,
+    completedOrders: 12,
+    memberSince: '2024'
   });
 
   const [formData, setFormData] = useState(profile);
@@ -85,18 +57,15 @@ export function Profile({ currentUser }: ProfileProps) {
   const handleSave = () => {
     setProfile(formData);
     setIsEditing(false);
-    // Зберегти в localStorage
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const currentUserData = JSON.parse(localStorage.getItem('currentUser') || '{}');
     const updatedUser = {
-      ...currentUser,
+      ...currentUserData,
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
       city: formData.city,
       avatar: formData.avatar,
-      bio: formData.bio,
-      skills: formData.skills,
-      experience: formData.experience
+      bio: formData.bio
     };
     localStorage.setItem('currentUser', JSON.stringify(updatedUser));
   };
@@ -133,320 +102,337 @@ export function Profile({ currentUser }: ProfileProps) {
     return null;
   }
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
+  };
+
+  const avatarVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.6 } },
+    hover: { scale: 1.05, transition: { duration: 0.3 } }
+  };
+
   return (
-    <div className="w-full min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12 px-4">
-      <div className="max-w-5xl mx-auto">
-        {/* Page Header */}
-        <div className="mb-12 text-center">
-          <div className="inline-block px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mb-6 shadow-lg">
-            <span className="text-white font-bold text-sm uppercase tracking-widest">🎓 Професійний Профіль</span>
-          </div>
-          <h1 className="text-5xl font-bold text-white mb-3">Мій Профіль</h1>
-          <p className="text-indigo-300 text-lg">Документ якості та професіоналізму</p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 py-8 px-4 md:px-8"
+    >
+      <div className="max-w-4xl mx-auto">
+        {/* Background Decoration */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
         </div>
 
-        {/* Main Certificate-like Card */}
-        <div className="bg-gradient-to-br from-white to-slate-50 rounded-3xl shadow-2xl overflow-hidden mb-8 relative">
+        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="relative z-10 space-y-6">
           
-          {/* Corner Decorations */}
-          <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-transparent opacity-30 rounded-br-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-tl from-indigo-100 to-transparent opacity-30 rounded-tl-3xl"></div>
-          
-          {/* Premium Header with Decoration */}
-          <div className="relative h-48 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 overflow-hidden">
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-48 -mt-48"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full -ml-32 -mb-32"></div>
-            
-            {/* Gold border line */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-300"></div>
-            
-            {/* Corner ornaments */}
-            <div className="absolute top-4 right-6 w-4 h-4 bg-yellow-300 rounded-full opacity-70"></div>
-            <div className="absolute bottom-4 left-6 w-3 h-3 bg-yellow-300 rounded-full opacity-70"></div>
-          </div>
+          {/* Header Section */}
+          <motion.div variants={itemVariants} className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+                Мій Профіль
+              </h1>
+              <p className="text-slate-600 mt-2 flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                Персональна інформація
+              </p>
+            </div>
+            {!isEditing && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsEditing(true)}
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-semibold transition shadow-lg hover:shadow-xl"
+              >
+                <Edit3 className="w-4 h-4" />
+                Редагувати
+              </motion.button>
+            )}
+          </motion.div>
 
-          {/* Content Section */}
-          <div className="px-12 py-10">
-            
-            {/* Avatar & Name Section */}
-            <div className="flex items-center gap-8 mb-12 -mt-24 relative z-10">
-              <div className="relative">
-                <div className="w-48 h-48 rounded-2xl border-4 border-white shadow-2xl overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-100">
-                  <img
-                    src={isEditing ? formData.avatar : profile.avatar}
-                    alt={profile.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                {profile.verified && (
-                  <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center border-4 border-white shadow-xl">
-                    <VerifiedIcon sx={{ fontSize: 40, color: 'white' }} />
-                  </div>
-                )}
-              </div>
+          {/* Main Profile Card */}
+          <motion.div
+            variants={itemVariants}
+            className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 overflow-hidden"
+          >
+            {/* Top Gradient Bar */}
+            <div className="h-32 bg-gradient-to-r from-blue-600 via-blue-500 to-purple-600 relative overflow-hidden">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full"
+              />
+            </div>
 
-              <div className="flex-1">
-                {isEditing ? (
-                  <div className="space-y-4">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Ім'я</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="w-full px-6 py-4 rounded-xl border-2 border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-200 text-2xl font-bold transition"
+            {/* Content Section */}
+            <div className="px-6 md:px-10 py-8 -mt-16 relative">
+              {/* Avatar and Basic Info */}
+              <div className="flex flex-col md:flex-row gap-8 mb-12">
+                {/* Avatar */}
+                <motion.div
+                  variants={avatarVariants}
+                  whileHover="hover"
+                  className="relative flex-shrink-0"
+                >
+                  <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-gradient-to-br from-blue-100 to-purple-100 border-4 border-white shadow-xl overflow-hidden relative">
+                    <img
+                      src={isEditing ? formData.avatar : profile.avatar}
+                      alt={profile.name}
+                      className="w-full h-full object-cover"
                     />
                   </div>
-                ) : (
-                  <>
-                    <h2 className="text-5xl font-bold text-slate-900 mb-2">{profile.name}</h2>
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="h-1 w-12 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
-                      <span className="text-lg font-semibold text-indigo-600">
-                        {profile.role === 'client' ? '👤 Клієнт' : profile.role === 'master' ? '🔧 Майстер' : '⚙️ Сервіс'}
-                      </span>
-                    </div>
-                  </>
-                )}
-                <p className="text-slate-600 text-lg mb-4">
-                  {profile.city && `📍 ${profile.city}`}
-                </p>
-                
-                {isEditing && (
-                  <div className="mt-6">
-                    <button
+                  {isEditing && (
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
                       onClick={() => fileInputRef.current?.click()}
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold"
+                      className="absolute bottom-2 right-2 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg transition"
                     >
-                      <CameraAltIcon sx={{ fontSize: 20 }} />
-                      Змінити фото
-                    </button>
+                      <Camera className="w-5 h-5" />
+                    </motion.button>
+                  )}
+                </motion.div>
+
+                {/* Info Section */}
+                <div className="flex-1 pt-4 md:pt-0">
+                  <div className="space-y-4">
+                    {isEditing ? (
+                      <motion.input
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="w-full text-3xl md:text-4xl font-bold px-4 py-2 bg-slate-100 rounded-xl border-2 border-transparent focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition outline-none"
+                      />
+                    ) : (
+                      <h2 className="text-3xl md:text-4xl font-bold text-slate-900">{profile.name}</h2>
+                    )}
+
+                    <div className="flex flex-wrap gap-4">
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full font-semibold text-sm"
+                      >
+                        <User className="w-4 h-4" />
+                        {profile.role === 'client' ? 'Клієнт' : profile.role === 'master' ? 'Майстер' : 'Сервіс'}
+                      </motion.div>
+                      {profile.rating && (
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          className="flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-700 rounded-full font-semibold text-sm"
+                        >
+                          <Star className="w-4 h-4 fill-current" />
+                          {profile.rating}
+                        </motion.div>
+                      )}
+                    </div>
+
+                    {!isEditing && (
+                      <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-slate-200">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-blue-100 rounded-lg">
+                            <Briefcase className="w-5 h-5 text-blue-600" />
+                          </div>
+                          <div>
+                            <p className="text-xs text-slate-600 uppercase font-semibold">Завершено</p>
+                            <p className="text-lg font-bold text-slate-900">{profile.completedOrders}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-purple-100 rounded-lg">
+                            <Award className="w-5 h-5 text-purple-600" />
+                          </div>
+                          <div>
+                            <p className="text-xs text-slate-600 uppercase font-semibold">Член з</p>
+                            <p className="text-lg font-bold text-slate-900">{profile.memberSince}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-
-              {!isEditing && (
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl transition font-bold text-lg shadow-lg h-fit"
-                >
-                  <EditIcon sx={{ fontSize: 24, className: 'mr-2' }} />
-                  Редагувати
-                </button>
-              )}
-            </div>
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleAvatarUpload}
-              className="hidden"
-            />
-
-            {isEditing && (
-              <div className="mb-8">
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="px-8 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl transition font-semibold"
-                >
-                  <CloseIcon sx={{ fontSize: 20, className: 'mr-2' }} />
-                  Скасувати
-                </button>
-              </div>
-            )}
-
-            {/* Contact Information - Premium Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 pt-8 border-t-2 border-slate-200">
-              
-              {/* Email Card */}
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl border-l-4 border-blue-600 hover:shadow-lg transition">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-3 bg-blue-600 rounded-full text-white">
-                    <EmailIcon sx={{ fontSize: 24 }} />
-                  </div>
-                  <span className="font-bold text-slate-900 text-sm uppercase">Email</span>
                 </div>
-                {isEditing ? (
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 rounded-lg border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
-                  />
-                ) : (
-                  <p className="text-slate-900 font-semibold text-lg break-all">{profile.email}</p>
-                )}
               </div>
 
-              {/* Phone Card */}
-              <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-2xl border-l-4 border-green-600 hover:shadow-lg transition">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-3 bg-green-600 rounded-full text-white">
-                    <PhoneIcon sx={{ fontSize: 24 }} />
+              {/* Contact Information */}
+              <motion.div
+                variants={itemVariants}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 pb-8 border-b border-slate-200"
+              >
+                {/* Email */}
+                <div className="group relative">
+                  <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200 group-hover:border-blue-400 transition">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-2 bg-blue-600 text-white rounded-lg">
+                        <Mail className="w-4 h-4" />
+                      </div>
+                      <label className="text-xs font-bold text-slate-600 uppercase">Email</label>
+                    </div>
+                    {isEditing ? (
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 bg-white/80 rounded-lg border border-blue-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 text-sm outline-none transition"
+                      />
+                    ) : (
+                      <p className="text-slate-900 font-semibold break-all text-sm md:text-base">{profile.email}</p>
+                    )}
                   </div>
-                  <span className="font-bold text-slate-900 text-sm uppercase">Телефон</span>
                 </div>
-                {isEditing ? (
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 rounded-lg border border-green-300 focus:outline-none focus:ring-2 focus:ring-green-600"
-                  />
-                ) : (
-                  <p className="text-slate-900 font-semibold text-lg">{profile.phone}</p>
-                )}
-              </div>
 
-              {/* City Card */}
-              <div className="bg-gradient-to-br from-amber-50 to-amber-100 p-6 rounded-2xl border-l-4 border-amber-600 hover:shadow-lg transition">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-3 bg-amber-600 rounded-full text-white">
-                    <LocationCityIcon sx={{ fontSize: 24 }} />
+                {/* Phone */}
+                <div className="group relative">
+                  <div className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200 group-hover:border-green-400 transition">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-2 bg-green-600 text-white rounded-lg">
+                        <Phone className="w-4 h-4" />
+                      </div>
+                      <label className="text-xs font-bold text-slate-600 uppercase">Телефон</label>
+                    </div>
+                    {isEditing ? (
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 bg-white/80 rounded-lg border border-green-300 focus:border-green-600 focus:ring-2 focus:ring-green-200 text-sm outline-none transition"
+                      />
+                    ) : (
+                      <p className="text-slate-900 font-semibold text-sm md:text-base">{profile.phone}</p>
+                    )}
                   </div>
-                  <span className="font-bold text-slate-900 text-sm uppercase">Місто</span>
                 </div>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 rounded-lg border border-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-600"
-                  />
-                ) : (
-                  <p className="text-slate-900 font-semibold text-lg">{profile.city}</p>
-                )}
-              </div>
-            </div>
 
-            {/* Bio Section */}
-            {(profile.role === 'master' || profile.role === 'service') && (
-              <div className="mb-12 pb-12 border-b-2 border-slate-200">
+                {/* City */}
+                <div className="group relative">
+                  <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl border border-purple-200 group-hover:border-purple-400 transition">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-2 bg-purple-600 text-white rounded-lg">
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                      <label className="text-xs font-bold text-slate-600 uppercase">Місто</label>
+                    </div>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleInputChange}
+                        className="w-full px-3 py-2 bg-white/80 rounded-lg border border-purple-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 text-sm outline-none transition"
+                      />
+                    ) : (
+                      <p className="text-slate-900 font-semibold text-sm md:text-base">{profile.city}</p>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Bio Section */}
+              <motion.div variants={itemVariants} className="mb-8">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="h-8 w-1 bg-gradient-to-b from-blue-600 to-indigo-600 rounded-full"></div>
-                  <h3 className="text-2xl font-bold text-slate-900 uppercase">Про мене</h3>
+                  <MessageSquare className="w-5 h-5 text-blue-600" />
+                  <label className="text-sm font-bold text-slate-600 uppercase">Про мене</label>
                 </div>
                 {isEditing ? (
-                  <textarea
+                  <motion.textarea
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     name="bio"
                     value={formData.bio}
                     onChange={handleInputChange}
-                    rows={4}
-                    className="w-full px-6 py-4 rounded-xl border-2 border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-200 transition"
+                    rows={3}
+                    className="w-full px-4 py-3 bg-slate-100 rounded-xl border-2 border-transparent focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition outline-none resize-none"
+                    placeholder="Розкажіть про себе..."
                   />
                 ) : (
-                  <p className="text-slate-700 leading-relaxed text-lg bg-slate-50 p-6 rounded-xl border-l-4 border-indigo-600">
-                    {profile.bio}
+                  <p className="px-4 py-3 bg-slate-50 rounded-xl text-slate-700 leading-relaxed border-l-4 border-blue-600">
+                    {profile.bio || 'Біографія не заповнена'}
                   </p>
                 )}
-              </div>
+              </motion.div>
+
+              {/* Action Buttons */}
+              {!isEditing && (
+                <motion.div
+                  variants={itemVariants}
+                  className="flex gap-3 justify-end pt-4 border-t border-slate-200"
+                >
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition"
+                  >
+                    <Heart className="w-4 h-4" />
+                    Улюблене
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    Поділитися
+                  </motion.button>
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+
+          {/* Edit Action Buttons */}
+          <AnimatePresence>
+            {isEditing && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="flex flex-col sm:flex-row gap-4 justify-end"
+              >
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleCancel}
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-900 rounded-xl font-semibold transition"
+                >
+                  <X className="w-4 h-4" />
+                  Скасувати
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleSave}
+                  className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold transition shadow-lg"
+                >
+                  <Save className="w-4 h-4" />
+                  Зберегти
+                </motion.button>
+              </motion.div>
             )}
+          </AnimatePresence>
 
-            {/* Work Experience Section */}
-            {(profile.role === 'master' || profile.role === 'service') && (
-              <div className="mb-12 pb-12 border-b-2 border-slate-200">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 bg-blue-600 rounded-full text-white">
-                    <WorkIcon sx={{ fontSize: 28 }} />
-                  </div>
-                  <h3 className="text-2xl font-bold text-slate-900 uppercase">Досвід роботи</h3>
-                </div>
-                <WorkExperienceSection
-                  experience={formData.experience || []}
-                  isEditing={isEditing}
-                  onExperienceChange={(newExperience) =>
-                    setFormData((prev) => ({ ...prev, experience: newExperience }))
-                  }
-                />
-              </div>
-            )}
-
-            {/* Skills Section */}
-            {(profile.role === 'master' || profile.role === 'service') && (
-              <div className="mb-12">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 bg-indigo-600 rounded-full text-white">
-                    <SchoolIcon sx={{ fontSize: 28 }} />
-                  </div>
-                  <h3 className="text-2xl font-bold text-slate-900 uppercase">Ключові навички</h3>
-                </div>
-                {isEditing ? (
-                  <div className="space-y-3">
-                    <select
-                      multiple
-                      value={formData.skills || []}
-                      onChange={(e) => {
-                        const selected = Array.from(e.target.selectedOptions, option => option.value);
-                        setFormData(prev => ({
-                          ...prev,
-                          skills: selected
-                        }));
-                      }}
-                      className="w-full px-4 py-3 rounded-xl border-2 border-slate-300 focus:outline-none focus:ring-4 focus:ring-blue-200 bg-white text-slate-900 transition"
-                      size={8}
-                    >
-                      {AVAILABLE_SKILLS.map(skill => (
-                        <option key={skill} value={skill}>
-                          {skill}
-                        </option>
-                      ))}
-                    </select>
-                    <p className="text-xs text-slate-500">💡 Утримуйте Ctrl/Cmd для вибору кількох навичок</p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {formData.skills?.map(skill => (
-                      <div
-                        key={skill}
-                        className="bg-gradient-to-br from-indigo-600 to-blue-600 text-white px-6 py-4 rounded-xl text-sm font-bold shadow-lg hover:shadow-xl transition text-center"
-                      >
-                        ✓ {skill}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Footer Divider */}
-            <div className="h-1 bg-gradient-to-r from-transparent via-slate-300 to-transparent my-8"></div>
-
-            {/* Document Footer */}
-            {!isEditing && (
-              <div className="text-center py-6">
-                <p className="text-slate-500 text-sm mb-2">Документ якості підготовлено</p>
-                <p className="text-slate-900 font-bold text-lg">RepairHub Pro Platform</p>
-                <p className="text-slate-400 text-xs mt-2">🔐 Документ верифікований • ✓ Інформація актуальна</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Save Buttons */}
-        {isEditing && (
-          <div className="flex gap-4 justify-center">
-            <button
-              onClick={handleSave}
-              className="flex items-center justify-center gap-3 px-10 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl transition font-bold text-lg shadow-lg hover:shadow-xl"
-            >
-              <SaveIcon sx={{ fontSize: 24 }} />
-              Зберегти всі зміни
-            </button>
-            <button
-              onClick={handleCancel}
-              className="flex items-center justify-center gap-3 px-10 py-4 bg-slate-600 hover:bg-slate-700 text-white rounded-xl transition font-bold text-lg shadow-lg"
-            >
-              <CloseIcon sx={{ fontSize: 24 }} />
-              Скасувати
-            </button>
-          </div>
-        )}
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleAvatarUpload}
+            className="hidden"
+          />
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

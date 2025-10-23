@@ -1,0 +1,530 @@
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { 
+  Wrench, 
+  Plus, 
+  Search, 
+  Bell, 
+  Clock, 
+  CheckCircle2, 
+  AlertCircle, 
+  TrendingUp,
+  Calendar,
+  User,
+  MapPin,
+  DollarSign,
+  Package,
+  ArrowRight,
+  Filter,
+  ChevronRight
+} from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../ui/card';
+import { Button } from '../../../ui/button';
+import { Badge } from '../../../ui/badge';
+import { Progress } from '../../../ui/progress';
+import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
+import { Input } from '../../../ui/input';
+
+interface Order {
+  id: string;
+  title: string;
+  status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
+  progress: number;
+  master?: {
+    name: string;
+    avatar: string;
+    rating: number;
+  };
+  date: string;
+  price: number;
+  category: string;
+  location: string;
+}
+
+interface Notification {
+  id: string;
+  type: 'info' | 'success' | 'warning';
+  message: string;
+  time: string;
+  read: boolean;
+}
+
+interface StatCard {
+  title: string;
+  value: string;
+  change: string;
+  icon: React.ReactNode;
+  trend: 'up' | 'down';
+}
+
+const ModernClientDashboard: React.FC = () => {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const stats: StatCard[] = [
+    {
+      title: 'Всього замовлень',
+      value: '24',
+      change: '+12%',
+      icon: <Package className="w-5 h-5" />,
+      trend: 'up'
+    },
+    {
+      title: 'В роботі',
+      value: '3',
+      change: '+2',
+      icon: <Clock className="w-5 h-5" />,
+      trend: 'up'
+    },
+    {
+      title: 'Завершено',
+      value: '18',
+      change: '+5',
+      icon: <CheckCircle2 className="w-5 h-5" />,
+      trend: 'up'
+    },
+    {
+      title: 'Витрачено',
+      value: '₴45,230',
+      change: '+18%',
+      icon: <DollarSign className="w-5 h-5" />,
+      trend: 'up'
+    }
+  ];
+
+  const orders: Order[] = [
+    {
+      id: '1',
+      title: 'Ремонт пральної машини',
+      status: 'in-progress',
+      progress: 65,
+      master: {
+        name: 'Іван Петренко',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ivan',
+        rating: 4.8
+      },
+      date: '2024-01-15',
+      price: 3500,
+      category: 'Побутова техніка',
+      location: 'Київ, вул. Ленінградська 45'
+    },
+    {
+      id: '2',
+      title: 'Установка кондиціонера',
+      status: 'in-progress',
+      progress: 30,
+      master: {
+        name: 'Сергій Іванов',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sergey',
+        rating: 4.9
+      },
+      date: '2024-01-16',
+      price: 8500,
+      category: 'Кліматична техніка',
+      location: 'Київ, пр. Миру 12'
+    },
+    {
+      id: '3',
+      title: 'Ремонт холодильника',
+      status: 'pending',
+      progress: 0,
+      date: '2024-01-17',
+      price: 4200,
+      category: 'Побутова техніка',
+      location: 'Харків, вул. Сумська 8'
+    }
+  ];
+
+  const orderHistory: Order[] = [
+    {
+      id: '4',
+      title: 'Заміна розеток',
+      status: 'completed',
+      progress: 100,
+      master: {
+        name: 'Олексій Смірнов',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
+        rating: 4.7
+      },
+      date: '2024-01-10',
+      price: 2500,
+      category: 'Електрика',
+      location: 'Львів, вул. Арбату 22'
+    },
+    {
+      id: '5',
+      title: 'Чищення вентиляції',
+      status: 'completed',
+      progress: 100,
+      master: {
+        name: 'Дмитро Козлов',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dmitry',
+        rating: 4.6
+      },
+      date: '2024-01-05',
+      price: 3000,
+      category: 'Вентиляція',
+      location: 'Одеса, вул. Пушкіна 15'
+    }
+  ];
+
+  const notifications: Notification[] = [
+    {
+      id: '1',
+      type: 'success',
+      message: 'Майстер Іван Петренко розпочав роботу над замовленням "Ремонт пральної машини"',
+      time: '10 хв назад',
+      read: false
+    },
+    {
+      id: '2',
+      type: 'info',
+      message: 'Нова пропозиція від майстра для замовлення "Ремонт холодильника"',
+      time: '1 год назад',
+      read: false
+    },
+    {
+      id: '3',
+      type: 'success',
+      message: 'Замовлення "Заміна розеток" успішно завершено',
+      time: '2 дні назад',
+      read: true
+    }
+  ];
+
+  const getStatusColor = (status: Order['status']) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
+      case 'in-progress':
+        return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+      case 'completed':
+        return 'bg-green-500/10 text-green-500 border-green-500/20';
+      case 'cancelled':
+        return 'bg-red-500/10 text-red-500 border-red-500/20';
+      default:
+        return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+    }
+  };
+
+  const getStatusText = (status: Order['status']) => {
+    switch (status) {
+      case 'pending':
+        return 'Очікує';
+      case 'in-progress':
+        return 'В роботі';
+      case 'completed':
+        return 'Завершено';
+      case 'cancelled':
+        return 'Відмінено';
+      default:
+        return status;
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-2 md:p-4 flex flex-col items-center w-full">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="max-w-6xl mx-auto space-y-4 w-full"
+      >
+        {/* Stats Grid */}
+        <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.map((stat, index) => (
+            <motion.div
+              key={index}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="p-3 bg-primary/10 rounded-xl">
+                      {stat.icon}
+                    </div>
+                    <Badge variant="secondary" className={stat.trend === 'up' ? 'text-green-500' : 'text-red-500'}>
+                      {stat.change}
+                    </Badge>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-sm text-muted-foreground">{stat.title}</p>
+                    <p className="text-2xl font-bold mt-1">{stat.value}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Quick Actions */}
+        <motion.div variants={itemVariants}>
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-primary" />
+                Швидкі дії
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button className="w-full h-auto py-6 flex items-center justify-between group" size="lg">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-white/20 rounded-lg">
+                        <Plus className="w-6 h-6" />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold">Створити замовлення</p>
+                        <p className="text-xs opacity-80">Нова заявка на ремонт</p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                  <Button variant="outline" className="w-full h-auto py-6 flex items-center justify-between group" size="lg">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <Search className="w-6 h-6" />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold">Знайти майстра</p>
+                        <p className="text-xs text-muted-foreground">Пошук спеціалістів</p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </motion.div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Orders Section */}
+          <motion.div variants={itemVariants} className="lg:col-span-2 space-y-4">
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-primary" />
+                    Поточні замовлення
+                  </CardTitle>
+                  <Button variant="ghost" size="sm">
+                    <Filter className="w-4 h-4 mr-2" />
+                    Фільтр
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {orders.map((order, index) => (
+                  <motion.div
+                    key={order.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ scale: 1.01 }}
+                    className="p-4 border border-border rounded-xl bg-background/50 hover:shadow-md transition-all duration-300"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-lg">{order.title}</h3>
+                        <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
+                          <Calendar className="w-4 h-4" />
+                          {new Date(order.date).toLocaleDateString('uk-UA')}
+                        </div>
+                      </div>
+                      <Badge className={getStatusColor(order.status)}>
+                        {getStatusText(order.status)}
+                      </Badge>
+                    </div>
+
+                    {order.master && (
+                      <div className="flex items-center gap-3 mb-3 p-2 bg-muted/30 rounded-lg">
+                        <Avatar className="w-8 h-8">
+                          <AvatarImage src={order.master.avatar} />
+                          <AvatarFallback>{order.master.name[0]}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">{order.master.name}</p>
+                          <p className="text-xs text-muted-foreground">⭐ {order.master.rating}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Прогрес</span>
+                        <span className="font-medium">{order.progress}%</span>
+                      </div>
+                      <Progress value={order.progress} className="h-2" />
+                    </div>
+
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-4 h-4" />
+                          {order.location.split(',')[0]}
+                        </span>
+                        <span className="font-semibold text-foreground">₴{order.price.toLocaleString()}</span>
+                      </div>
+                      <Button variant="ghost" size="sm">
+                        Деталі
+                        <ChevronRight className="w-4 h-4 ml-1" />
+                      </Button>
+                    </div>
+                  </motion.div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Order History */}
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  Історія замовлень
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {orderHistory.map((order, index) => (
+                  <motion.div
+                    key={order.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ scale: 1.01 }}
+                    className="p-4 border border-border rounded-lg bg-background/50 hover:shadow-md transition-all duration-300"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-green-500/10 rounded-lg">
+                          <CheckCircle2 className="w-5 h-5 text-green-500" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium">{order.title}</h4>
+                          <p className="text-sm text-muted-foreground">{order.category}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold">₴{order.price.toLocaleString()}</p>
+                        <p className="text-xs text-muted-foreground">{new Date(order.date).toLocaleDateString('uk-UA')}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Sidebar */}
+          <motion.div variants={itemVariants} className="space-y-6">
+            {/* Notifications */}
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5 text-primary" />
+                  Увідомлення
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {notifications.map((notification, index) => (
+                  <motion.div
+                    key={notification.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className={`p-3 rounded-lg border transition-all duration-300 ${
+                      notification.read 
+                        ? 'bg-background/30 border-border/50' 
+                        : 'bg-primary/5 border-primary/20'
+                    }`}
+                  >
+                    <div className="flex gap-2">
+                      <div className={`p-1 rounded-full h-fit ${
+                        notification.type === 'success' 
+                          ? 'bg-green-500/10' 
+                          : notification.type === 'warning'
+                          ? 'bg-yellow-500/10'
+                          : 'bg-blue-500/10'
+                      }`}>
+                        {notification.type === 'success' ? (
+                          <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        ) : notification.type === 'warning' ? (
+                          <AlertCircle className="w-4 h-4 text-yellow-500" />
+                        ) : (
+                          <Bell className="w-4 h-4 text-blue-500" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm">{notification.message}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Quick Stats */}
+            <Card className="border-border/50 bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-lg">Ваша активність</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Виконано в цьому місяці</span>
+                    <span className="font-semibold">5 замовлень</span>
+                  </div>
+                  <Progress value={83} className="h-2" />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Середній рейтинг майстрів</span>
+                    <span className="font-semibold">4.8 ⭐</span>
+                  </div>
+                  <Progress value={96} className="h-2" />
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Економія часу</span>
+                    <span className="font-semibold">12 годин</span>
+                  </div>
+                  <Progress value={75} className="h-2" />
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
+export { ModernClientDashboard as default };

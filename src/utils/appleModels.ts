@@ -336,7 +336,19 @@ export function searchModels(query: string): AppleModel[] {
 }
 
 // Отримати всі категорії
-export const CATEGORIES = ['iPhone', 'MacBook', 'iPad', 'AppleWatch', 'AirPods', 'AppleTV', 'Mac'] as const;
+export const CATEGORIES = [
+  // Apple
+  'iPhone', 'MacBook', 'iPad', 'AppleWatch', 'AirPods', 'AppleTV', 'Mac',
+  // Android Флагманы
+  'Samsung Galaxy', 'Samsung A Series', 'Samsung Note',
+  'Xiaomi', 'OnePlus', 'Oppo', 'Vivo', 'Realme',
+  'ASUS ROG', 'ASUS ZenFone',
+  'Google Pixel',
+  // Техніка
+  'DJI Drone', 'GoPro', 'Insta360',
+  // Чіпи та акесуари
+  'Samsung Watch', 'Samsung Buds',
+] as const;
 
 // Отримати рокидля фільтрації
 export const YEARS = Array.from(new Set(APPLE_MODELS.map(m => m.year))).sort((a, b) => b - a);

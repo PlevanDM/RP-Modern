@@ -141,14 +141,14 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gray-50 py-4">
+        <div className="max-w-5xl mx-auto px-2 sm:px-4 flex flex-col items-center">
           {/* Заголовок в зависимости от роли */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-6 w-full">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
               {isMaster ? 'Справочник устройств' : 'Выберите устройство для ремонта'}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-sm text-gray-600">
               {isMaster
                 ? 'Техническая информация о моделях устройств Apple и Dyson'
                 : 'Выберите устройство, которое нужно отремонтировать'

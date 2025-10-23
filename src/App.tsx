@@ -1,481 +1,261 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Navigation } from './components/Navigation';
-import { EnhancedDashboard } from './components/EnhancedDashboard';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import ModernNavigation from './components/ModernNavigation';
+import ModernLandingPage from './components/ModernLandingPage';
+import ModernMasterDashboard from './components/features/master/MasterDashboard/ModernMasterDashboard';
+import ModernClientDashboard from './components/features/client/ClientDashboard/ModernClientDashboard';
+import { MyDevices } from './components/features/client/MyDevices';
+import { DeviceCatalog } from './components/features/client/DeviceCatalog';
+import RepairHubDashboard from './components/features/admin/AdminDashboard/RepairHubDashboard';
+import { ModernSettingsPanel } from './components/features/admin/ModernSettingsPanel';
+import { ModernUsersPanel } from './components/features/admin/ModernUsersPanel';
+import { ModernOrdersPanel } from './components/features/admin/ModernOrdersPanel';
+import { ModernFinancialPanel } from './components/features/admin/ModernFinancialPanel';
 import { Orders } from './components/Orders';
 import { Portfolio } from './components/Portfolio';
 import { Proposals } from './components/Proposals';
-import { Reports } from './components/Reports';
-import { PaymentMethods } from './components/PaymentMethods';
-import { TransactionHistory } from './components/TransactionHistory';
-import { MasterReports } from './components/MasterReports';
 import { Messages } from './components/Messages';
-import { Toast } from './components/common/Toast/Toast';
-import { useToast } from './hooks/useToast';
-import { mockUsers, mockOrders, mockPortfolio, mockProposals, mockMasterOrders } from './utils/mockData';
-import { loadOrdersFromStorage, saveOrdersToStorage } from './utils/orderManager';
+import { Profile } from './components/Profile';
+import { Settings } from './components/Settings';
 import { MastersList } from './components/features/master/MastersList';
 import { PartsInventory } from './components/features/parts/PartsInventory';
 import { MasterReviews } from './components/features/reviews/MasterReviews';
-import { OrdersBoard, OrderItem } from './components/features/orders/OrdersBoard';
-import { OrderDetail } from './components/features/orders/OrderDetail/OrderDetail';
 import { PaymentManagement } from './components/PaymentManagement';
-import { ProposalModal } from './components/ProposalModal';
-import { DeviceCatalog } from './components/DeviceCatalog';
-import { LandingPage } from './components/LandingPage';
-import { User, Order, Proposal, PortfolioItem, EscrowTransaction } from './types/models';
-import { Profile } from './components/Profile';
-import { MasterDashboard } from './components/features/master/MasterDashboard/MasterDashboard';
-import { ClientDashboard } from './components/features/client/ClientDashboard/ClientDashboard';
-import { AdminDashboard } from './components/features/admin/AdminDashboard/AdminDashboard';
-import { FinancialDashboard } from './components/features/finance/FinancialDashboard';
-import { SettingsPanel } from './components/features/admin/SettingsPanel';
-import { JarvisChat } from './components/features/ai/JarvisChat';
-import { useProposalManagement } from './hooks/useProposalManagement';
-// 🧪 Import database tests
+import { mockUsers, mockOrders, mockPortfolio, mockProposals, mockMasterOrders } from './utils/mockData';
+import { User, Order, Proposal, PortfolioItem } from './types/models';
 
 function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [activeItem, setActiveItem] = useState('dashboard');
-  const [showMasterPortfolio, setShowMasterPortfolio] = useState(false);
-  const [selectedMasterPortfolio] = useState<PortfolioItem[]>(
-    []
-  );
-  const [selectedChatMaster, setSelectedChatMaster] = useState<User | null>(null);
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [, setViewedOrders] = useState<Set<string>>(new Set());
-  const {
-    proposals,
-    setProposals,
-    createProposal,
-    acceptProposal,
-    rejectProposal,
-  } = useProposalManagement(orders, setOrders, mockProposals);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [showProposalModal, setShowProposalModal] = useState(false);
-  const [selectedOrderForProposal, setSelectedOrderForProposal] =
-    useState<Order | null>(null);
+  const [orders, setOrders] = useState<Order[]>(mockOrders);
+  const [proposals, setProposals] = useState<Proposal[]>(mockProposals);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
-  const { toasts, success } = useToast();
-
-  // 📋 INITIALIZATION: Load orders and proposals from localStorage on mount
+  // Загружаем пользователя из localStorage при монтировании
   useEffect(() => {
-    // Load current user from localStorage
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
       try {
-        const userData = JSON.parse(savedUser);
-        setCurrentUser(userData);
-        console.log('Loaded user from localStorage:', userData);
+        setCurrentUser(JSON.parse(savedUser));
       } catch (error) {
-        console.error('Error loading user from localStorage:', error);
+        console.error('Error parsing saved user:', error);
       }
     }
-
-    const storedOrders = loadOrdersFromStorage();
-
-    // If no stored orders, use initial mock data
-    if (storedOrders.length === 0) {
-      saveOrdersToStorage(mockOrders);
-      setOrders(mockOrders);
-    } else {
-      setOrders(storedOrders);
-    }
-
-    // Load proposals from localStorage (use same key as orderManager)
-    const savedProposals = localStorage.getItem('repairHubProposals');
-    if (savedProposals) {
-      setProposals(JSON.parse(savedProposals) as Proposal[]);
-    }
   }, []);
 
-  // 📋 LISTENER: Listen for storage changes to sync orders across components
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const updatedOrders = loadOrdersFromStorage();
-      setOrders(updatedOrders);
-      console.log('Orders updated from storage change:', updatedOrders.length);
-    };
+  // Оптимизация: useMemo для подсчета непросмотренных заказов (вычисляется только когда меняются orders или currentUser)
+  const getUnviewedOrdersCount = useCallback(() => {
+    if (!currentUser) return 0;
+    return orders.filter(order =>
+      order.clientId === currentUser.id &&
+      order.status === 'new'
+    ).length;
+  }, [currentUser, orders]);
 
-    // Listen for storage events (for cross-tab sync)
-    window.addEventListener('storage', handleStorageChange);
-
-    // Also listen for custom events (for same-tab sync)
-    window.addEventListener('ordersUpdated', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('ordersUpdated', handleStorageChange);
-    };
+  // Оптимизация: useCallback для функции входа в систему
+  const handleLogin = useCallback((user: User) => {
+    setCurrentUser(user);
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    setActiveItem('dashboard'); // Автоматически переходим на дашборд
   }, []);
 
-  const masters = useMemo(() =>
-    mockUsers.filter(user => user.role === 'master'), []
-  );
-
-  const handleLogin = (user: User | null) => {
-    if (user) {
-      setCurrentUser(user);
-      setActiveItem('dashboard');
-    }
-  };
-
-  const handleLogout = () => {
+  // Оптимизация: useCallback для функции выхода из системы
+  const handleLogout = useCallback(() => {
     setCurrentUser(null);
-    setActiveItem('login');
-  };
-
-  const handleLogoClick = () => {
+    localStorage.removeItem('currentUser');
     setActiveItem('dashboard');
-  };
+  }, []);
 
-  const markOrderAsViewed = (orderId: string) => {
-    setViewedOrders(prev => new Set([...prev, orderId]));
-  };
+  // Handler для принятия пропозиции
+  const handleAcceptProposal = useCallback((proposalId: string) => {
+    setProposals(prev => prev.map(p => 
+      p.id === proposalId ? { ...p, status: 'accepted' } : p
+    ));
+  }, []);
 
-  const getUnviewedOrdersCount = () => {
-    if (currentUser?.role === 'master') {
-      // Для мастера считаем открытые клиентские заказы
-      const openOrders = orders.filter(order => order.status === 'open');
-      return openOrders.length;
-    } else if (currentUser?.role === 'client') {
-      // Для клиента считаем заказы с предложениями
-      const ordersWithProposals = orders.filter(order => 
-        order.status === 'proposed' || order.status === 'awaiting_client_confirmation'
-      );
-      return ordersWithProposals.length;
-    }
-    return 0;
-  };
+  // Handler для отклонения пропозиции
+  const handleRejectProposal = useCallback((proposalId: string) => {
+    setProposals(prev => prev.map(p => 
+      p.id === proposalId ? { ...p, status: 'rejected' } : p
+    ));
+  }, []);
 
-  const handleCompleteWork = (orderId: string) => {
-    // Обновляем статус заказа на 'awaiting_payment_confirmation' - мастер завершил работу, клиент должен подтвердить и оплатить
-    const updatedOrders = orders.map(order =>
-      order.id === orderId
-        ? { ...order, status: 'awaiting_payment_confirmation' as const, updatedAt: new Date() }
-        : order
-    );
+  // Оптимизация: useMemo для фильтрации заказов клиента
+  const clientOrders = useMemo(() => {
+    if (!currentUser || currentUser.role !== 'client') return [];
+    return orders.filter(o => o.clientId === currentUser.id);
+  }, [orders, currentUser]);
 
-    setOrders(updatedOrders);
-
-    // Сохраняем в localStorage
-    saveOrdersToStorage(updatedOrders);
-
-    success('✅ Роботу завершено! Очікуємо підтвердження клієнта та оплати.');
-  };
-
-  const handleConfirmPayment = (orderId: string) => {
-    const order = orders.find(o => o.id === orderId);
-    if (!order) return;
-
-    // Создаем эскроу транзакцию для оплаты мастеру
-    const escrowTransaction: EscrowTransaction = {
-      id: `escrow_${Date.now()}`,
-      orderId: orderId,
-      clientId: order.clientId,
-      masterId: order.assignedMasterId || '',
-      amount: order.agreedPrice || 0,
-      status: 'escrowed',
-      createdAt: new Date()
-    };
-
-    // Обновляем статус заказа на 'paid' и устанавливаем дату оплаты
-    const updatedOrders = orders.map(o =>
-      o.id === orderId
-        ? {
-            ...o,
-            status: 'paid' as const,
-            paymentStatus: 'released' as const,
-            paymentDate: new Date(),
-            releaseDate: new Date(),
-            updatedAt: new Date()
-          }
-        : o
-    );
-
-    setOrders(updatedOrders);
-
-    // Сохраняем эскроу транзакцию
-    const existingEscrows = JSON.parse(
-      localStorage.getItem('repairHubEscrows') || '[]'
-    );
-    existingEscrows.push(escrowTransaction);
-    localStorage.setItem('repairHubEscrows', JSON.stringify(existingEscrows));
-
-    // Сохраняем в localStorage
-    saveOrdersToStorage(updatedOrders);
-
-    success(`✅ Оплата підтверджена! ${order.agreedPrice} грн переведено майстру.`);
-  };
-
-  const toggleFavoriteMaster = (masterId: string) => {
-    setFavorites(prev => 
-      prev.includes(masterId) 
-        ? prev.filter(id => id !== masterId)
-        : [...prev, masterId]
-    );
-  };
-
-  const sendOrderToMaster = (orderId: string, masterId: string) => {
-    // Создаем предложение от мастера для заказа
-    const master = mockUsers.find(u => u.id === masterId);
-    if (!master) return;
-
-    const newProposal: Proposal = {
-      id: `proposal_${Date.now()}`,
-      orderId,
-      masterId,
-      masterName: master.name,
-      masterRating: master.rating,
-      masterAvatar: master.avatar,
-      price: 0, // Мастер сам предложит цену
-      estimatedDays: 1,
-      description: 'Запрос на рассмотрение заказа',
-      status: 'pending',
-      createdAt: new Date(),
-      photos: []
-    };
-
-    setProposals([...proposals, newProposal]);
-    success(`✅ Заказ отправлен мастеру ${master.name} на рассмотрение!`);
-  };
-
-  const createOrder = (orderData: Partial<Order>) => {
-    const newOrder: Order = {
-      ...orderData,
-      id: `order_${Date.now()}`,
-      title: orderData.title || 'Нове замовлення',
-      status: 'open',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      clientId: currentUser?.id || '',
-      clientName: currentUser?.name || '',
-      urgency: 'low',
-      description: '',
-      deviceType: 'Other',
-      issue: '',
-      device: '',
-      city: '',
-      budget: 0,
-      proposalCount: 0,
-      paymentStatus: 'pending',
-      paymentAmount: 0,
-      paymentMethod: '',
-      escrowId: '',
-      paymentDate: new Date(),
-      disputeStatus: 'none',
-    };
-
-    setOrders([...orders, newOrder]);
-    success('✅ Замовлення успішно створено!');
-  };
-
-  const deleteOrder = (orderId: string) => {
-    const updatedOrders = orders.map(order => 
-      order.id === orderId 
-        ? { ...order, status: 'deleted' as const, deletedAt: new Date() }
-        : order
-    );
-    setOrders(updatedOrders);
-    saveOrdersToStorage(updatedOrders);
-    success('✅ Замовлення успішно видалено!');
-  };
-
-  const restoreOrder = (orderId: string) => {
-    const updatedOrders = orders.map(order => 
-      order.id === orderId 
-        ? { ...order, status: 'open' as const, deletedAt: undefined }
-        : order
-    );
-    setOrders(updatedOrders);
-    saveOrdersToStorage(updatedOrders);
-    success('✅ Замовлення успішно відновлено!');
-  };
-
-  const toggleActiveSearch = (orderId: string) => {
-    const updatedOrders = orders.map(order => 
-      order.id === orderId 
-        ? { ...order, isActiveSearch: !order.isActiveSearch }
-        : order
-    );
-    setOrders(updatedOrders);
-    const order = orders.find(o => o.id === orderId);
-    if (order) {
-      success(`✅ ${order.isActiveSearch ? 'Пошук призупинено' : 'Пошук активовано'}!`);
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    const statusMap: Record<string, string> = {
-      'open': 'Відкрито',
-      'proposed': 'З пропозиціями',
-      'accepted': 'Прийнято',
-      'in_progress': 'В роботі',
-      'completed': 'Завершено',
-      'cancelled': 'Скасовано',
-      'deleted': 'Видалено',
-      'searching': 'Пошук майстра',
-      'active_search': 'Активний пошук майстра'
-    };
-    return statusMap[status] || status;
-  };
-
-  const updateOrderStatus = (orderId: string, newStatus: Order['status']) => {
-    const updatedOrders = orders.map(order => 
-      order.id === orderId 
-        ? { ...order, status: newStatus, updatedAt: new Date() }
-        : order
-    );
-    setOrders(updatedOrders);
-    saveOrdersToStorage(updatedOrders);
-    success(`✅ Статус замовлення змінено на "${getStatusText(newStatus)}"!`);
-  };
-
-  const editOrder = (orderId: string, updates: Partial<Order>) => {
-    const updatedOrders = orders.map(order => 
-      order.id === orderId 
-        ? { 
-            ...order, 
-            ...updates,
-            updatedAt: new Date() 
-          }
-        : order
-    );
-    setOrders(updatedOrders);
-    saveOrdersToStorage(updatedOrders);
-    success('✅ Замовлення успішно оновлено!');
-  };
-
-  // Payment management functions
-  const updatePayment = (orderId: string, paymentData: Partial<Order>) => {
-    const updatedOrders = orders.map((order) =>
-      order.id === orderId
-        ? { ...order, ...paymentData, updatedAt: new Date() }
-        : order
-    );
-    setOrders(updatedOrders);
-    success('✅ Платіж успішно оновлено!');
-  };
-
-  const releasePayment = (orderId: string) => {
-    const updatedOrders = orders.map(order => 
-      order.id === orderId 
-        ? { 
-            ...order, 
-            paymentStatus: 'released' as const,
-            releaseDate: new Date(),
-            updatedAt: new Date() 
-          }
-        : order
-    );
-    setOrders(updatedOrders);
-    success('✅ Кошти успішно виплачено майстру!');
-  };
-
-  const refundPayment = (orderId: string) => {
-    const updatedOrders = orders.map(order => 
-      order.id === orderId 
-        ? { 
-            ...order, 
-            paymentStatus: 'refunded' as const,
-            updatedAt: new Date() 
-          }
-        : order
-    );
-    setOrders(updatedOrders);
-    success('✅ Кошти повернено клієнту!');
-  };
-
-  // Dispute management functions
-  const createDispute = (orderId: string, reason: string, description: string) => {
-    const updatedOrders = orders.map(order => 
-      order.id === orderId 
-        ? { 
-            ...order, 
-            disputeStatus: 'open' as const,
-            disputeReason: reason,
-            disputeDescription: description,
-            disputeCreatedAt: new Date(),
-            supportTicketId: `TICKET-${Date.now()}`,
-            updatedAt: new Date() 
-          }
-        : order
-    );
-    setOrders(updatedOrders);
-    success('✅ Спір створено! Техпідтримка буде повідомлена.');
-  };
-
-  const escalateDispute = (orderId: string) => {
-    const updatedOrders = orders.map(order => 
-      order.id === orderId 
-        ? { 
-            ...order, 
-            disputeStatus: 'escalated' as const,
-            updatedAt: new Date() 
-          }
-        : order
-    );
-    setOrders(updatedOrders);
-    success('✅ Спір ескаловано до техпідтримки!');
-  };
-
-  // Функция для закрытия всех модальных окон при смене раздела
-  const handleNavigation = (item: string) => {
-    setActiveItem(item);
-    setSelectedOrder(null);
-    setShowMasterPortfolio(false);
-    setShowProposalModal(false);
-    setSelectedOrderForProposal(null);
-  };
-
+  // Если пользователь не авторизован, показываем лендинг
   if (!currentUser) {
-    return <LandingPage onLogin={() => handleLogin(JSON.parse(localStorage.getItem('currentUser') || 'null'))} />;
-  }
-
-  if (showMasterPortfolio) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="flex">
-          <Navigation
-            currentUser={currentUser}
-            activeItem={activeItem}
-            onItemClick={handleNavigation}
-            onLogout={handleLogout}
-            onLogoClick={handleLogoClick}
-            unviewedOrdersCount={getUnviewedOrdersCount()}
-          />
-          <div className="flex-1 p-6">
-            <button
-              onClick={() => setShowMasterPortfolio(false)}
-              className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              ← Назад до пошуку
-            </button>
-            <Portfolio
-              portfolio={selectedMasterPortfolio}
-              currentUser={currentUser}
-            />
-          </div>
-        </div>
-      </div>
+      <ModernLandingPage onLogin={handleLogin} />
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="flex overflow-x-hidden">
-      <Navigation
+      <div className="flex h-screen">
+        <ModernNavigation
         currentUser={currentUser}
         activeItem={activeItem}
-        onItemClick={handleNavigation}
+          setActiveItem={setActiveItem}
+          unviewedOrdersCount={getUnviewedOrdersCount()}
         onLogout={handleLogout}
-        onLogoClick={handleLogoClick}
-        unviewedOrdersCount={getUnviewedOrdersCount()}
-      />
-        <div className="flex-1 p-3 lg:p-6 lg:ml-56 2xl:ml-64 overflow-y-auto overflow-x-hidden pt-20 lg:pt-6">
+        />
+        <div className="flex-1 ml-52 overflow-y-auto overflow-x-hidden h-screen">
+          <div className="w-full bg-white border-b border-gray-200 shadow-sm">
+            <div className="flex justify-between items-center px-6 py-4">
+              {/* Ліва сторона - Час і дата */}
+              <div className="text-right min-w-fit">
+                <div className="text-xl font-bold text-gray-900 font-mono">22:44:20</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider">чт, 23 ЖОВТ.</div>
+              </div>
+
+              {/* Центр - Заголовок */}
+              <div className="flex-1 text-center">
+                <h1 className="text-2xl font-bold text-gray-900">RepairHub Pro</h1>
+                <p className="text-sm text-gray-600">Ласкаво просимо в ваш особистий кабінет</p>
+              </div>
+
+              {/* Права сторона - Погода, валюти, крипто */}
+              <div className="flex items-center gap-3 min-w-fit">
+                {/* Уведомления */}
+                <button 
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition relative"
+                  title="Уведомления"
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs text-white flex items-center justify-center font-bold">2</span>
+                </button>
+
+                {/* Профіль */}
+                <button 
+                  onClick={() => {
+                    setShowProfileMenu(!showProfileMenu);
+                    if (!showProfileMenu) {
+                      setActiveItem('profile');
+                    }
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition"
+                  title="Профіль"
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM6.5 18a3 3 0 00-3 3v1h15v-1a3 3 0 00-3-3H6.5z" />
+                  </svg>
+                </button>
+
+                {/* Настройки */}
+                <button 
+                  onClick={() => setActiveItem('settings')}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition"
+                  title="Налаштування"
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </button>
+
+                {/* Вихід */}
+                <button 
+                  onClick={handleLogout}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition"
+                  title="Вихід"
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </button>
+
+                {/* Погода */}
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200 hover:border-blue-300 transition whitespace-nowrap">
+                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                  </svg>
+                  <div className="text-xs">
+                    <div className="font-semibold text-gray-900">15°C</div>
+                    <div className="text-xs text-gray-600">Хмарно</div>
+                  </div>
+                </div>
+
+                {/* USD */}
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-50 to-green-100 rounded-lg border border-green-200 hover:border-green-300 transition whitespace-nowrap">
+                  <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  <div className="text-xs">
+                    <div className="text-xs text-gray-600">USD</div>
+                    <div className="font-semibold text-gray-900">₴41.50</div>
+                  </div>
+                </div>
+
+                {/* USDT */}
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-cyan-50 to-cyan-100 rounded-lg border border-cyan-200 hover:border-cyan-300 transition whitespace-nowrap">
+                  <svg className="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  <div className="text-xs">
+                    <div className="text-xs text-gray-600">USDT</div>
+                    <div className="font-semibold text-gray-900">₴41.45</div>
+                  </div>
+                </div>
+
+                {/* Bitcoin */}
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg border border-orange-200 hover:border-orange-300 transition whitespace-nowrap">
+                  <svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  <div className="text-xs">
+                    <div className="text-xs text-gray-600">BTC</div>
+                    <div className="font-semibold text-gray-900">$67.5k</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Модальное окно Уведомлений */}
+          {showNotifications && (
+            <div className="absolute right-6 top-20 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-40">
+              <div className="p-4 border-b border-gray-200">
+                <h3 className="font-semibold text-gray-900">Уведомлення</h3>
+              </div>
+              <div className="max-h-96 overflow-y-auto">
+                <div className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">Майстер розпочав роботу</p>
+                      <p className="text-xs text-gray-600 mt-1">Майстер Іван Петренко розпочав роботу над замовленням</p>
+                      <p className="text-xs text-gray-500 mt-1">10 хв назад</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">Нова пропозиція</p>
+                      <p className="text-xs text-gray-600 mt-1">Нова пропозиція від майстра для замовлення</p>
+                      <p className="text-xs text-gray-500 mt-1">1 год назад</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 border-t border-gray-200 text-center">
+                <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">Переглянути все</button>
+              </div>
+            </div>
+          )}
+
+          <div className="pl-2 pr-4 lg:pl-3 lg:pr-6 py-2 w-full">
           {activeItem === 'dashboard' && (
             currentUser.role === 'master' ? (
-              <MasterDashboard
+                <ModernMasterDashboard
                 currentUser={currentUser}
                 stats={{
                   activeOrders: orders.filter(o => o.status === 'in_progress').length,
@@ -485,67 +265,61 @@ function App() {
                 }}
               />
             ) : currentUser.role === 'client' ? (
-              <ClientDashboard
+                <ModernClientDashboard
                 currentUser={currentUser}
-                orders={orders.filter(o => o.clientId === currentUser.id)}
+                  orders={clientOrders}
               />
             ) : currentUser.role === 'admin' ? (
-              <AdminDashboard
+              <RepairHubDashboard
                 users={mockUsers}
                 orders={orders}
                 transactions={[]}
               />
             ) : (
-              <EnhancedDashboard
-                currentUser={currentUser}
-                orders={orders}
-                proposals={proposals}
-                masters={masters}
-                favoriteMasters={favorites}
-                onSelectOrder={(order: Order) => {
-                  console.log('Select order from dashboard:', order);
-                  setSelectedOrder(order);
-                }}
-              />
-            )
-          )}
+                <div className="text-center p-8">
+                  <h1 className="text-2xl font-bold mb-4">Ласкаво просимо до RepairHub Pro!</h1>
+                  <p className="text-gray-600">Оберіть роль для продовження роботи.</p>
+                </div>
+              )
+            )}
 
-          {activeItem === 'finance' && (
-            <FinancialDashboard
-              orders={orders}
-              transactions={[]}
-            />
-          )}
+            {activeItem === 'catalog' && (
+              <DeviceCatalog />
+            )}
 
-          {activeItem === 'settings' && currentUser?.role === 'admin' && (
-            <SettingsPanel />
-          )}
+            {activeItem === 'users' && currentUser?.role === 'admin' && (
+              <ModernUsersPanel />
+            )}
 
-          {activeItem === 'payments' && currentUser && (
-            <PaymentManagement
-              currentUser={currentUser}
-              orders={orders}
-              onUpdatePayment={updatePayment}
-              onReleasePayment={releasePayment}
-              onRefundPayment={refundPayment}
-              onCreateDispute={createDispute}
-              onEscalateDispute={escalateDispute}
-            />
+            {activeItem === 'orders' && currentUser?.role === 'admin' && (
+              <ModernOrdersPanel />
+            )}
+
+            {activeItem === 'finance' && currentUser?.role === 'admin' && (
+              <ModernFinancialPanel />
+            )}
+
+            {activeItem === 'settings' && currentUser?.role === 'admin' && (
+              <ModernSettingsPanel />
           )}
 
           {activeItem === 'myOrders' && (
             <Orders
               currentUser={currentUser}
               orders={orders}
-              onSendToMaster={sendOrderToMaster}
-              onCreateOrder={createOrder}
-              onDeleteOrder={deleteOrder}
-              onRestoreOrder={restoreOrder}
-              onToggleActiveSearch={toggleActiveSearch}
-              onUpdateOrderStatus={updateOrderStatus}
-              masters={masters}
-              onEditOrder={editOrder}
+                onSendToMaster={() => {}}
+                onCreateOrder={() => {}}
+                onDeleteOrder={() => {}}
+                onRestoreOrder={() => {}}
+                onToggleActiveSearch={() => {}}
+                onUpdateOrderStatus={() => {}}
+                masters={mockUsers}
+                onEditOrder={() => {}}
             />
+          )}
+
+          {activeItem === 'myDevices' && (
+            <MyDevices />
           )}
 
           {activeItem === 'inventory' && (
@@ -568,32 +342,13 @@ function App() {
           {activeItem === 'proposals' && (
             <Proposals
               currentUser={currentUser}
-              proposals={(currentUser?.role === 'client'
-                ? proposals.filter(proposal =>
-                  orders.some(order => order.id === proposal.orderId && order.clientId === currentUser?.id)
-                )
-                : proposals.filter(proposal => proposal.masterId === currentUser?.id)
-              ) as Proposal[]}
+                proposals={proposals}
               orders={orders}
               isMaster={currentUser?.role === 'master'}
-              onSubmitProposal={(orderId, price, description) => {
-                createProposal({
-                  orderId,
-                  price,
-                  description,
-                  masterId: currentUser?.id || '',
-                  masterName: currentUser?.name || '',
-                  masterRating: currentUser?.rating || 0,
-                  masterAvatar: currentUser?.avatar || '',
-                  estimatedDays: 1,
-                });
-                setShowProposalModal(false);
-                setSelectedOrderForProposal(null);
-                success('✅ Пропозицію успішно відправлено!');
-              }}
-              onAcceptProposal={acceptProposal}
-              onRejectProposal={rejectProposal}
-              onShowToast={success}
+                onSubmitProposal={() => {}}
+                onAcceptProposal={handleAcceptProposal}
+                onRejectProposal={handleRejectProposal}
+                onShowToast={() => {}}
             />
           )}
 
@@ -602,263 +357,59 @@ function App() {
               <MastersList 
                 masters={mockUsers.filter(u => u.role === 'master')}
                 currentUserCity={currentUser?.city}
-                onSelectMaster={(master) => {
-                  console.log('Selected master:', master);
-                  setSelectedChatMaster(master);
-                  setActiveItem('messages');
-                }}
-                onContact={(master) => {
-                  console.log('Contact master:', master);
-                  setSelectedChatMaster(master);
-                  setActiveItem('messages');
-                }}
-                onToggleFavorite={toggleFavoriteMaster}
-                favoriteMasters={favorites}
+                  onSelectMaster={() => {}}
+                  onContact={() => {}}
+                  onToggleFavorite={() => {}}
+                  favoriteMasters={[]}
               />
             </div>
           )}
 
           {activeItem === 'reports' && (
-            <Reports
+              <div className="p-8">
+                <MasterReviews
               currentUser={currentUser}
               orders={orders}
             />
+              </div>
           )}
 
-          {activeItem === 'paymentMethods' && currentUser && (
-            <PaymentMethods
+            {activeItem === 'payments' && currentUser && (
+              <PaymentManagement
               currentUser={currentUser}
-            />
-          )}
+                orders={orders}
+                onUpdatePayment={() => {}}
+                onReleasePayment={() => {}}
+                onRefundPayment={() => {}}
+                onCreateDispute={() => {}}
+                onEscalateDispute={() => {}}
+              />
+            )}
 
-          {activeItem === 'transactionHistory' && currentUser && (
-            <TransactionHistory
+            {activeItem === 'messages' && (
+              <Messages
               currentUser={currentUser}
-              transactions={[]}
-            />
-          )}
-
-          {activeItem === 'masterReports' && (
-            <MasterReports
-              currentUser={currentUser}
+                masters={mockUsers}
               orders={orders}
-            />
-          )}
-
-          {activeItem === 'messages' && currentUser && (
-            <Messages
-              selectedMaster={selectedChatMaster ?? undefined}
             />
           )}
 
           {activeItem === 'profile' && (
             <Profile
-              currentUser={currentUser ?? undefined}
-            />
-          )}
-
-          {activeItem === 'catalog' && (
-            <DeviceCatalog currentUser={currentUser} />
-          )}
-
-          {activeItem === 'masters' && (
-            <div className="p-8">
-              <MastersList 
-                masters={mockUsers.filter(u => u.role === 'master')}
-                currentUserCity={currentUser?.city}
-                onSelectMaster={(master) => {
-                  console.log('Selected master:', master);
-                  setSelectedChatMaster(master);
-                  setActiveItem('messages');
-                }}
-                onContact={(master) => {
-                  console.log('Contact master:', master);
-                  setSelectedChatMaster(master);
-                  setActiveItem('messages');
-                }}
-                onToggleFavorite={toggleFavoriteMaster}
-                favoriteMasters={favorites}
+                currentUser={currentUser}
+                orders={orders}
+                onUpdateProfile={() => {}}
               />
-            </div>
-          )}
-
-          {activeItem === 'parts' && (
-            <div className="p-8">
-              <PartsInventory
-                userRole={currentUser?.role}
-                onBuyPart={(part) => console.log('Buy part:', part)}
-                onViewMaster={(masterId) => console.log('View master:', masterId)}
-              />
-            </div>
-          )}
-
-          {activeItem === 'orders' &&
-            (currentUser?.role === 'master' ||
-              currentUser?.role === 'client') && (
-              <div className="p-8">
-                <OrdersBoard
-                  orders={
-                    (currentUser?.role === 'client'
-                      ? orders.filter(
-                          (order) => order.clientId === currentUser?.id
-                        )
-                      : orders.filter(
-                          (order) =>
-                            order.status === 'open' ||
-                            order.status === 'awaiting_client_confirmation' ||
-                            order.status === 'in_progress' ||
-                            order.status === 'awaiting_payment_confirmation'
-                        )
-                    ).map((order: Order) => ({
-                      id: order.id,
-                      title: order.title,
-                      clientName: order.clientName,
-                      device: order.device,
-                      issue: order.issue,
-                      city: order.city,
-                      status: order.status as OrderItem['status'],
-                      urgency: order.urgency,
-                      budget: order.budget,
-                      proposalCount: order.proposalCount,
-                      createdAt: order.createdAt,
-                    }))
-                  }
-                  userRole={currentUser?.role}
-                  onSelectOrder={(orderItem) => {
-                    const order = orders.find((o) => o.id === orderItem.id);
-                    if (order) {
-                      setSelectedOrder(order);
-                    }
-                  }}
-                  onMarkOrderAsViewed={markOrderAsViewed}
-                  unviewedOrdersCount={getUnviewedOrdersCount()}
-                  onSubmitProposal={(orderId) => {
-                    const order =
-                      currentUser?.role === 'service'
-                        ? mockMasterOrders.find((o) => o.id === orderId)
-                        : orders.find((o) => o.id === orderId);
-                    if (order) {
-                      setSelectedOrderForProposal(order);
-                      setShowProposalModal(true);
-                    }
-                  }}
-                  onCompleteWork={handleCompleteWork}
-                  onConfirmPayment={handleConfirmPayment}
-                />
-              </div>
             )}
-
-          {activeItem === 'reviews' && (
-            <div className="p-8">
-              <MasterReviews 
-                masterId="master1"
-                masterName="Alex Master"
-                averageRating={4.9}
-                totalReviews={127}
+            {activeItem === 'settings' && (
+              <Settings
+                currentUser={currentUser}
+                onLogout={handleLogout}
               />
+            )}
             </div>
-          )}
         </div>
       </div>
-
-      {/* Toast Notifications */}
-      <div className="fixed top-6 right-6 z-50 space-y-2 pointer-events-none">
-        {toasts.map(toast => (
-          <div key={toast.id} className="pointer-events-auto">
-            <Toast
-              message={toast.message}
-              type={toast.type}
-              duration={toast.duration}
-              onClose={() => {}}
-            />
-          </div>
-        ))}
-      </div>
-
-      {/* Order Detail Modal */}
-      {selectedOrder && (
-        <OrderDetail
-          orderId={selectedOrder.id}
-          orderTitle={selectedOrder.title}
-          orderDescription={selectedOrder.issue}
-          masterName={currentUser?.fullName || currentUser?.name}
-          masterAvatar={currentUser?.avatar}
-          status={selectedOrder.status}
-          priority={selectedOrder.urgency}
-          startDate={new Date(selectedOrder.createdAt).toLocaleDateString('uk-UA')}
-          estimatedEndDate={new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString('uk-UA')}
-          location={selectedOrder.city}
-          photos={selectedOrder.devicePhotos || []}
-          comments={[
-            {
-              author: 'Іван Петренко',
-              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ivan',
-              text: 'Чудове виконання роботи!',
-              date: '2025-01-15'
-            },
-            {
-              author: 'Марія Коваленко',
-              avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria',
-              text: 'Все заслуговує похвали',
-              date: '2025-01-16'
-            }
-          ]}
-          chatMessages={[
-            {
-              sender: 'master',
-              text: 'Добрий день! Я змогу розпочати роботу відразу.',
-              time: '10:30'
-            },
-            {
-              sender: 'client',
-              text: 'Спасибі! Коли буде готово?',
-              time: '10:32'
-            },
-            {
-              sender: 'master',
-              text: 'Приблизно за 2-3 дні. Залежить від складності.',
-              time: '10:33'
-            },
-            {
-              sender: 'client',
-              text: 'Добре, чекаю на вас',
-              time: '10:35'
-            }
-          ]}
-          onBack={() => setSelectedOrder(null)}
-        />
-      )}
-
-      {/* Proposal Modal */}
-      {showProposalModal && selectedOrderForProposal && (
-        <ProposalModal
-          isOpen={showProposalModal}
-          onClose={() => {
-            setShowProposalModal(false);
-            setSelectedOrderForProposal(null);
-          }}
-          orderId={selectedOrderForProposal.id}
-          orderTitle={selectedOrderForProposal.title}
-          clientName={selectedOrderForProposal.clientName}
-          budget={selectedOrderForProposal.budget}
-          onSubmit={(price, description) => {
-            createProposal({
-              orderId: selectedOrderForProposal.id,
-              price,
-              description,
-              masterId: currentUser?.id || '',
-              masterName: currentUser?.name || '',
-              masterRating: currentUser?.rating || 0,
-              masterAvatar: currentUser?.avatar || '',
-              estimatedDays: 1,
-            });
-            setShowProposalModal(false);
-            setSelectedOrderForProposal(null);
-            success('✅ Пропозицію успішно відправлено!');
-          }}
-        />
-      )}
-      <JarvisChat />
     </div>
   );
 }

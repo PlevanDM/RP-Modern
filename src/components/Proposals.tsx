@@ -38,10 +38,12 @@ export function Proposals({
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showRejectModal, setShowRejectModal] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<string>('');
   const [selectedProposalId, setSelectedProposalId] = useState<string>('');
   const [formData, setFormData] = useState({ price: '', description: '', estimatedDays: '1' });
   const [cancelReason, setCancelReason] = useState('');
+  const [rejectReason, setRejectReason] = useState('');
 
   const filteredProposals = useMemo(() => {
     // Фильтруем по статусу (ролевая фильтрация уже выполнена в App.tsx)
@@ -56,8 +58,8 @@ export function Proposals({
   };
 
   const handleReject = (proposalId: string) => {
-    onRejectProposal?.(proposalId);
-    onShowToast?.(`❌ Пропозиція ${proposalId} відхилена!`);
+    setSelectedProposalId(proposalId);
+    setShowRejectModal(true);
   };
 
   const handleCancel = (proposalId: string) => {
@@ -84,6 +86,19 @@ export function Proposals({
     setSelectedProposalId('');
   };
 
+  const handleConfirmReject = () => {
+    if (!rejectReason.trim()) {
+      onShowToast?.('⚠️ Вкажіть причину відхилення');
+      return;
+    }
+    
+    onRejectProposal?.(selectedProposalId);
+    onShowToast?.(`❌ Пропозиція ${selectedProposalId} відхилена. Причина: ${rejectReason}`);
+    setShowRejectModal(false);
+    setRejectReason('');
+    setSelectedProposalId('');
+  };
+
   const handleSubmitProposal = () => {
     if (!selectedOrderId || !formData.price || !formData.description) {
       onShowToast?.('⚠️ Заповніть всі поля');
@@ -99,7 +114,7 @@ export function Proposals({
     orders?.filter((o) => o.status === 'open' || o.status === 'proposed') || [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-x-hidden w-full">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-gray-900">Пропозиції</h2>
         {isMaster && openProposals.length > 0 && (
@@ -364,6 +379,51 @@ export function Proposals({
                 className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 flex items-center gap-2"
               >
                 <CancelIcon sx={{ fontSize: 20 }} /> Підтвердити скасування
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Модальное окно для отклонения пропозиции */}
+      {showRejectModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-x-hidden">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Відхилити пропозицію</h3>
+              <button
+                onClick={() => setShowRejectModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <CloseIcon sx={{ fontSize: 24 }} />
+              </button>
+            </div>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Причина відхилення *
+              </label>
+              <textarea
+                value={rejectReason}
+                onChange={(e) => setRejectReason(e.target.value)}
+                placeholder="Вкажіть причину відхилення пропозиції..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
+                rows={4}
+              />
+            </div>
+            
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowRejectModal(false)}
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Скасувати
+              </button>
+              <button
+                onClick={handleConfirmReject}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center gap-2"
+              >
+                <CancelIcon sx={{ fontSize: 20 }} /> Підтвердити відхилення
               </button>
             </div>
           </div>
