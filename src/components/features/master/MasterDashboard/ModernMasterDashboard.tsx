@@ -29,6 +29,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { Input } from '../../../ui/input';
 import { ScrollArea } from '../../../ui/scroll-area';
+import { User } from '../../../../types';
 
 interface StatCardProps {
   title: string;
@@ -88,34 +89,44 @@ interface Notification {
   time: string;
 }
 
-const ModernMasterDashboard: React.FC = () => {
+interface ModernMasterDashboardProps {
+    currentUser: User;
+    stats: {
+        activeOrders: number;
+        completedOrders: number;
+        totalEarned: number;
+        rating: number;
+    }
+}
+
+const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({ currentUser, stats: masterStats }) => {
   const [activeTab, setActiveTab] = useState('overview');
 
   const stats = [
     {
       title: 'Активные заказы',
-      value: '24',
+      value: masterStats.activeOrders.toString(),
       change: 12,
       icon: <Wrench className="h-4 w-4" />,
       trend: 'up' as const,
     },
     {
       title: 'Доход за месяц',
-      value: '₽145,230',
+      value: `₽${masterStats.totalEarned.toLocaleString()}`,
       change: 8,
       icon: <DollarSign className="h-4 w-4" />,
       trend: 'up' as const,
     },
     {
       title: 'Средний рейтинг',
-      value: '4.8',
+      value: masterStats.rating.toString(),
       change: 5,
       icon: <Star className="h-4 w-4" />,
       trend: 'up' as const,
     },
     {
       title: 'Завершено заказов',
-      value: '156',
+      value: masterStats.completedOrders.toString(),
       change: -3,
       icon: <CheckCircle2 className="h-4 w-4" />,
       trend: 'down' as const,
@@ -223,7 +234,7 @@ const ModernMasterDashboard: React.FC = () => {
           <div>
             <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
               <Wrench className="h-8 w-8 text-primary" />
-              RepairHub Pro
+              {currentUser.name}
             </h1>
             <p className="text-muted-foreground mt-1">Панель управления мастера</p>
           </div>

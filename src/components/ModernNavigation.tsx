@@ -102,6 +102,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
 }) => {
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const [isPinned, setIsPinned] = React.useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   // Оптимизация: используем useMemo чтобы не пересчитывать меню на каждый рендер
   const menuItems = React.useMemo(() => {
@@ -344,7 +345,10 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
             return (
               <motion.button
                 key={item.label}
-                onClick={() => setActiveItem(getRouteKey(item.label))}
+                onClick={() => {
+                    setActiveItem(getRouteKey(item.label));
+                    setIsMobileMenuOpen(false);
+                }}
                 className={cn(
                   "group relative flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium transition-all w-full text-left",
                   isActive
@@ -395,19 +399,51 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   };
 
   return (
-    <motion.div
-      className="fixed left-0 top-0 h-screen w-56 bg-background md:flex md:flex-col hidden z-50"
-      initial={false}
-      animate={isCollapsed ? "closed" : "open"}
-      variants={sidebarVariants}
-      transition={transitionProps}
-      onMouseEnter={() => setIsCollapsed(false)}
-      onMouseLeave={() => !isPinned && setIsCollapsed(true)}
-    >
-      <Logo collapsed={isCollapsed} />
-      <NavigationMenu collapsed={isCollapsed} />
-      <UserProfile collapsed={isCollapsed} />
-    </motion.div>
+    <>
+        {/* Mobile menu button */}
+        <div className="md:hidden fixed top-4 left-4 z-50">
+            <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Open menu"
+            >
+            {isMobileMenuOpen ? <X /> : <Menu />}
+            </Button>
+        </div>
+
+        {/* Mobile menu */}
+        <AnimatePresence>
+            {isMobileMenuOpen && (
+                <motion.div
+                    initial={{ x: "-100%" }}
+                    animate={{ x: 0 }}
+                    exit={{ x: "-100%" }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    className="fixed inset-0 bg-background z-40 flex flex-col md:hidden"
+                >
+                    <Logo collapsed={false} />
+                    <NavigationMenu collapsed={false} />
+                    <UserProfile collapsed={false} />
+                </motion.div>
+            )}
+        </AnimatePresence>
+
+        {/* Desktop sidebar */}
+        <motion.div
+            className="fixed left-0 top-0 h-screen w-56 bg-background md:flex md:flex-col hidden z-30"
+            initial={false}
+            animate={isCollapsed ? "closed" : "open"}
+            variants={sidebarVariants}
+            transition={transitionProps}
+            onMouseEnter={() => setIsCollapsed(false)}
+            onMouseLeave={() => !isPinned && setIsCollapsed(true)}
+        >
+            <Logo collapsed={isCollapsed} />
+            <NavigationMenu collapsed={isCollapsed} />
+            <UserProfile collapsed={isCollapsed} />
+        </motion.div>
+    </>
   );
 };
 

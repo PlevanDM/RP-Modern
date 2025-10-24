@@ -1,152 +1,170 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { Order, Proposal, User } from '../types';
+import { mockOrders, mockProposals } from '../utils/mockData';
+import { useAuthStore } from './authStore';
+import { useUIStore } from './uiStore';
 
-export interface Order {
-  id: string;
-  title: string;
-  description: string;
-  deviceType: string;
-  issue: string;
-  budget: number;
-  city: string;
-  status: 'open' | 'proposed' | 'in_progress' | 'completed' | 'deleted' | 'active_search' | 'accepted' | 'awaiting_confirmation' | 'awaiting_payment';
-  urgency: 'low' | 'medium' | 'high';
-  proposedPrice?: number;
-  agreedPrice?: number;
-  createdAt: string;
-  updatedAt: string;
-  clientId: string;
-  assignedMasterId?: string;
-  isActiveSearch?: boolean;
-  deletedAt?: string;
-}
-
-interface OrdersStore {
+interface OrdersState {
   orders: Order[];
-  
-  // Actions
-  addOrder: (order: Order) => void;
-  updateOrder: (id: string, updates: Partial<Order>) => void;
-  deleteOrder: (id: string) => void;
-  restoreOrder: (id: string) => void;
-  getOrderById: (id: string) => Order | undefined;
-  getClientOrders: (clientId: string) => Order[];
-  
-  // Mock initialization
-  initializeOrders: (clientId: string) => void;
+  proposals: Proposal[];
+  createOrder: (order: Omit<Order, 'id'>) => void;
+  deleteOrder: (orderId: string) => void;
+  restoreOrder: (orderId: string) => void;
+  editOrder: (order: Order) => void;
+  toggleActiveSearch: (orderId: string) => void;
+  sendToMaster: (orderId: string, masterId: string) => void;
+  submitProposal: (
+    orderId: string,
+    price: number,
+    description: string
+  ) => void;
+  updateProposal: (proposalId: string, updates: Partial<Proposal>) => void;
+  acceptProposal: (proposalId: string) => void;
+  rejectProposal: (proposalId: string) => void;
+  updateOrderStatus: (orderId: string, status: Order['status']) => void;
+  updatePayment: (orderId: string, amount: number) => void;
+  releasePayment: (orderId: string) => void;
+  refundPayment: (orderId: string) => void;
+  createDispute: (orderId: string, reason: string) => void;
+  escalateDispute: (orderId: string) => void;
 }
 
-const generateMockOrders = (clientId: string): Order[] => {
-  return [
+export const useOrdersStore = create<OrdersState>()(
+  persist(
+    (set, get) => ({
+      orders: mockOrders,
+      proposals: mockProposals,
+      createOrder: (order) => {
+        const newOrder: Order = { ...order, id: Date.now().toString() };
+        set((state) => ({ orders: [...state.orders, newOrder] }));
+        useUIStore.getState().showNotification('Order created successfully!');
+      },
+      deleteOrder: (orderId) => {
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId ? { ...o, status: 'deleted' } : o
+          ),
+        }));
+        useUIStore.getState().showNotification('Order deleted successfully!');
+      },
+      restoreOrder: (orderId) => {
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId ? { ...o, status: 'new' } : o
+          ),
+        }));
+        useUIStore.getState().showNotification('Order restored successfully!');
+      },
+      editOrder: (order) => {
+        set((state) => ({
+          orders: state.orders.map((o) => (o.id === order.id ? order : o)),
+        }));
+        useUIStore.getState().showNotification('Order updated successfully!');
+      },
+      toggleActiveSearch: (orderId) => {
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId ? { ...o, active_search: !o.active_search } : o
+          ),
+        }));
+      },
+      sendToMaster: (orderId, masterId) => {
+        console.log(`Order ${orderId} sent to master ${masterId}`);
+      },
+      submitProposal: (orderId, price, description) => {
+        const currentUser = useAuthStore.getState().currentUser;
+        if (!currentUser || currentUser.role !== 'master') {
+          useUIStore
+            .getState()
+            .showNotification('Only masters can submit proposals.', 'error');
+          return;
+        }
+        const newProposal: Proposal = {
+          id: Date.now().toString(),
+          orderId,
+          masterId: currentUser.id,
+          masterName: currentUser.name,
+          masterRating: currentUser.rating,
+          price,
+          description,
+          status: 'pending',
+          createdAt: new Date(),
+        };
+        set((state) => ({ proposals: [...state.proposals, newProposal] }));
+        get().updateOrderStatus(orderId, 'proposed');
+        useUIStore.getState().showNotification('Proposal submitted successfully!');
+      },
+      updateProposal: (proposalId, updates) => {
+        set((state) => ({
+          proposals: state.proposals.map((p) =>
+            p.id === proposalId ? { ...p, ...updates } : p
+          ),
+        }));
+        useUIStore.getState().showNotification('Proposal updated successfully!');
+      },
+      acceptProposal: (proposalId) => {
+        const currentUser = useAuthStore.getState().currentUser;
+        const proposal = get().proposals.find((p) => p.id === proposalId);
+        if(!proposal) return;
+        const order = get().orders.find(o => o.id === proposal.orderId);
+
+        if (!currentUser || currentUser.id !== order.clientId) {
+          useUIStore
+            .getState()
+            .showNotification('Only the client can accept a proposal.', 'error');
+          return;
+        }
+
+        set((state) => ({
+          proposals: state.proposals.map((p) =>
+            p.id === proposalId ? { ...p, status: 'accepted' } : p
+          ),
+        }));
+
+        if (proposal) {
+          get().updateOrderStatus(proposal.orderId, 'in_progress');
+        }
+        useUIStore.getState().showNotification('Proposal accepted!');
+      },
+      rejectProposal: (proposalId) => {
+        set((state) => ({
+          proposals: state.proposals.map((p) =>
+            p.id === proposalId ? { ...p, status: 'rejected' } : p
+          ),
+        }));
+        useUIStore.getState().showNotification('Proposal rejected!');
+      },
+      updateOrderStatus: (orderId, status) => {
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId ? { ...o, status } : o
+          ),
+        }));
+      },
+      updatePayment: (orderId, amount) => {
+        get().updateOrderStatus(orderId, 'paid');
+        useUIStore.getState().showNotification('Payment successful!');
+      },
+      releasePayment: (orderId) => {
+        get().updateOrderStatus(orderId, 'completed');
+        useUIStore.getState().showNotification('Payment released to master!');
+      },
+      refundPayment: (orderId) => {
+        get().updateOrderStatus(orderId, 'refunded');
+        useUIStore.getState().showNotification('Payment refunded to client!');
+      },
+      createDispute: (orderId, reason) => {
+        get().updateOrderStatus(orderId, 'dispute');
+        useUIStore.getState().showNotification('Dispute created!');
+      },
+      escalateDispute: (orderId) => {
+        get().updateOrderStatus(orderId, 'escalated_dispute');
+        useUIStore.getState().showNotification('Dispute escalated!');
+      },
+    }),
     {
-      id: 'order1',
-      title: 'Ремонт екрану iPhone 15 Pro',
-      description: 'Розбитий екран потребує заміни. Прошу якомога швидшого виконання.',
-      deviceType: 'iPhone',
-      issue: 'Пошкодження екрану',
-      budget: 8500,
-      city: 'Київ',
-      status: 'open',
-      urgency: 'high',
-      createdAt: '2025-01-19T00:00:00Z',
-      updatedAt: '2025-01-19T00:00:00Z',
-      clientId,
-    },
-    {
-      id: 'order2',
-      title: 'Заміна дисплею iPad Air',
-      description: 'Екран не світить, потребує заміни дисплея.',
-      deviceType: 'iPad',
-      issue: 'Пошкодження екрану',
-      budget: 6500,
-      city: 'Київ',
-      status: 'completed',
-      urgency: 'medium',
-      agreedPrice: 6500,
-      createdAt: '2025-01-15T00:00:00Z',
-      updatedAt: '2025-01-18T00:00:00Z',
-      clientId,
-    },
-    {
-      id: 'order3',
-      title: 'Чистка від вологи iPhone 13',
-      description: 'Телефон впав у воду, потребує діагностики та чистки.',
-      deviceType: 'iPhone',
-      issue: 'Пошкодження від рідини',
-      budget: 5000,
-      city: 'Київ',
-      status: 'proposed',
-      urgency: 'high',
-      createdAt: '2025-01-19T00:00:00Z',
-      updatedAt: '2025-01-19T00:00:00Z',
-      clientId,
-      proposalCount: 2,
-    },
-  ];
-};
-
-export const useOrdersStore = create<OrdersStore>((set, get) => ({
-  orders: [],
-
-  addOrder: (order: Order) => {
-    set((state) => ({
-      orders: [order, ...state.orders],
-    }));
-  },
-
-  updateOrder: (id: string, updates: Partial<Order>) => {
-    set((state) => ({
-      orders: state.orders.map((order) =>
-        order.id === id
-          ? {
-              ...order,
-              ...updates,
-              updatedAt: new Date().toISOString(),
-            }
-          : order
-      ),
-    }));
-  },
-
-  deleteOrder: (id: string) => {
-    set((state) => ({
-      orders: state.orders.map((order) =>
-        order.id === id
-          ? {
-              ...order,
-              status: 'deleted',
-              deletedAt: new Date().toISOString(),
-            }
-          : order
-      ),
-    }));
-  },
-
-  restoreOrder: (id: string) => {
-    set((state) => ({
-      orders: state.orders.map((order) =>
-        order.id === id
-          ? {
-              ...order,
-              status: 'open',
-              deletedAt: undefined,
-            }
-          : order
-      ),
-    }));
-  },
-
-  getOrderById: (id: string) => {
-    return get().orders.find((order) => order.id === id);
-  },
-
-  getClientOrders: (clientId: string) => {
-    return get().orders.filter((order) => order.clientId === clientId);
-  },
-
-  initializeOrders: (clientId: string) => {
-    set({
-      orders: generateMockOrders(clientId),
-    });
-  },
-}));
-
+      name: 'orders-storage',
+    }
+  )
+);

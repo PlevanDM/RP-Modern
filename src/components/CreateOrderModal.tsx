@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import CloseIcon from '@mui/icons-material/Close';
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Camera, Trash2 } from 'lucide-react';
 import { Order, User } from '../types/models';
+import { Modal } from './ui/modal';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 interface CreateOrderModalProps {
   isOpen: boolean;
@@ -107,35 +108,20 @@ export function CreateOrderModal({
     setDefectPhotos([]);
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-x-hidden">
-      <div className="bg-white rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Створити нове замовлення</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <CloseIcon sx={{ fontSize: 28 }} />
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
+    <Modal isOpen={isOpen} onClose={onClose} title="Створити нове замовлення">
+        <form onSubmit={handleSubmit} className="space-y-6">
             {/* Основная информация */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Назва замовлення *
                 </label>
-                <input
+                <Input
                   type="text"
                   name="title"
                   value={formData.title}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Наприклад: Заміна екрану iPhone 15"
                   required
                 />
@@ -220,12 +206,11 @@ export function CreateOrderModal({
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Місцезнаходження
                 </label>
-                <input
+                <Input
                   type="text"
                   name="location"
                   value={formData.location}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Київ, вул. Хрещатик, 22"
                 />
               </div>
@@ -234,12 +219,11 @@ export function CreateOrderModal({
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Телефон
                 </label>
-                <input
+                <Input
                   type="tel"
                   name="clientPhone"
                   value={formData.clientPhone}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="+380501234567"
                 />
               </div>
@@ -248,12 +232,11 @@ export function CreateOrderModal({
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Email
                 </label>
-                <input
+                <Input
                   type="email"
                   name="clientEmail"
                   value={formData.clientEmail}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="example@email.com"
                 />
               </div>
@@ -279,7 +262,7 @@ export function CreateOrderModal({
                     htmlFor="device-photos"
                     className="cursor-pointer flex flex-col items-center justify-center py-4"
                   >
-                    <PhotoCameraIcon sx={{ fontSize: 48 }} className="text-gray-400 mb-2" />
+                    <Camera size={48} className="text-gray-400 mb-2" />
                     <span className="text-sm text-gray-600">Натисніть для завантаження фото пристрою</span>
                   </label>
                   
@@ -292,13 +275,15 @@ export function CreateOrderModal({
                             alt={`Device ${index + 1}`}
                             className="w-full h-24 object-cover rounded-lg"
                           />
-                          <button
+                          <Button
                             type="button"
+                            variant="destructive"
+                            size="icon"
                             onClick={() => removePhoto(index, 'device')}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                            className="absolute -top-2 -right-2 h-6 w-6"
                           >
-                            <DeleteIcon sx={{ fontSize: 16 }} />
-                          </button>
+                            <Trash2 size={16} />
+                          </Button>
                         </div>
                       ))}
                     </div>
@@ -324,7 +309,7 @@ export function CreateOrderModal({
                     htmlFor="defect-photos"
                     className="cursor-pointer flex flex-col items-center justify-center py-4"
                   >
-                    <PhotoCameraIcon sx={{ fontSize: 48 }} className="text-gray-400 mb-2" />
+                    <Camera size={48} className="text-gray-400 mb-2" />
                     <span className="text-sm text-gray-600">Натисніть для завантаження фото дефекту</span>
                   </label>
                   
@@ -337,13 +322,15 @@ export function CreateOrderModal({
                             alt={`Defect ${index + 1}`}
                             className="w-full h-24 object-cover rounded-lg"
                           />
-                          <button
+                          <Button
                             type="button"
+                            variant="destructive"
+                            size="icon"
                             onClick={() => removePhoto(index, 'defect')}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                            className="absolute -top-2 -right-2 h-6 w-6"
                           >
-                            <DeleteIcon sx={{ fontSize: 16 }} />
-                          </button>
+                            <Trash2 size={16} />
+                          </Button>
                         </div>
                       ))}
                     </div>
@@ -354,24 +341,17 @@ export function CreateOrderModal({
 
             {/* Кнопки */}
             <div className="flex justify-end gap-4 pt-6 border-t">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
+              <Button type="button" variant="outline" onClick={onClose}>
                 Скасувати
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 disabled={isSubmitting || !formData.title || !formData.description}
-                className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Створення...' : 'Створити замовлення'}
-              </button>
+              </Button>
             </div>
           </form>
-        </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

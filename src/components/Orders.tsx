@@ -9,6 +9,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { Search, Filter, ChevronDown, Package, User, Calendar, DollarSign, Clock, MessageCircle } from 'lucide-react';
 import { Order, User as CurrentUser } from '../types/models';
 import { CreateOrderModal } from './CreateOrderModal';
+import { ProposalModal } from './ProposalModal';
 
 interface OrdersProps {
   currentUser: CurrentUser;
@@ -19,6 +20,7 @@ interface OrdersProps {
   onRestoreOrder?: (orderId: string) => void;
   onToggleActiveSearch?: (orderId: string) => void;
   onUpdateOrderStatus?: (orderId: string, newStatus: Order['status']) => void;
+  onCreateProposal?: (proposalData: Partial<Proposal>) => void;
   masters?: {
     id: string;
     avatar: string;
@@ -30,7 +32,7 @@ interface OrdersProps {
   onEditOrder?: (orderId: string, updates: Partial<Order>) => void;
 }
 
-export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder, onDeleteOrder, onRestoreOrder, onToggleActiveSearch, onUpdateOrderStatus, masters = [], onEditOrder }: OrdersProps) {
+export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder, onDeleteOrder, onRestoreOrder, onToggleActiveSearch, onUpdateOrderStatus, masters = [], onEditOrder, onCreateProposal }: OrdersProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -46,6 +48,7 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
+  const [showProposalModal, setShowProposalModal] = useState(false);
 
   const filteredOrders = useMemo(() => {
     // Фільтруємо заказы: если клиент, то только его заказы; если мастер, то все
@@ -457,7 +460,7 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
               )}
 
               {/* Action Buttons */}
-              <div className="flex gap-2 pt-4">
+              <div className="flex flex-wrap gap-2 pt-4">
                 {/* CLIENT ACTIONS */}
                 {currentUser?.role === 'client' && (
                   <>
@@ -552,7 +555,9 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                     )}
 
                     {selectedOrder.status === 'open' && (
-                      <button className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => setShowProposalModal(true)}
+                        className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center justify-center gap-2">
                         <EditIcon sx={{ fontSize: 20 }} /> Розмістити пропозицію
                       </button>
                     )}
@@ -637,6 +642,20 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
         onSubmit={handleCreateOrder}
         currentUser={currentUser}
       />
+
+      {/* Модальное окно создания предложения */}
+      {selectedOrder && (
+        <ProposalModal
+            isOpen={showProposalModal}
+            onClose={() => setShowProposalModal(false)}
+            onSubmit={(proposalData) => {
+                onCreateProposal?.({ ...proposalData, orderId: selectedOrder.id });
+                setShowProposalModal(false);
+            }}
+            order={selectedOrder}
+            currentUser={currentUser}
+        />
+      )}
 
       {/* Модальное окно подтверждения удаления */}
       {showDeleteConfirm && orderToDelete && (

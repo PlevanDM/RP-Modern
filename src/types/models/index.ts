@@ -45,6 +45,14 @@ export interface WorkExperience {
   description: string;
 }
 
+// Device type for clients
+export interface Device {
+    id: string;
+    brand: string;
+    model: string;
+    issue: string;
+}
+
 // User types
 export interface User {
   id: string;
@@ -64,6 +72,8 @@ export interface User {
   experience?: WorkExperience[];
   completedOrders?: number;
   bio?: string;
+  tools?: string[]; // Инструменты мастера
+  devices?: Device[]; // Устройства клиента
 }
 
 // Order (размещено клієнтом)

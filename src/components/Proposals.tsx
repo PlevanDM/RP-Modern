@@ -117,7 +117,7 @@ export function Proposals({
     <div className="space-y-6 overflow-x-hidden w-full">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-gray-900">Пропозиції</h2>
-        {isMaster && openProposals.length > 0 && (
+        {isMaster && (
           <button
             onClick={() => setShowSubmitModal(true)}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2"

@@ -189,34 +189,34 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLogin }) => {
 
   const features = [
     {
-      icon: <Smartphone className="w-6 h-6 text-primary" />,
-      title: 'Спеціалізація на мобільній електроніці',
-      description: 'iPhone, Samsung, Xiaomi, ASUS, Google Pixel, DJI, GoPro - весь спектр пристроїв у одному місці.',
-    },
-    {
       icon: <Zap className="w-6 h-6 text-primary" />,
-      title: 'Безпосередній контакт з майстром',
-      description: 'Прямий чат, обговорення ціни, термін ремонту без посередників та прихованих комісій.',
+      title: 'Прямой контакт',
+      description: 'Общайтесь напрямую с мастером, без посредников и менеджеров.',
     },
     {
       icon: <Users className="w-6 h-6 text-primary" />,
-      title: 'Перевірені спеціалісти',
-      description: 'Кожен майстер з сертифікатом і портфоліо. Клієнти бачать рейтинги, відгуки та ціни.',
-    },
-    {
-      icon: <Wrench className="w-6 h-6 text-primary" />,
-      title: 'Швидкий ремонт на місці',
-      description: 'Більшість ремонтів за 30-60 хвилин. Екран, батарея, вода, розборка - все тут.',
-    },
-    {
-      icon: <DollarSign className="w-6 h-6 text-primary" />,
-      title: 'Справедливі ціни',
-      description: 'Без накруток. Плата йде майстру, платформа бере 5-10%. Найкраще на ринку.',
+      title: 'Прозрачность',
+      description: 'Видите опыт, оборудование (микроскопы, паяльные станции) и реальные отзывы.',
     },
     {
       icon: <Shield className="w-6 h-6 text-primary" />,
-      title: 'Гарантія якості',
-      description: 'Гарантія на роботи, захист платежів і захист від шахраїв. Безпечно для всіх.',
+      title: 'Безопасность',
+      description: 'Эскроу-платежи защищают вашу сделку, как на лучших P2P-площадках.',
+    },
+    {
+      icon: <DollarSign className="w-6 h-6 text-primary" />,
+      title: 'Честные цены',
+      description: 'Никаких накруток и скрытых комиссий сервисных центров.',
+    },
+    {
+      icon: <Wrench className="w-6 h-6 text-primary" />,
+      title: 'Решение споров',
+      description: 'Встроенная система арбитража для справедливого разрешения любых вопросов.',
+    },
+    {
+      icon: <Smartphone className="w-6 h-6 text-primary" />,
+      title: 'Любые бренды',
+      description: 'От Apple и Samsung до Asus и Dell — найдем мастера для любой техники.',
     },
   ];
 
@@ -300,16 +300,15 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLogin }) => {
               </Badge>
               
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 bg-clip-text text-transparent">
-                RepairHub Pro
+                Найдите мастера по ремонту техники за 5 минут
               </h1>
               
               <p className="text-2xl md:text-3xl text-muted-foreground mb-4 max-w-3xl mx-auto font-semibold">
-                Ремонт iPhone, Samsung, Xiaomi, DJI та інших смартфонів.<br />
-                Знайдіть кращого майстра у вашому місті.
+                Прямой контакт с проверенными специалистами. Без посредников и переплат.
               </p>
 
               <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
-                Спеціалізуємось на ремонті мобільної електроніки: Apple, Samsung, Xiaomi, ASUS, Google Pixel, OnePlus, DJI, GoPro та інших. Прямий контакт між клієнтом та майстром - без посередників, справедливі ціни, професійний сервіс.
+                Apple, Samsung, Dell, Asus — ремонт любой техники от профессионалов вашего города
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -318,18 +317,18 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLogin }) => {
                   className="text-lg px-8 group"
                   onClick={() => {
                     const demoClient = {
-                      id: 'client-1',
+                      id: 'client1',
                       name: 'Володимир Петров',
                       email: 'client@example.com',
                       role: 'client',
                       rating: 4.5
                     };
                     if (onLogin) {
-                      onLogin(demoClient);
+                      onLogin(demoClient.id);
                     }
                   }}
                 >
-                  Я шукаю майстра
+                  Найти мастера
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <Button
@@ -338,18 +337,18 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLogin }) => {
                   className="text-lg px-8"
                   onClick={() => {
                     const demoMaster = {
-                      id: 'master-1',
+                      id: 'master1',
                       name: 'Олександр Петренко',
                       email: 'master@example.com',
                       role: 'master',
                       rating: 4.9
                     };
                     if (onLogin) {
-                      onLogin(demoMaster);
+                      onLogin(demoMaster.id);
                     }
                   }}
                 >
-                  Я майстер ремонту
+                  Начать зарабатывать
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
@@ -366,7 +365,7 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLogin }) => {
             className="max-w-4xl mx-auto"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-12">
-              Як це працює?
+              Как это работает?
             </h2>
 
             <div className="grid md:grid-cols-2 gap-8 mb-12">
@@ -381,24 +380,24 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLogin }) => {
                   <div className="p-3 bg-blue-600 text-white rounded-lg">
                     <Users className="w-6 h-6" />
                   </div>
-                  <h3 className="text-2xl font-bold">Для клієнтів</h3>
+                  <h3 className="text-2xl font-bold">Для клиентов</h3>
                 </div>
                 <ul className="space-y-4">
                   <li className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Опишіть проблему - розбитий екран, батарея, вода, ремонт камери або розборка</span>
+                    <span><b>Опишите проблему</b> — расскажите, что сломалось</span>
                   </li>
                   <li className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Оберіть бренд пристрою: iPhone, Samsung, Xiaomi, ASUS, Google Pixel, DJI, GoPro та інші</span>
+                    <span><b>Получите отклики</b> — мастера предложат решение и цену</span>
                   </li>
                   <li className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Тут же бачите спеціалістів у вашому місті з рейтингом, прайсами та відгуками</span>
+                    <span><b>Выберите специалиста</b> — смотрите опыт, оборудование, отзывы</span>
                   </li>
                   <li className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Вибираєте найкращого - домовляєтесь про ціну і час, ремонт на місці</span>
+                    <span><b>Безопасная оплата</b> — деньги защищены эскроу до завершения работы</span>
                   </li>
                 </ul>
               </motion.div>
@@ -414,24 +413,24 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLogin }) => {
                   <div className="p-3 bg-green-600 text-white rounded-lg">
                     <Wrench className="w-6 h-6" />
                   </div>
-                  <h3 className="text-2xl font-bold">Для майстрів</h3>
+                  <h3 className="text-2xl font-bold">Для мастеров</h3>
                 </div>
                 <ul className="space-y-4">
                   <li className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Зареєструйтесь і вкажіть спеціалізацію: екран, батарея, розборка, логіка тощо</span>
+                    <span><b>Зарегистрируйтесь бесплатно</b> — укажите специализацию и оборудование</span>
                   </li>
                   <li className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Отримуйте замовлення від реальних клієнтів у вашому місті щодня</span>
+                    <span><b>Получайте заказы напрямую</b> — без сервисных центров-посредников</span>
                   </li>
                   <li className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Самі вибираєте які заказы брати - без обов'язків і штрафів</span>
+                    <span><b>Работайте на своих условиях</b> — сами устанавливаете цены</span>
                   </li>
                   <li className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span>Будуєте репутацію, збільшуєте доходи, розвиваєте свій бізнес</span>
+                    <span><b>Гарантия оплаты</b> — защита сделки и система разрешения споров</span>
                   </li>
                 </ul>
               </motion.div>
@@ -442,9 +441,9 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLogin }) => {
         {/* Features Section */}
         <section className="container mx-auto px-4 py-16 md:py-24 relative">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Переваги платформи</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">Преимущества</h2>
             <p className="text-lg text-muted-foreground">
-              Все що потрібно для успішного ремонту мобільної електроніки в одному місці
+              Все, что нужно для безопасного и выгодного ремонта
             </p>
           </div>
 
@@ -492,51 +491,65 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLogin }) => {
             className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-3xl p-12 md:p-20 text-center"
           >
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              Готові починати?
+              Готовы начать?
             </h2>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Приєднайтесь до сотень майстрів і клієнтів, які вже заробляють та економлять за допомогою RepairHub Pro
+              Присоединяйтесь к сотням мастеров и клиентов, которые уже зарабатывают и экономят с помощью RepairHub Pro
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="text-lg px-8 bg-white text-blue-600 hover:bg-gray-100"
-                onClick={() => {
-                  const demoClient = {
-                    id: 'client-1',
-                    name: 'Володимир Петров',
-                    email: 'client@example.com',
-                    role: 'client',
-                    rating: 4.5
-                  };
-                  if (onLogin) {
-                    onLogin(demoClient);
-                  }
-                }}
-              >
-                Я шукаю майстра
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 border-white text-white hover:bg-white/10"
-                onClick={() => {
-                  const demoMaster = {
-                    id: 'master-1',
-                    name: 'Олександр Петренко',
-                    email: 'master@example.com',
-                    role: 'master',
-                    rating: 4.9
-                  };
-                  if (onLogin) {
-                    onLogin(demoMaster);
-                  }
-                }}
-              >
-                Я майстер ремонту
-              </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex flex-col items-center">
+                <Button
+                  size="lg"
+                  className="text-lg px-8 bg-white text-blue-600 hover:bg-gray-100"
+                  onClick={() => {
+                    const demoClient = {
+                      id: 'client1',
+                      name: 'Володимир Петров',
+                      email: 'client@example.com',
+                      role: 'client',
+                      rating: 4.5
+                    };
+                    if (onLogin) {
+                      onLogin(demoClient.id);
+                    }
+                  }}
+                >
+                  Найти мастера
+                </Button>
+                <p className="text-white/80 text-sm mt-2">Опубликуйте заявку бесплатно</p>
+              </div>
+              <div className="flex flex-col items-center">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-lg px-8 border-white text-white hover:bg-white/10"
+                  onClick={() => {
+                    const demoMaster = {
+                      id: 'master1',
+                      name: 'Олександр Петренко',
+                      email: 'master@example.com',
+                      role: 'master',
+                      rating: 4.9
+                    };
+                    if (onLogin) {
+                      onLogin(demoMaster.id);
+                    }
+                  }}
+                >
+                  Начать зарабатывать
+                </Button>
+                <p className="text-white/80 text-sm mt-2">Регистрация за 3 минуты</p>
+              </div>
             </div>
           </motion.div>
+        </section>
+
+        {/* Brands Section */}
+        <section className="container mx-auto px-4 py-12 text-center">
+            <h3 className="text-2xl font-bold mb-4">Работаем с любыми брендами</h3>
+            <p className="text-muted-foreground">
+                iPhone, iPad, MacBook | Samsung, Xiaomi, Huawei | Asus, Dell, Lenovo, HP | И другие
+            </p>
         </section>
 
         {/* Footer Note */}
