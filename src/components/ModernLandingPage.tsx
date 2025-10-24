@@ -67,6 +67,16 @@ import {
   HardDrive,
   Cpu,
   MemoryStick,
+  ArrowUpRight,
+  ArrowDownRight,
+  RotateCcw,
+  Move,
+  Layers,
+  Hexagon,
+  Circle,
+  Square,
+  Triangle,
+  Diamond,
 } from 'lucide-react';
 
 // Интерфейсы
@@ -84,26 +94,112 @@ interface FeatureCardProps {
   delay?: number;
 }
 
-// Компонент падающего заказа
-const FallingOrder: React.FC<{ delay: number; order: string }> = ({ delay, order }) => {
+// Компонент плавающих частиц
+const FloatingParticles: React.FC = () => {
+  const particles = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 4 + 2,
+    delay: Math.random() * 5,
+    duration: Math.random() * 10 + 10,
+  }));
+
   return (
-    <motion.div
-      initial={{ y: -100, opacity: 0, x: Math.random() * 100 - 50 }}
-      animate={{ y: window.innerHeight + 100, opacity: [0, 1, 1, 0] }}
-      transition={{
-        duration: 8,
-        delay,
-        repeat: Infinity,
-        repeatDelay: 2,
-        ease: "linear"
-      }}
-      className="absolute pointer-events-none z-0"
-      style={{ left: `${Math.random() * 100}%` }}
-    >
-      <div className="bg-gradient-to-r from-primary/20 to-primary/5 backdrop-blur-sm rounded-lg p-3 text-sm text-muted-foreground border border-primary/10">
-        {order}
-      </div>
-    </motion.div>
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {particles.map((particle) => (
+        <motion.div
+          key={particle.id}
+          className="absolute rounded-full bg-gradient-to-r from-primary/20 to-primary/5"
+          style={{
+            left: `${particle.x}%`,
+            top: `${particle.y}%`,
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+          }}
+          animate={{
+            y: [0, -100, 0],
+            x: [0, Math.random() * 50 - 25, 0],
+            scale: [1, 1.5, 1],
+            opacity: [0, 1, 0],
+          }}
+          transition={{
+            duration: particle.duration,
+            delay: particle.delay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Компонент анимированных заказов
+const AnimatedOrders: React.FC = () => {
+  const orders = [
+    "iPhone 15 Pro - заміна екрану",
+    "Samsung Galaxy - ремонт батареї", 
+    "MacBook Pro - діагностика",
+    "iPad Air - заміна дисплею",
+    "Xiaomi - ремонт камери",
+    "DJI Drone - заміна пропелера",
+    "GoPro - ремонт корпусу",
+    "ASUS ROG - заміна клавіатури"
+  ];
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {orders.map((order, index) => (
+        <motion.div
+          key={index}
+          className="absolute"
+          initial={{ 
+            y: -100, 
+            opacity: 0, 
+            x: Math.random() * 100 - 50,
+            rotate: Math.random() * 20 - 10
+          }}
+          animate={{ 
+            y: window.innerHeight + 100, 
+            opacity: [0, 1, 1, 0],
+            x: [0, Math.random() * 100 - 50, Math.random() * 100 - 50],
+            rotate: [0, Math.random() * 20 - 10, Math.random() * 20 - 10]
+          }}
+          transition={{
+            duration: 12 + Math.random() * 8,
+            delay: index * 1.5,
+            repeat: Infinity,
+            repeatDelay: 3,
+            ease: "linear"
+          }}
+          style={{ left: `${Math.random() * 100}%` }}
+        >
+          <motion.div
+            className="bg-gradient-to-r from-primary/30 to-primary/10 backdrop-blur-sm rounded-2xl p-4 text-sm text-muted-foreground border border-primary/20 shadow-lg"
+            whileHover={{ scale: 1.05 }}
+            animate={{
+              boxShadow: [
+                "0 0 20px rgba(120, 119, 198, 0.1)",
+                "0 0 40px rgba(120, 119, 198, 0.2)",
+                "0 0 20px rgba(120, 119, 198, 0.1)"
+              ]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <div className="flex items-center gap-2">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              >
+                <Wrench className="w-4 h-4 text-primary" />
+              </motion.div>
+              <span className="font-medium">{order}</span>
+            </div>
+          </motion.div>
+        </motion.div>
+      ))}
+    </div>
   );
 };
 
@@ -113,21 +209,65 @@ const AnimatedLogo: React.FC = () => {
     <motion.div
       initial={{ scale: 0, rotate: -180 }}
       animate={{ scale: 1, rotate: 0 }}
-      transition={{ duration: 1, ease: "easeOut" }}
+      transition={{ duration: 1.5, ease: "easeOut" }}
       className="relative inline-block"
+      whileHover={{ scale: 1.1 }}
     >
-      <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 flex items-center justify-center shadow-lg shadow-primary/25">
+      <div className="relative w-20 h-20 rounded-3xl bg-gradient-to-br from-primary via-primary/90 to-primary/70 flex items-center justify-center shadow-2xl shadow-primary/30">
+        {/* Вращающийся градиент */}
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/20 to-transparent"
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-0 rounded-3xl bg-gradient-to-r from-transparent via-white/30 to-transparent"
         />
-        <Wrench className="w-8 h-8 text-white relative z-10" />
+        
+        {/* Пульсирующий эффект */}
         <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/50 to-transparent"
+          animate={{ 
+            scale: [1, 1.3, 1], 
+            opacity: [0.3, 0.8, 0.3] 
+          }}
+          transition={{ duration: 3, repeat: Infinity }}
+          className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary/50 to-transparent"
         />
+        
+        {/* Центральная иконка */}
+        <motion.div
+          animate={{ 
+            rotate: [0, 360],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ 
+            rotate: { duration: 8, repeat: Infinity, ease: "linear" },
+            scale: { duration: 2, repeat: Infinity }
+          }}
+        >
+          <Wrench className="w-10 h-10 text-white relative z-10" />
+        </motion.div>
+        
+        {/* Орбитальные частицы */}
+        {Array.from({ length: 6 }, (_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-white/60 rounded-full"
+            style={{
+              top: '50%',
+              left: '50%',
+              transformOrigin: '0 0',
+            }}
+            animate={{
+              rotate: [0, 360],
+              x: [0, 30],
+              y: [0, 0],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "linear",
+              delay: i * 0.5,
+            }}
+          />
+        ))}
       </div>
     </motion.div>
   );
@@ -141,20 +281,54 @@ const StatCard: React.FC<StatCardProps> = ({ value, label, icon, delay = 0 }) =>
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.5, delay }}
-      className="relative"
+      initial={{ opacity: 0, y: 50, scale: 0.8 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.8 }}
+      transition={{ duration: 0.8, delay, type: "spring", stiffness: 100 }}
+      whileHover={{ 
+        y: -10, 
+        scale: 1.05,
+        transition: { duration: 0.3 }
+      }}
+      className="relative group"
     >
-      <Card className="border-border/50 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-sm hover:bg-background/90 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
-        <CardContent className="p-6">
+      <Card className="h-full border-border/50 bg-gradient-to-br from-background/90 to-background/60 backdrop-blur-md hover:bg-background/95 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 overflow-hidden">
+        {/* Анимированный фон */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent"
+          animate={{
+            background: [
+              "linear-gradient(45deg, rgba(120, 119, 198, 0.05) 0%, transparent 100%)",
+              "linear-gradient(45deg, rgba(120, 119, 198, 0.1) 0%, transparent 100%)",
+              "linear-gradient(45deg, rgba(120, 119, 198, 0.05) 0%, transparent 100%)"
+            ]
+          }}
+          transition={{ duration: 3, repeat: Infinity }}
+        />
+        
+        <CardContent className="p-6 relative z-10">
           <div className="flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary">
+            <motion.div 
+              className="p-4 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary group-hover:from-primary/30 group-hover:to-primary/10 transition-all duration-500"
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.6 }}
+            >
               {icon}
-            </div>
+            </motion.div>
             <div>
-              <div className="text-3xl font-bold text-foreground">{value}</div>
-              <div className="text-sm text-muted-foreground">{label}</div>
+              <motion.div 
+                className="text-4xl font-bold text-foreground"
+                animate={{ 
+                  textShadow: [
+                    "0 0 0px rgba(120, 119, 198, 0)",
+                    "0 0 20px rgba(120, 119, 198, 0.3)",
+                    "0 0 0px rgba(120, 119, 198, 0)"
+                  ]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                {value}
+              </motion.div>
+              <div className="text-sm text-muted-foreground font-medium">{label}</div>
             </div>
           </div>
         </CardContent>
@@ -171,26 +345,52 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, del
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.5, delay }}
-      whileHover={{ y: -5 }}
-      className="relative group"
+      initial={{ opacity: 0, y: 50, rotateX: -15 }}
+      animate={isInView ? { opacity: 1, y: 0, rotateX: 0 } : { opacity: 0, y: 50, rotateX: -15 }}
+      transition={{ duration: 0.8, delay, type: "spring", stiffness: 100 }}
+      whileHover={{ 
+        y: -15, 
+        rotateY: 5,
+        transition: { duration: 0.4 }
+      }}
+      className="relative group perspective-1000"
     >
-      <Card className="h-full border-border/50 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-sm hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
-        <CardContent className="p-6">
-          <div className="mb-4 p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 w-fit group-hover:from-primary/30 group-hover:to-primary/10 transition-all duration-300">
+      <Card className="h-full border-border/50 bg-gradient-to-br from-background/90 to-background/60 backdrop-blur-md hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 overflow-hidden">
+        {/* Анимированный градиент */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5"
+          animate={{
+            background: [
+              "linear-gradient(45deg, rgba(120, 119, 198, 0.1) 0%, transparent 50%, rgba(120, 119, 198, 0.05) 100%)",
+              "linear-gradient(45deg, rgba(120, 119, 198, 0.15) 0%, transparent 50%, rgba(120, 119, 198, 0.1) 100%)",
+              "linear-gradient(45deg, rgba(120, 119, 198, 0.1) 0%, transparent 50%, rgba(120, 119, 198, 0.05) 100%)"
+            ]
+          }}
+          transition={{ duration: 4, repeat: Infinity }}
+        />
+        
+        <CardContent className="p-6 relative z-10">
+          <motion.div 
+            className="mb-4 p-4 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 w-fit group-hover:from-primary/30 group-hover:to-primary/10 transition-all duration-500"
+            whileHover={{ 
+              scale: 1.1,
+              rotate: 360,
+              transition: { duration: 0.6 }
+            }}
+          >
             {icon}
-          </div>
-          <h3 className="text-xl font-semibold mb-2 text-foreground">{title}</h3>
-          <p className="text-muted-foreground">{description}</p>
+          </motion.div>
+          <h3 className="text-xl font-semibold mb-3 text-foreground group-hover:text-primary transition-colors duration-300">
+            {title}
+          </h3>
+          <p className="text-muted-foreground leading-relaxed">{description}</p>
         </CardContent>
       </Card>
     </motion.div>
   );
 };
 
-// Компонент героя с переключением ролей
+// Компонент героя с крутыми анимациями
 const HeroSection: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [activeRole, setActiveRole] = useState<'client' | 'master'>('client');
@@ -280,15 +480,15 @@ const HeroSection: React.FC = () => {
 
   const clientContent = {
     title: "Знайдіть майстра за 5 хвилин",
-    subtitle: "Прямий контакт з перевіреними спеціалістами. Без посередників та переплат.",
-    description: "Apple, Samsung, Xiaomi, DJI та інших смартфонів. Знайдіть кращого майстра у вашому місті.",
+    subtitle: "Онлайн платформа прямого з'єднання клієнтів та майстрів. Без посередників та переплат.",
+    description: "Apple, Samsung, Xiaomi, DJI та інших пристроїв. Знайдіть кращого майстра у вашому місті.",
     cta: "Я шукаю майстра",
     icon: <Smartphone className="w-5 h-5" />
   };
 
   const masterContent = {
     title: "Заробляйте на ремонті техніки",
-    subtitle: "Отримуйте замовлення від клієнтів напряму. Без комісій та посередників.",
+    subtitle: "Онлайн платформа для отримання замовлень від клієнтів напряму. Без комісій та посередників.",
     description: "Ремонтуйте iPhone, Samsung, MacBook та іншу техніку. Розвивайте свій бізнес з нами.",
     cta: "Я майстер ремонту",
     icon: <Wrench className="w-5 h-5" />
@@ -303,64 +503,89 @@ const HeroSection: React.FC = () => {
         <motion.div
           animate={{ 
             background: [
-              'radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%)',
-              'radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%)',
-              'radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%)',
-              'radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%)',
+              'radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%)',
+              'radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%)',
+              'radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.15) 0%, transparent 50%)',
+              'radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%)',
             ]
           }}
           transition={{ duration: 20, repeat: Infinity }}
           className="absolute inset-0"
         />
         
-        {/* Падающие заказы */}
-        <FallingOrder delay={0} order="iPhone 15 Pro - заміна екрану" />
-        <FallingOrder delay={2} order="Samsung Galaxy - ремонт батареї" />
-        <FallingOrder delay={4} order="MacBook Pro - діагностика" />
-        <FallingOrder delay={6} order="iPad Air - заміна дисплею" />
+        {/* Плавающие частицы */}
+        <FloatingParticles />
+        
+        {/* Анимированные заказы */}
+        <AnimatedOrders />
       </div>
 
       <div className="relative z-10 container mx-auto px-4 py-16">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
           className="flex items-center justify-between mb-16"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <AnimatedLogo />
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              <motion.h1 
+                className="text-3xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent"
+                animate={{
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+                }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
                 RepairHub Pro
-              </h1>
-              <p className="text-sm text-muted-foreground">Платформа для ремонту пристроїв</p>
+              </motion.h1>
+              <p className="text-sm text-muted-foreground font-medium">Онлайн платформа для ремонту пристроїв</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
-            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
-              🔧 Ремонт мобильной електроніки
+          <motion.div 
+            className="flex items-center gap-4"
+            whileHover={{ scale: 1.05 }}
+          >
+            <Badge variant="secondary" className="bg-gradient-to-r from-primary/20 to-primary/10 text-primary border-primary/30 px-4 py-2 text-sm font-semibold">
+              🔧 Ремонт мобільної електроніки
             </Badge>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* Role Toggle */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex justify-center mb-12"
+          transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 100 }}
+          className="flex justify-center mb-16"
         >
-          <div className="bg-background/50 backdrop-blur-sm rounded-2xl p-2 border border-border/50">
+          <div className="bg-gradient-to-r from-background/80 to-background/60 backdrop-blur-md rounded-3xl p-3 border border-border/50 shadow-2xl shadow-primary/10">
             <Tabs value={activeRole} onValueChange={(value) => setActiveRole(value as 'client' | 'master')}>
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="client" className="flex items-center gap-2">
-                  <User className="w-4 h-4" />
+              <TabsList className="grid w-full grid-cols-2 bg-transparent">
+                <TabsTrigger 
+                  value="client" 
+                  className="flex items-center gap-3 px-6 py-3 rounded-2xl font-semibold transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-white"
+                >
+                  <motion.div
+                    animate={{ rotate: activeRole === 'client' ? 360 : 0 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <User className="w-5 h-5" />
+                  </motion.div>
                   Клієнт
                 </TabsTrigger>
-                <TabsTrigger value="master" className="flex items-center gap-2">
-                  <Tool className="w-4 h-4" />
+                <TabsTrigger 
+                  value="master" 
+                  className="flex items-center gap-3 px-6 py-3 rounded-2xl font-semibold transition-all duration-300 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-primary/80 data-[state=active]:text-white"
+                >
+                  <motion.div
+                    animate={{ rotate: activeRole === 'master' ? 360 : 0 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <Tool className="w-5 h-5" />
+                  </motion.div>
                   Майстер
                 </TabsTrigger>
               </TabsList>
@@ -369,126 +594,231 @@ const HeroSection: React.FC = () => {
         </motion.div>
 
         {/* Hero Content */}
-        <div className="text-center max-w-4xl mx-auto mb-16">
-          <motion.div
-            key={activeRole}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mb-8"
-          >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-foreground via-primary to-primary/70 bg-clip-text text-transparent">
-                {activeRole === 'client' ? 'Знайдіть майстра' : 'Заробляйте на ремонті'}
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-primary/80 to-primary/50 bg-clip-text text-transparent">
-                {activeRole === 'client' ? 'за 5 хвилин' : 'техніки'}
-              </span>
-            </h1>
-            
-            <p className="text-xl text-muted-foreground mb-4 max-w-2xl mx-auto">
-              {currentContent.subtitle}
-            </p>
-            
-            <p className="text-lg text-muted-foreground/80 max-w-3xl mx-auto">
-              {currentContent.description}
-            </p>
-          </motion.div>
+        <div className="text-center max-w-5xl mx-auto mb-20">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeRole}
+              initial={{ opacity: 0, y: 50, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -50, scale: 0.9 }}
+              transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+              className="mb-12"
+            >
+              <motion.h1 
+                className="text-6xl md:text-7xl font-bold mb-8"
+                animate={{
+                  textShadow: [
+                    "0 0 0px rgba(120, 119, 198, 0)",
+                    "0 0 30px rgba(120, 119, 198, 0.3)",
+                    "0 0 0px rgba(120, 119, 198, 0)"
+                  ]
+                }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                <span className="bg-gradient-to-r from-foreground via-primary to-primary/70 bg-clip-text text-transparent">
+                  {activeRole === 'client' ? 'Знайдіть майстра' : 'Заробляйте на ремонті'}
+                </span>
+                <br />
+                <motion.span 
+                  className="bg-gradient-to-r from-primary/90 to-primary/50 bg-clip-text text-transparent"
+                  animate={{
+                    backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+                  }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                >
+                  {activeRole === 'client' ? 'за 5 хвилин' : 'техніки'}
+                </motion.span>
+              </motion.h1>
+              
+              <motion.p 
+                className="text-2xl text-muted-foreground mb-6 max-w-3xl mx-auto font-medium"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                {currentContent.subtitle}
+              </motion.p>
+              
+              <motion.p 
+                className="text-xl text-muted-foreground/80 max-w-4xl mx-auto leading-relaxed"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                {currentContent.description}
+              </motion.p>
+            </motion.div>
+          </AnimatePresence>
 
           {/* CTA Buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+            transition={{ duration: 0.8, delay: 0.7, type: "spring", stiffness: 100 }}
+            className="flex flex-col sm:flex-row gap-6 justify-center mb-16"
           >
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white px-8 py-4 text-lg font-semibold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
+            <motion.div
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
             >
-              {currentContent.icon}
-              <span className="ml-2">{currentContent.cta}</span>
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-primary via-primary/90 to-primary/80 hover:from-primary/90 hover:via-primary/80 hover:to-primary/70 text-white px-10 py-5 text-xl font-bold shadow-2xl shadow-primary/30 hover:shadow-primary/40 transition-all duration-500 rounded-2xl"
+              >
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="mr-3"
+                >
+                  {currentContent.icon}
+                </motion.div>
+                <span>{currentContent.cta}</span>
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="ml-3"
+                >
+                  <ArrowRight className="w-6 h-6" />
+                </motion.div>
+              </Button>
+            </motion.div>
             
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-primary/20 hover:bg-primary/5 px-8 py-4 text-lg font-semibold hover:border-primary/40 transition-all duration-300"
+            <motion.div
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <Play className="w-5 h-5 mr-2" />
-              Дивитися демо
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="border-2 border-primary/30 hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 px-10 py-5 text-xl font-bold hover:border-primary/50 transition-all duration-500 rounded-2xl backdrop-blur-sm"
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="mr-3"
+                >
+                  <Play className="w-6 h-6" />
+                </motion.div>
+                Дивитися демо
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="ml-3"
+                >
+                  <ArrowRight className="w-6 h-6" />
+                </motion.div>
+              </Button>
+            </motion.div>
           </motion.div>
 
           {/* Quick Switch Buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="bg-background/50 backdrop-blur-sm rounded-2xl p-6 border border-border/50"
+            transition={{ duration: 0.8, delay: 0.9, type: "spring", stiffness: 100 }}
+            className="bg-gradient-to-r from-background/80 to-background/60 backdrop-blur-md rounded-3xl p-8 border border-border/50 shadow-2xl shadow-primary/10"
           >
-            <p className="text-sm text-muted-foreground mb-4">🧪 Швидке перемикання облікових записів (для тестування):</p>
-            <div className="flex flex-wrap gap-3 justify-center">
-              <Button
-                size="sm"
-                variant="secondary"
-                className="bg-green-100 text-green-700 hover:bg-green-200 border-green-200"
-                onClick={() => handleQuickSwitch('client')}
+            <motion.p 
+              className="text-lg text-muted-foreground mb-6 font-semibold"
+              animate={{ opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              🧪 Швидке перемикання облікових записів (для тестування):
+            </motion.p>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <motion.div
+                whileHover={{ scale: 1.05, y: -3 }}
+                whileTap={{ scale: 0.95 }}
               >
-                👤 Клієнт
-              </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200"
-                onClick={() => handleQuickSwitch('master')}
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="bg-gradient-to-r from-green-100 to-green-50 text-green-700 hover:from-green-200 hover:to-green-100 border-green-200 px-6 py-3 font-semibold rounded-xl"
+                  onClick={() => handleQuickSwitch('client')}
+                >
+                  <motion.div
+                    animate={{ rotate: [0, 360] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                    className="mr-2"
+                  >
+                    👤
+                  </motion.div>
+                  Клієнт
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05, y: -3 }}
+                whileTap={{ scale: 0.95 }}
               >
-                🔧 Майстер
-              </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                className="bg-purple-100 text-purple-700 hover:bg-purple-200 border-purple-200"
-                onClick={() => handleQuickSwitch('admin')}
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 hover:from-blue-200 hover:to-blue-100 border-blue-200 px-6 py-3 font-semibold rounded-xl"
+                  onClick={() => handleQuickSwitch('master')}
+                >
+                  <motion.div
+                    animate={{ rotate: [0, 360] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                    className="mr-2"
+                  >
+                    🔧
+                  </motion.div>
+                  Майстер
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05, y: -3 }}
+                whileTap={{ scale: 0.95 }}
               >
-                👨‍💼 Адміністратор
-              </Button>
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="bg-gradient-to-r from-purple-100 to-purple-50 text-purple-700 hover:from-purple-200 hover:to-purple-100 border-purple-200 px-6 py-3 font-semibold rounded-xl"
+                  onClick={() => handleQuickSwitch('admin')}
+                >
+                  <motion.div
+                    animate={{ rotate: [0, 360] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                    className="mr-2"
+                  >
+                    👨‍💼
+                  </motion.div>
+                  Адміністратор
+                </Button>
+              </motion.div>
             </div>
           </motion.div>
         </div>
 
         {/* Stats */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
+          transition={{ duration: 0.8, delay: 1.1, type: "spring", stiffness: 100 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20"
         >
           <StatCard
             value="500+"
             label="Майстрів в мережі"
-            icon={<Users className="w-6 h-6" />}
+            icon={<Users className="w-8 h-8" />}
             delay={0}
           />
           <StatCard
             value="10K+"
             label="Задоволених клієнтів"
-            icon={<Heart className="w-6 h-6" />}
+            icon={<Heart className="w-8 h-8" />}
             delay={0.1}
           />
           <StatCard
             value="25K+"
             label="Успішних ремонтів"
-            icon={<Award className="w-6 h-6" />}
+            icon={<Award className="w-8 h-8" />}
             delay={0.2}
           />
           <StatCard
             value="4.9★"
             label="Середня оцінка"
-            icon={<Star className="w-6 h-6" />}
+            icon={<Star className="w-8 h-8" />}
             delay={0.3}
           />
         </motion.div>
@@ -501,65 +831,112 @@ const HeroSection: React.FC = () => {
 const HowItWorksClientSection: React.FC = () => {
   const steps = [
     {
-      icon: <Smartphone className="w-8 h-8" />,
+      icon: <Smartphone className="w-10 h-10" />,
       title: "Опишіть проблему",
-      description: "Розкажіть, що зламалося та завантажте фото"
+      description: "Розкажіть, що зламалося та завантажте фото пристрою"
     },
     {
-      icon: <Users className="w-8 h-8" />,
-      title: "Отримайте відгуки",
-      description: "Майстри запропонують рішення та ціну"
+      icon: <Users className="w-10 h-10" />,
+      title: "Отримайте пропозиції",
+      description: "Майстри запропонують рішення та чесну ціну"
     },
     {
-      icon: <Target className="w-8 h-8" />,
+      icon: <Target className="w-10 h-10" />,
       title: "Оберіть спеціаліста",
-      description: "Дивіться досвід, обладнання та відгуки"
+      description: "Дивіться досвід, обладнання та реальні відгуки"
     },
     {
-      icon: <Shield className="w-8 h-8" />,
+      icon: <Shield className="w-10 h-10" />,
       title: "Безпечна оплата",
       description: "Гроші захищені ескроу до завершення роботи"
     }
   ];
 
   return (
-    <div className="py-20 bg-gradient-to-b from-background to-background/50">
-      <div className="container mx-auto px-4">
+    <div className="py-24 bg-gradient-to-b from-background to-background/50 relative overflow-hidden">
+      {/* Анимированный фон */}
+      <div className="absolute inset-0">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          animate={{
+            background: [
+              "radial-gradient(circle at 10% 20%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)",
+              "radial-gradient(circle at 90% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%)",
+              "radial-gradient(circle at 10% 20%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)"
+            ]
+          }}
+          transition={{ duration: 15, repeat: Infinity }}
+          className="absolute inset-0"
+        />
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+          <motion.h2 
+            className="text-5xl font-bold mb-6 bg-gradient-to-r from-foreground via-primary to-primary/70 bg-clip-text text-transparent"
+            animate={{
+              backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+            }}
+            transition={{ duration: 5, repeat: Infinity }}
+          >
             Як це працює для клієнтів?
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          </motion.h2>
+          <p className="text-2xl text-muted-foreground max-w-3xl mx-auto font-medium">
             Простий процес для знаходження майстра
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {steps.map((step, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              initial={{ opacity: 0, y: 50, scale: 0.8 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, delay: index * 0.2, type: "spring", stiffness: 100 }}
               viewport={{ once: true }}
-              className="text-center"
+              className="text-center relative"
+              whileHover={{ y: -10, scale: 1.05 }}
             >
-              <div className="relative mb-6">
-                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary mb-4">
+              <div className="relative mb-8">
+                <motion.div 
+                  className="w-24 h-24 mx-auto rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary mb-6 shadow-lg shadow-primary/20"
+                  whileHover={{ 
+                    rotate: 360,
+                    scale: 1.1,
+                    transition: { duration: 0.6 }
+                  }}
+                  animate={{
+                    boxShadow: [
+                      "0 0 20px rgba(120, 119, 198, 0.2)",
+                      "0 0 40px rgba(120, 119, 198, 0.3)",
+                      "0 0 20px rgba(120, 119, 198, 0.2)"
+                    ]
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                >
                   {step.icon}
-                </div>
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
+                </motion.div>
+                <motion.div 
+                  className="absolute -top-3 -right-3 w-10 h-10 bg-gradient-to-r from-primary to-primary/80 text-white rounded-full flex items-center justify-center text-lg font-bold shadow-lg"
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    rotate: [0, 360]
+                  }}
+                  transition={{ 
+                    scale: { duration: 2, repeat: Infinity },
+                    rotate: { duration: 4, repeat: Infinity, ease: "linear" }
+                  }}
+                >
                   {index + 1}
-                </div>
+                </motion.div>
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-foreground">{step.title}</h3>
-              <p className="text-muted-foreground">{step.description}</p>
+              <h3 className="text-2xl font-bold mb-4 text-foreground">{step.title}</h3>
+              <p className="text-muted-foreground text-lg leading-relaxed">{step.description}</p>
             </motion.div>
           ))}
         </div>
@@ -572,65 +949,112 @@ const HowItWorksClientSection: React.FC = () => {
 const HowItWorksMasterSection: React.FC = () => {
   const steps = [
     {
-      icon: <Briefcase className="w-8 h-8" />,
+      icon: <Briefcase className="w-10 h-10" />,
       title: "Створіть профіль",
-      description: "Опишіть свої навички та обладнання"
+      description: "Опишіть свої навички, обладнання та спеціалізацію"
     },
     {
-      icon: <Bell className="w-8 h-8" />,
+      icon: <Bell className="w-10 h-10" />,
       title: "Отримайте замовлення",
-      description: "Клієнти знаходять вас за спеціалізацією"
+      description: "Клієнти знаходять вас за спеціалізацією та рейтингом"
     },
     {
-      icon: <DollarSign className="w-8 h-8" />,
+      icon: <DollarSign className="w-10 h-10" />,
       title: "Працюйте та заробляйте",
-      description: "Виконуйте ремонт та отримуйте оплату"
+      description: "Виконуйте ремонт та отримуйте оплату без комісій"
     },
     {
-      icon: <Star className="w-8 h-8" />,
+      icon: <Star className="w-10 h-10" />,
       title: "Отримуйте відгуки",
       description: "Будуйте репутацію та отримуйте більше замовлень"
     }
   ];
 
   return (
-    <div className="py-20 bg-gradient-to-b from-background to-background/50">
-      <div className="container mx-auto px-4">
+    <div className="py-24 bg-gradient-to-b from-background/50 to-background relative overflow-hidden">
+      {/* Анимированный фон */}
+      <div className="absolute inset-0">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          animate={{
+            background: [
+              "radial-gradient(circle at 90% 10%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)",
+              "radial-gradient(circle at 10% 90%, rgba(120, 119, 198, 0.1) 0%, transparent 50%)",
+              "radial-gradient(circle at 90% 10%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)"
+            ]
+          }}
+          transition={{ duration: 15, repeat: Infinity }}
+          className="absolute inset-0"
+        />
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+          <motion.h2 
+            className="text-5xl font-bold mb-6 bg-gradient-to-r from-foreground via-primary to-primary/70 bg-clip-text text-transparent"
+            animate={{
+              backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+            }}
+            transition={{ duration: 5, repeat: Infinity }}
+          >
             Як це працює для майстрів?
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          </motion.h2>
+          <p className="text-2xl text-muted-foreground max-w-3xl mx-auto font-medium">
             Простий процес для розвитку бізнесу
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {steps.map((step, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              initial={{ opacity: 0, y: 50, scale: 0.8 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, delay: index * 0.2, type: "spring", stiffness: 100 }}
               viewport={{ once: true }}
-              className="text-center"
+              className="text-center relative"
+              whileHover={{ y: -10, scale: 1.05 }}
             >
-              <div className="relative mb-6">
-                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary mb-4">
+              <div className="relative mb-8">
+                <motion.div 
+                  className="w-24 h-24 mx-auto rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary mb-6 shadow-lg shadow-primary/20"
+                  whileHover={{ 
+                    rotate: 360,
+                    scale: 1.1,
+                    transition: { duration: 0.6 }
+                  }}
+                  animate={{
+                    boxShadow: [
+                      "0 0 20px rgba(120, 119, 198, 0.2)",
+                      "0 0 40px rgba(120, 119, 198, 0.3)",
+                      "0 0 20px rgba(120, 119, 198, 0.2)"
+                    ]
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                >
                   {step.icon}
-                </div>
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
+                </motion.div>
+                <motion.div 
+                  className="absolute -top-3 -right-3 w-10 h-10 bg-gradient-to-r from-primary to-primary/80 text-white rounded-full flex items-center justify-center text-lg font-bold shadow-lg"
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    rotate: [0, 360]
+                  }}
+                  transition={{ 
+                    scale: { duration: 2, repeat: Infinity },
+                    rotate: { duration: 4, repeat: Infinity, ease: "linear" }
+                  }}
+                >
                   {index + 1}
-                </div>
+                </motion.div>
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-foreground">{step.title}</h3>
-              <p className="text-muted-foreground">{step.description}</p>
+              <h3 className="text-2xl font-bold mb-4 text-foreground">{step.title}</h3>
+              <p className="text-muted-foreground text-lg leading-relaxed">{step.description}</p>
             </motion.div>
           ))}
         </div>
@@ -643,56 +1067,77 @@ const HowItWorksMasterSection: React.FC = () => {
 const FeaturesSection: React.FC = () => {
   const features = [
     {
-      icon: <Users className="w-8 h-8" />,
+      icon: <Users className="w-10 h-10" />,
       title: "Прямий контакт",
       description: "Спілкуйтеся напряму з майстром, без посередників та менеджерів."
     },
     {
-      icon: <Shield className="w-8 h-8" />,
+      icon: <Shield className="w-10 h-10" />,
       title: "Прозорість",
       description: "Бачите досвід, обладнання (мікроскопи, паяльні станції) та реальні відгуки."
     },
     {
-      icon: <Zap className="w-8 h-8" />,
+      icon: <Zap className="w-10 h-10" />,
       title: "Безпека",
       description: "Ескроу-платежі захищають вашу угоду, як на найкращих P2P-майданчиках."
     },
     {
-      icon: <DollarSign className="w-8 h-8" />,
+      icon: <DollarSign className="w-10 h-10" />,
       title: "Чесні ціни",
       description: "Жодних накруток та прихованих комісій сервісних центрів."
     },
     {
-      icon: <Award className="w-8 h-8" />,
+      icon: <Award className="w-10 h-10" />,
       title: "Вирішення спорів",
       description: "Вбудована система арбітражу для справедливого вирішення будь-яких питань."
     },
     {
-      icon: <Globe className="w-8 h-8" />,
+      icon: <Globe className="w-10 h-10" />,
       title: "Будь-які бренди",
       description: "Від Apple та Samsung до Asus та Dell — знайдемо майстра для будь-якої техніки."
     }
   ];
 
   return (
-    <div className="py-20 bg-gradient-to-b from-background/50 to-background">
-      <div className="container mx-auto px-4">
+    <div className="py-24 bg-gradient-to-b from-background to-background/50 relative overflow-hidden">
+      {/* Анимированный фон */}
+      <div className="absolute inset-0">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          animate={{
+            background: [
+              "radial-gradient(circle at 30% 30%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)",
+              "radial-gradient(circle at 70% 70%, rgba(120, 119, 198, 0.1) 0%, transparent 50%)",
+              "radial-gradient(circle at 30% 30%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)"
+            ]
+          }}
+          transition={{ duration: 15, repeat: Infinity }}
+          className="absolute inset-0"
+        />
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+          <motion.h2 
+            className="text-5xl font-bold mb-6 bg-gradient-to-r from-foreground via-primary to-primary/70 bg-clip-text text-transparent"
+            animate={{
+              backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+            }}
+            transition={{ duration: 5, repeat: Infinity }}
+          >
             Переваги платформи
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          </motion.h2>
+          <p className="text-2xl text-muted-foreground max-w-3xl mx-auto font-medium">
             Все, що потрібно для безпечного та вигідного ремонту
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {features.map((feature, index) => (
             <FeatureCard
               key={index}
@@ -711,47 +1156,116 @@ const FeaturesSection: React.FC = () => {
 // Компонент CTA
 const CTASection: React.FC = () => {
   return (
-    <div className="py-20 bg-gradient-to-br from-primary/10 via-background to-primary/5">
-      <div className="container mx-auto px-4 text-center">
+    <div className="py-24 bg-gradient-to-br from-primary/10 via-background to-primary/5 relative overflow-hidden">
+      {/* Анимированный фон */}
+      <div className="absolute inset-0">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          animate={{
+            background: [
+              "radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%)",
+              "radial-gradient(circle at 80% 20%, rgba(120, 119, 198, 0.15) 0%, transparent 50%)",
+              "radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%)"
+            ]
+          }}
+          transition={{ duration: 20, repeat: Infinity }}
+          className="absolute inset-0"
+        />
+      </div>
+      
+      <div className="container mx-auto px-4 text-center relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
           viewport={{ once: true }}
-          className="max-w-3xl mx-auto"
+          className="max-w-4xl mx-auto"
         >
-          <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+          <motion.h2 
+            className="text-5xl font-bold mb-8 bg-gradient-to-r from-foreground via-primary to-primary/70 bg-clip-text text-transparent"
+            animate={{
+              backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+            }}
+            transition={{ duration: 5, repeat: Infinity }}
+          >
             Готові почати?
-          </h2>
-          <p className="text-xl text-muted-foreground mb-8">
+          </motion.h2>
+          <motion.p 
+            className="text-2xl text-muted-foreground mb-12 font-medium"
+            animate={{ opacity: [0.8, 1, 0.8] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          >
             Приєднуйтеся до сотень майстрів та клієнтів, які вже заробляють та економлять за допомогою RepairHub Pro
-          </p>
+          </motion.p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white px-8 py-4 text-lg font-semibold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
+            <motion.div
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <Smartphone className="w-5 h-5 mr-2" />
-              Я шукаю майстра
-            </Button>
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-primary via-primary/90 to-primary/80 hover:from-primary/90 hover:via-primary/80 hover:to-primary/70 text-white px-12 py-6 text-xl font-bold shadow-2xl shadow-primary/30 hover:shadow-primary/40 transition-all duration-500 rounded-2xl"
+              >
+                <motion.div
+                  animate={{ rotate: [0, 360] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="mr-3"
+                >
+                  <Smartphone className="w-6 h-6" />
+                </motion.div>
+                Я шукаю майстра
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="ml-3"
+                >
+                  <ArrowRight className="w-6 h-6" />
+                </motion.div>
+              </Button>
+            </motion.div>
             
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-primary/20 hover:bg-primary/5 px-8 py-4 text-lg font-semibold hover:border-primary/40 transition-all duration-300"
+            <motion.div
+              whileHover={{ scale: 1.05, y: -5 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <Wrench className="w-5 h-5 mr-2" />
-              Я майстер ремонту
-            </Button>
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="border-2 border-primary/30 hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 px-12 py-6 text-xl font-bold hover:border-primary/50 transition-all duration-500 rounded-2xl backdrop-blur-sm"
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="mr-3"
+                >
+                  <Wrench className="w-6 h-6" />
+                </motion.div>
+                Я майстер ремонту
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="ml-3"
+                >
+                  <ArrowRight className="w-6 h-6" />
+                </motion.div>
+              </Button>
+            </motion.div>
           </div>
 
-          <div className="bg-background/50 backdrop-blur-sm rounded-2xl p-6 border border-border/50">
-            <h3 className="text-lg font-semibold mb-2 text-foreground">Працюємо з будь-якими брендами</h3>
-            <p className="text-muted-foreground">
+          <motion.div 
+            className="bg-gradient-to-r from-background/80 to-background/60 backdrop-blur-md rounded-3xl p-8 border border-border/50 shadow-2xl shadow-primary/10"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+          >
+            <h3 className="text-2xl font-bold mb-4 text-foreground">Працюємо з будь-якими брендами</h3>
+            <motion.p 
+              className="text-muted-foreground text-lg"
+              animate={{ opacity: [0.8, 1, 0.8] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
               iPhone, iPad, MacBook | Samsung, Xiaomi, Huawei | Asus, Dell, Lenovo, HP | І інші
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
         </motion.div>
       </div>
     </div>
@@ -761,36 +1275,70 @@ const CTASection: React.FC = () => {
 // Footer
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-background/80 backdrop-blur-sm border-t border-border/50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
+    <footer className="bg-gradient-to-r from-background/90 to-background/80 backdrop-blur-md border-t border-border/50 relative overflow-hidden">
+      {/* Анимированный фон */}
+      <div className="absolute inset-0">
+        <motion.div
+          animate={{
+            background: [
+              "radial-gradient(circle at 10% 10%, rgba(120, 119, 198, 0.03) 0%, transparent 50%)",
+              "radial-gradient(circle at 90% 90%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)",
+              "radial-gradient(circle at 10% 10%, rgba(120, 119, 198, 0.03) 0%, transparent 50%)"
+            ]
+          }}
+          transition={{ duration: 20, repeat: Infinity }}
+          className="absolute inset-0"
+        />
+      </div>
+      
+      <div className="container mx-auto px-4 py-12 relative z-10">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex items-center gap-4">
             <AnimatedLogo />
             <div>
-              <p className="font-semibold text-foreground">RepairHub Pro</p>
-              <p className="text-sm text-muted-foreground">Платформа для ремонту пристроїв</p>
+              <motion.p 
+                className="font-bold text-foreground text-xl"
+                animate={{ opacity: [0.8, 1, 0.8] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                RepairHub Pro
+              </motion.p>
+              <p className="text-sm text-muted-foreground font-medium">Онлайн платформа для ремонту пристроїв</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Phone className="w-4 h-4" />
-              <span>+380 50 123 45 67</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Mail className="w-4 h-4" />
-              <span>support@repairhub.pro</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              <span>Київ, Україна</span>
-            </div>
+          <div className="flex items-center gap-8 text-sm text-muted-foreground">
+            <motion.div 
+              className="flex items-center gap-2"
+              whileHover={{ scale: 1.05 }}
+            >
+              <Phone className="w-5 h-5" />
+              <span className="font-medium">+380 50 123 45 67</span>
+            </motion.div>
+            <motion.div 
+              className="flex items-center gap-2"
+              whileHover={{ scale: 1.05 }}
+            >
+              <Mail className="w-5 h-5" />
+              <span className="font-medium">support@repairhub.pro</span>
+            </motion.div>
+            <motion.div 
+              className="flex items-center gap-2"
+              whileHover={{ scale: 1.05 }}
+            >
+              <MapPin className="w-5 h-5" />
+              <span className="font-medium">Київ, Україна</span>
+            </motion.div>
           </div>
         </div>
         
-        <div className="mt-8 pt-8 border-t border-border/50 text-center text-sm text-muted-foreground">
-          <p>© 2024 RepairHub Pro. Всі права захищені. | Для реальних майстрів та клієнтів</p>
-        </div>
+        <motion.div 
+          className="mt-12 pt-8 border-t border-border/50 text-center text-sm text-muted-foreground"
+          animate={{ opacity: [0.7, 1, 0.7] }}
+          transition={{ duration: 3, repeat: Infinity }}
+        >
+          <p className="font-medium">© 2024 RepairHub Pro. Всі права захищені. | Для реальних майстрів та клієнтів</p>
+        </motion.div>
       </div>
     </footer>
   );
