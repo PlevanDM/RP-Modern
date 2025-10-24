@@ -64,6 +64,37 @@ const ModernClientDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Обработчики событий
+  const handleCreateOrder = () => {
+    console.log('Создание нового заказа');
+    // Здесь будет логика перехода к созданию заказа
+  };
+
+  const handleFindMaster = () => {
+    console.log('Поиск мастера');
+    // Здесь будет логика перехода к поиску мастеров
+  };
+
+  const handleMessages = () => {
+    console.log('Открытие сообщений');
+    // Здесь будет логика перехода к чату
+  };
+
+  const handleOrderDetails = (orderId: string) => {
+    console.log('Открытие деталей заказа:', orderId);
+    // Здесь будет логика перехода к деталям заказа
+  };
+
+  const handleWriteToMaster = (masterName: string) => {
+    console.log('Написать мастеру:', masterName);
+    // Здесь будет логика открытия чата с мастером
+  };
+
+  const handleFindMasterForOrder = (orderId: string) => {
+    console.log('Найти мастера для заказа:', orderId);
+    // Здесь будет логика поиска мастера для конкретного заказа
+  };
+
   const stats: StatCard[] = [
     {
       title: 'Всього замовлень',
@@ -289,11 +320,22 @@ const ModernClientDashboard: React.FC = () => {
               {orders.filter(o => o.status === 'in-progress' || o.status === 'pending').map((order, index) => (
                 <motion.div
                   key={order.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  className="p-4 border border-border/50 rounded-xl bg-gradient-to-br from-white to-gray-50/50 hover:shadow-xl hover:border-primary/20 transition-all duration-300 backdrop-blur-sm"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: 0
+                  }}
+                  transition={{ 
+                    delay: index * 0.1,
+                    duration: 0.4,
+                    ease: "easeOut"
+                  }}
+                  whileHover={{ 
+                    scale: 1.02, 
+                    y: -4,
+                    transition: { duration: 0.2 }
+                  }}
+                  className="p-4 border border-border/50 rounded-xl bg-gradient-to-br from-white to-gray-50/50 hover:shadow-lg hover:border-primary/20 transition-all duration-300 relative"
                 >
                   {/* Header */}
                   <div className="flex items-start justify-between mb-3">
@@ -327,7 +369,12 @@ const ModernClientDashboard: React.FC = () => {
                         <p className="text-sm font-semibold text-gray-900">{order.master.name}</p>
                         <p className="text-xs text-muted-foreground">⭐ {order.master.rating} • Майстер</p>
                       </div>
-                      <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
+                      <Button 
+                        onClick={() => handleWriteToMaster(order.master.name)}
+                        variant="outline" 
+                        size="sm" 
+                        className="h-7 px-2 text-xs hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
+                      >
                         <MessageSquare className="w-3 h-3 mr-1" />
                         Написати
                       </Button>
@@ -379,24 +426,28 @@ const ModernClientDashboard: React.FC = () => {
                           transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
                         />
                         
-                        {/* Animated Stage Indicators */}
+                        {/* Optimized Animated Stage Indicators */}
                         <div className="relative flex justify-between">
                           {getRepairStages(order.progress).map((stage, stageIndex) => (
                             <motion.div
                               key={stageIndex}
-                              initial={{ opacity: 0, scale: 0, y: 20 }}
+                              initial={{ opacity: 0, scale: 0.8, y: 20 }}
                               animate={{ 
                                 opacity: 1, 
                                 scale: 1, 
-                                y: 0,
-                                rotate: stage.completed ? [0, 5, -5, 0] : 0
+                                y: 0
                               }}
                               transition={{ 
-                                delay: stageIndex * 0.2 + 0.8,
-                                duration: 0.6,
-                                rotate: { duration: 0.3, delay: stageIndex * 0.1 + 1.5 }
+                                delay: stageIndex * 0.2 + 0.5,
+                                duration: 0.4,
+                                ease: "easeOut"
                               }}
-                              className="flex flex-col items-center"
+                              whileHover={{ 
+                                scale: 1.1, 
+                                y: -2,
+                                transition: { duration: 0.2 }
+                              }}
+                              className="flex flex-col items-center relative"
                             >
                               {/* Animated Circle */}
                               <motion.div
@@ -406,25 +457,27 @@ const ModernClientDashboard: React.FC = () => {
                                     : 'bg-white border-gray-300'
                                 }`}
                                 animate={stage.completed ? {
+                                  scale: [1, 1.05, 1],
                                   boxShadow: [
                                     '0 0 0 0 rgba(34, 197, 94, 0.4)',
                                     '0 0 0 8px rgba(34, 197, 94, 0)',
-                                    '0 0 0 0 rgba(34, 197, 94, 0)'
+                                    '0 0 0 0 rgba(34, 197, 94, 0.4)'
                                   ]
-                                } : {}}
+                                } : {
+                                  scale: [1, 1.02, 1],
+                                  opacity: [0.7, 1, 0.7]
+                                }}
                                 transition={{
-                                  boxShadow: {
-                                    duration: 2,
-                                    repeat: Infinity,
-                                    delay: stageIndex * 0.3
-                                  }
+                                  scale: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+                                  boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+                                  opacity: { duration: 2, repeat: Infinity, ease: "easeInOut" }
                                 }}
                               >
                                 {stage.completed && (
                                   <motion.div
-                                    initial={{ scale: 0, rotate: -180 }}
-                                    animate={{ scale: 1, rotate: 0 }}
-                                    transition={{ delay: stageIndex * 0.2 + 1, duration: 0.4 }}
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: stageIndex * 0.2 + 0.8, duration: 0.3 }}
                                   >
                                     <CheckCircle2 className="w-3 h-3 text-white" />
                                   </motion.div>
@@ -439,6 +492,7 @@ const ModernClientDashboard: React.FC = () => {
                                     transition={{
                                       duration: 2,
                                       repeat: Infinity,
+                                      ease: "easeInOut",
                                       delay: stageIndex * 0.2
                                     }}
                                   />
@@ -456,11 +510,7 @@ const ModernClientDashboard: React.FC = () => {
                                   color: ['#15803d', '#16a34a', '#15803d']
                                 } : {}}
                                 transition={{
-                                  color: {
-                                    duration: 2,
-                                    repeat: Infinity,
-                                    delay: stageIndex * 0.2
-                                  }
+                                  color: { duration: 2, repeat: Infinity, ease: "easeInOut" }
                                 }}
                               >
                                 {stage.name}
@@ -475,12 +525,22 @@ const ModernClientDashboard: React.FC = () => {
                   {/* Footer */}
                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
                     <div className="flex gap-1">
-                      <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
+                      <Button 
+                        onClick={() => handleOrderDetails(order.id)}
+                        variant="outline" 
+                        size="sm" 
+                        className="h-7 px-2 text-xs hover:bg-primary/5 hover:border-primary/30 transition-all duration-200"
+                      >
                         Деталі
                         <ChevronRight className="w-3 h-3 ml-1" />
                       </Button>
                       {order.status === 'pending' && (
-                        <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
+                        <Button 
+                          onClick={() => handleFindMasterForOrder(order.id)}
+                          variant="outline" 
+                          size="sm" 
+                          className="h-7 px-2 text-xs hover:bg-green-50 hover:border-green-300 transition-all duration-200"
+                        >
                           <Search className="w-3 h-3 mr-1" />
                           Знайти майстра
                         </Button>
@@ -498,11 +558,18 @@ const ModernClientDashboard: React.FC = () => {
                   <Clock className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-muted-foreground mb-2">Немає активних замовлень</h3>
                   <p className="text-sm text-muted-foreground mb-4">Створіть нове замовлення або знайдіть майстра</p>
-                  <Button className="mr-2">
+                  <Button 
+                    onClick={handleCreateOrder}
+                    className="mr-2 hover:shadow-lg transition-all duration-200"
+                  >
                     <Plus className="w-4 h-4 mr-2" />
                     Створити замовлення
                   </Button>
-                  <Button variant="outline">
+                  <Button 
+                    onClick={handleFindMaster}
+                    variant="outline"
+                    className="hover:bg-primary/5 hover:border-primary/30 transition-all duration-200"
+                  >
                     <Search className="w-4 h-4 mr-2" />
                     Знайти майстра
                   </Button>
@@ -523,29 +590,84 @@ const ModernClientDashboard: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
-                  <Button className="w-full h-auto py-6 flex flex-col items-center justify-center group bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300" size="lg">
-                    <div className="p-2 bg-white/20 rounded-lg mb-2">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.4, ease: "easeOut" }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    y: -5,
+                    transition: { duration: 0.2 }
+                  }}
+                >
+                  <Button 
+                    onClick={handleCreateOrder}
+                    className="w-full h-auto py-6 flex flex-col items-center justify-center group bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300" 
+                    size="lg"
+                  >
+                    <motion.div 
+                      className="p-2 bg-white/20 rounded-lg mb-2"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.2 }}
+                    >
                       <Plus className="w-6 h-6" />
-                    </div>
+                    </motion.div>
                     <p className="font-bold text-base">Створити замовлення</p>
                     <p className="text-xs opacity-90 mt-1">Нова заявка на ремонт</p>
                   </Button>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
-                  <Button variant="outline" className="w-full h-auto py-6 flex flex-col items-center justify-center group border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300" size="lg">
-                    <div className="p-2 bg-primary/10 rounded-lg mb-2">
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    y: -5,
+                    transition: { duration: 0.2 }
+                  }}
+                >
+                  <Button 
+                    onClick={handleFindMaster}
+                    variant="outline" 
+                    className="w-full h-auto py-6 flex flex-col items-center justify-center group border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300" 
+                    size="lg"
+                  >
+                    <motion.div 
+                      className="p-2 bg-primary/10 rounded-lg mb-2"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.2 }}
+                    >
                       <Search className="w-6 h-6 text-primary" />
-                    </div>
+                    </motion.div>
                     <p className="font-bold text-base">Знайти майстра</p>
                     <p className="text-xs text-muted-foreground mt-1">Пошук спеціалістів</p>
                   </Button>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
-                  <Button variant="outline" className="w-full h-auto py-6 flex flex-col items-center justify-center group border-2 hover:border-green-500/50 hover:bg-green-50 transition-all duration-300" size="lg">
-                    <div className="p-2 bg-green-500/10 rounded-lg mb-2">
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.4, ease: "easeOut" }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    y: -5,
+                    transition: { duration: 0.2 }
+                  }}
+                >
+                  <Button 
+                    onClick={handleMessages}
+                    variant="outline" 
+                    className="w-full h-auto py-6 flex flex-col items-center justify-center group border-2 hover:border-green-500/50 hover:bg-green-50 transition-all duration-300" 
+                    size="lg"
+                  >
+                    <motion.div 
+                      className="p-2 bg-green-500/10 rounded-lg mb-2"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.2 }}
+                    >
                       <MessageSquare className="w-6 h-6 text-green-600" />
-                    </div>
+                    </motion.div>
                     <p className="font-bold text-base">Мої повідомлення</p>
                     <p className="text-xs text-muted-foreground mt-1">Чат з майстрами</p>
                   </Button>
