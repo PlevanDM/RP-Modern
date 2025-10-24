@@ -89,16 +89,16 @@ export const MastersList: React.FC<MastersListProps> = ({
   return (
     <div className="w-full bg-gray-50 min-h-screen">
       {/* Заголовок */}
-      <div className="mb-8 p-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
+      <div className="mb-6 p-6">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
           🔍 Знайти майстра
         </h1>
-        <p className="text-lg text-gray-600 mb-4">
+        <p className="text-base text-gray-600 mb-4">
           Виберіть найкращого фахівця для вашої техніки Apple
         </p>
         
         {/* Подсказки для клиентов */}
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex items-start gap-3">
             <div className="text-blue-600 text-xl">💡</div>
             <div>
@@ -115,9 +115,9 @@ export const MastersList: React.FC<MastersListProps> = ({
       </div>
 
       {/* Пошук та фільтри */}
-      <div className="px-8 mb-8 space-y-6">
+      <div className="px-6 mb-6 space-y-4">
         {/* Основний пошук */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
           <div className="relative">
             <input
               type="text"
@@ -153,14 +153,14 @@ export const MastersList: React.FC<MastersListProps> = ({
         )}
 
         {/* Панель фільтрів - завжди видима */}
-        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 mb-3">
             <Filter className="w-5 h-5 text-gray-600" />
             <h3 className="text-lg font-semibold text-gray-900">Фільтри пошуку</h3>
             <span className="text-sm text-gray-500">(оберіть критерії для точного пошуку)</span>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Фільтр по місту */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -225,7 +225,7 @@ export const MastersList: React.FC<MastersListProps> = ({
       </div>
 
       {/* Результати */}
-      <div className="px-8 mb-6">
+      <div className="px-6 mb-4">
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-600">
             Знайдено <span className="font-semibold text-blue-600">{filteredMasters.length}</span> майстрів
@@ -244,7 +244,7 @@ export const MastersList: React.FC<MastersListProps> = ({
       </div>
 
       {/* Сітка мастерів */}
-      <div className="px-8">
+      <div className="px-6">
         {filteredMasters.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredMasters.map((master) => (
