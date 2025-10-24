@@ -3,9 +3,9 @@ import { Dispute } from '../../../types';
 
 // Mock data for disputes
 const mockDisputes: Dispute[] = [
-  { id: '1', orderId: 'order2', clientId: 'client2', masterId: 'master2', reason: 'Poor quality work', description: 'The repair was not done properly.', status: 'open', createdAt: new Date() },
-  { id: '2', orderId: 'order4', clientId: 'client1', masterId: 'master4', reason: 'Item not as described', description: 'The wrong part was used.', status: 'investigating', createdAt: new Date() },
-  { id: '3', orderId: 'order5', clientId: 'client2', masterId: 'master1', reason: 'Never received', description: 'The master never showed up.', status: 'resolved', createdAt: new Date(), resolution: 'Full refund', resolvedAt: new Date() },
+  { id: '1', orderId: 'order2', clientId: 'client2', masterId: 'master2', reason: 'Погана якість роботи', description: 'Ремонт виконано неякісно.', status: 'open', createdAt: new Date() },
+  { id: '2', orderId: 'order4', clientId: 'client1', masterId: 'master4', reason: 'Товар не відповідає опису', description: 'Використано неправильну деталь.', status: 'investigating', createdAt: new Date() },
+  { id: '3', orderId: 'order5', clientId: 'client2', masterId: 'master1', reason: 'Ніколи не отримав', description: 'Майстер так і не прийшов.', status: 'resolved', createdAt: new Date(), resolution: 'Повне відшкодування', resolvedAt: new Date() },
 ];
 
 export function DisputeCenter() {
@@ -19,15 +19,15 @@ export function DisputeCenter() {
 
   return (
     <div className="bg-white shadow rounded-lg p-4">
-      <h2 className="text-xl font-semibold mb-2">Dispute Center</h2>
+      <h2 className="text-xl font-semibold mb-2">Центр Вирішення Спорів</h2>
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Замовлення</th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Причина</th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Статус</th>
             <th scope="col" className="relative px-6 py-3">
-              <span className="sr-only">Actions</span>
+              <span className="sr-only">Дії</span>
             </th>
           </tr>
         </thead>
@@ -42,17 +42,20 @@ export function DisputeCenter() {
                   dispute.status === 'open' ? 'bg-red-100 text-red-800' :
                   'bg-yellow-100 text-yellow-800'
                 }`}>
-                  {dispute.status}
+                  {dispute.status === 'open' ? 'відкрито' :
+                   dispute.status === 'investigating' ? 'розслідується' :
+                   dispute.status === 'resolved' ? 'вирішено' :
+                   dispute.status === 'escalated' ? 'ескальовано' : dispute.status}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 {dispute.status === 'open' && (
-                  <button onClick={() => updateDisputeStatus(dispute.id, 'investigating')} className="text-indigo-600 hover:text-indigo-900">Investigate</button>
+                  <button onClick={() => updateDisputeStatus(dispute.id, 'investigating')} className="text-indigo-600 hover:text-indigo-900">Розслідувати</button>
                 )}
                 {dispute.status === 'investigating' && (
                   <>
-                    <button onClick={() => updateDisputeStatus(dispute.id, 'resolved')} className="text-green-600 hover:text-green-900">Resolve</button>
-                    <button onClick={() => updateDisputeStatus(dispute.id, 'escalated')} className="text-red-600 hover:text-red-900 ml-4">Escalate</button>
+                    <button onClick={() => updateDisputeStatus(dispute.id, 'resolved')} className="text-green-600 hover:text-green-900">Вирішити</button>
+                    <button onClick={() => updateDisputeStatus(dispute.id, 'escalated')} className="text-red-600 hover:text-red-900 ml-4">Ескалація</button>
                   </>
                 )}
               </td>

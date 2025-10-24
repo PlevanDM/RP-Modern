@@ -3,12 +3,12 @@ import { Bell, X, Check, AlertCircle, Info, MessageSquare } from 'lucide-react';
 import { Notification } from '../types';
 
 interface NotificationCenterProps {
-  notifications: Notification[];
+  notifications?: Notification[];
   onRead: (id: string) => void;
   onRemove: (id: string) => void;
 }
 
-export function NotificationCenter({ notifications, onRead, onRemove }: NotificationCenterProps) {
+export function NotificationCenter({ notifications = [], onRead, onRemove }: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const unreadCount = notifications.filter(n => !n.read).length;
 

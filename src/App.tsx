@@ -84,12 +84,12 @@ function App() {
 
   const clientOrders = orders.filter((o) => o.clientId === currentUser.id);
 
-  return (
-    <div className="min-h-screen bg-gray-50">
+    return (
+      <div className="min-h-screen bg-gray-50">
       <div className="flex h-screen">
         <ModernNavigation
-          currentUser={currentUser}
-          activeItem={activeItem}
+            currentUser={currentUser}
+            activeItem={activeItem}
           setActiveItem={setActiveItem}
           unviewedOrdersCount={0}
           onLogout={logout}
@@ -147,36 +147,36 @@ function App() {
                   </svg>
                 </button>
 
-                <button
+            <button
                   onClick={logout}
                   className="p-2 hover:bg-gray-100 rounded-lg transition"
                   title="Вихід"
-                >
+            >
                   <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
-                </button>
+            </button>
 
-              </div>
-            </div>
           </div>
+        </div>
+      </div>
           <div className="pl-2 pr-4 lg:pl-3 lg:pr-6 py-2 w-full">
             {activeItem === 'dashboard' &&
               (currentUser.role === 'master' ? (
                 <ModernMasterDashboard
-                  currentUser={currentUser}
-                  stats={{
+                currentUser={currentUser}
+                stats={{
                     activeOrders: orders.filter((o) => o.status === 'in_progress').length,
                     completedOrders: orders.filter(
                       (o) => o.status === 'completed' || o.status === 'paid'
                     ).length,
-                    totalEarned: 125000,
-                    rating: currentUser.rating || 4.9,
-                  }}
-                />
-              ) : currentUser.role === 'client' ? (
+                  totalEarned: 125000,
+                  rating: currentUser.rating || 4.9,
+                }}
+              />
+            ) : currentUser.role === 'client' ? (
                 <ModernClientDashboard currentUser={currentUser} orders={clientOrders} />
-              ) : currentUser.role === 'admin' ? (
+            ) : currentUser.role === 'admin' ? (
                 <AdminDashboard />
               ) : (
                 <div className="text-center p-8">
@@ -195,66 +195,66 @@ function App() {
 
             {activeItem === 'settings' && currentUser?.role === 'admin' && <ModernSettingsPanel />}
 
-            {activeItem === 'myOrders' && (
-              <Orders
-                currentUser={currentUser}
-                orders={orders}
+          {activeItem === 'myOrders' && (
+            <Orders
+              currentUser={currentUser}
+              orders={orders}
                 onSendToMaster={sendToMaster}
-                onCreateOrder={createOrder}
-                onDeleteOrder={deleteOrder}
-                onRestoreOrder={restoreOrder}
-                onToggleActiveSearch={toggleActiveSearch}
-                onUpdateOrderStatus={updateOrderStatus}
+              onCreateOrder={createOrder}
+              onDeleteOrder={deleteOrder}
+              onRestoreOrder={restoreOrder}
+              onToggleActiveSearch={toggleActiveSearch}
+              onUpdateOrderStatus={updateOrderStatus}
                 masters={mockUsers}
-                onEditOrder={editOrder}
+              onEditOrder={editOrder}
                 onCreateProposal={() => {}}
-              />
-            )}
+            />
+          )}
 
             {activeItem === 'myDevices' && <MyDevices />}
 
-            {activeItem === 'inventory' && (
-              <div className="p-8">
-                <PartsInventory
-                  userRole={currentUser?.role}
-                  onBuyPart={(part) => console.log('Buy part:', part)}
-                  onViewMaster={(masterId) => console.log('View master:', masterId)}
-                />
-              </div>
-            )}
+          {activeItem === 'inventory' && (
+            <div className="p-8">
+              <PartsInventory 
+                userRole={currentUser?.role}
+                onBuyPart={(part) => console.log('Buy part:', part)}
+                onViewMaster={(masterId) => console.log('View master:', masterId)}
+              />
+            </div>
+          )}
 
-            {activeItem === 'portfolio' && (
+          {activeItem === 'portfolio' && (
               <Portfolio portfolio={mockPortfolio} currentUser={currentUser} />
-            )}
+          )}
 
-            {activeItem === 'proposals' && (
-              <Proposals
-                currentUser={currentUser}
+          {activeItem === 'proposals' && (
+            <Proposals
+              currentUser={currentUser}
                 proposals={proposals}
-                orders={orders}
-                isMaster={currentUser?.role === 'master'}
+              orders={orders}
+              isMaster={currentUser?.role === 'master'}
                 onSubmitProposal={submitProposal}
                 onUpdateProposal={updateProposal}
-                onAcceptProposal={acceptProposal}
-                onRejectProposal={rejectProposal}
+              onAcceptProposal={acceptProposal}
+              onRejectProposal={rejectProposal}
                 onShowToast={() => {}}
-              />
-            )}
+            />
+          )}
 
-            {activeItem === 'priceComparison' && (
-              <div className="p-8">
-                <MastersList
+          {activeItem === 'priceComparison' && (
+            <div className="p-8">
+              <MastersList 
                   masters={mockUsers.filter((u) => u.role === 'master')}
-                  currentUserCity={currentUser?.city}
+                currentUserCity={currentUser?.city}
                   onSelectMaster={() => {}}
                   onContact={() => {}}
                   onToggleFavorite={() => {}}
                   favoriteMasters={[]}
-                />
-              </div>
-            )}
+              />
+            </div>
+          )}
 
-            {activeItem === 'reports' && (
+          {activeItem === 'reports' && (
               <div className="p-8">
                 <MasterReviews currentUser={currentUser} orders={orders} />
               </div>
@@ -262,8 +262,8 @@ function App() {
 
             {activeItem === 'payments' && currentUser && (
               <PaymentManagement
-                currentUser={currentUser}
-                orders={orders}
+              currentUser={currentUser}
+              orders={orders}
                 onUpdatePayment={updatePayment}
                 onReleasePayment={releasePayment}
                 onRefundPayment={refundPayment}
@@ -274,17 +274,17 @@ function App() {
 
             {activeItem === 'messages' && (
               <Messages currentUser={currentUser} masters={mockUsers} orders={orders} />
-            )}
+          )}
 
-            {activeItem === 'profile' && (
-              <Profile
+          {activeItem === 'profile' && (
+            <Profile
                 currentUser={currentUser}
                 orders={orders}
                 onUpdateProfile={() => {}}
               />
             )}
             {activeItem === 'settings' && <Settings currentUser={currentUser} onLogout={logout} />}
-          </div>
+            </div>
         </div>
       </div>
       <NotificationCenter />

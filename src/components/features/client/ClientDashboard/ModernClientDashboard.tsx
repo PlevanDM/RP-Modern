@@ -10,7 +10,7 @@ import {
   AlertCircle, 
   TrendingUp,
   Calendar,
-  User,
+  User as UserIcon,
   MapPin,
   DollarSign,
   Package,

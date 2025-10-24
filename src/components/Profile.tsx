@@ -173,9 +173,9 @@ export function Profile({ currentUser }: ProfileProps) {
                 transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
                 className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full"
               />
-            </div>
+          </div>
 
-            {/* Content Section */}
+          {/* Content Section */}
             <div className="px-6 md:px-10 py-8 -mt-16 relative">
               {/* Avatar and Basic Info */}
               <div className="flex flex-col md:flex-row gap-8 mb-12">
@@ -186,12 +186,12 @@ export function Profile({ currentUser }: ProfileProps) {
                   className="relative flex-shrink-0"
                 >
                   <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-gradient-to-br from-blue-100 to-purple-100 border-4 border-white shadow-xl overflow-hidden relative">
-                    <img
-                      src={isEditing ? formData.avatar : profile.avatar}
-                      alt={profile.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+                  <img
+                    src={isEditing ? formData.avatar : profile.avatar}
+                    alt={profile.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                   {isEditing && (
                     <motion.button
                       whileHover={{ scale: 1.1 }}
@@ -207,14 +207,14 @@ export function Profile({ currentUser }: ProfileProps) {
                 {/* Info Section */}
                 <div className="flex-1 pt-4 md:pt-0">
                   <div className="space-y-4">
-                    {isEditing ? (
+                {isEditing ? (
                       <motion.input
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
                         className="w-full text-3xl md:text-4xl font-bold px-4 py-2 bg-slate-100 rounded-xl border-2 border-transparent focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition outline-none"
                       />
                     ) : (
@@ -237,10 +237,10 @@ export function Profile({ currentUser }: ProfileProps) {
                           <Star className="w-4 h-4 fill-current" />
                           {profile.rating}
                         </motion.div>
-                      )}
-                    </div>
+                )}
+              </div>
 
-                    {!isEditing && (
+              {!isEditing && (
                       <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-slate-200">
                         <div className="flex items-center gap-3">
                           <div className="p-2 bg-blue-100 rounded-lg">
@@ -264,7 +264,7 @@ export function Profile({ currentUser }: ProfileProps) {
                     )}
                   </div>
                 </div>
-              </div>
+            </div>
 
               {/* Contact Information */}
               <motion.div
@@ -277,22 +277,22 @@ export function Profile({ currentUser }: ProfileProps) {
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 bg-blue-600 text-white rounded-lg">
                         <Mail className="w-4 h-4" />
-                      </div>
+              </div>
                       <label className="text-xs font-bold text-slate-600 uppercase">Email</label>
-                    </div>
-                    {isEditing ? (
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 bg-white/80 rounded-lg border border-blue-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 text-sm outline-none transition"
-                      />
-                    ) : (
-                      <p className="text-slate-900 font-semibold break-all text-sm md:text-base">{profile.email}</p>
-                    )}
-                  </div>
                 </div>
+                {isEditing ? (
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                        className="w-full px-3 py-2 bg-white/80 rounded-lg border border-blue-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 text-sm outline-none transition"
+                  />
+                ) : (
+                      <p className="text-slate-900 font-semibold break-all text-sm md:text-base">{profile.email}</p>
+                )}
+                  </div>
+              </div>
 
                 {/* Phone */}
                 <div className="group relative">
@@ -300,22 +300,22 @@ export function Profile({ currentUser }: ProfileProps) {
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 bg-green-600 text-white rounded-lg">
                         <Phone className="w-4 h-4" />
-                      </div>
-                      <label className="text-xs font-bold text-slate-600 uppercase">Телефон</label>
-                    </div>
-                    {isEditing ? (
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 bg-white/80 rounded-lg border border-green-300 focus:border-green-600 focus:ring-2 focus:ring-green-200 text-sm outline-none transition"
-                      />
-                    ) : (
-                      <p className="text-slate-900 font-semibold text-sm md:text-base">{profile.phone}</p>
-                    )}
                   </div>
+                      <label className="text-xs font-bold text-slate-600 uppercase">Телефон</label>
                 </div>
+                {isEditing ? (
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                        className="w-full px-3 py-2 bg-white/80 rounded-lg border border-green-300 focus:border-green-600 focus:ring-2 focus:ring-green-200 text-sm outline-none transition"
+                  />
+                ) : (
+                      <p className="text-slate-900 font-semibold text-sm md:text-base">{profile.phone}</p>
+                )}
+                  </div>
+              </div>
 
                 {/* City */}
                 <div className="group relative">
@@ -323,25 +323,25 @@ export function Profile({ currentUser }: ProfileProps) {
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 bg-purple-600 text-white rounded-lg">
                         <MapPin className="w-4 h-4" />
-                      </div>
-                      <label className="text-xs font-bold text-slate-600 uppercase">Місто</label>
-                    </div>
-                    {isEditing ? (
-                      <input
-                        type="text"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 bg-white/80 rounded-lg border border-purple-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 text-sm outline-none transition"
-                      />
-                    ) : (
-                      <p className="text-slate-900 font-semibold text-sm md:text-base">{profile.city}</p>
-                    )}
                   </div>
+                      <label className="text-xs font-bold text-slate-600 uppercase">Місто</label>
                 </div>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                        className="w-full px-3 py-2 bg-white/80 rounded-lg border border-purple-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 text-sm outline-none transition"
+                  />
+                ) : (
+                      <p className="text-slate-900 font-semibold text-sm md:text-base">{profile.city}</p>
+                )}
+              </div>
+            </div>
               </motion.div>
 
-              {/* Bio Section */}
+            {/* Bio Section */}
               <motion.div variants={itemVariants} className="mb-8">
                 <div className="flex items-center gap-3 mb-4">
                   <MessageSquare className="w-5 h-5 text-blue-600" />
@@ -388,13 +388,13 @@ export function Profile({ currentUser }: ProfileProps) {
                     Поділитися
                   </motion.button>
                 </motion.div>
-              )}
-            </div>
+                )}
+              </div>
           </motion.div>
 
           {/* Edit Action Buttons */}
           <AnimatePresence>
-            {isEditing && (
+        {isEditing && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -404,11 +404,11 @@ export function Profile({ currentUser }: ProfileProps) {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={handleCancel}
+              onClick={handleCancel}
                   className="flex items-center justify-center gap-2 px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-900 rounded-xl font-semibold transition"
-                >
+            >
                   <X className="w-4 h-4" />
-                  Скасувати
+              Скасувати
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}

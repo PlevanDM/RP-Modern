@@ -2,14 +2,14 @@ import React from 'react';
 
 export function Financials() {
   const stats = [
-    { name: 'Total Revenue', stat: '₴71,897' },
-    { name: 'Avg. Order Value', stat: '₴5,816' },
-    { name: 'Total Transactions', stat: '2,453' },
+    { name: 'Загальний Доход', stat: '₴71,897' },
+    { name: 'Середня Вартість Замовлення', stat: '₴5,816' },
+    { name: 'Всього Транзакцій', stat: '2,453' },
   ];
 
   return (
     <div className="bg-white shadow rounded-lg p-4">
-      <h2 className="text-xl font-semibold mb-2">Financials</h2>
+      <h2 className="text-xl font-semibold mb-2">Фінанси</h2>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         {stats.map((item) => (
           <div key={item.name} className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">

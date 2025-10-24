@@ -18,16 +18,16 @@ export function ReviewModeration() {
 
   return (
     <div className="bg-white shadow rounded-lg p-4">
-      <h2 className="text-xl font-semibold mb-2">Review Moderation</h2>
+      <h2 className="text-xl font-semibold mb-2">Модерація Відгуків</h2>
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Review</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Автор</th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Відгук</th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Оцінка</th>
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Статус</th>
             <th scope="col" className="relative px-6 py-3">
-              <span className="sr-only">Actions</span>
+              <span className="sr-only">Дії</span>
             </th>
           </tr>
         </thead>
@@ -43,14 +43,16 @@ export function ReviewModeration() {
                   review.status === 'rejected' ? 'bg-red-100 text-red-800' :
                   'bg-yellow-100 text-yellow-800'
                 }`}>
-                  {review.status}
+                  {review.status === 'approved' ? 'схвалено' :
+                  review.status === 'rejected' ? 'відхилено' :
+                  review.status === 'pending' ? 'очікує' : review.status}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 {review.status === 'pending' && (
                   <>
-                    <button onClick={() => updateReviewStatus(review.id, 'approved')} className="text-indigo-600 hover:text-indigo-900">Approve</button>
-                    <button onClick={() => updateReviewStatus(review.id, 'rejected')} className="text-red-600 hover:text-red-900 ml-4">Reject</button>
+                    <button onClick={() => updateReviewStatus(review.id, 'approved')} className="text-indigo-600 hover:text-indigo-900">Схвалити</button>
+                    <button onClick={() => updateReviewStatus(review.id, 'rejected')} className="text-red-600 hover:text-red-900 ml-4">Відхилити</button>
                   </>
                 )}
               </td>

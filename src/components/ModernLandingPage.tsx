@@ -56,7 +56,6 @@ import {
   User,
   UserCheck,
   Briefcase,
-  Tool,
   Laptop,
   Headphones,
   Camera,
@@ -584,7 +583,7 @@ const HeroSection: React.FC = () => {
                     animate={{ rotate: activeRole === 'master' ? 360 : 0 }}
                     transition={{ duration: 0.6 }}
                   >
-                    <Tool className="w-5 h-5" />
+                    <Wrench className="w-5 h-5" />
                   </motion.div>
                   Майстер
                 </TabsTrigger>

@@ -3,6 +3,7 @@ import { DeviceModel, User } from '../types/models';
 import { DeviceGallery } from './DeviceGallery';
 import { useIFixitGuides } from '../hooks/useApi';
 import { CreateOrderModal } from './CreateOrderModal';
+import { AnimatedCreateOrderModal } from './AnimatedCreateOrderModal';
 import { Order } from '../types/models';
 
 interface DeviceCatalogProps {
@@ -177,7 +178,7 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
   </div>
 )}
           {showCreateOrderModal && (
-            <CreateOrderModal
+            <AnimatedCreateOrderModal
               isOpen={showCreateOrderModal}
               onClose={() => setShowCreateOrderModal(false)}
               onSubmit={handleCreateOrderFromModal}
