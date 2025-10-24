@@ -1,4 +1,4 @@
-import { User, Review } from '../types';
+import { User, Review, UserAction } from '../types';
 import { mockUsers } from '../utils/mockData';
 
 // Mock data for reviews
@@ -7,6 +7,12 @@ const mockReviews: Review[] = [
   { id: '2', orderId: 'order2', authorId: 'client2', authorName: 'Михайло Петренко', text: 'Very professional and quick.', rating: 5, status: 'approved', createdAt: new Date() },
   { id: '3', orderId: 'order3', authorId: 'client3', authorName: 'Олена Сидоренко', text: 'Could be better.', rating: 3, status: 'pending', createdAt: new Date() },
   { id: '4', orderId: 'order4', authorId: 'client1', authorName: 'Анна Коваленко', text: 'Scam!', rating: 1, status: 'rejected', createdAt: new Date() },
+];
+
+const mockUserActions: UserAction[] = [
+  { id: '1', userId: 'client1', action: 'Created order #order1', timestamp: new Date() },
+  { id: '2', userId: 'master2', action: 'Accepted order #order2', timestamp: new Date() },
+  { id: '3', userId: 'admin1', action: 'Blocked user #client3', timestamp: new Date() },
 ];
 
 
@@ -53,6 +59,13 @@ class AdminService {
     if (!review) throw new Error('Review not found');
     review.status = status;
     return Promise.resolve(review);
+  }
+
+  async getUserActions(): Promise<UserAction[]> {
+    console.log('AdminService: Fetching user actions...');
+    // In a real app, this would be an API call
+    // await fetch('/api/useractions');
+    return Promise.resolve(mockUserActions);
   }
 }
 
