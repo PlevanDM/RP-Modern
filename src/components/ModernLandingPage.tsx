@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import {
   Wrench,
   Zap,
@@ -30,8 +31,45 @@ import {
   Phone,
   Mail,
   MapPin,
+  Settings,
+  Bell,
+  Search,
+  Filter,
+  MoreHorizontal,
+  Eye,
+  Edit,
+  Trash2,
+  Plus,
+  Download,
+  Upload,
+  RefreshCw,
+  Activity,
+  PieChart,
+  LineChart,
+  BarChart,
+  TrendingDown,
+  AlertCircle,
+  CheckCircle2,
+  XCircle,
+  Info,
+  ExternalLink,
+  User,
+  UserCheck,
+  Briefcase,
+  Tool,
+  Laptop,
+  Headphones,
+  Camera,
+  Gamepad2,
+  Watch,
+  Tablet,
+  Monitor,
+  HardDrive,
+  Cpu,
+  MemoryStick,
 } from 'lucide-react';
 
+// Интерфейсы
 interface StatCardProps {
   value: string;
   label: string;
@@ -39,67 +77,12 @@ interface StatCardProps {
   delay?: number;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ value, label, icon, delay = 0 }) => {
-  const ref = React.useRef(null);
-  const isInView = useInView(ref, { once: true });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.5, delay }}
-      className="relative"
-    >
-      <Card className="border-border/50 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-sm hover:bg-background/90 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary">
-              {icon}
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-foreground">{value}</div>
-              <div className="text-sm text-muted-foreground">{label}</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-};
-
 interface FeatureCardProps {
   icon: React.ReactNode;
   title: string;
   description: string;
   delay?: number;
 }
-
-const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, delay = 0 }) => {
-  const ref = React.useRef(null);
-  const isInView = useInView(ref, { once: true });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.5, delay }}
-      whileHover={{ y: -5 }}
-      className="relative group"
-    >
-      <Card className="h-full border-border/50 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-sm hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
-        <CardContent className="p-6">
-          <div className="mb-4 p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 w-fit group-hover:from-primary/30 group-hover:to-primary/10 transition-all duration-300">
-            {icon}
-          </div>
-          <h3 className="text-xl font-semibold mb-2 text-foreground">{title}</h3>
-          <p className="text-muted-foreground">{description}</p>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-};
 
 // Компонент падающего заказа
 const FallingOrder: React.FC<{ delay: number; order: string }> = ({ delay, order }) => {
@@ -150,9 +133,67 @@ const AnimatedLogo: React.FC = () => {
   );
 };
 
-// Компонент героя
+// Компонент статистической карточки
+const StatCard: React.FC<StatCardProps> = ({ value, label, icon, delay = 0 }) => {
+  const ref = React.useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.5, delay }}
+      className="relative"
+    >
+      <Card className="border-border/50 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-sm hover:bg-background/90 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary">
+              {icon}
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-foreground">{value}</div>
+              <div className="text-sm text-muted-foreground">{label}</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+};
+
+// Компонент карточки преимуществ
+const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, delay = 0 }) => {
+  const ref = React.useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.5, delay }}
+      whileHover={{ y: -5 }}
+      className="relative group"
+    >
+      <Card className="h-full border-border/50 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-sm hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
+        <CardContent className="p-6">
+          <div className="mb-4 p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 w-fit group-hover:from-primary/30 group-hover:to-primary/10 transition-all duration-300">
+            {icon}
+          </div>
+          <h3 className="text-xl font-semibold mb-2 text-foreground">{title}</h3>
+          <p className="text-muted-foreground">{description}</p>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+};
+
+// Компонент героя с переключением ролей
 const HeroSection: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [activeRole, setActiveRole] = useState<'client' | 'master'>('client');
 
   useEffect(() => {
     const authData = localStorage.getItem('auth-storage');
@@ -237,6 +278,24 @@ const HeroSection: React.FC = () => {
     window.location.reload();
   };
 
+  const clientContent = {
+    title: "Знайдіть майстра за 5 хвилин",
+    subtitle: "Прямий контакт з перевіреними спеціалістами. Без посередників та переплат.",
+    description: "Apple, Samsung, Xiaomi, DJI та інших смартфонів. Знайдіть кращого майстра у вашому місті.",
+    cta: "Я шукаю майстра",
+    icon: <Smartphone className="w-5 h-5" />
+  };
+
+  const masterContent = {
+    title: "Заробляйте на ремонті техніки",
+    subtitle: "Отримуйте замовлення від клієнтів напряму. Без комісій та посередників.",
+    description: "Ремонтуйте iPhone, Samsung, MacBook та іншу техніку. Розвивайте свій бізнес з нами.",
+    cta: "Я майстер ремонту",
+    icon: <Wrench className="w-5 h-5" />
+  };
+
+  const currentContent = activeRole === 'client' ? clientContent : masterContent;
+
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 overflow-hidden">
       {/* Анимированный фон */}
@@ -286,30 +345,54 @@ const HeroSection: React.FC = () => {
           </div>
         </motion.div>
 
+        {/* Role Toggle */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex justify-center mb-12"
+        >
+          <div className="bg-background/50 backdrop-blur-sm rounded-2xl p-2 border border-border/50">
+            <Tabs value={activeRole} onValueChange={(value) => setActiveRole(value as 'client' | 'master')}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="client" className="flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  Клієнт
+                </TabsTrigger>
+                <TabsTrigger value="master" className="flex items-center gap-2">
+                  <Tool className="w-4 h-4" />
+                  Майстер
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+        </motion.div>
+
         {/* Hero Content */}
         <div className="text-center max-w-4xl mx-auto mb-16">
           <motion.div
+            key={activeRole}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.8 }}
             className="mb-8"
           >
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
               <span className="bg-gradient-to-r from-foreground via-primary to-primary/70 bg-clip-text text-transparent">
-                Знайдіть майстра
+                {activeRole === 'client' ? 'Знайдіть майстра' : 'Заробляйте на ремонті'}
               </span>
               <br />
               <span className="bg-gradient-to-r from-primary/80 to-primary/50 bg-clip-text text-transparent">
-                за 5 хвилин
+                {activeRole === 'client' ? 'за 5 хвилин' : 'техніки'}
               </span>
             </h1>
             
             <p className="text-xl text-muted-foreground mb-4 max-w-2xl mx-auto">
-              Прямий контакт з перевіреними спеціалістами. Без посередників та переплат.
+              {currentContent.subtitle}
             </p>
             
             <p className="text-lg text-muted-foreground/80 max-w-3xl mx-auto">
-              Apple, Samsung, Xiaomi, DJI та інших смартфонів. Знайдіть кращого майстра у вашому місті.
+              {currentContent.description}
             </p>
           </motion.div>
 
@@ -324,8 +407,8 @@ const HeroSection: React.FC = () => {
               size="lg" 
               className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white px-8 py-4 text-lg font-semibold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
             >
-              <Smartphone className="w-5 h-5 mr-2" />
-              Я шукаю майстра
+              {currentContent.icon}
+              <span className="ml-2">{currentContent.cta}</span>
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             
@@ -334,8 +417,8 @@ const HeroSection: React.FC = () => {
               variant="outline"
               className="border-primary/20 hover:bg-primary/5 px-8 py-4 text-lg font-semibold hover:border-primary/40 transition-all duration-300"
             >
-              <Wrench className="w-5 h-5 mr-2" />
-              Я майстер ремонту
+              <Play className="w-5 h-5 mr-2" />
+              Дивитися демо
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </motion.div>
@@ -414,8 +497,8 @@ const HeroSection: React.FC = () => {
   );
 };
 
-// Компонент "Как это работает"
-const HowItWorksSection: React.FC = () => {
+// Компонент "Как это работает" для клиентов
+const HowItWorksClientSection: React.FC = () => {
   const steps = [
     {
       icon: <Smartphone className="w-8 h-8" />,
@@ -450,10 +533,81 @@ const HowItWorksSection: React.FC = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-            Як це працює?
+            Як це працює для клієнтів?
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Простий процес для клієнтів та майстрів
+            Простий процес для знаходження майстра
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {steps.map((step, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <div className="relative mb-6">
+                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary mb-4">
+                  {step.icon}
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  {index + 1}
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold mb-2 text-foreground">{step.title}</h3>
+              <p className="text-muted-foreground">{step.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Компонент "Как это работает" для мастеров
+const HowItWorksMasterSection: React.FC = () => {
+  const steps = [
+    {
+      icon: <Briefcase className="w-8 h-8" />,
+      title: "Створіть профіль",
+      description: "Опишіть свої навички та обладнання"
+    },
+    {
+      icon: <Bell className="w-8 h-8" />,
+      title: "Отримайте замовлення",
+      description: "Клієнти знаходять вас за спеціалізацією"
+    },
+    {
+      icon: <DollarSign className="w-8 h-8" />,
+      title: "Працюйте та заробляйте",
+      description: "Виконуйте ремонт та отримуйте оплату"
+    },
+    {
+      icon: <Star className="w-8 h-8" />,
+      title: "Отримуйте відгуки",
+      description: "Будуйте репутацію та отримуйте більше замовлень"
+    }
+  ];
+
+  return (
+    <div className="py-20 bg-gradient-to-b from-background to-background/50">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+            Як це працює для майстрів?
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Простий процес для розвитку бізнесу
           </p>
         </motion.div>
 
@@ -647,7 +801,8 @@ const ModernLandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <HeroSection />
-      <HowItWorksSection />
+      <HowItWorksClientSection />
+      <HowItWorksMasterSection />
       <FeaturesSection />
       <CTASection />
       <Footer />
