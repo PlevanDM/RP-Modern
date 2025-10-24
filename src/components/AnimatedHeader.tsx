@@ -134,18 +134,22 @@ export const AnimatedHeader: React.FC<AnimatedHeaderProps> = ({
             RepairHub Pro
           </motion.h1>
           
-          {/* Простая бегущая строка */}
-          <div className="relative overflow-hidden mb-3">
+          {/* Улучшенная бегущая строка */}
+          <div className="relative overflow-hidden mb-3 h-6 flex items-center">
+            {/* Градиентные маски для плавного появления/исчезновения */}
+            <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white to-transparent z-20" />
+            <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent z-20" />
+            
             <motion.div
-              className="text-sm text-gray-600 whitespace-nowrap"
+              className="text-sm font-medium text-gray-700 whitespace-nowrap flex items-center"
               key={tickerText}
               initial={{ x: '100%' }}
               animate={{ x: '-100%' }}
               transition={{ 
-                duration: 15, 
+                duration: 20, 
                 ease: "linear",
                 repeat: Infinity,
-                repeatDelay: 3
+                repeatDelay: 2
               }}
             >
               {tickerText}
