@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import ModernNavigation from './components/ModernNavigation';
-import ModernLandingPage from './components/ModernLandingPage';
+import TopLandingPage from './components/TopLandingPage';
 import ModernMasterDashboard from './components/features/master/MasterDashboard/ModernMasterDashboard';
 import ModernClientDashboard from './components/features/client/ClientDashboard/ModernClientDashboard';
 import { MyDevices } from './components/features/client/MyDevices';
@@ -71,7 +71,7 @@ function App() {
   const [selectedChatUser, setSelectedChatUser] = useState(null);
 
   if (!currentUser) {
-    return <ModernLandingPage onLogin={login} />;
+    return <TopLandingPage />;
   }
 
   if (!isOnboardingCompleted) {

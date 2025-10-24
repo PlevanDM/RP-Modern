@@ -360,7 +360,15 @@ import {
   SulphurCrested as SulphurCrestedIcon10,
   MajorMitchell as MajorMitchellIcon10,
   GangGang as GangGangIcon10,
-  Umbrella as UmbrellaIcon10
+  Umbrella as UmbrellaIcon10,
+  ShoppingCart,
+  Smartphone,
+  Tag,
+  CreditCard,
+  MessageSquare,
+  Briefcase,
+  Star,
+  LayoutDashboard
 } from 'lucide-react';
 
 interface MobileNavigationProps {

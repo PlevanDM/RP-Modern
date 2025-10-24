@@ -23,7 +23,8 @@ import {
   Pin,
   PinOff,
   Smartphone,
-  Search
+  Search,
+  BarChart3
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
@@ -126,8 +127,6 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { label: "Мої Пропозиції", href: "#", icon: Tag },
         { label: "Платежі", href: "#", icon: CreditCard },
         { label: "Розширений Чат", href: "#", icon: MessageSquare },
-        { label: "Фінансова Аналітика", href: "#", icon: BarChart3 },
-        { label: "Фінансова Аналітика", href: "#", icon: BarChart3 },
         { label: "Портфоліо", href: "#", icon: Briefcase }
       );
     } else if (currentUser?.role === 'client') {
