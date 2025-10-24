@@ -352,6 +352,114 @@ const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLogin }) => {
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
+
+              {/* Temporary Quick Switch Buttons */}
+              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <p className="text-sm text-muted-foreground mb-4">🧪 Быстрое переключение учеток (для тестирования):</p>
+                <div className="flex flex-wrap gap-3 justify-center">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="bg-green-100 text-green-700 hover:bg-green-200"
+                    onClick={() => {
+                      const clientUser = {
+                        id: 'client1',
+                        name: 'Анна Коваленко',
+                        fullName: 'Анна Коваленко',
+                        role: 'client',
+                        avatar: 'https://i.pravatar.cc/96?img=1',
+                        rating: 4.8,
+                        email: 'anna.kovalenko@gmail.com',
+                        phone: '+380501234567',
+                        verified: true,
+                        city: 'Київ',
+                        balance: 15000,
+                        skills: [],
+                        specialization: 'Client'
+                      };
+                      const newAuthState = {
+                        state: {
+                          currentUser: clientUser,
+                          isOnboardingCompleted: true
+                        },
+                        version: 0
+                      };
+                      localStorage.setItem('auth-storage', JSON.stringify(newAuthState));
+                      window.location.reload();
+                    }}
+                  >
+                    👤 Клієнт
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="bg-blue-100 text-blue-700 hover:bg-blue-200"
+                    onClick={() => {
+                      const masterUser = {
+                        id: 'master1',
+                        name: 'Олександр Петренко',
+                        fullName: 'Олександр Петренко',
+                        role: 'master',
+                        avatar: 'https://i.pravatar.cc/96?img=4',
+                        rating: 4.9,
+                        email: 'alex.petrenko@repair.ua',
+                        phone: '+380501234567',
+                        verified: true,
+                        city: 'Київ',
+                        skills: ['iPhone', 'iPad', 'MacBook'],
+                        specialization: 'Екрани iPhone',
+                        experience: '5 років',
+                        completedOrders: 1247,
+                        balance: 25000
+                      };
+                      const newAuthState = {
+                        state: {
+                          currentUser: masterUser,
+                          isOnboardingCompleted: true
+                        },
+                        version: 0
+                      };
+                      localStorage.setItem('auth-storage', JSON.stringify(newAuthState));
+                      window.location.reload();
+                    }}
+                  >
+                    🔧 Майстер
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className="bg-purple-100 text-purple-700 hover:bg-purple-200"
+                    onClick={() => {
+                      const adminUser = {
+                        id: 'admin1',
+                        name: 'Адміністратор',
+                        fullName: 'Адміністратор Системи',
+                        role: 'admin',
+                        avatar: 'https://i.pravatar.cc/96?img=10',
+                        rating: 5.0,
+                        email: 'admin@repairhub.pro',
+                        phone: '+380991234567',
+                        verified: true,
+                        city: 'Платформа',
+                        skills: ['all'],
+                        specialization: 'Системне адміністрування',
+                        balance: 0
+                      };
+                      const newAuthState = {
+                        state: {
+                          currentUser: adminUser,
+                          isOnboardingCompleted: true
+                        },
+                        version: 0
+                      };
+                      localStorage.setItem('auth-storage', JSON.stringify(newAuthState));
+                      window.location.reload();
+                    }}
+                  >
+                    👨‍💼 Адміністратор
+                  </Button>
+                </div>
+              </div>
             </motion.div>
           </div>
         </section>
