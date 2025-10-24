@@ -34,34 +34,24 @@ export const AnimatedHeader: React.FC<AnimatedHeaderProps> = ({
     return () => clearInterval(timer);
   }, []);
 
-  // Бегущая строка с новостями и уведомлениями
+  // Бегущая строка с реальными уведомлениями
   useEffect(() => {
-    const tickerMessages = [
-      '🔧 Новий майстер приєднався до платформи!',
-      '⭐ Відгук про роботу майстра Олександра: "Швидко та якісно!"',
-      '📱 Спеціальна пропозиція: ремонт iPhone зі знижкою 15%',
-      '🚀 RepairHub Pro тепер підтримує ремонт DJI дронів',
-      '💡 Порада: регулярно оновлюйте прошивку пристроїв',
-      '🎯 Новий рекорд: 1000+ успішних ремонтів цього місяця!',
-      '🔥 Гаряча новина: відкрито новий сервісний центр у Києві',
-      '💎 VIP статус: отримайте пріоритетний сервіс за 500₴',
-      '🎉 Акція тижня: безкоштовна діагностика для нових клієнтів',
-      '⚡ Швидкий ремонт: iPhone 14 Pro за 2 години',
-      '🛡️ Гарантія якості: 12 місяців на всі роботи',
-      '📊 Статистика: 99.2% задоволених клієнтів',
-      '🌟 Топ майстер: Ігор Мельник - 5.0 рейтинг',
-      '💼 Корпоративні знижки: від 10% для компаній',
-      '🔔 Нагадування: не забудьте залишити відгук',
-    ];
+    if (notifications.length === 0) {
+      setTickerText('🔔 Немає нових сповіщень');
+      return;
+    }
 
     let currentIndex = 0;
     const interval = setInterval(() => {
-      setTickerText(tickerMessages[currentIndex]);
-      currentIndex = (currentIndex + 1) % tickerMessages.length;
+      if (notifications.length > 0) {
+        const notification = notifications[currentIndex];
+        setTickerText(`🔔 ${notification.message}`);
+        currentIndex = (currentIndex + 1) % notifications.length;
+      }
     }, 4000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [notifications]);
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString('uk-UA', { 
@@ -123,18 +113,9 @@ export const AnimatedHeader: React.FC<AnimatedHeaderProps> = ({
           </motion.div>
         </motion.div>
 
-        {/* Центральная часть - заголовок и бегущая строка */}
+        {/* Центральная часть - только бегущая строка и роль */}
         <div className="flex-1 text-center px-4">
-          <motion.h1 
-            className="text-2xl font-bold text-gray-900 mb-2"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            RepairHub Pro
-          </motion.h1>
-          
-          {/* Улучшенная бегущая строка */}
+          {/* Бегущая строка с уведомлениями */}
           <div className="relative overflow-hidden mb-3 h-6 flex items-center">
             {/* Градиентные маски для плавного появления/исчезновения */}
             <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white to-transparent z-20" />
@@ -156,14 +137,13 @@ export const AnimatedHeader: React.FC<AnimatedHeaderProps> = ({
             </motion.div>
           </div>
 
-          {/* Приветствие с анимацией */}
+          {/* Только роль пользователя */}
           <motion.div 
-            className="flex items-center justify-center gap-2"
+            className="flex items-center justify-center"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
+            transition={{ delay: 0.3 }}
           >
-            <p className="text-sm text-gray-600">Ласкаво просимо в ваш особистий кабінет</p>
             {currentUser && (
               <motion.div 
                 className={`px-3 py-1 rounded-full text-xs font-semibold ${
