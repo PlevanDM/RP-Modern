@@ -102,7 +102,20 @@ function App() {
 
               <div className="flex-1 text-center">
                 <h1 className="text-2xl font-bold text-gray-900">RepairHub Pro</h1>
-                <p className="text-sm text-gray-600">Ласкаво просимо в ваш особистий кабінет</p>
+                <div className="flex items-center justify-center gap-2 mt-1">
+                  <p className="text-sm text-gray-600">Ласкаво просимо в ваш особистий кабінет</p>
+                  {currentUser && (
+                    <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      currentUser.role === 'admin' ? 'bg-purple-100 text-purple-700' :
+                      currentUser.role === 'master' ? 'bg-blue-100 text-blue-700' :
+                      'bg-green-100 text-green-700'
+                    }`}>
+                      {currentUser.role === 'admin' ? '👨‍💼 Адміністратор' :
+                       currentUser.role === 'master' ? '🔧 Майстер' :
+                       '👤 Клієнт'}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="flex items-center gap-3 min-w-fit">
