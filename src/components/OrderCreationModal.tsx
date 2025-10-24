@@ -9,21 +9,14 @@ import {
   Headphones, 
   Gamepad2, 
   Monitor,
-  Plus,
   Upload,
   MapPin,
   Clock,
-  DollarSign,
-  Star,
-  CheckCircle,
-  AlertCircle,
   Camera as CameraIcon,
   FileText,
   Video,
   Send,
-  X,
-  Eye,
-  Download
+  X
 } from 'lucide-react';
 
 interface OrderCreationModalProps {
