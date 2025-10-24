@@ -5,11 +5,11 @@ import { Order, User } from '../types/models';
 import { Modal } from './ui/modal';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { useOrdersStore } from '../store/ordersStore';
 
 interface AnimatedCreateOrderModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (orderData: Partial<Order>) => void;
   currentUser: User;
   initialData?: Partial<Order>;
 }
@@ -17,7 +17,6 @@ interface AnimatedCreateOrderModalProps {
 export function AnimatedCreateOrderModal({
   isOpen,
   onClose,
-  onSubmit,
   currentUser,
   initialData,
 }: AnimatedCreateOrderModalProps) {
@@ -37,6 +36,7 @@ export function AnimatedCreateOrderModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const { createOrder } = useOrdersStore();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -116,24 +116,23 @@ export function AnimatedCreateOrderModal({
 
     setIsSubmitting(true);
 
-    const orderData: Partial<Order> = {
+    const orderData = {
       ...formData,
       clientId: currentUser.id,
       clientName: currentUser.name || currentUser.fullName,
-      status: 'open',
+      status: 'new',
       createdAt: new Date(),
       updatedAt: new Date(),
       devicePhotos: devicePhotos.length > 0 ? devicePhotos : undefined,
       defectPhotos: defectPhotos.length > 0 ? defectPhotos : undefined,
       location: formData.location || undefined,
       clientPhone: formData.clientPhone || undefined,
-      clientEmail: formData.clientEmail || undefined
+      clientEmail: formData.clientEmail || undefined,
+      active_search: true,
     };
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    createOrder(orderData as Omit<Order, 'id'>);
     
-    onSubmit(orderData);
     setIsSubmitting(false);
     onClose();
     
