@@ -5,7 +5,7 @@ import ModernMasterDashboard from './components/features/master/MasterDashboard/
 import ModernClientDashboard from './components/features/client/ClientDashboard/ModernClientDashboard';
 import { MyDevices } from './components/features/client/MyDevices';
 import { DeviceCatalog } from './components/features/client/DeviceCatalog';
-import RepairHubDashboard from './components/features/admin/AdminDashboard/RepairHubDashboard';
+import { AdminDashboard } from './components/features/admin/AdminDashboard';
 import { ModernSettingsPanel } from './components/features/admin/ModernSettingsPanel';
 import { ModernUsersPanel } from './components/features/admin/ModernUsersPanel';
 import { ModernOrdersPanel } from './components/features/admin/ModernOrdersPanel';
@@ -167,7 +167,7 @@ function App() {
               ) : currentUser.role === 'client' ? (
                 <ModernClientDashboard currentUser={currentUser} orders={clientOrders} />
               ) : currentUser.role === 'admin' ? (
-                <RepairHubDashboard users={mockUsers} orders={orders} transactions={[]} />
+                <AdminDashboard />
               ) : (
                 <div className="text-center p-8">
                   <h1 className="text-2xl font-bold mb-4">Ласкаво просимо до RepairHub Pro!</h1>

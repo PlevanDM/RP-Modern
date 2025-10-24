@@ -7,13 +7,15 @@ interface BookingCalendarProps {
   language: 'en' | 'uk';
   bookedDates: BookedDate[];
   setBookedDates: (dates: BookedDate[]) => void;
+  userRole: 'client' | 'master';
 }
 
 export function BookingCalendar({
   t,
   language,
   bookedDates,
-  setBookedDates
+  setBookedDates,
+  userRole
 }: BookingCalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -70,6 +72,22 @@ export function BookingCalendar({
     setLogisticsType('self');
     setShippingAddress('');
     setNotes('');
+  };
+
+  const handleBlockDate = () => {
+    if (!selectedDate) return;
+
+    const newBlockedDate: BookedDate = {
+      id: `blocked_${Date.now()}`,
+      date: selectedDate,
+      status: 'blocked',
+      orderId: '',
+      userId: ''
+    };
+
+    setBookedDates([...bookedDates, newBlockedDate]);
+    setShowBookingModal(false);
+    setSelectedDate(null);
   };
 
   const daysInMonth = getDaysInMonth(currentMonth);
@@ -381,6 +399,14 @@ export function BookingCalendar({
                 >
                   {language === 'uk' ? 'Забронювати' : 'Confirm Booking'}
                 </button>
+                {userRole === 'master' && (
+                  <button
+                    onClick={handleBlockDate}
+                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                  >
+                    {language === 'uk' ? 'Заблокувати' : 'Block Date'}
+                  </button>
+                )}
               </div>
             </div>
           </div>
