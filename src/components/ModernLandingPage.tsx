@@ -21,6 +21,15 @@ import {
   Sparkles,
   Package,
   ArrowRightLeft,
+  Play,
+  Award,
+  Heart,
+  Target,
+  Rocket,
+  Globe,
+  Phone,
+  Mail,
+  MapPin,
 } from 'lucide-react';
 
 interface StatCardProps {
@@ -42,10 +51,10 @@ const StatCard: React.FC<StatCardProps> = ({ value, label, icon, delay = 0 }) =>
       transition={{ duration: 0.5, delay }}
       className="relative"
     >
-      <Card className="border-border/50 bg-background/50 backdrop-blur-sm hover:bg-background/80 transition-all duration-300">
+      <Card className="border-border/50 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-sm hover:bg-background/90 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
         <CardContent className="p-6">
           <div className="flex items-center gap-4">
-            <div className="p-3 rounded-lg bg-primary/10 text-primary">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 text-primary">
               {icon}
             </div>
             <div>
@@ -79,9 +88,9 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, del
       whileHover={{ y: -5 }}
       className="relative group"
     >
-      <Card className="h-full border-border/50 bg-background/50 backdrop-blur-sm hover:border-primary/50 transition-all duration-300">
+      <Card className="h-full border-border/50 bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-sm hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
         <CardContent className="p-6">
-          <div className="mb-4 p-3 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 w-fit group-hover:from-primary/30 group-hover:to-primary/10 transition-all duration-300">
+          <div className="mb-4 p-3 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 w-fit group-hover:from-primary/30 group-hover:to-primary/10 transition-all duration-300">
             {icon}
           </div>
           <h3 className="text-xl font-semibold mb-2 text-foreground">{title}</h3>
@@ -98,575 +107,550 @@ const FallingOrder: React.FC<{ delay: number; order: string }> = ({ delay, order
     <motion.div
       initial={{ y: -100, opacity: 0, x: Math.random() * 100 - 50 }}
       animate={{ y: window.innerHeight + 100, opacity: [0, 1, 1, 0] }}
-      transition={{ duration: 6 + Math.random() * 4, delay, repeat: Infinity }}
-      className="fixed pointer-events-none"
+      transition={{
+        duration: 8,
+        delay,
+        repeat: Infinity,
+        repeatDelay: 2,
+        ease: "linear"
+      }}
+      className="absolute pointer-events-none z-0"
       style={{ left: `${Math.random() * 100}%` }}
     >
-      <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/80 to-blue-600/80 backdrop-blur-sm border border-blue-400/50 shadow-lg">
-        <Package className="w-4 h-4 text-white" />
-        <span className="text-sm font-medium text-white whitespace-nowrap">{order}</span>
+      <div className="bg-gradient-to-r from-primary/20 to-primary/5 backdrop-blur-sm rounded-lg p-3 text-sm text-muted-foreground border border-primary/10">
+        {order}
       </div>
     </motion.div>
   );
 };
 
-interface TestimonialCardProps {
-  name: string;
-  role: string;
-  company: string;
-  content: string;
-  avatar: string;
-  rating: number;
-  delay?: number;
-}
-
-const TestimonialCard: React.FC<TestimonialCardProps> = ({
-  name,
-  role,
-  company,
-  content,
-  avatar,
-  rating,
-  delay = 0,
-}) => {
-  const ref = React.useRef(null);
-  const isInView = useInView(ref, { once: true });
-
+// Компонент анимированного логотипа
+const AnimatedLogo: React.FC = () => {
   return (
     <motion.div
-      ref={ref}
-      initial={{ opacity: 0, x: -20 }}
-      animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
-      transition={{ duration: 0.5, delay }}
+      initial={{ scale: 0, rotate: -180 }}
+      animate={{ scale: 1, rotate: 0 }}
+      transition={{ duration: 1, ease: "easeOut" }}
+      className="relative inline-block"
     >
-      <Card className="h-full border-border/50 bg-background/50 backdrop-blur-sm">
-        <CardContent className="p-6">
-          <div className="flex gap-1 mb-4">
-            {Array.from({ length: rating }).map((_, i) => (
-              <Star key={i} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
-            ))}
-          </div>
-          <p className="text-foreground mb-6 italic">"{content}"</p>
-          <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarImage src={avatar} alt={name} />
-              <AvatarFallback>{name.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <div className="font-semibold text-foreground">{name}</div>
-              <div className="text-sm text-muted-foreground">
-                {role} at {company}
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 flex items-center justify-center shadow-lg shadow-primary/25">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/20 to-transparent"
+        />
+        <Wrench className="w-8 h-8 text-white relative z-10" />
+        <motion.div
+          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/50 to-transparent"
+        />
+      </div>
     </motion.div>
   );
 };
 
-interface ModernLandingPageProps {
-  onLogin: (user: any) => void;
-}
-
-const ModernLandingPage: React.FC<ModernLandingPageProps> = ({ onLogin }) => {
-  const [isVisible, setIsVisible] = useState(false);
+// Компонент героя
+const HeroSection: React.FC = () => {
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
-    setIsVisible(true);
+    const authData = localStorage.getItem('auth-storage');
+    if (authData) {
+      try {
+        const parsed = JSON.parse(authData);
+        setCurrentUser(parsed.state?.currentUser);
+      } catch (error) {
+        console.error('Error parsing auth data:', error);
+      }
+    }
   }, []);
 
-  const orders = [
-    'iPhone заміна екрану',
-    'Samsung батарея',
-    'MacBook діагностика',
-    'iPad ремонт',
-    'Google Pixel екран',
-    'OnePlus батарея',
-    'Xiaomi дисплей',
-    'Samsung заміна',
-  ];
+  const handleQuickSwitch = (role: string) => {
+    let userData;
+    
+    switch (role) {
+      case 'client':
+        userData = {
+          id: 'client1',
+          name: 'Анна Коваленко',
+          fullName: 'Анна Коваленко',
+          role: 'client',
+          avatar: 'https://i.pravatar.cc/96?img=1',
+          rating: 4.8,
+          email: 'anna.kovalenko@gmail.com',
+          phone: '+380501234567',
+          verified: true,
+          city: 'Київ',
+          balance: 15000,
+          skills: [],
+          specialization: 'Client'
+        };
+        break;
+      case 'master':
+        userData = {
+          id: 'master1',
+          name: 'Олександр Петренко',
+          fullName: 'Олександр Петренко',
+          role: 'master',
+          avatar: 'https://i.pravatar.cc/96?img=4',
+          rating: 4.9,
+          email: 'alex.petrenko@repair.ua',
+          phone: '+380501234567',
+          verified: true,
+          city: 'Київ',
+          skills: ['iPhone', 'iPad', 'MacBook'],
+          specialization: 'Екрани iPhone',
+          experience: '5 років',
+          completedOrders: 1247,
+          balance: 25000
+        };
+        break;
+      case 'admin':
+        userData = {
+          id: 'admin1',
+          name: 'Адміністратор',
+          fullName: 'Адміністратор Системи',
+          role: 'admin',
+          avatar: 'https://i.pravatar.cc/96?img=10',
+          rating: 5.0,
+          email: 'admin@repairhub.pro',
+          phone: '+380991234567',
+          verified: true,
+          city: 'Платформа',
+          skills: ['all'],
+          specialization: 'Системне адміністрування',
+          balance: 0
+        };
+        break;
+    }
 
-  const features = [
-    {
-      icon: <Zap className="w-6 h-6 text-primary" />,
-      title: 'Прямой контакт',
-      description: 'Общайтесь напрямую с мастером, без посредников и менеджеров.',
-    },
-    {
-      icon: <Users className="w-6 h-6 text-primary" />,
-      title: 'Прозрачность',
-      description: 'Видите опыт, оборудование (микроскопы, паяльные станции) и реальные отзывы.',
-    },
-    {
-      icon: <Shield className="w-6 h-6 text-primary" />,
-      title: 'Безопасность',
-      description: 'Эскроу-платежи защищают вашу сделку, как на лучших P2P-площадках.',
-    },
-    {
-      icon: <DollarSign className="w-6 h-6 text-primary" />,
-      title: 'Честные цены',
-      description: 'Никаких накруток и скрытых комиссий сервисных центров.',
-    },
-    {
-      icon: <Wrench className="w-6 h-6 text-primary" />,
-      title: 'Решение споров',
-      description: 'Встроенная система арбитража для справедливого разрешения любых вопросов.',
-    },
-    {
-      icon: <Smartphone className="w-6 h-6 text-primary" />,
-      title: 'Любые бренды',
-      description: 'От Apple и Samsung до Asus и Dell — найдем мастера для любой техники.',
-    },
-  ];
+    const newAuthState = {
+      state: {
+        currentUser: userData,
+        isOnboardingCompleted: true
+      },
+      version: 0
+    };
+    
+    localStorage.setItem('auth-storage', JSON.stringify(newAuthState));
+    window.location.reload();
+  };
 
-  const stats = [
-    {
-      value: '500+',
-      label: 'Майстрів в мережі',
-      icon: <Wrench className="w-6 h-6" />,
-    },
-    {
-      value: '10K+',
-      label: 'Задоволених клієнтів',
-      icon: <Star className="w-6 h-6" />,
-    },
-    {
-      value: '25K+',
-      label: 'Успішних ремонтів',
-      icon: <CheckCircle className="w-6 h-6" />,
-    },
-    {
-      value: '4.9★',
-      label: 'Середня оцінка',
-      icon: <TrendingUp className="w-6 h-6" />,
-    },
-  ];
+  return (
+    <div className="relative min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 overflow-hidden">
+      {/* Анимированный фон */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          animate={{ 
+            background: [
+              'radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%)',
+              'radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%)',
+              'radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%)',
+              'radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%)',
+            ]
+          }}
+          transition={{ duration: 20, repeat: Infinity }}
+          className="absolute inset-0"
+        />
+        
+        {/* Падающие заказы */}
+        <FallingOrder delay={0} order="iPhone 15 Pro - заміна екрану" />
+        <FallingOrder delay={2} order="Samsung Galaxy - ремонт батареї" />
+        <FallingOrder delay={4} order="MacBook Pro - діагностика" />
+        <FallingOrder delay={6} order="iPad Air - заміна дисплею" />
+      </div>
 
-  const testimonials = [
+      <div className="relative z-10 container mx-auto px-4 py-16">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex items-center justify-between mb-16"
+        >
+          <div className="flex items-center gap-3">
+            <AnimatedLogo />
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                RepairHub Pro
+              </h1>
+              <p className="text-sm text-muted-foreground">Платформа для ремонту пристроїв</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+              🔧 Ремонт мобильной електроніки
+            </Badge>
+          </div>
+        </motion.div>
+
+        {/* Hero Content */}
+        <div className="text-center max-w-4xl mx-auto mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="mb-8"
+          >
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-foreground via-primary to-primary/70 bg-clip-text text-transparent">
+                Знайдіть майстра
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-primary/80 to-primary/50 bg-clip-text text-transparent">
+                за 5 хвилин
+              </span>
+            </h1>
+            
+            <p className="text-xl text-muted-foreground mb-4 max-w-2xl mx-auto">
+              Прямий контакт з перевіреними спеціалістами. Без посередників та переплат.
+            </p>
+            
+            <p className="text-lg text-muted-foreground/80 max-w-3xl mx-auto">
+              Apple, Samsung, Xiaomi, DJI та інших смартфонів. Знайдіть кращого майстра у вашому місті.
+            </p>
+          </motion.div>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+          >
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white px-8 py-4 text-lg font-semibold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
+            >
+              <Smartphone className="w-5 h-5 mr-2" />
+              Я шукаю майстра
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            
+            <Button 
+              size="lg" 
+              variant="outline"
+              className="border-primary/20 hover:bg-primary/5 px-8 py-4 text-lg font-semibold hover:border-primary/40 transition-all duration-300"
+            >
+              <Wrench className="w-5 h-5 mr-2" />
+              Я майстер ремонту
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </motion.div>
+
+          {/* Quick Switch Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="bg-background/50 backdrop-blur-sm rounded-2xl p-6 border border-border/50"
+          >
+            <p className="text-sm text-muted-foreground mb-4">🧪 Швидке перемикання облікових записів (для тестування):</p>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Button
+                size="sm"
+                variant="secondary"
+                className="bg-green-100 text-green-700 hover:bg-green-200 border-green-200"
+                onClick={() => handleQuickSwitch('client')}
+              >
+                👤 Клієнт
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200"
+                onClick={() => handleQuickSwitch('master')}
+              >
+                🔧 Майстер
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                className="bg-purple-100 text-purple-700 hover:bg-purple-200 border-purple-200"
+                onClick={() => handleQuickSwitch('admin')}
+              >
+                👨‍💼 Адміністратор
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
+        >
+          <StatCard
+            value="500+"
+            label="Майстрів в мережі"
+            icon={<Users className="w-6 h-6" />}
+            delay={0}
+          />
+          <StatCard
+            value="10K+"
+            label="Задоволених клієнтів"
+            icon={<Heart className="w-6 h-6" />}
+            delay={0.1}
+          />
+          <StatCard
+            value="25K+"
+            label="Успішних ремонтів"
+            icon={<Award className="w-6 h-6" />}
+            delay={0.2}
+          />
+          <StatCard
+            value="4.9★"
+            label="Середня оцінка"
+            icon={<Star className="w-6 h-6" />}
+            delay={0.3}
+          />
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+// Компонент "Как это работает"
+const HowItWorksSection: React.FC = () => {
+  const steps = [
     {
-      name: 'Алексей Иванов',
-      role: 'Владелец',
-      company: 'TechRepair',
-      content: 'RepairHub Pro полностью изменил наш подход. Теперь мы обрабатываем в 2 раза больше заказов и зарабатываем больше!',
-      avatar: '/avatars/01.png',
-      rating: 5,
+      icon: <Smartphone className="w-8 h-8" />,
+      title: "Опишіть проблему",
+      description: "Розкажіть, що зламалося та завантажте фото"
     },
     {
-      name: 'Мария Петрова',
-      role: 'Клієнтка',
-      company: 'Київ',
-      content: 'Нашла хорошего мастера за 10 минут. Быстро, честно и без переплат. Рекомендую всем!',
-      avatar: '/avatars/02.png',
-      rating: 5,
+      icon: <Users className="w-8 h-8" />,
+      title: "Отримайте відгуки",
+      description: "Майстри запропонують рішення та ціну"
     },
     {
-      name: 'Дмитрий Сидоров',
-      role: 'Майстер',
-      company: 'Льків',
-      content: 'Замечательная платформа! Постоянно поступают новые заказы. Заработки выросли на 60% в первый месяц!',
-      avatar: '/avatars/03.png',
-      rating: 5,
+      icon: <Target className="w-8 h-8" />,
+      title: "Оберіть спеціаліста",
+      description: "Дивіться досвід, обладнання та відгуки"
     },
+    {
+      icon: <Shield className="w-8 h-8" />,
+      title: "Безпечна оплата",
+      description: "Гроші захищені ескроу до завершення роботи"
+    }
   ];
 
   return (
-    <div className="min-h-screen bg-background overflow-hidden">
-      {/* Falling Orders Background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <AnimatePresence>
-          {orders.map((order, idx) => (
-            <FallingOrder key={`${order}-${idx}`} order={order} delay={idx * 0.8} />
-          ))}
-        </AnimatePresence>
-      </div>
-
-      {/* Main Content */}
-      <div className="relative z-10">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-background" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,119,198,0.05),transparent_50%)]" />
-          
-          <div className="container mx-auto px-4 py-20 md:py-32 relative">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="max-w-4xl mx-auto text-center"
-            >
-              <Badge className="px-4 py-2 text-base bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200">
-                🔧 Ремонт мобильной електроніки
-              </Badge>
-              
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 bg-clip-text text-transparent">
-                Найдите мастера по ремонту техники за 5 минут
-              </h1>
-              
-              <p className="text-2xl md:text-3xl text-muted-foreground mb-4 max-w-3xl mx-auto font-semibold">
-                Прямой контакт с проверенными специалистами. Без посредников и переплат.
-              </p>
-
-              <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
-                Apple, Samsung, Dell, Asus — ремонт любой техники от профессионалов вашего города
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Button
-                  size="lg"
-                  className="text-lg px-8 group"
-                  onClick={() => {
-                    const demoClient = {
-                      id: 'client1',
-                      name: 'Володимир Петров',
-                      email: 'client@example.com',
-                      role: 'client',
-                      rating: 4.5
-                    };
-                    if (onLogin) {
-                      onLogin(demoClient.id);
-                    }
-                  }}
-                >
-                  Найти мастера
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-lg px-8"
-                  onClick={() => {
-                    const demoMaster = {
-                      id: 'master1',
-                      name: 'Олександр Петренко',
-                      email: 'master@example.com',
-                      role: 'master',
-                      rating: 4.9
-                    };
-                    if (onLogin) {
-                      onLogin(demoMaster.id);
-                    }
-                  }}
-                >
-                  Начать зарабатывать
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </div>
-
-              {/* Temporary Quick Switch Buttons */}
-              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-sm text-muted-foreground mb-4">🧪 Быстрое переключение учеток (для тестирования):</p>
-                <div className="flex flex-wrap gap-3 justify-center">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    className="bg-green-100 text-green-700 hover:bg-green-200"
-                    onClick={() => {
-                      const clientUser = {
-                        id: 'client1',
-                        name: 'Анна Коваленко',
-                        fullName: 'Анна Коваленко',
-                        role: 'client',
-                        avatar: 'https://i.pravatar.cc/96?img=1',
-                        rating: 4.8,
-                        email: 'anna.kovalenko@gmail.com',
-                        phone: '+380501234567',
-                        verified: true,
-                        city: 'Київ',
-                        balance: 15000,
-                        skills: [],
-                        specialization: 'Client'
-                      };
-                      const newAuthState = {
-                        state: {
-                          currentUser: clientUser,
-                          isOnboardingCompleted: true
-                        },
-                        version: 0
-                      };
-                      localStorage.setItem('auth-storage', JSON.stringify(newAuthState));
-                      window.location.reload();
-                    }}
-                  >
-                    👤 Клієнт
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    className="bg-blue-100 text-blue-700 hover:bg-blue-200"
-                    onClick={() => {
-                      const masterUser = {
-                        id: 'master1',
-                        name: 'Олександр Петренко',
-                        fullName: 'Олександр Петренко',
-                        role: 'master',
-                        avatar: 'https://i.pravatar.cc/96?img=4',
-                        rating: 4.9,
-                        email: 'alex.petrenko@repair.ua',
-                        phone: '+380501234567',
-                        verified: true,
-                        city: 'Київ',
-                        skills: ['iPhone', 'iPad', 'MacBook'],
-                        specialization: 'Екрани iPhone',
-                        experience: '5 років',
-                        completedOrders: 1247,
-                        balance: 25000
-                      };
-                      const newAuthState = {
-                        state: {
-                          currentUser: masterUser,
-                          isOnboardingCompleted: true
-                        },
-                        version: 0
-                      };
-                      localStorage.setItem('auth-storage', JSON.stringify(newAuthState));
-                      window.location.reload();
-                    }}
-                  >
-                    🔧 Майстер
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    className="bg-purple-100 text-purple-700 hover:bg-purple-200"
-                    onClick={() => {
-                      const adminUser = {
-                        id: 'admin1',
-                        name: 'Адміністратор',
-                        fullName: 'Адміністратор Системи',
-                        role: 'admin',
-                        avatar: 'https://i.pravatar.cc/96?img=10',
-                        rating: 5.0,
-                        email: 'admin@repairhub.pro',
-                        phone: '+380991234567',
-                        verified: true,
-                        city: 'Платформа',
-                        skills: ['all'],
-                        specialization: 'Системне адміністрування',
-                        balance: 0
-                      };
-                      const newAuthState = {
-                        state: {
-                          currentUser: adminUser,
-                          isOnboardingCompleted: true
-                        },
-                        version: 0
-                      };
-                      localStorage.setItem('auth-storage', JSON.stringify(newAuthState));
-                      window.location.reload();
-                    }}
-                  >
-                    👨‍💼 Адміністратор
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Platform Explanation Section */}
-        <section className="container mx-auto px-4 py-16 md:py-24 relative">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-center mb-12">
-              Как это работает?
-            </h2>
-
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              {/* For Clients */}
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-                className="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-2xl p-8 border border-blue-200/20"
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 bg-blue-600 text-white rounded-lg">
-                    <Users className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-2xl font-bold">Для клиентов</h3>
-                </div>
-                <ul className="space-y-4">
-                  <li className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span><b>Опишите проблему</b> — расскажите, что сломалось</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span><b>Получите отклики</b> — мастера предложат решение и цену</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span><b>Выберите специалиста</b> — смотрите опыт, оборудование, отзывы</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span><b>Безопасная оплата</b> — деньги защищены эскроу до завершения работы</span>
-                  </li>
-                </ul>
-              </motion.div>
-
-              {/* For Masters */}
-              <motion.div
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-2xl p-8 border border-green-200/20"
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 bg-green-600 text-white rounded-lg">
-                    <Wrench className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-2xl font-bold">Для мастеров</h3>
-                </div>
-                <ul className="space-y-4">
-                  <li className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span><b>Зарегистрируйтесь бесплатно</b> — укажите специализацию и оборудование</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span><b>Получайте заказы напрямую</b> — без сервисных центров-посредников</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span><b>Работайте на своих условиях</b> — сами устанавливаете цены</span>
-                  </li>
-                  <li className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span><b>Гарантия оплаты</b> — защита сделки и система разрешения споров</span>
-                  </li>
-                </ul>
-              </motion.div>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* Features Section */}
-        <section className="container mx-auto px-4 py-16 md:py-24 relative">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Преимущества</h2>
-            <p className="text-lg text-muted-foreground">
-              Все, что нужно для безопасного и выгодного ремонта
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, index) => (
-              <FeatureCard
-                key={index}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-                delay={index * 0.1}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* Stats Section */}
-        <section className="container mx-auto px-4 py-16 md:py-24 relative">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Цифри говорять самі</h2>
-            <p className="text-lg text-muted-foreground">
-              Реальні результати від реальних користувачів
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <StatCard
-                key={index}
-                value={stat.value}
-                label={stat.label}
-                icon={stat.icon}
-                delay={index * 0.1}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="container mx-auto px-4 py-16 md:py-24 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-3xl p-12 md:p-20 text-center"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              Готовы начать?
-            </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Присоединяйтесь к сотням мастеров и клиентов, которые уже зарабатывают и экономят с помощью RepairHub Pro
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <div className="flex flex-col items-center">
-                <Button
-                  size="lg"
-                  className="text-lg px-8 bg-white text-blue-600 hover:bg-gray-100"
-                  onClick={() => {
-                    const demoClient = {
-                      id: 'client1',
-                      name: 'Володимир Петров',
-                      email: 'client@example.com',
-                      role: 'client',
-                      rating: 4.5
-                    };
-                    if (onLogin) {
-                      onLogin(demoClient.id);
-                    }
-                  }}
-                >
-                  Найти мастера
-                </Button>
-                <p className="text-white/80 text-sm mt-2">Опубликуйте заявку бесплатно</p>
-              </div>
-              <div className="flex flex-col items-center">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-lg px-8 border-white text-white hover:bg-white/10"
-                  onClick={() => {
-                    const demoMaster = {
-                      id: 'master1',
-                      name: 'Олександр Петренко',
-                      email: 'master@example.com',
-                      role: 'master',
-                      rating: 4.9
-                    };
-                    if (onLogin) {
-                      onLogin(demoMaster.id);
-                    }
-                  }}
-                >
-                  Начать зарабатывать
-                </Button>
-                <p className="text-white/80 text-sm mt-2">Регистрация за 3 минуты</p>
-              </div>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* Brands Section */}
-        <section className="container mx-auto px-4 py-12 text-center">
-            <h3 className="text-2xl font-bold mb-4">Работаем с любыми брендами</h3>
-            <p className="text-muted-foreground">
-                iPhone, iPad, MacBook | Samsung, Xiaomi, Huawei | Asus, Dell, Lenovo, HP | И другие
-            </p>
-        </section>
-
-        {/* Footer Note */}
-        <section className="container mx-auto px-4 py-12 text-center">
-          <p className="text-sm text-muted-foreground">
-            © 2024 RepairHub Pro. Все права защищены. | Для реальных мастеров и клиентов
+    <div className="py-20 bg-gradient-to-b from-background to-background/50">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+            Як це працює?
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Простий процес для клієнтів та майстрів
           </p>
-        </section>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {steps.map((step, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <div className="relative mb-6">
+                <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary mb-4">
+                  {step.icon}
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  {index + 1}
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold mb-2 text-foreground">{step.title}</h3>
+              <p className="text-muted-foreground">{step.description}</p>
+            </motion.div>
+          ))}
+        </div>
       </div>
+    </div>
+  );
+};
+
+// Компонент преимуществ
+const FeaturesSection: React.FC = () => {
+  const features = [
+    {
+      icon: <Users className="w-8 h-8" />,
+      title: "Прямий контакт",
+      description: "Спілкуйтеся напряму з майстром, без посередників та менеджерів."
+    },
+    {
+      icon: <Shield className="w-8 h-8" />,
+      title: "Прозорість",
+      description: "Бачите досвід, обладнання (мікроскопи, паяльні станції) та реальні відгуки."
+    },
+    {
+      icon: <Zap className="w-8 h-8" />,
+      title: "Безпека",
+      description: "Ескроу-платежі захищають вашу угоду, як на найкращих P2P-майданчиках."
+    },
+    {
+      icon: <DollarSign className="w-8 h-8" />,
+      title: "Чесні ціни",
+      description: "Жодних накруток та прихованих комісій сервісних центрів."
+    },
+    {
+      icon: <Award className="w-8 h-8" />,
+      title: "Вирішення спорів",
+      description: "Вбудована система арбітражу для справедливого вирішення будь-яких питань."
+    },
+    {
+      icon: <Globe className="w-8 h-8" />,
+      title: "Будь-які бренди",
+      description: "Від Apple та Samsung до Asus та Dell — знайдемо майстра для будь-якої техніки."
+    }
+  ];
+
+  return (
+    <div className="py-20 bg-gradient-to-b from-background/50 to-background">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+            Переваги платформи
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Все, що потрібно для безпечного та вигідного ремонту
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
+            <FeatureCard
+              key={index}
+              icon={feature.icon}
+              title={feature.title}
+              description={feature.description}
+              delay={index * 0.1}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Компонент CTA
+const CTASection: React.FC = () => {
+  return (
+    <div className="py-20 bg-gradient-to-br from-primary/10 via-background to-primary/5">
+      <div className="container mx-auto px-4 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="max-w-3xl mx-auto"
+        >
+          <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+            Готові почати?
+          </h2>
+          <p className="text-xl text-muted-foreground mb-8">
+            Приєднуйтеся до сотень майстрів та клієнтів, які вже заробляють та економлять за допомогою RepairHub Pro
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white px-8 py-4 text-lg font-semibold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
+            >
+              <Smartphone className="w-5 h-5 mr-2" />
+              Я шукаю майстра
+            </Button>
+            
+            <Button 
+              size="lg" 
+              variant="outline"
+              className="border-primary/20 hover:bg-primary/5 px-8 py-4 text-lg font-semibold hover:border-primary/40 transition-all duration-300"
+            >
+              <Wrench className="w-5 h-5 mr-2" />
+              Я майстер ремонту
+            </Button>
+          </div>
+
+          <div className="bg-background/50 backdrop-blur-sm rounded-2xl p-6 border border-border/50">
+            <h3 className="text-lg font-semibold mb-2 text-foreground">Працюємо з будь-якими брендами</h3>
+            <p className="text-muted-foreground">
+              iPhone, iPad, MacBook | Samsung, Xiaomi, Huawei | Asus, Dell, Lenovo, HP | І інші
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+// Footer
+const Footer: React.FC = () => {
+  return (
+    <footer className="bg-background/80 backdrop-blur-sm border-t border-border/50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-3">
+            <AnimatedLogo />
+            <div>
+              <p className="font-semibold text-foreground">RepairHub Pro</p>
+              <p className="text-sm text-muted-foreground">Платформа для ремонту пристроїв</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Phone className="w-4 h-4" />
+              <span>+380 50 123 45 67</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Mail className="w-4 h-4" />
+              <span>support@repairhub.pro</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              <span>Київ, Україна</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-8 pt-8 border-t border-border/50 text-center text-sm text-muted-foreground">
+          <p>© 2024 RepairHub Pro. Всі права захищені. | Для реальних майстрів та клієнтів</p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+// Основной компонент
+const ModernLandingPage: React.FC = () => {
+  return (
+    <div className="min-h-screen bg-background">
+      <HeroSection />
+      <HowItWorksSection />
+      <FeaturesSection />
+      <CTASection />
+      <Footer />
     </div>
   );
 };
