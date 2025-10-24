@@ -896,13 +896,31 @@ export const AdminPanel2026: React.FC<AdminPanel2026Props> = ({ currentUser }) =
     </div>
   );
 
+  const renderFinance = () => <div>Финансы</div>;
+  const renderOperations = () => <div>Операции</div>;
+  const renderMarketing = () => <div>Маркетинг</div>;
+  const renderTech = () => <div>Технологии</div>;
+
   const renderContent = () => {
     switch (activeTab) {
-      case 'dashboard': return renderDashboard();
-      case 'ai-analytics': return renderAIAnalytics();
-      case 'users': return renderUsers();
-      case 'security': return renderSecurity();
-      default: return renderDashboard();
+      case 'dashboard':
+        return renderDashboard();
+      case 'ai-analytics':
+        return renderAIAnalytics();
+      case 'users':
+        return renderUsers();
+      case 'security':
+        return renderSecurity();
+      case 'finance':
+        return renderFinance();
+      case 'operations':
+        return renderOperations();
+      case 'marketing':
+        return renderMarketing();
+      case 'tech':
+        return renderTech();
+      default:
+        return renderDashboard();
     }
   };
 

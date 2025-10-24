@@ -48,12 +48,14 @@ interface AdvancedMessagingProps {
   currentUser: any;
   otherUser: any;
   orderId?: string;
+  onClose?: () => void;
 }
 
 export const AdvancedMessaging: React.FC<AdvancedMessagingProps> = ({
   currentUser,
   otherUser,
-  orderId
+  orderId,
+  onClose
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -301,6 +303,11 @@ export const AdvancedMessaging: React.FC<AdvancedMessagingProps> = ({
             <button className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors">
               <MoreHorizontal className="w-5 h-5" />
             </button>
+            {onClose && (
+              <button onClick={onClose} className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
         </div>
       </div>
