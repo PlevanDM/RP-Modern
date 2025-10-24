@@ -385,12 +385,12 @@ const HeroSection: React.FC = () => {
         {/* Main Content */}
         <div className="text-center max-w-6xl mx-auto mb-24">
           <AnimatePresence mode="wait">
-            <motion.div 
-              key={activeRole} 
-              initial={{ opacity: 0, y: 60, scale: 0.9 }} 
-              animate={{ opacity: 1, y: 0, scale: 1 }} 
-              exit={{ opacity: 0, y: -60, scale: 0.9 }} 
-              transition={{ duration: 1, type: "spring", stiffness: 100 }} 
+            <motion.div
+              key={activeRole}
+              initial={{ opacity: 0, y: 60, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -60, scale: 0.9 }}
+              transition={{ duration: 1, type: "spring", stiffness: 100 }}
               className="mb-16"
             >
               <h1 className="text-7xl md:text-8xl font-bold mb-10">
@@ -412,18 +412,19 @@ const HeroSection: React.FC = () => {
           </AnimatePresence>
 
           {/* CTA Buttons */}
-          <motion.div 
-            initial={{ opacity: 0, y: 40 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 1, delay: 0.8, type: "spring", stiffness: 100 }} 
+          <motion.div
+            key={activeRole + '-buttons'}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.8, type: "spring", stiffness: 100 }}
             className="flex flex-col sm:flex-row gap-8 justify-center mb-20"
           >
             <motion.div
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="bg-gradient-to-r from-primary via-primary/90 to-accent text-white px-12 py-6 text-2xl font-bold shadow-2xl shadow-primary/40 hover:shadow-primary/60 transition-all duration-500 rounded-2xl"
               >
                 {currentContent.icon}

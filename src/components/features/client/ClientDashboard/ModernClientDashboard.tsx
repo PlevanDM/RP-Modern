@@ -27,6 +27,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { Input } from '../../../ui/input';
 import { User } from '../../../../types';
+import { OrderCreationModal } from '../../../OrderCreationModal';
+import { AdvancedMessaging } from '../../../AdvancedMessaging';
+import { useAuthStore } from '../../../../store/authStore';
 
 interface Order {
   id: string;
@@ -63,11 +66,27 @@ interface StatCard {
 const ModernClientDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
+  const { currentUser } = useAuthStore();
+
+  // Mock user for chat
+  const otherUser = {
+      id: 'master1',
+      name: 'Олександр Петренко',
+      avatar: 'https://i.pravatar.cc/96?img=4',
+      role: 'master', // Add other required fields if any
+  };
+
+  const handleOrderSubmit = (orderData: any) => {
+    console.log('Нове замовлення:', orderData);
+    setIsOrderModalOpen(false);
+  };
 
   // Обработчики событий
   const handleCreateOrder = () => {
     console.log('Создание нового заказа');
-    // Здесь будет логика перехода к созданию заказа
+    setIsOrderModalOpen(true);
   };
 
   const handleFindMaster = () => {
@@ -77,7 +96,7 @@ const ModernClientDashboard: React.FC = () => {
 
   const handleMessages = () => {
     console.log('Открытие сообщений');
-    // Здесь будет логика перехода к чату
+    setIsMessagesModalOpen(true);
   };
 
   const handleOrderDetails = (orderId: string) => {
@@ -292,6 +311,27 @@ const ModernClientDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-2 md:p-4 flex flex-col items-center w-full">
+      {currentUser && (
+        <>
+          <OrderCreationModal
+            isOpen={isOrderModalOpen}
+            onClose={() => setIsOrderModalOpen(false)}
+            onSubmit={handleOrderSubmit}
+            currentUser={currentUser}
+          />
+          {isMessagesModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+              <div className="w-full max-w-4xl h-[90vh] bg-white rounded-lg shadow-lg">
+                <AdvancedMessaging
+                  currentUser={currentUser}
+                  otherUser={otherUser}
+                  onClose={() => setIsMessagesModalOpen(false)}
+                />
+              </div>
+            </div>
+          )}
+        </>
+      )}
       <motion.div
         initial="hidden"
         animate="visible"
