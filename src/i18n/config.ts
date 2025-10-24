@@ -5,6 +5,7 @@ import ukTranslation from '../locales/uk/translation.json';
 import enTranslation from '../locales/en/translation.json';
 import roTranslation from '../locales/ro/translation.json';
 import ruTranslation from '../locales/ru/translation.json';
+import plTranslation from '../locales/pl/translation.json';
 
 const resources = {
   uk: {
@@ -18,6 +19,9 @@ const resources = {
   },
   ru: {
     translation: ruTranslation
+  },
+  pl: {
+    translation: plTranslation
   }
 };
 
@@ -27,7 +31,7 @@ i18n
   .init({
     resources,
     fallbackLng: 'uk',
-    supportedLngs: ['uk', 'en', 'ro', 'ru'],
+    supportedLngs: ['uk', 'en', 'ro', 'ru', 'pl'],
     defaultNS: 'translation',
     interpolation: {
       escapeValue: false // React already prevents XSS

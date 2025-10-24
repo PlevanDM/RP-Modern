@@ -1,0 +1,81 @@
+{
+  "hero": {
+    "title": "Znajdź wykonawcę w 5 minut",
+    "subtitle": "Platforma internetowa do bezpośredniego kontaktu między klientami a wykonawcami. Bez pośredników i bez dodatkowych opłat.",
+    "description": "Apple, Samsung, Xiaomi, DJI i inne urządzenia. Znajdź najlepszego wykonawcę w swoim mieście.",
+    "cta_client": "Szukam wykonawcy",
+    "cta_master": "Jestem wykonawcą napraw",
+    "demo_button": "Obejrzyj demo",
+    "quick_switch_title": "🧪 Szybkie przełączanie kont (do testowania):",
+    "role_client": "Klient",
+    "role_master": "Wykonawca",
+    "role_admin": "Administrator",
+    "header_badge": "🔧 Naprawa elektroniki mobilnej",
+    "platform_subtitle": "Platforma internetowa do naprawy urządzeń",
+    "find_master": "Znajdź wykonawcę",
+    "earn_on_repairs": "Zarabiaj na naprawach",
+    "in_5_minutes": "w 5 minut",
+    "of_equipment": "sprzętu"
+  },
+  "stats": {
+    "masters_online": "Wykonawcy online",
+    "satisfied_clients": "Zadowoleni klienci",
+    "successful_repairs": "Udane naprawy",
+    "average_rating": "Średnia ocena"
+  },
+  "howItWorksClient": {
+    "title": "Jak to działa dla klientów?",
+    "subtitle": "Prosty proces znalezienia wykonawcy",
+    "step1_title": "Opisz problem",
+    "step1_description": "Opisz, co się zepsuło i prześlij zdjęcie urządzenia",
+    "step2_title": "Otrzymaj oferty",
+    "step2_description": "Wykonawcy zaproponują rozwiązania i uczciwą cenę",
+    "step3_title": "Wybierz specjalistę",
+    "step3_description": "Sprawdź doświadczenie, sprzęt i prawdziwe opinie",
+    "step4_title": "Bezpieczna płatność",
+    "step4_description": "Pieniądze są chronione przez escrow do momentu zakończenia pracy"
+  },
+  "howItWorksMaster": {
+    "title": "Jak to działa dla wykonawców?",
+    "subtitle": "Prosty proces rozwoju biznesu",
+    "step1_title": "Utwórz profil",
+    "step1_description": "Opisz swoje umiejętności, sprzęt i specjalizację",
+    "step2_title": "Otrzymuj zlecenia",
+    "step2_description": "Klienci znajdują Cię według specjalizacji i oceny",
+    "step3_title": "Pracuj i zarabiaj",
+    "step3_description": "Wykonuj naprawy i otrzymuj wynagrodzenie bez prowizji",
+    "step4_title": "Otrzymuj opinie",
+    "step4_description": "Buduj swoją reputację i zdobywaj więcej zleceń"
+  },
+  "features": {
+    "title": "Zalety platformy",
+    "subtitle": "Wszystko, czego potrzebujesz do bezpiecznej i opłacalnej naprawy",
+    "feature1_title": "Bezpośredni kontakt",
+    "feature1_description": "Komunikuj się bezpośrednio z wykonawcą, bez pośredników i menedżerów.",
+    "feature2_title": "Przejrzystość",
+    "feature2_description": "Widzisz doświadczenie, sprzęt (mikroskopy, stacje lutownicze) i prawdziwe opinie.",
+    "feature3_title": "Bezpieczeństwo",
+    "feature3_description": "Płatności Escrow chronią Twoją transakcję, tak jak na najlepszych platformach P2P.",
+    "feature4_title": "Uczciwe ceny",
+    "feature4_description": "Brak narzutów i ukrytych opłat centrów serwisowych.",
+    "feature5_title": "Rozstrzyganie sporów",
+    "feature5_description": "Wbudowany system arbitrażu do sprawiedliwego rozwiązywania wszelkich kwestii.",
+    "feature6_title": "Dowolne marki",
+    "feature6_description": "Od Apple i Samsunga po Asusa i Della — znajdziemy wykonawcę dla każdego sprzętu."
+  },
+  "cta": {
+    "title": "Gotowy, aby zacząć?",
+    "subtitle": "Dołącz do setek wykonawców i klientów, którzy już zarabiają i oszczędzają dzięki RepairHub Pro",
+    "cta_client": "Szukam wykonawcy",
+    "cta_master": "Jestem wykonawcą napraw",
+    "brands_title": "Pracujemy z dowolnymi markami",
+    "brands_list": "iPhone, iPad, MacBook | Samsung, Xiaomi, Huawei | Asus, Dell, Lenovo, HP | I inne"
+  },
+  "footer": {
+    "platform_subtitle": "Platforma internetowa do naprawy urządzeń",
+    "phone": "+380 50 123 45 67",
+    "email": "support@repairhub.pro",
+    "location": "Kijów, Ukraina",
+    "copyright": "© 2024 RepairHub Pro. Wszelkie prawa zastrzeżone. | Dla prawdziwych wykonawców i klientów"
+  }
+}

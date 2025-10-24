@@ -363,13 +363,13 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
 
       {/* Order Details Modal */}
       {selectedOrder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-x-hidden">
-          <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[85vh] overflow-y-auto">
-            <div className="sticky top-0 bg-indigo-600 text-white p-6 flex justify-between items-center">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-x-hidden">
+          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl shadow-2xl border border-slate-700 max-w-3xl w-full max-h-[85vh] overflow-y-auto">
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 text-white p-6 flex justify-between items-center rounded-t-2xl">
               <h2 className="text-2xl font-bold">{selectedOrder.title}</h2>
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="text-white hover:bg-indigo-700 rounded p-2 transition-colors"
+                className="text-white hover:bg-white/20 rounded-lg p-2 transition-all duration-200"
               >
                 ✕
               </button>
@@ -379,52 +379,52 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
               {/* Order Info */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">Пристрій</p>
-                  <p className="font-medium text-gray-900">{selectedOrder.deviceType}</p>
+                  <p className="text-sm text-slate-400 mb-1">Пристрій</p>
+                  <p className="font-medium text-slate-100">{selectedOrder.deviceType}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">Проблема</p>
-                  <p className="font-medium text-gray-900">{selectedOrder.issue}</p>
+                  <p className="text-sm text-slate-400 mb-1">Проблема</p>
+                  <p className="font-medium text-slate-100">{selectedOrder.issue}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">Статус</p>
-                  <p className="font-medium text-gray-900">{getStatusText(selectedOrder.status)}</p>
+                  <p className="text-sm text-slate-400 mb-1">Статус</p>
+                  <p className="font-medium text-slate-100">{getStatusText(selectedOrder.status)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">Терміновість</p>
-                  <p className="font-medium text-gray-900">{getUrgencyBadge(selectedOrder.urgency)}</p>
+                  <p className="text-sm text-slate-400 mb-1">Терміновість</p>
+                  <p className="font-medium text-slate-100">{getUrgencyBadge(selectedOrder.urgency)}</p>
                 </div>
               </div>
 
               {/* Description */}
               <div>
-                <p className="text-sm text-gray-500 mb-2">Опис</p>
+                <p className="text-sm text-slate-400 mb-2">Опис</p>
                 {isEditing ? (
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Назва замовлення</label>
+                      <label className="block text-sm font-medium text-slate-300 mb-2">Назва замовлення</label>
                       <input
                         type="text"
                         value={editForm.title}
                         onChange={(e) => setEditForm({...editForm, title: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Опис проблеми</label>
+                      <label className="block text-sm font-medium text-slate-300 mb-2">Опис проблеми</label>
                       <textarea
                         value={editForm.description}
                         onChange={(e) => setEditForm({...editForm, description: e.target.value})}
                         rows={4}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Терміновість</label>
+                      <label className="block text-sm font-medium text-slate-300 mb-2">Терміновість</label>
                       <select
                         value={editForm.urgency}
                         onChange={(e) => setEditForm({...editForm, urgency: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       >
                         <option value="high">🔴 Терміно</option>
                         <option value="medium">🟡 Звичайно</option>
@@ -433,43 +433,43 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                     </div>
                   </div>
                 ) : (
-                  <p className="text-gray-900 bg-gray-50 p-4 rounded-lg">{selectedOrder.description}</p>
+                  <p className="text-slate-100 bg-slate-800/50 border border-slate-700 p-4 rounded-lg">{selectedOrder.description}</p>
                 )}
               </div>
 
               {/* Master Info */}
               {selectedOrder.assignedMasterId && (
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <p className="text-sm text-gray-500 mb-2">Призначений майстер</p>
-                  <p className="font-medium text-gray-900">Alex Master</p>
+                <div className="bg-blue-900/20 border border-blue-700/50 p-4 rounded-lg">
+                  <p className="text-sm text-slate-400 mb-2">Призначений майстер</p>
+                  <p className="font-medium text-slate-100">Alex Master</p>
                 </div>
               )}
 
               {/* Pricing Info */}
               {selectedOrder.agreedPrice && (
-                <div className="grid grid-cols-2 gap-4 bg-green-50 p-4 rounded-lg border border-green-200">
+                <div className="grid grid-cols-2 gap-4 bg-green-900/20 border border-green-700/50 p-4 rounded-lg">
                   <div>
-                    <p className="text-sm text-gray-500">Запропонована ціна</p>
-                    <p className="text-lg font-bold text-green-600">${selectedOrder.proposedPrice || selectedOrder.agreedPrice}</p>
+                    <p className="text-sm text-slate-400">Запропонована ціна</p>
+                    <p className="text-lg font-bold text-green-400">${selectedOrder.proposedPrice || selectedOrder.agreedPrice}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Узгоджена ціна</p>
-                    <p className="text-lg font-bold text-green-600">${selectedOrder.agreedPrice}</p>
+                    <p className="text-sm text-slate-400">Узгоджена ціна</p>
+                    <p className="text-lg font-bold text-green-400">${selectedOrder.agreedPrice}</p>
                   </div>
                 </div>
               )}
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap gap-2 pt-4">
+              <div className="flex flex-wrap gap-3 pt-4">
                 {/* CLIENT ACTIONS */}
                 {currentUser?.role === 'client' && (
                   <>
                     {selectedOrder.status === 'proposed' && (
                       <>
-                        <button className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center justify-center gap-2">
+                        <button className="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-green-500/25">
                           <CheckCircleIcon sx={{ fontSize: 20 }} /> Прийняти пропозицію
                         </button>
-                        <button className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors flex items-center justify-center gap-2">
+                        <button className="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-red-500/25">
                           <CancelIcon sx={{ fontSize: 20 }} /> Відхилити
                         </button>
                       </>
@@ -479,30 +479,30 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                       <>
                         <button 
                           onClick={handleEditOrder}
-                          className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center justify-center gap-2"
+                          className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-blue-500/25"
                         >
                           <EditIcon sx={{ fontSize: 20 }} /> Редагувати замовлення
                         </button>
                         <button 
                           onClick={() => handleSendToMaster(selectedOrder.id)}
-                          className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center justify-center gap-2"
+                          className="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-green-500/25"
                         >
                           <MessageIcon sx={{ fontSize: 20 }} /> Відправити майстрам
                         </button>
                         <button 
                           onClick={() => handleToggleActiveSearch(selectedOrder)}
-                          className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 ${
+                          className={`flex-1 px-4 py-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg ${
                             selectedOrder.isActiveSearch !== false 
-                              ? 'bg-orange-600 text-white hover:bg-orange-700' 
-                              : 'bg-gray-600 text-white hover:bg-gray-700'
-                          }`}
+                              ? 'bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 hover:shadow-orange-500/25' 
+                              : 'bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 hover:shadow-slate-500/25'
+                          } text-white`}
                         >
                           <SearchIcon sx={{ fontSize: 20 }} /> 
                           {selectedOrder.isActiveSearch !== false ? 'Призупинити пошук' : 'Активувати пошук'}
                         </button>
                         <button 
                           onClick={() => handleDeleteOrder(selectedOrder)}
-                          className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors flex items-center justify-center gap-2"
+                          className="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-red-500/25"
                         >
                           <CloseIcon sx={{ fontSize: 20 }} /> Видалити замовлення
                         </button>
@@ -513,7 +513,7 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                       <>
                         <button 
                           onClick={() => handleRestoreOrder(selectedOrder)}
-                          className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center justify-center gap-2"
+                          className="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-green-500/25"
                         >
                           <CheckCircleIcon sx={{ fontSize: 20 }} /> Відновити замовлення
                         </button>
@@ -524,13 +524,13 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                       <>
                         <button 
                           onClick={handleSaveOrder}
-                          className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center justify-center gap-2"
+                          className="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-green-500/25"
                         >
                           <CheckCircleIcon sx={{ fontSize: 20 }} /> Зберегти зміни
                         </button>
                         <button 
                           onClick={handleCancelEdit}
-                          className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium transition-colors flex items-center justify-center gap-2"
+                          className="flex-1 px-4 py-3 bg-gradient-to-r from-slate-600 to-slate-700 text-white rounded-xl hover:from-slate-700 hover:to-slate-800 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-slate-500/25"
                         >
                           <CancelIcon sx={{ fontSize: 20 }} /> Скасувати
                         </button>
@@ -538,7 +538,7 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                     )}
 
                     {selectedOrder.status === 'in_progress' && (
-                      <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors flex items-center justify-center gap-2">
+                      <button className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-blue-500/25">
                         <MessageIcon sx={{ fontSize: 20 }} /> Чат з майстром
                       </button>
                     )}
@@ -549,7 +549,7 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                 {currentUser?.role === 'master' && (
                   <>
                     {selectedOrder.status === 'proposed' && (
-                      <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors">
+                      <button className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 font-medium transition-all duration-200 shadow-lg hover:shadow-blue-500/25">
                         📊 Переглянути пропозиції
                       </button>
                     )}
@@ -557,17 +557,17 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                     {selectedOrder.status === 'open' && (
                       <button
                         onClick={() => setShowProposalModal(true)}
-                        className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center justify-center gap-2">
+                        className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-blue-500/25">
                         <EditIcon sx={{ fontSize: 20 }} /> Розмістити пропозицію
                       </button>
                     )}
 
                     {selectedOrder.status === 'in_progress' && (
                       <>
-                        <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors flex items-center justify-center gap-2">
+                        <button className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 font-medium transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-blue-500/25">
                           <MessageIcon sx={{ fontSize: 20 }} /> Чат з клієнтом
                         </button>
-                        <button className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium transition-colors">
+                        <button className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 font-medium transition-all duration-200 shadow-lg hover:shadow-purple-500/25">
                           📸 Поділитися фото
                         </button>
                       </>
@@ -577,7 +577,7 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
 
                 <button
                   onClick={() => setSelectedOrder(null)}
-                  className="px-4 py-2 bg-gray-300 text-gray-900 rounded-lg hover:bg-gray-400 font-medium transition-colors"
+                  className="w-full px-4 py-3 bg-gradient-to-r from-slate-600 to-slate-700 text-white rounded-xl hover:from-slate-700 hover:to-slate-800 font-medium transition-all duration-200 shadow-lg hover:shadow-slate-500/25"
                 >
                   Закрити
                 </button>

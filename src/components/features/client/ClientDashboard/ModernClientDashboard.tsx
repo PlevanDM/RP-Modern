@@ -16,7 +16,8 @@ import {
   Package,
   ArrowRight,
   Filter,
-  ChevronRight
+  ChevronRight,
+  MessageSquare
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../ui/card';
 import { Button } from '../../../ui/button';
@@ -63,6 +64,37 @@ const ModernClientDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Обработчики событий
+  const handleCreateOrder = () => {
+    console.log('Создание нового заказа');
+    // Здесь будет логика перехода к созданию заказа
+  };
+
+  const handleFindMaster = () => {
+    console.log('Поиск мастера');
+    // Здесь будет логика перехода к поиску мастеров
+  };
+
+  const handleMessages = () => {
+    console.log('Открытие сообщений');
+    // Здесь будет логика перехода к чату
+  };
+
+  const handleOrderDetails = (orderId: string) => {
+    console.log('Открытие деталей заказа:', orderId);
+    // Здесь будет логика перехода к деталям заказа
+  };
+
+  const handleWriteToMaster = (masterName: string) => {
+    console.log('Написать мастеру:', masterName);
+    // Здесь будет логика открытия чата с мастером
+  };
+
+  const handleFindMasterForOrder = (orderId: string) => {
+    console.log('Найти мастера для заказа:', orderId);
+    // Здесь будет логика поиска мастера для конкретного заказа
+  };
+
   const stats: StatCard[] = [
     {
       title: 'Всього замовлень',
@@ -97,7 +129,7 @@ const ModernClientDashboard: React.FC = () => {
   const orders: Order[] = [
     {
       id: '1',
-      title: 'Ремонт пральної машини',
+      title: 'Ремонт iPhone 14 Pro',
       status: 'in-progress',
       progress: 65,
       master: {
@@ -107,12 +139,12 @@ const ModernClientDashboard: React.FC = () => {
       },
       date: '2024-01-15',
       price: 3500,
-      category: 'Побутова техніка',
+      category: 'Apple',
       location: 'Київ, вул. Ленінградська 45'
     },
     {
       id: '2',
-      title: 'Установка кондиціонера',
+      title: 'Заміна екрану Samsung Galaxy S23',
       status: 'in-progress',
       progress: 30,
       master: {
@@ -122,17 +154,17 @@ const ModernClientDashboard: React.FC = () => {
       },
       date: '2024-01-16',
       price: 8500,
-      category: 'Кліматична техніка',
+      category: 'Samsung',
       location: 'Київ, пр. Миру 12'
     },
     {
       id: '3',
-      title: 'Ремонт холодильника',
+      title: 'Ремонт Xiaomi Redmi Note 12',
       status: 'pending',
       progress: 0,
       date: '2024-01-17',
       price: 4200,
-      category: 'Побутова техніка',
+      category: 'Xiaomi',
       location: 'Харків, вул. Сумська 8'
     }
   ];
@@ -140,7 +172,7 @@ const ModernClientDashboard: React.FC = () => {
   const orderHistory: Order[] = [
     {
       id: '4',
-      title: 'Заміна розеток',
+      title: 'Ремонт GoPro Hero 11',
       status: 'completed',
       progress: 100,
       master: {
@@ -150,12 +182,12 @@ const ModernClientDashboard: React.FC = () => {
       },
       date: '2024-01-10',
       price: 2500,
-      category: 'Електрика',
+      category: 'GoPro',
       location: 'Львів, вул. Арбату 22'
     },
     {
       id: '5',
-      title: 'Чищення вентиляції',
+      title: 'Заміна батареї DJI Mini 3',
       status: 'completed',
       progress: 100,
       master: {
@@ -165,7 +197,7 @@ const ModernClientDashboard: React.FC = () => {
       },
       date: '2024-01-05',
       price: 3000,
-      category: 'Вентиляція',
+      category: 'DJI',
       location: 'Одеса, вул. Пушкіна 15'
     }
   ];
@@ -174,21 +206,21 @@ const ModernClientDashboard: React.FC = () => {
     {
       id: '1',
       type: 'success',
-      message: 'Майстер Іван Петренко розпочав роботу над замовленням "Ремонт пральної машини"',
+      message: 'Майстер Іван Петренко розпочав роботу над замовленням "Ремонт iPhone 14 Pro"',
       time: '10 хв назад',
       read: false
     },
     {
       id: '2',
       type: 'info',
-      message: 'Нова пропозиція від майстра для замовлення "Ремонт холодильника"',
+      message: 'Нова пропозиція від майстра для замовлення "Ремонт Xiaomi Redmi Note 12"',
       time: '1 год назад',
       read: false
     },
     {
       id: '3',
       type: 'success',
-      message: 'Замовлення "Заміна розеток" успішно завершено',
+      message: 'Замовлення "Ремонт GoPro Hero 11" успішно завершено',
       time: '2 дні назад',
       read: true
     }
@@ -224,6 +256,19 @@ const ModernClientDashboard: React.FC = () => {
     }
   };
 
+  // Этапы ремонта мобильной электроники
+  const getRepairStages = (progress: number) => {
+    const stages = [
+      { name: 'Прийнято в роботу', completed: progress > 0 },
+      { name: 'Діагностика', completed: progress > 20 },
+      { name: 'Замовлення запчастин', completed: progress > 40 },
+      { name: 'Ремонт', completed: progress > 60 },
+      { name: 'Тестування', completed: progress > 80 },
+      { name: 'Готово', completed: progress >= 100 }
+    ];
+    return stages;
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -251,9 +296,440 @@ const ModernClientDashboard: React.FC = () => {
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="max-w-6xl mx-auto space-y-4 w-full"
+        className="max-w-7xl mx-auto space-y-4 w-full"
       >
-        {/* Stats Grid */}
+        {/* 1. ПРИОРИТЕТ: Активные заказы (самое важное для клиента) */}
+        <motion.div variants={itemVariants}>
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Clock className="w-6 h-6 text-primary" />
+                  Активні замовлення
+                  <Badge variant="secondary" className="ml-2">
+                    {orders.filter(o => o.status === 'in-progress' || o.status === 'pending').length}
+                  </Badge>
+                </CardTitle>
+                <Button variant="ghost" size="sm">
+                  <Filter className="w-4 h-4 mr-2" />
+                  Фільтр
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {orders.filter(o => o.status === 'in-progress' || o.status === 'pending').map((order, index) => (
+                <motion.div
+                  key={order.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ 
+                    opacity: 1, 
+                    y: 0
+                  }}
+                  transition={{ 
+                    delay: index * 0.1,
+                    duration: 0.4,
+                    ease: "easeOut"
+                  }}
+                  whileHover={{ 
+                    scale: 1.02, 
+                    y: -4,
+                    transition: { duration: 0.2 }
+                  }}
+                  className="p-4 border border-border/50 rounded-xl bg-gradient-to-br from-white to-gray-50/50 hover:shadow-lg hover:border-primary/20 transition-all duration-300 relative"
+                >
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg mb-1 text-gray-900">{order.title}</h3>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {new Date(order.date).toLocaleDateString('uk-UA')}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MapPin className="w-3 h-3" />
+                          {order.location.split(',')[0]}
+                        </span>
+                        <span className="font-bold text-primary text-sm">₴{order.price.toLocaleString()}</span>
+                      </div>
+                    </div>
+                    <Badge className={`${getStatusColor(order.status)} text-xs px-2 py-1 font-medium`}>
+                      {getStatusText(order.status)}
+                    </Badge>
+                  </div>
+
+                  {/* Master Info */}
+                  {order.master && (
+                    <div className="flex items-center gap-3 mb-3 p-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                      <Avatar className="w-8 h-8">
+                        <AvatarImage src={order.master.avatar} />
+                        <AvatarFallback className="text-xs">{order.master.name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-gray-900">{order.master.name}</p>
+                        <p className="text-xs text-muted-foreground">⭐ {order.master.rating} • Майстер</p>
+                      </div>
+                      <Button 
+                        onClick={() => handleWriteToMaster(order.master.name)}
+                        variant="outline" 
+                        size="sm" 
+                        className="h-7 px-2 text-xs hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
+                      >
+                        <MessageSquare className="w-3 h-3 mr-1" />
+                        Написати
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Progress */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground font-medium">Прогрес</span>
+                      <motion.span 
+                        className="font-bold text-primary"
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.3, duration: 0.5 }}
+                      >
+                        {order.progress}%
+                      </motion.span>
+                    </div>
+                    <div className="relative">
+                      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-primary via-blue-500 to-green-500 rounded-full"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${order.progress}%` }}
+                          transition={{ duration: 2, ease: "easeOut", delay: 0.5 }}
+                        />
+                      </div>
+                      {/* Animated shimmer effect */}
+                      <motion.div
+                        className="absolute top-0 left-0 h-2 w-8 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-full"
+                        animate={{ x: ['-100%', '100%'] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                      />
+                    </div>
+                    
+                    {/* Animated Status Bar */}
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium text-muted-foreground">Етапи ремонту:</p>
+                      <div className="relative">
+                        {/* Background Progress Line */}
+                        <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 rounded-full transform -translate-y-1/2" />
+                        
+                        {/* Animated Progress Line */}
+                        <motion.div 
+                          className="absolute top-1/2 left-0 h-0.5 bg-gradient-to-r from-primary to-green-500 rounded-full transform -translate-y-1/2"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${order.progress}%` }}
+                          transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
+                        />
+                        
+                        {/* Optimized Animated Stage Indicators */}
+                        <div className="relative flex justify-between">
+                          {getRepairStages(order.progress).map((stage, stageIndex) => (
+                            <motion.div
+                              key={stageIndex}
+                              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                              animate={{ 
+                                opacity: 1, 
+                                scale: 1, 
+                                y: 0
+                              }}
+                              transition={{ 
+                                delay: stageIndex * 0.2 + 0.5,
+                                duration: 0.4,
+                                ease: "easeOut"
+                              }}
+                              whileHover={{ 
+                                scale: 1.1, 
+                                y: -2,
+                                transition: { duration: 0.2 }
+                              }}
+                              className="flex flex-col items-center relative"
+                            >
+                              {/* Animated Circle */}
+                              <motion.div
+                                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                                  stage.completed 
+                                    ? 'bg-gradient-to-br from-green-400 to-green-600 border-green-500 shadow-lg' 
+                                    : 'bg-white border-gray-300'
+                                }`}
+                                animate={stage.completed ? {
+                                  scale: [1, 1.05, 1],
+                                  boxShadow: [
+                                    '0 0 0 0 rgba(34, 197, 94, 0.4)',
+                                    '0 0 0 8px rgba(34, 197, 94, 0)',
+                                    '0 0 0 0 rgba(34, 197, 94, 0.4)'
+                                  ]
+                                } : {
+                                  scale: [1, 1.02, 1],
+                                  opacity: [0.7, 1, 0.7]
+                                }}
+                                transition={{
+                                  scale: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+                                  boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+                                  opacity: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                                }}
+                              >
+                                {stage.completed && (
+                                  <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: stageIndex * 0.2 + 0.8, duration: 0.3 }}
+                                  >
+                                    <CheckCircle2 className="w-3 h-3 text-white" />
+                                  </motion.div>
+                                )}
+                                {!stage.completed && (
+                                  <motion.div
+                                    className="w-1.5 h-1.5 bg-gray-400 rounded-full"
+                                    animate={{ 
+                                      scale: [1, 1.2, 1],
+                                      opacity: [0.5, 1, 0.5]
+                                    }}
+                                    transition={{
+                                      duration: 2,
+                                      repeat: Infinity,
+                                      ease: "easeInOut",
+                                      delay: stageIndex * 0.2
+                                    }}
+                                  />
+                                )}
+                              </motion.div>
+                              
+                              {/* Stage Label */}
+                              <motion.span
+                                className={`text-xs font-medium mt-1 text-center max-w-16 ${
+                                  stage.completed 
+                                    ? 'text-green-700' 
+                                    : 'text-gray-500'
+                                }`}
+                                animate={stage.completed ? {
+                                  color: ['#15803d', '#16a34a', '#15803d']
+                                } : {}}
+                                transition={{
+                                  color: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                                }}
+                              >
+                                {stage.name}
+                              </motion.span>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
+                    <div className="flex gap-1">
+                      <Button 
+                        onClick={() => handleOrderDetails(order.id)}
+                        variant="outline" 
+                        size="sm" 
+                        className="h-7 px-2 text-xs hover:bg-primary/5 hover:border-primary/30 transition-all duration-200"
+                      >
+                        Деталі
+                        <ChevronRight className="w-3 h-3 ml-1" />
+                      </Button>
+                      {order.status === 'pending' && (
+                        <Button 
+                          onClick={() => handleFindMasterForOrder(order.id)}
+                          variant="outline" 
+                          size="sm" 
+                          className="h-7 px-2 text-xs hover:bg-green-50 hover:border-green-300 transition-all duration-200"
+                        >
+                          <Search className="w-3 h-3 mr-1" />
+                          Знайти майстра
+                        </Button>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground font-medium">{order.category}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+              
+              {orders.filter(o => o.status === 'in-progress' || o.status === 'pending').length === 0 && (
+                <div className="text-center py-12">
+                  <Clock className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-muted-foreground mb-2">Немає активних замовлень</h3>
+                  <p className="text-sm text-muted-foreground mb-4">Створіть нове замовлення або знайдіть майстра</p>
+                  <Button 
+                    onClick={handleCreateOrder}
+                    className="mr-2 hover:shadow-lg transition-all duration-200"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Створити замовлення
+                  </Button>
+                  <Button 
+                    onClick={handleFindMaster}
+                    variant="outline"
+                    className="hover:bg-primary/5 hover:border-primary/30 transition-all duration-200"
+                  >
+                    <Search className="w-4 h-4 mr-2" />
+                    Знайти майстра
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* 2. ПРИОРИТЕТ: Быстрые действия */}
+        <motion.div variants={itemVariants}>
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-primary" />
+                Швидкі дії
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, duration: 0.4, ease: "easeOut" }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    y: -5,
+                    transition: { duration: 0.2 }
+                  }}
+                >
+                  <Button 
+                    onClick={handleCreateOrder}
+                    className="w-full h-auto py-6 flex flex-col items-center justify-center group bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300" 
+                    size="lg"
+                  >
+                    <motion.div 
+                      className="p-2 bg-white/20 rounded-lg mb-2"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Plus className="w-6 h-6" />
+                    </motion.div>
+                    <p className="font-bold text-base">Створити замовлення</p>
+                    <p className="text-xs opacity-90 mt-1">Нова заявка на ремонт</p>
+                  </Button>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    y: -5,
+                    transition: { duration: 0.2 }
+                  }}
+                >
+                  <Button 
+                    onClick={handleFindMaster}
+                    variant="outline" 
+                    className="w-full h-auto py-6 flex flex-col items-center justify-center group border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300" 
+                    size="lg"
+                  >
+                    <motion.div 
+                      className="p-2 bg-primary/10 rounded-lg mb-2"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Search className="w-6 h-6 text-primary" />
+                    </motion.div>
+                    <p className="font-bold text-base">Знайти майстра</p>
+                    <p className="text-xs text-muted-foreground mt-1">Пошук спеціалістів</p>
+                  </Button>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.4, ease: "easeOut" }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    y: -5,
+                    transition: { duration: 0.2 }
+                  }}
+                >
+                  <Button 
+                    onClick={handleMessages}
+                    variant="outline" 
+                    className="w-full h-auto py-6 flex flex-col items-center justify-center group border-2 hover:border-green-500/50 hover:bg-green-50 transition-all duration-300" 
+                    size="lg"
+                  >
+                    <motion.div 
+                      className="p-2 bg-green-500/10 rounded-lg mb-2"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <MessageSquare className="w-6 h-6 text-green-600" />
+                    </motion.div>
+                    <p className="font-bold text-base">Мої повідомлення</p>
+                    <p className="text-xs text-muted-foreground mt-1">Чат з майстрами</p>
+                  </Button>
+                </motion.div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* 3. ПРИОРИТЕТ: Уведомления (важные для клиента) */}
+        <motion.div variants={itemVariants}>
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bell className="w-5 h-5 text-primary" />
+                Важливі увідомлення
+                <Badge variant="secondary" className="ml-2">
+                  {notifications.filter(n => !n.read).length}
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {notifications.slice(0, 3).map((notification, index) => (
+                <motion.div
+                  key={notification.id}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`p-4 rounded-lg border transition-all duration-300 ${
+                    notification.read 
+                      ? 'bg-background/30 border-border/50' 
+                      : 'bg-primary/5 border-primary/20'
+                  }`}
+                >
+                  <div className="flex gap-3">
+                    <div className={`p-2 rounded-full h-fit ${
+                      notification.type === 'success' 
+                        ? 'bg-green-500/10' 
+                        : notification.type === 'warning'
+                        ? 'bg-yellow-500/10'
+                        : 'bg-blue-500/10'
+                    }`}>
+                      {notification.type === 'success' ? (
+                        <CheckCircle2 className="w-5 h-5 text-green-500" />
+                      ) : notification.type === 'warning' ? (
+                        <AlertCircle className="w-5 h-5 text-yellow-500" />
+                      ) : (
+                        <Bell className="w-5 h-5 text-blue-500" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium">{notification.message}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{notification.time}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* 4. ПРИОРИТЕТ: Краткая статистика */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, index) => (
             <motion.div
@@ -281,249 +757,45 @@ const ModernClientDashboard: React.FC = () => {
           ))}
         </motion.div>
 
-        {/* Quick Actions */}
+        {/* 5. ПРИОРИТЕТ: История заказов (компактно) */}
         <motion.div variants={itemVariants}>
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-primary" />
-                Швидкі дії
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                Останні завершені замовлення
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button className="w-full h-auto py-6 flex items-center justify-between group" size="lg">
+            <CardContent className="space-y-3">
+              {orderHistory.slice(0, 3).map((order, index) => (
+                <motion.div
+                  key={order.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.01 }}
+                  className="p-4 border border-border rounded-lg bg-background/50 hover:shadow-md transition-all duration-300"
+                >
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-white/20 rounded-lg">
-                        <Plus className="w-6 h-6" />
+                      <div className="p-2 bg-green-500/10 rounded-lg">
+                        <CheckCircle2 className="w-5 h-5 text-green-500" />
                       </div>
-                      <div className="text-left">
-                        <p className="font-semibold">Створити замовлення</p>
-                        <p className="text-xs opacity-80">Нова заявка на ремонт</p>
+                      <div>
+                        <h4 className="font-semibold">{order.title}</h4>
+                        <p className="text-sm text-muted-foreground">{order.category}</p>
                       </div>
                     </div>
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button variant="outline" className="w-full h-auto py-6 flex items-center justify-between group" size="lg">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <Search className="w-6 h-6" />
-                      </div>
-                      <div className="text-left">
-                        <p className="font-semibold">Знайти майстра</p>
-                        <p className="text-xs text-muted-foreground">Пошук спеціалістів</p>
-                      </div>
+                    <div className="text-right">
+                      <p className="font-bold text-lg">₴{order.price.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground">{new Date(order.date).toLocaleDateString('uk-UA')}</p>
                     </div>
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                  </div>
                 </motion.div>
-              </div>
+              ))}
             </CardContent>
           </Card>
         </motion.div>
-
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Orders Section */}
-          <motion.div variants={itemVariants} className="lg:col-span-2 space-y-4">
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-primary" />
-                    Поточні замовлення
-                  </CardTitle>
-                  <Button variant="ghost" size="sm">
-                    <Filter className="w-4 h-4 mr-2" />
-                    Фільтр
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {orders.map((order, index) => (
-                  <motion.div
-                    key={order.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ scale: 1.01 }}
-                    className="p-4 border border-border rounded-xl bg-background/50 hover:shadow-md transition-all duration-300"
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{order.title}</h3>
-                        <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                          <Calendar className="w-4 h-4" />
-                          {new Date(order.date).toLocaleDateString('uk-UA')}
-                        </div>
-                      </div>
-                      <Badge className={getStatusColor(order.status)}>
-                        {getStatusText(order.status)}
-                      </Badge>
-                    </div>
-
-                    {order.master && (
-                      <div className="flex items-center gap-3 mb-3 p-2 bg-muted/30 rounded-lg">
-                        <Avatar className="w-8 h-8">
-                          <AvatarImage src={order.master.avatar} />
-                          <AvatarFallback>{order.master.name[0]}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">{order.master.name}</p>
-                          <p className="text-xs text-muted-foreground">⭐ {order.master.rating}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Прогрес</span>
-                        <span className="font-medium">{order.progress}%</span>
-                      </div>
-                      <Progress value={order.progress} className="h-2" />
-                    </div>
-
-                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          {order.location.split(',')[0]}
-                        </span>
-                        <span className="font-semibold text-foreground">₴{order.price.toLocaleString()}</span>
-                      </div>
-                      <Button variant="ghost" size="sm">
-                        Деталі
-                        <ChevronRight className="w-4 h-4 ml-1" />
-                      </Button>
-                    </div>
-                  </motion.div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Order History */}
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-green-500" />
-                  Історія замовлень
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {orderHistory.map((order, index) => (
-                  <motion.div
-                    key={order.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ scale: 1.01 }}
-                    className="p-4 border border-border rounded-lg bg-background/50 hover:shadow-md transition-all duration-300"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-green-500/10 rounded-lg">
-                          <CheckCircle2 className="w-5 h-5 text-green-500" />
-                        </div>
-                        <div>
-                          <h4 className="font-medium">{order.title}</h4>
-                          <p className="text-sm text-muted-foreground">{order.category}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold">₴{order.price.toLocaleString()}</p>
-                        <p className="text-xs text-muted-foreground">{new Date(order.date).toLocaleDateString('uk-UA')}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Sidebar */}
-          <motion.div variants={itemVariants} className="space-y-6">
-            {/* Notifications */}
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bell className="w-5 h-5 text-primary" />
-                  Увідомлення
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {notifications.map((notification, index) => (
-                  <motion.div
-                    key={notification.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className={`p-3 rounded-lg border transition-all duration-300 ${
-                      notification.read 
-                        ? 'bg-background/30 border-border/50' 
-                        : 'bg-primary/5 border-primary/20'
-                    }`}
-                  >
-                    <div className="flex gap-2">
-                      <div className={`p-1 rounded-full h-fit ${
-                        notification.type === 'success' 
-                          ? 'bg-green-500/10' 
-                          : notification.type === 'warning'
-                          ? 'bg-yellow-500/10'
-                          : 'bg-blue-500/10'
-                      }`}>
-                        {notification.type === 'success' ? (
-                          <CheckCircle2 className="w-4 h-4 text-green-500" />
-                        ) : notification.type === 'warning' ? (
-                          <AlertCircle className="w-4 h-4 text-yellow-500" />
-                        ) : (
-                          <Bell className="w-4 h-4 text-blue-500" />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm">{notification.message}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Quick Stats */}
-            <Card className="border-border/50 bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="text-lg">Ваша активність</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Виконано в цьому місяці</span>
-                    <span className="font-semibold">5 замовлень</span>
-                  </div>
-                  <Progress value={83} className="h-2" />
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Середній рейтинг майстрів</span>
-                    <span className="font-semibold">4.8 ⭐</span>
-                  </div>
-                  <Progress value={96} className="h-2" />
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Економія часу</span>
-                    <span className="font-semibold">12 годин</span>
-                  </div>
-                  <Progress value={75} className="h-2" />
-                </div>
-              </CardContent>
-            </Card>
-
-          </motion.div>
-        </div>
       </motion.div>
     </div>
   );

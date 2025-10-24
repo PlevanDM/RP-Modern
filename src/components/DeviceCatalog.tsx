@@ -122,20 +122,6 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
     }, 300);
   };
 
-  const handleCreateOrderFromModal = (orderData: Partial<Order>) => {
-    console.log('✅ Создана заявка из модального окна:', orderData);
-    try {
-      const existingOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
-      const updatedOrders = [orderData, ...existingOrders];
-      localStorage.setItem('repair_master_orders', JSON.stringify(updatedOrders));
-      console.log('💾 Заказ сохранен в localStorage');
-      window.dispatchEvent(new CustomEvent('ordersUpdated'));
-    } catch (error) {
-      console.error('❌ Ошибка при сохранении заказа:', error);
-    }
-    setShowCreateOrderModal(false);
-    setShowSuccessModal(true);
-  };
 
   // Определяем, является ли пользователь мастером
   const isMaster = currentUser?.role === 'master';
@@ -180,8 +166,10 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
           {showCreateOrderModal && (
             <AnimatedCreateOrderModal
               isOpen={showCreateOrderModal}
-              onClose={() => setShowCreateOrderModal(false)}
-              onSubmit={handleCreateOrderFromModal}
+              onClose={() => {
+                setShowCreateOrderModal(false);
+                setShowSuccessModal(true);
+              }}
               currentUser={currentUser}
               initialData={{
                 title: `Ремонт ${createdOrderData?.device}`,
