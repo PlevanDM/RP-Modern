@@ -58,3 +58,49 @@ out/
 
 # IDE
 *.iml
+
+# Temporary files and screenshots
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.py
+admin_login.html
+build-output.txt
+error.png
+success.png
+screenshot*.py
+verify_*.py
+
+# Old documentation (keep only current docs)
+ADMIN_PANEL_REPORT.md
+ARCHITECTURE.md
+CLEANUP_REPORT.md
+DATA.md
+DEPLOY_TO_GITHUB.sh
+DEVELOPER_TASKS_FOR_JULES.md
+DEVELOPMENT_ROADMAP.md
+ESCROW_SYSTEM.md
+FAQ.md
+FINAL_REPAIR_REPORT.md
+FINAL_UPLOAD_STEPS.md
+GETTING_STARTED.md
+GITHUB_CREDENTIALS.txt
+GITHUB_READY.md
+GITHUB_SETUP.md
+LANDING_PAGE_GUIDE.md
+MASTER_GUIDE.md
+PROCESS_IMPROVEMENTS.md
+PROJECT-INFO.md
+QUICKSTART.md
+SECURITY.md
+SUMMARY.md
+TEST_REPORT.md
+UPDATE_SUMMARY_2025.md
+USER_GUIDE.md
+
+# Duplicate project folders
+pro-v-*-feature-*/
+
+# Test results
+test-results/
