@@ -98,7 +98,7 @@ const ModernClientDashboard: React.FC = () => {
   const orders: Order[] = [
     {
       id: '1',
-      title: 'Ремонт пральної машини',
+      title: 'Ремонт iPhone 14 Pro',
       status: 'in-progress',
       progress: 65,
       master: {
@@ -108,12 +108,12 @@ const ModernClientDashboard: React.FC = () => {
       },
       date: '2024-01-15',
       price: 3500,
-      category: 'Побутова техніка',
+      category: 'Apple',
       location: 'Київ, вул. Ленінградська 45'
     },
     {
       id: '2',
-      title: 'Установка кондиціонера',
+      title: 'Заміна екрану Samsung Galaxy S23',
       status: 'in-progress',
       progress: 30,
       master: {
@@ -123,17 +123,17 @@ const ModernClientDashboard: React.FC = () => {
       },
       date: '2024-01-16',
       price: 8500,
-      category: 'Кліматична техніка',
+      category: 'Samsung',
       location: 'Київ, пр. Миру 12'
     },
     {
       id: '3',
-      title: 'Ремонт холодильника',
+      title: 'Ремонт Xiaomi Redmi Note 12',
       status: 'pending',
       progress: 0,
       date: '2024-01-17',
       price: 4200,
-      category: 'Побутова техніка',
+      category: 'Xiaomi',
       location: 'Харків, вул. Сумська 8'
     }
   ];
@@ -141,7 +141,7 @@ const ModernClientDashboard: React.FC = () => {
   const orderHistory: Order[] = [
     {
       id: '4',
-      title: 'Заміна розеток',
+      title: 'Ремонт GoPro Hero 11',
       status: 'completed',
       progress: 100,
       master: {
@@ -151,12 +151,12 @@ const ModernClientDashboard: React.FC = () => {
       },
       date: '2024-01-10',
       price: 2500,
-      category: 'Електрика',
+      category: 'GoPro',
       location: 'Львів, вул. Арбату 22'
     },
     {
       id: '5',
-      title: 'Чищення вентиляції',
+      title: 'Заміна батареї DJI Mini 3',
       status: 'completed',
       progress: 100,
       master: {
@@ -166,7 +166,7 @@ const ModernClientDashboard: React.FC = () => {
       },
       date: '2024-01-05',
       price: 3000,
-      category: 'Вентиляція',
+      category: 'DJI',
       location: 'Одеса, вул. Пушкіна 15'
     }
   ];
@@ -175,21 +175,21 @@ const ModernClientDashboard: React.FC = () => {
     {
       id: '1',
       type: 'success',
-      message: 'Майстер Іван Петренко розпочав роботу над замовленням "Ремонт пральної машини"',
+      message: 'Майстер Іван Петренко розпочав роботу над замовленням "Ремонт iPhone 14 Pro"',
       time: '10 хв назад',
       read: false
     },
     {
       id: '2',
       type: 'info',
-      message: 'Нова пропозиція від майстра для замовлення "Ремонт холодильника"',
+      message: 'Нова пропозиція від майстра для замовлення "Ремонт Xiaomi Redmi Note 12"',
       time: '1 год назад',
       read: false
     },
     {
       id: '3',
       type: 'success',
-      message: 'Замовлення "Заміна розеток" успішно завершено',
+      message: 'Замовлення "Ремонт GoPro Hero 11" успішно завершено',
       time: '2 дні назад',
       read: true
     }
@@ -223,6 +223,19 @@ const ModernClientDashboard: React.FC = () => {
       default:
         return status;
     }
+  };
+
+  // Этапы ремонта мобильной электроники
+  const getRepairStages = (progress: number) => {
+    const stages = [
+      { name: 'Прийнято в роботу', completed: progress > 0 },
+      { name: 'Діагностика', completed: progress > 20 },
+      { name: 'Замовлення запчастин', completed: progress > 40 },
+      { name: 'Ремонт', completed: progress > 60 },
+      { name: 'Тестування', completed: progress > 80 },
+      { name: 'Готово', completed: progress >= 100 }
+    ];
+    return stages;
   };
 
   const containerVariants = {
@@ -279,76 +292,202 @@ const ModernClientDashboard: React.FC = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.01 }}
-                  className="p-6 border border-border rounded-xl bg-background/50 hover:shadow-lg transition-all duration-300"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  className="p-4 border border-border/50 rounded-xl bg-gradient-to-br from-white to-gray-50/50 hover:shadow-xl hover:border-primary/20 transition-all duration-300 backdrop-blur-sm"
                 >
-                  <div className="flex items-start justify-between mb-4">
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <h3 className="font-bold text-xl mb-2">{order.title}</h3>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <h3 className="font-bold text-lg mb-1 text-gray-900">{order.title}</h3>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
+                          <Calendar className="w-3 h-3" />
                           {new Date(order.date).toLocaleDateString('uk-UA')}
                         </span>
                         <span className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
+                          <MapPin className="w-3 h-3" />
                           {order.location.split(',')[0]}
                         </span>
-                        <span className="font-semibold text-foreground text-lg">₴{order.price.toLocaleString()}</span>
+                        <span className="font-bold text-primary text-sm">₴{order.price.toLocaleString()}</span>
                       </div>
                     </div>
-                    <Badge className={`${getStatusColor(order.status)} text-sm px-3 py-1`}>
+                    <Badge className={`${getStatusColor(order.status)} text-xs px-2 py-1 font-medium`}>
                       {getStatusText(order.status)}
                     </Badge>
                   </div>
 
+                  {/* Master Info */}
                   {order.master && (
-                    <div className="flex items-center gap-4 mb-4 p-3 bg-muted/30 rounded-lg">
-                      <Avatar className="w-12 h-12">
+                    <div className="flex items-center gap-3 mb-3 p-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                      <Avatar className="w-8 h-8">
                         <AvatarImage src={order.master.avatar} />
-                        <AvatarFallback>{order.master.name[0]}</AvatarFallback>
+                        <AvatarFallback className="text-xs">{order.master.name[0]}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <p className="text-lg font-semibold">{order.master.name}</p>
-                        <p className="text-sm text-muted-foreground">⭐ {order.master.rating} • Майстер</p>
+                        <p className="text-sm font-semibold text-gray-900">{order.master.name}</p>
+                        <p className="text-xs text-muted-foreground">⭐ {order.master.rating} • Майстер</p>
                       </div>
-                      <Button variant="outline" size="sm">
-                        <MessageSquare className="w-4 h-4 mr-2" />
+                      <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
+                        <MessageSquare className="w-3 h-3 mr-1" />
                         Написати
                       </Button>
                     </div>
                   )}
 
+                  {/* Progress */}
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground font-medium">Прогрес виконання</span>
-                      <span className="font-bold text-lg">{order.progress}%</span>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground font-medium">Прогрес</span>
+                      <motion.span 
+                        className="font-bold text-primary"
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.3, duration: 0.5 }}
+                      >
+                        {order.progress}%
+                      </motion.span>
                     </div>
-                    <Progress value={order.progress} className="h-3" />
-                    {order.progress > 0 && (
-                      <p className="text-xs text-muted-foreground">
-                        {order.progress < 30 ? 'Робота розпочата' : 
-                         order.progress < 70 ? 'В процесі виконання' : 
-                         'Майже готово!'}
-                      </p>
-                    )}
+                    <div className="relative">
+                      <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-primary via-blue-500 to-green-500 rounded-full"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${order.progress}%` }}
+                          transition={{ duration: 2, ease: "easeOut", delay: 0.5 }}
+                        />
+                      </div>
+                      {/* Animated shimmer effect */}
+                      <motion.div
+                        className="absolute top-0 left-0 h-2 w-8 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-full"
+                        animate={{ x: ['-100%', '100%'] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                      />
+                    </div>
+                    
+                    {/* Animated Status Bar */}
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium text-muted-foreground">Етапи ремонту:</p>
+                      <div className="relative">
+                        {/* Background Progress Line */}
+                        <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 rounded-full transform -translate-y-1/2" />
+                        
+                        {/* Animated Progress Line */}
+                        <motion.div 
+                          className="absolute top-1/2 left-0 h-0.5 bg-gradient-to-r from-primary to-green-500 rounded-full transform -translate-y-1/2"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${order.progress}%` }}
+                          transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
+                        />
+                        
+                        {/* Animated Stage Indicators */}
+                        <div className="relative flex justify-between">
+                          {getRepairStages(order.progress).map((stage, stageIndex) => (
+                            <motion.div
+                              key={stageIndex}
+                              initial={{ opacity: 0, scale: 0, y: 20 }}
+                              animate={{ 
+                                opacity: 1, 
+                                scale: 1, 
+                                y: 0,
+                                rotate: stage.completed ? [0, 5, -5, 0] : 0
+                              }}
+                              transition={{ 
+                                delay: stageIndex * 0.2 + 0.8,
+                                duration: 0.6,
+                                rotate: { duration: 0.3, delay: stageIndex * 0.1 + 1.5 }
+                              }}
+                              className="flex flex-col items-center"
+                            >
+                              {/* Animated Circle */}
+                              <motion.div
+                                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                                  stage.completed 
+                                    ? 'bg-gradient-to-br from-green-400 to-green-600 border-green-500 shadow-lg' 
+                                    : 'bg-white border-gray-300'
+                                }`}
+                                animate={stage.completed ? {
+                                  boxShadow: [
+                                    '0 0 0 0 rgba(34, 197, 94, 0.4)',
+                                    '0 0 0 8px rgba(34, 197, 94, 0)',
+                                    '0 0 0 0 rgba(34, 197, 94, 0)'
+                                  ]
+                                } : {}}
+                                transition={{
+                                  boxShadow: {
+                                    duration: 2,
+                                    repeat: Infinity,
+                                    delay: stageIndex * 0.3
+                                  }
+                                }}
+                              >
+                                {stage.completed && (
+                                  <motion.div
+                                    initial={{ scale: 0, rotate: -180 }}
+                                    animate={{ scale: 1, rotate: 0 }}
+                                    transition={{ delay: stageIndex * 0.2 + 1, duration: 0.4 }}
+                                  >
+                                    <CheckCircle2 className="w-3 h-3 text-white" />
+                                  </motion.div>
+                                )}
+                                {!stage.completed && (
+                                  <motion.div
+                                    className="w-1.5 h-1.5 bg-gray-400 rounded-full"
+                                    animate={{ 
+                                      scale: [1, 1.2, 1],
+                                      opacity: [0.5, 1, 0.5]
+                                    }}
+                                    transition={{
+                                      duration: 2,
+                                      repeat: Infinity,
+                                      delay: stageIndex * 0.2
+                                    }}
+                                  />
+                                )}
+                              </motion.div>
+                              
+                              {/* Stage Label */}
+                              <motion.span
+                                className={`text-xs font-medium mt-1 text-center max-w-16 ${
+                                  stage.completed 
+                                    ? 'text-green-700' 
+                                    : 'text-gray-500'
+                                }`}
+                                animate={stage.completed ? {
+                                  color: ['#15803d', '#16a34a', '#15803d']
+                                } : {}}
+                                transition={{
+                                  color: {
+                                    duration: 2,
+                                    repeat: Infinity,
+                                    delay: stageIndex * 0.2
+                                  }
+                                }}
+                              >
+                                {stage.name}
+                              </motion.span>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
+                  {/* Footer */}
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/50">
+                    <div className="flex gap-1">
+                      <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
                         Деталі
-                        <ChevronRight className="w-4 h-4 ml-1" />
+                        <ChevronRight className="w-3 h-3 ml-1" />
                       </Button>
                       {order.status === 'pending' && (
-                        <Button variant="outline" size="sm">
-                          <Search className="w-4 h-4 mr-1" />
+                        <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
+                          <Search className="w-3 h-3 mr-1" />
                           Знайти майстра
                         </Button>
                       )}
                     </div>
-                    <div className="text-right text-sm text-muted-foreground">
-                      <p>Категорія: {order.category}</p>
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground font-medium">{order.category}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -383,32 +522,32 @@ const ModernClientDashboard: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button className="w-full h-auto py-8 flex flex-col items-center justify-center group" size="lg">
-                    <div className="p-3 bg-white/20 rounded-xl mb-3">
-                      <Plus className="w-8 h-8" />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+                  <Button className="w-full h-auto py-6 flex flex-col items-center justify-center group bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-xl transition-all duration-300" size="lg">
+                    <div className="p-2 bg-white/20 rounded-lg mb-2">
+                      <Plus className="w-6 h-6" />
                     </div>
-                    <p className="font-bold text-lg">Створити замовлення</p>
-                    <p className="text-sm opacity-80 mt-1">Нова заявка на ремонт</p>
+                    <p className="font-bold text-base">Створити замовлення</p>
+                    <p className="text-xs opacity-90 mt-1">Нова заявка на ремонт</p>
                   </Button>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button variant="outline" className="w-full h-auto py-8 flex flex-col items-center justify-center group" size="lg">
-                    <div className="p-3 bg-primary/10 rounded-xl mb-3">
-                      <Search className="w-8 h-8" />
+                <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+                  <Button variant="outline" className="w-full h-auto py-6 flex flex-col items-center justify-center group border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300" size="lg">
+                    <div className="p-2 bg-primary/10 rounded-lg mb-2">
+                      <Search className="w-6 h-6 text-primary" />
                     </div>
-                    <p className="font-bold text-lg">Знайти майстра</p>
-                    <p className="text-sm text-muted-foreground mt-1">Пошук спеціалістів</p>
+                    <p className="font-bold text-base">Знайти майстра</p>
+                    <p className="text-xs text-muted-foreground mt-1">Пошук спеціалістів</p>
                   </Button>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button variant="outline" className="w-full h-auto py-8 flex flex-col items-center justify-center group" size="lg">
-                    <div className="p-3 bg-green-500/10 rounded-xl mb-3">
-                      <MessageSquare className="w-8 h-8 text-green-600" />
+                <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+                  <Button variant="outline" className="w-full h-auto py-6 flex flex-col items-center justify-center group border-2 hover:border-green-500/50 hover:bg-green-50 transition-all duration-300" size="lg">
+                    <div className="p-2 bg-green-500/10 rounded-lg mb-2">
+                      <MessageSquare className="w-6 h-6 text-green-600" />
                     </div>
-                    <p className="font-bold text-lg">Мої повідомлення</p>
-                    <p className="text-sm text-muted-foreground mt-1">Чат з майстрами</p>
+                    <p className="font-bold text-base">Мої повідомлення</p>
+                    <p className="text-xs text-muted-foreground mt-1">Чат з майстрами</p>
                   </Button>
                 </motion.div>
               </div>
