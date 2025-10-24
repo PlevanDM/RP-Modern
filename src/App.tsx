@@ -85,12 +85,12 @@ function App() {
 
   const clientOrders = orders.filter((o) => o.clientId === currentUser.id);
 
-    return (
-      <div className="min-h-screen bg-gray-50">
+  return (
+    <div className="min-h-screen bg-gray-50">
       <div className="flex h-screen">
         <ModernNavigation
-            currentUser={currentUser}
-            activeItem={activeItem}
+        currentUser={currentUser}
+        activeItem={activeItem}
           setActiveItem={setActiveItem}
           unviewedOrdersCount={0}
           onLogout={logout}
