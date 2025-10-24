@@ -1,14 +1,81 @@
 {
-  "header": {
-    "logo": "RepairHub",
-    "login": "Conectare",
-    "register": "Înregistrare"
+  "hero": {
+    "title": "Găsiți un tehnician în 5 minute",
+    "subtitle": "Platformă online pentru conectarea directă între clienți și tehnicieni. Fără intermediari și fără plăți suplimentare.",
+    "description": "Apple, Samsung, Xiaomi, DJI și alte dispozitive. Găsiți cel mai bun tehnician din orașul dvs.",
+    "cta_client": "Caut un tehnician",
+    "cta_master": "Sunt un tehnician de reparații",
+    "demo_button": "Vedeți demo",
+    "quick_switch_title": "🧪 Comutare rapidă a contului (pentru testare):",
+    "role_client": "Client",
+    "role_master": "Tehnician",
+    "role_admin": "Administrator",
+    "header_badge": "🔧 Reparații electronice mobile",
+    "platform_subtitle": "Platformă online pentru reparații de dispozitive",
+    "find_master": "Găsiți un tehnician",
+    "earn_on_repairs": "Câștigați din reparații",
+    "in_5_minutes": "în 5 minute",
+    "of_equipment": "de echipamente"
   },
-  "landing": {
-    "hero": {
-      "title": "Obțineți clienți, nu condiții de șef",
-      "subtitle": "Primiți comenzi direct pe contul dvs",
-      "description": "Noi pregătim comenzile, voi faceți munca, banii merg pe contul vostru. Fără intermediari, fără comisiile negustorilor. Doar voi și clientul vostru."
-    }
+  "stats": {
+    "masters_online": "Tehnicieni online",
+    "satisfied_clients": "Clienți mulțumiți",
+    "successful_repairs": "Reparații reușite",
+    "average_rating": "Evaluare medie"
+  },
+  "howItWorksClient": {
+    "title": "Cum funcționează pentru clienți?",
+    "subtitle": "Un proces simplu pentru a găsi un tehnician",
+    "step1_title": "Descrieți problema",
+    "step1_description": "Spuneți-ne ce s-a stricat și încărcați o fotografie a dispozitivului",
+    "step2_title": "Primiți oferte",
+    "step2_description": "Tehnicienii vor oferi soluții și un preț corect",
+    "step3_title": "Alegeți un specialist",
+    "step3_description": "Uitați-vă la experiență, echipamente și recenzii reale",
+    "step4_title": "Plată sigură",
+    "step4_description": "Banii sunt protejați prin escrow până la finalizarea lucrării"
+  },
+  "howItWorksMaster": {
+    "title": "Cum funcționează pentru tehnicieni?",
+    "subtitle": "Un proces simplu pentru dezvoltarea afacerii",
+    "step1_title": "Creați un profil",
+    "step1_description": "Descrieți-vă abilitățile, echipamentele și specializarea",
+    "step2_title": "Primiți comenzi",
+    "step2_description": "Clienții vă găsesc după specializare și evaluare",
+    "step3_title": "Lucrați și câștigați",
+    "step3_description": "Efectuați reparații și primiți plata fără comisioane",
+    "step4_title": "Primiți recenzii",
+    "step4_description": "Construiți-vă reputația și obțineți mai multe comenzi"
+  },
+  "features": {
+    "title": "Avantajele platformei",
+    "subtitle": "Tot ce aveți nevoie pentru o reparație sigură și profitabilă",
+    "feature1_title": "Contact direct",
+    "feature1_description": "Comunicați direct cu tehnicianul, fără intermediari și manageri.",
+    "feature2_title": "Transparență",
+    "feature2_description": "Vedeți experiența, echipamentele (microscoape, stații de lipit) și recenziile reale.",
+    "feature3_title": "Securitate",
+    "feature3_description": "Plățile Escrow vă protejează tranzacția, la fel ca pe cele mai bune platforme P2P.",
+    "feature4_title": "Prețuri corecte",
+    "feature4_description": "Fără adaosuri și taxe ascunse ale centrelor de service.",
+    "feature5_title": "Rezolvarea disputelor",
+    "feature5_description": "Sistem de arbitraj încorporat pentru rezolvarea corectă a oricăror probleme.",
+    "feature6_title": "Orice marcă",
+    "feature6_description": "De la Apple și Samsung la Asus și Dell — vom găsi un tehnician pentru orice echipament."
+  },
+  "cta": {
+    "title": "Sunteți gata să începeți?",
+    "subtitle": "Alăturați-vă sutelor de tehnicieni și clienți care deja câștigă și economisesc cu RepairHub Pro",
+    "cta_client": "Caut un tehnician",
+    "cta_master": "Sunt un tehnician de reparații",
+    "brands_title": "Lucrăm cu orice marcă",
+    "brands_list": "iPhone, iPad, MacBook | Samsung, Xiaomi, Huawei | Asus, Dell, Lenovo, HP | Și altele"
+  },
+  "footer": {
+    "platform_subtitle": "Platformă online pentru reparații de dispozitive",
+    "phone": "+380 50 123 45 67",
+    "email": "support@repairhub.pro",
+    "location": "Kiev, Ucraina",
+    "copyright": "© 2024 RepairHub Pro. Toate drepturile rezervate. | Pentru tehnicieni și clienți reali"
   }
 }

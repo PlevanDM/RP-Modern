@@ -1,140 +1,81 @@
 {
-  "header": {
-    "logo": "RepairHub",
-    "login": "Login",
-    "register": "Register"
+  "hero": {
+    "title": "Find a technician in 5 minutes",
+    "subtitle": "Online platform for direct connection between clients and technicians. No intermediaries and no overpayments.",
+    "description": "Apple, Samsung, Xiaomi, DJI and other devices. Find the best technician in your city.",
+    "cta_client": "I'm looking for a technician",
+    "cta_master": "I am a repair technician",
+    "demo_button": "Watch demo",
+    "quick_switch_title": "🧪 Quick account switching (for testing):",
+    "role_client": "Client",
+    "role_master": "Technician",
+    "role_admin": "Administrator",
+    "header_badge": "🔧 Mobile electronics repair",
+    "platform_subtitle": "Online platform for device repair",
+    "find_master": "Find a technician",
+    "earn_on_repairs": "Earn on repairs",
+    "in_5_minutes": "in 5 minutes",
+    "of_equipment": "of equipment"
   },
-  "landing": {
-    "hero": {
-      "title": "Get Clients, Not Boss Conditions",
-      "subtitle": "Receive Orders Directly to Your Account",
-      "description": "We prepare the orders, you do the work, money goes to your account. No middlemen, no commission dealers. Just you and your client.",
-      "cta": "Start Earning",
-      "cta_secondary": "Already Registered",
-      "benefits": {
-        "commission": "Commission Only 5-10%",
-        "fair": "Fair Terms",
-        "daily": "Daily Payouts"
-      }
-    },
-    "orders": {
-      "instruction": "Click on order to see details",
-      "ordersFalling": "Orders Fall on You",
-      "repairType0": "iPhone Repair",
-      "repairType1": "Screen Replacement",
-      "repairType2": "Water Cleaning",
-      "repairType3": "Battery Replacement",
-      "repairType4": "MacBook Repair"
-    },
-    "escrow": {
-      "title": "Secure Escrow System",
-      "subtitle": "Funds Locked Until Work is Complete",
-      "what_is": "What is Escrow?",
-      "what_is_desc": "— it's a protected system where money is held by a third party (us) until the work is completed. Client pays, funds are locked, master does the work, then money goes to the master.",
-      "safe": "Everything is transparent and safe!",
-      "payment_methods": {
-        "title": "Payment Methods",
-        "card": "Bank Cards (Visa, Mastercard)",
-        "monobank": "Monobank",
-        "crypto": "Cryptocurrency (Bitcoin, Ethereum, USDT)"
-      },
-      "guarantee": {
-        "title": "Guarantee",
-        "safe": "Funds Protected on Escrow",
-        "no_access": "No Third Party Access",
-        "automatic": "Automatic Settlement"
-      },
-      "fast": {
-        "title": "Fast and Reliable",
-        "instant": "Instant Crypto Payouts",
-        "commission": "Commission Only 5-10%",
-        "no_delays": "No Delays"
-      },
-      "crypto": {
-        "title": "Cryptocurrency for Fast Payments",
-        "bitcoin": "Bitcoin",
-        "ethereum": "Ethereum",
-        "usdt": "USDT (Tether)",
-        "description": "Get paid in minutes, no middleman fees"
-      }
-    },
-    "features": {
-      "title": "Powerful Features",
-      "subtitle": "Everything you need to manage your repair business"
-    }
+  "stats": {
+    "masters_online": "Technicians online",
+    "satisfied_clients": "Satisfied clients",
+    "successful_repairs": "Successful repairs",
+    "average_rating": "Average rating"
+  },
+  "howItWorksClient": {
+    "title": "How it works for clients?",
+    "subtitle": "A simple process to find a technician",
+    "step1_title": "Describe the problem",
+    "step1_description": "Tell us what's broken and upload a photo of the device",
+    "step2_title": "Get offers",
+    "step2_description": "Technicians will offer solutions and a fair price",
+    "step3_title": "Choose a specialist",
+    "step3_description": "Look at experience, equipment and real reviews",
+    "step4_title": "Secure payment",
+    "step4_description": "Money is protected by escrow until the work is completed"
+  },
+  "howItWorksMaster": {
+    "title": "How it works for technicians?",
+    "subtitle": "A simple process for business development",
+    "step1_title": "Create a profile",
+    "step1_description": "Describe your skills, equipment and specialization",
+    "step2_title": "Get orders",
+    "step2_description": "Clients find you by specialization and rating",
+    "step3_title": "Work and earn",
+    "step3_description": "Perform repairs and get paid without commissions",
+    "step4_title": "Get reviews",
+    "step4_description": "Build your reputation and get more orders"
   },
   "features": {
-    "manageOrders": {
-      "title": "Order Management",
-      "description": "Full control over orders with instant notifications and status tracking"
-    },
-    "findWorkers": {
-      "title": "Find Masters",
-      "description": "Find the best professionals with ratings, portfolios, and reviews"
-    },
-    "analytics": {
-      "title": "Analytics",
-      "description": "Detailed reports and statistics to monitor your business"
-    },
-    "security": {
-      "title": "Security",
-      "description": "Reliable encryption system and personal data protection"
-    },
-    "chat": {
-      "title": "Communication",
-      "description": "Built-in chat for direct contact with masters and clients"
-    },
-    "mobileVersion": {
-      "title": "Mobile Version",
-      "description": "Full functionality available on any device"
-    }
+    "title": "Platform advantages",
+    "subtitle": "Everything you need for a safe and profitable repair",
+    "feature1_title": "Direct contact",
+    "feature1_description": "Communicate directly with the technician, without intermediaries and managers.",
+    "feature2_title": "Transparency",
+    "feature2_description": "You see the experience, equipment (microscopes, soldering stations) and real reviews.",
+    "feature3_title": "Security",
+    "feature3_description": "Escrow payments protect your deal, just like on the best P2P platforms.",
+    "feature4_title": "Fair prices",
+    "feature4_description": "No markups and hidden fees of service centers.",
+    "feature5_title": "Dispute resolution",
+    "feature5_description": "Built-in arbitration system for fair resolution of any issues.",
+    "feature6_title": "Any brands",
+    "feature6_description": "From Apple and Samsung to Asus and Dell — we will find a technician for any equipment."
   },
-  "auth": {
-    "client": "Client",
-    "master": "Master",
-    "searching_master": "Looking for a Master",
-    "offering_services": "Offering Services",
-    "login": "Login",
-    "email": "Email",
-    "password": "Password",
-    "confirm_password": "Confirm Password",
-    "first_name": "First Name",
-    "last_name": "Last Name",
-    "city": "City",
-    "register": "Register",
-    "login_button": "Login",
-    "have_account": "Already have an account?",
-    "no_account": "Don't have an account?",
-    "agree_terms": "I agree with Terms and Policy",
-    "success": "Success!",
-    "redirecting": "Your account created. Redirecting..."
-  },
-  "orders": {
-    "order_details": "Accept Order",
-    "close": "Close",
-    "location": "Location",
-    "price": "Price",
-    "status": "Status",
-    "status_new": "New",
-    "status_ready": "Ready",
-    "status_urgent": "Urgent"
+  "cta": {
+    "title": "Ready to start?",
+    "subtitle": "Join hundreds of technicians and clients who are already earning and saving with RepairHub Pro",
+    "cta_client": "I'm looking for a technician",
+    "cta_master": "I am a repair technician",
+    "brands_title": "We work with any brands",
+    "brands_list": "iPhone, iPad, MacBook | Samsung, Xiaomi, Huawei | Asus, Dell, Lenovo, HP | And others"
   },
   "footer": {
-    "product": "Product",
-    "features": "Features",
-    "pricing": "Pricing",
-    "security": "Security",
-    "company": "Company",
-    "about": "About Us",
-    "blog": "Blog",
-    "contact": "Contact",
-    "legal": "Legal",
-    "terms": "Terms",
-    "privacy": "Privacy",
-    "cookies": "Cookies",
-    "contacts": "Contact Us",
-    "phone": "+38 044 334 40 41",
-    "email": "info@repairhub.ua",
-    "copyright": "© 2025 RepairHub Pro. All rights reserved."
+    "platform_subtitle": "Online platform for device repair",
+    "phone": "+380 50 123 45 67",
+    "email": "support@repairhub.pro",
+    "location": "Kyiv, Ukraine",
+    "copyright": "© 2024 RepairHub Pro. All rights reserved. | For real technicians and clients"
   }
 }

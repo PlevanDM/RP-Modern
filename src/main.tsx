@@ -53,7 +53,9 @@ if ('serviceWorker' in navigator) {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <React.Suspense fallback="loading...">
+        <App />
+      </React.Suspense>
       <ReactQueryDevtools
         initialIsOpen={false}
         buttonPosition="bottom-right"
