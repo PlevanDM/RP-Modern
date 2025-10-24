@@ -37,6 +37,7 @@ import {
 } from "./ui/dropdown-menu";
 import { ScrollArea } from "./ui/scroll-area";
 import { Separator } from "./ui/separator";
+import JarvisChat from "./features/ai/JarvisChat";
 
 interface SidebarContextProps {
   open: boolean;
@@ -299,10 +300,11 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
 
   const NavigationMenu = ({ collapsed }: { collapsed: boolean }) => {
     return (
-      <ScrollArea className="flex-1 px-2">
-        <nav className="space-y-0.5 py-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
+      <>
+        <ScrollArea className="flex-1 px-2">
+          <nav className="space-y-0.5 py-2">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
             const isActive = activeItem === getRouteKey(item.label);
 
             // Анимированная иконка для сворачиваемого состояния
@@ -395,6 +397,10 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
           })}
         </nav>
       </ScrollArea>
+      <div className="mt-auto p-2">
+        <JarvisChat isCollapsed={collapsed} />
+      </div>
+      </>
     );
   };
 
