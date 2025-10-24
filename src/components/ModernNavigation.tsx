@@ -295,7 +295,148 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   };
 
   const UserProfile = ({ collapsed }: { collapsed: boolean }) => {
-    return null;
+    if (!currentUser) return null;
+
+    const getUserRoleAnimation = () => {
+      switch (currentUser.role) {
+        case 'admin':
+          return {
+            // Анимация для админа - корона с вращением
+            icon: '👑',
+            bgGradient: 'from-purple-500 to-pink-500',
+            textColor: 'text-purple-700',
+            bgColor: 'bg-purple-100',
+            animations: {
+              rotate: [0, 360],
+              scale: [1, 1.1, 1],
+              y: [0, -2, 0]
+            },
+            duration: 3
+          };
+        case 'master':
+          return {
+            // Анимация для мастера - инструменты с пульсацией
+            icon: '🔧',
+            bgGradient: 'from-blue-500 to-cyan-500',
+            textColor: 'text-blue-700',
+            bgColor: 'bg-blue-100',
+            animations: {
+              rotate: [0, 15, -15, 0],
+              scale: [1, 1.15, 1],
+              x: [0, 2, -2, 0]
+            },
+            duration: 2.5
+          };
+        case 'client':
+        default:
+          return {
+            // Анимация для клиента - сердце с биением
+            icon: '💚',
+            bgGradient: 'from-green-500 to-emerald-500',
+            textColor: 'text-green-700',
+            bgColor: 'bg-green-100',
+            animations: {
+              scale: [1, 1.2, 1],
+              rotate: [0, 5, -5, 0],
+              opacity: [1, 0.8, 1]
+            },
+            duration: 2
+          };
+      }
+    };
+
+    const roleConfig = getUserRoleAnimation();
+    const roleText = currentUser.role === 'admin' ? 'Адміністратор' :
+                    currentUser.role === 'master' ? 'Майстер' : 'Клієнт';
+
+    return (
+      <div className="p-3 border-t border-border/50">
+        <motion.div
+          className={`relative overflow-hidden rounded-lg p-3 ${roleConfig.bgColor} border border-gray-200/50`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
+          whileHover={{ scale: 1.02 }}
+        >
+          {/* Анимированный фон */}
+          <motion.div
+            className={`absolute inset-0 bg-gradient-to-r ${roleConfig.bgGradient} opacity-10`}
+            animate={{ 
+              backgroundPosition: ["0%", "100%", "0%"],
+              opacity: [0.05, 0.15, 0.05]
+            }}
+            transition={{ duration: 4, repeat: Infinity }}
+          />
+          
+          {/* Пульсирующие частицы */}
+          <motion.div
+            className="absolute top-1 right-1 w-1 h-1 bg-current rounded-full"
+            animate={{ 
+              scale: [0, 1, 0],
+              opacity: [0, 1, 0]
+            }}
+            transition={{ duration: 2, repeat: Infinity, delay: 0 }}
+          />
+          <motion.div
+            className="absolute bottom-1 left-1 w-0.5 h-0.5 bg-current rounded-full"
+            animate={{ 
+              scale: [0, 1, 0],
+              opacity: [0, 1, 0]
+            }}
+            transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+          />
+
+          <div className="relative z-10 flex items-center gap-3">
+            {/* Анимированная иконка */}
+            <motion.div
+              className="text-2xl"
+              animate={roleConfig.animations}
+              transition={{ 
+                duration: roleConfig.duration, 
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }}
+            >
+              {roleConfig.icon}
+            </motion.div>
+
+            <AnimatePresence mode="wait">
+              {!collapsed && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex flex-col"
+                >
+                  <motion.span 
+                    className={`text-sm font-semibold ${roleConfig.textColor}`}
+                    animate={{ opacity: [0.8, 1, 0.8] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                  >
+                    {roleText}
+                  </motion.span>
+                  <motion.span 
+                    className="text-xs text-gray-500"
+                    animate={{ opacity: [0.6, 1, 0.6] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                  >
+                    {currentUser.name || 'Користувач'}
+                  </motion.span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Светящийся край */}
+          <motion.div
+            className={`absolute inset-0 rounded-lg border-2 border-gradient-to-r ${roleConfig.bgGradient} opacity-30`}
+            animate={{ opacity: [0.2, 0.5, 0.2] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          />
+        </motion.div>
+      </div>
+    );
   };
 
   const NavigationMenu = ({ collapsed }: { collapsed: boolean }) => {
