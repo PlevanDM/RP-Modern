@@ -3,6 +3,9 @@ import { User } from '../../../types';
 import { adminService } from '../../../services/adminService';
 import { Financials } from './Financials';
 import { ReviewModeration } from './ReviewModeration';
+import { AnalyticsDashboard } from './AnalyticsDashboard';
+import { DisputeCenter } from './DisputeCenter';
+import { UserActionHistory } from './UserActionHistory';
 
 export function AdminDashboard() {
   const [users, setUsers] = useState<User[]>([]);
@@ -77,6 +80,15 @@ export function AdminDashboard() {
       </div>
       <div className="mt-4">
         <ReviewModeration />
+      </div>
+      <div className="mt-4">
+        <AnalyticsDashboard />
+      </div>
+      <div className="mt-4">
+        <DisputeCenter />
+      </div>
+      <div className="mt-4">
+        <UserActionHistory />
       </div>
     </div>
   );

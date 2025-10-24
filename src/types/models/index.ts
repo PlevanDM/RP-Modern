@@ -137,6 +137,22 @@ export interface Review {
   createdAt: Date;
 }
 
+export interface Notification {
+  id: string;
+  userId: string;
+  message: string;
+  type: 'order' | 'message' | 'status' | 'rating';
+  read: boolean;
+  createdAt: Date;
+}
+
+export interface UserAction {
+  id: string;
+  userId: string;
+  action: string;
+  timestamp: Date;
+}
+
 // Proposal (пропозиція від майстра до клієнта)
 export interface Proposal {
   id: string;

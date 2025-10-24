@@ -1,94 +1,30 @@
 import { useState, useEffect } from 'react';
 import { Bell, X, Check, AlertCircle, Info, MessageSquare } from 'lucide-react';
+import { Notification } from '../types';
 
-export interface Notification {
-  id: string;
-  type: 'success' | 'error' | 'info' | 'warning';
-  title: string;
-  message: string;
-  timestamp: Date;
-  actionUrl?: string;
-  actionText?: string;
-  read: boolean;
+interface NotificationCenterProps {
+  notifications: Notification[];
+  onRead: (id: string) => void;
+  onRemove: (id: string) => void;
 }
 
-export function NotificationCenter() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+export function NotificationCenter({ notifications, onRead, onRemove }: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
-
-  useEffect(() => {
-    // Имитируем получение уведомлений
-    const mockNotifications: Notification[] = [
-      {
-        id: '1',
-        type: 'success',
-        title: '✅ Замовлення прийнято',
-        message: 'Ваше замовлення #1234 прийнято 2 майстрами',
-        timestamp: new Date(Date.now() - 5 * 60000),
-        actionText: 'Переглянути',
-        read: false
-      },
-      {
-        id: '2',
-        type: 'warning',
-        title: '⏰ Швидка дія потрібна',
-        message: 'У вас 1 новая пропозиция на замовлення #1230',
-        timestamp: new Date(Date.now() - 15 * 60000),
-        actionText: 'Переглянути',
-        read: false
-      },
-      {
-        id: '3',
-        type: 'info',
-        title: 'ℹ️ Нова функція',
-        message: 'Тепер ви можете завантажувати фото в чат',
-        timestamp: new Date(Date.now() - 30 * 60000),
-        read: true
-      }
-    ];
-
-    setNotifications(mockNotifications);
-    setUnreadCount(mockNotifications.filter(n => !n.read).length);
-  }, []);
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   const getIcon = (type: Notification['type']) => {
     switch (type) {
-      case 'success':
+      case 'order':
         return <Check className="w-5 h-5 text-green-600" />;
-      case 'error':
-        return <AlertCircle className="w-5 h-5 text-red-600" />;
-      case 'warning':
-        return <AlertCircle className="w-5 h-5 text-yellow-600" />;
-      case 'info':
-        return <Info className="w-5 h-5 text-blue-600" />;
+      case 'message':
+        return <MessageSquare className="w-5 h-5 text-blue-600" />;
+      case 'status':
+        return <Info className="w-5 h-5 text-yellow-600" />;
+      case 'rating':
+        return <Check className="w-5 h-5 text-green-600" />;
       default:
         return <Bell className="w-5 h-5 text-gray-600" />;
     }
-  };
-
-  const getBackgroundColor = (type: Notification['type']) => {
-    switch (type) {
-      case 'success':
-        return 'bg-green-50 border-green-200';
-      case 'error':
-        return 'bg-red-50 border-red-200';
-      case 'warning':
-        return 'bg-yellow-50 border-yellow-200';
-      case 'info':
-        return 'bg-blue-50 border-blue-200';
-      default:
-        return 'bg-gray-50 border-gray-200';
-    }
-  };
-
-  const markAsRead = (id: string) => {
-    setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n));
-    setUnreadCount(prev => Math.max(0, prev - 1));
-  };
-
-  const removeNotification = (id: string) => {
-    setNotifications(notifications.filter(n => n.id !== id));
   };
 
   const formatTime = (date: Date) => {
@@ -148,31 +84,25 @@ export function NotificationCenter() {
                   className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
                     !notif.read ? 'bg-blue-50' : ''
                   }`}
-                  onClick={() => markAsRead(notif.id)}
+                  onClick={() => onRead(notif.id)}
                 >
                   <div className="flex gap-3">
                     <div className="flex-shrink-0 mt-1">{getIcon(notif.type)}</div>
                     <div className="flex-1">
                       <div className="flex items-start justify-between">
-                        <p className="font-semibold text-gray-900">{notif.title}</p>
+                        <p className="font-semibold text-gray-900">{notif.message}</p>
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            removeNotification(notif.id);
+                            onRemove(notif.id);
                           }}
                           className="p-1 hover:bg-gray-200 rounded transition-colors"
                         >
                           <X className="w-4 h-4 text-gray-500" />
                         </button>
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">{notif.message}</p>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-xs text-gray-500">{formatTime(notif.timestamp)}</span>
-                        {notif.actionText && (
-                          <button className="text-xs font-medium text-blue-600 hover:text-blue-700">
-                            {notif.actionText} →
-                          </button>
-                        )}
+                        <span className="text-xs text-gray-500">{formatTime(notif.createdAt)}</span>
                       </div>
                     </div>
                   </div>

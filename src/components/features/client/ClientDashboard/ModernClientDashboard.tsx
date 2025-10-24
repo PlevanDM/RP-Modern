@@ -25,6 +25,7 @@ import { Progress } from '../../../ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { Input } from '../../../ui/input';
+import { User } from '../../../../types';
 
 interface Order {
   id: string;
@@ -520,6 +521,7 @@ const ModernClientDashboard: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
+
           </motion.div>
         </div>
       </motion.div>
