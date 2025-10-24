@@ -87,23 +87,23 @@ export const MastersList: React.FC<MastersListProps> = ({
     searchQuery || selectedCity || selectedDeviceType || selectedServiceType;
 
   return (
-    <div className="w-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 min-h-screen">
+    <div className="w-full bg-gray-50 min-h-screen">
       {/* Заголовок */}
       <div className="mb-8 p-8">
-        <h1 className="text-4xl font-bold text-slate-100 mb-2">
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">
           🔍 Знайти майстра
         </h1>
-        <p className="text-lg text-slate-400 mb-4">
+        <p className="text-lg text-gray-600 mb-4">
           Виберіть найкращого фахівця для вашої техніки Apple
         </p>
         
         {/* Подсказки для клиентов */}
-        <div className="bg-blue-900/20 border border-blue-700/50 rounded-xl p-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
           <div className="flex items-start gap-3">
-            <div className="text-blue-400 text-xl">💡</div>
+            <div className="text-blue-600 text-xl">💡</div>
             <div>
-              <h3 className="font-semibold text-slate-100 mb-2">Як користуватися пошуком:</h3>
-              <ul className="text-sm text-slate-300 space-y-1">
+              <h3 className="font-semibold text-blue-800 mb-2">Як користуватися пошуком:</h3>
+              <ul className="text-sm text-blue-700 space-y-1">
                 <li>• <strong>Пошук:</strong> Введіть ім'я майстра або тип послуги (наприклад: "екран", "батарея")</li>
                 <li>• <strong>Фільтри:</strong> Оберіть місто, тип пристрою та послуги для точного пошуку</li>
                 <li>• <strong>Карточка майстра:</strong> Натисніть "Написати" для чату, "Портфоліо" для перегляду робіт</li>
@@ -117,14 +117,14 @@ export const MastersList: React.FC<MastersListProps> = ({
       {/* Пошук та фільтри */}
       <div className="px-8 mb-8 space-y-6">
         {/* Основний пошук */}
-        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 rounded-2xl shadow-2xl border border-slate-700">
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
           <div className="relative">
             <input
               type="text"
               placeholder="🔍 Пошук за ім'ям майстра або спеціальністю..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-600 rounded-xl text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+              className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               title="Введіть ім'я майстра або тип послуги для пошуку"
             />
           </div>
@@ -140,36 +140,36 @@ export const MastersList: React.FC<MastersListProps> = ({
                 setSelectedDeviceType('');
                 setSelectedServiceType('');
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-rose-600 text-white border border-red-700 rounded-xl hover:from-red-700 hover:to-rose-700 transition-all duration-200 shadow-lg hover:shadow-red-500/25"
+              className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 border border-red-200 rounded-lg hover:bg-red-100 transition-all duration-200"
               title="Очистити всі фільтри"
             >
               <X className="w-4 h-4" />
               Очистити фільтри
             </button>
-            <span className="text-sm text-slate-400">
+            <span className="text-sm text-gray-500">
               Активних фільтрів: {(searchQuery ? 1 : 0) + (selectedCity ? 1 : 0) + (selectedDeviceType ? 1 : 0) + (selectedServiceType ? 1 : 0)}
             </span>
           </div>
         )}
 
         {/* Панель фільтрів - завжди видима */}
-        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-2xl p-6 border border-slate-700 shadow-2xl">
+        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
-            <Filter className="w-5 h-5 text-blue-400" />
-            <h3 className="text-lg font-semibold text-slate-100">Фільтри пошуку</h3>
-            <span className="text-sm text-slate-400">(оберіть критерії для точного пошуку)</span>
+            <Filter className="w-5 h-5 text-gray-600" />
+            <h3 className="text-lg font-semibold text-gray-900">Фільтри пошуку</h3>
+            <span className="text-sm text-gray-500">(оберіть критерії для точного пошуку)</span>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Фільтр по місту */}
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 🏙️ Місто
               </label>
               <select
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-xl text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                 title="Оберіть місто для пошуку майстрів"
               >
                 <option value="">Всі міста</option>
@@ -183,13 +183,13 @@ export const MastersList: React.FC<MastersListProps> = ({
 
             {/* Фільтр по типу пристрою */}
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 📱 Тип пристрою
               </label>
               <select
                 value={selectedDeviceType}
                 onChange={(e) => setSelectedDeviceType(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-xl text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                 title="Оберіть тип пристрою Apple для ремонту"
               >
                 <option value="">Всі пристрої</option>
@@ -203,13 +203,13 @@ export const MastersList: React.FC<MastersListProps> = ({
 
             {/* Фільтр по типу послуги */}
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 🔧 Тип послуги
               </label>
               <select
                 value={selectedServiceType}
                 onChange={(e) => setSelectedServiceType(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-600 rounded-xl text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                className="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                 title="Оберіть тип послуги або проблему з пристроєм"
               >
                 <option value="">Всі послуги</option>
@@ -227,16 +227,16 @@ export const MastersList: React.FC<MastersListProps> = ({
       {/* Результати */}
       <div className="px-8 mb-6">
         <div className="flex items-center justify-between">
-          <p className="text-sm text-slate-400">
-            Знайдено <span className="font-semibold text-blue-400">{filteredMasters.length}</span> майстрів
+          <p className="text-sm text-gray-600">
+            Знайдено <span className="font-semibold text-blue-600">{filteredMasters.length}</span> майстрів
             {hasActiveFilters && (
-              <span className="ml-2 text-xs text-slate-500">
+              <span className="ml-2 text-xs text-gray-500">
                 (з фільтрами)
               </span>
             )}
           </p>
           {filteredMasters.length > 0 && (
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-gray-500">
               💡 Натисніть на карточку майстра для деталей
             </div>
           )}
@@ -263,14 +263,14 @@ export const MastersList: React.FC<MastersListProps> = ({
         ) : (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-xl font-medium text-slate-300 mb-3">
+            <h3 className="text-xl font-medium text-gray-900 mb-3">
               Майстрів не знайдено
             </h3>
-            <p className="text-slate-400 mb-6 max-w-md mx-auto">
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
               Спробуйте змінити фільтри або критерії пошуку. Можливо, варто:
             </p>
-            <div className="bg-blue-900/20 border border-blue-700/50 rounded-xl p-4 mb-6 max-w-md mx-auto">
-              <ul className="text-sm text-slate-300 text-left space-y-1">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 max-w-md mx-auto">
+              <ul className="text-sm text-yellow-800 text-left space-y-1">
                 <li>• Очистити всі фільтри</li>
                 <li>• Змінити місто пошуку</li>
                 <li>• Спробувати інший тип пристрою</li>
@@ -284,7 +284,7 @@ export const MastersList: React.FC<MastersListProps> = ({
                 setSelectedDeviceType('');
                 setSelectedServiceType('');
               }}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg hover:shadow-blue-500/25"
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium shadow-sm hover:shadow-md"
               title="Очистити всі фільтри та показати всіх майстрів"
             >
               🔄 Очистити фільтри
