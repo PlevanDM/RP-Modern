@@ -180,20 +180,20 @@ export const mockUsers: User[] = [
     completedOrders: 892,
     balance: 12000
   },
-  
   // АДМІНІСТРАТОР
   {
     id: 'admin1',
     name: 'Адміністратор',
     fullName: 'Адміністратор Системи',
     role: 'admin',
-    avatar: 'https://i.pravatar.cc/96?img=33',
-    email: 'admin@repair.hub',
-    phone: '+380501234567',
+    avatar: 'https://i.pravatar.cc/96?img=10',
+    rating: 5.0,
+    email: 'admin@repairhub.pro',
+    phone: '+380991234567',
     verified: true,
-    city: 'Київ',
-    skills: [],
-    specialization: 'Administrator',
+    city: 'Платформа',
+    skills: ['all'],
+    specialization: 'Системне адміністрування',
     balance: 0
   },
 ];

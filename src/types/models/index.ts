@@ -61,12 +61,13 @@ export interface User {
   city: string;
   skills: string[];
   specialization: string;
-  role: 'client' | 'master';
+  role: 'client' | 'master' | 'admin';
   avatar: string;
   rating: number;
   phone?: string;
   email?: string;
   verified?: boolean;
+  blocked?: boolean;
   balance: number; // Баланс пользователя
   paymentMethods?: PaymentMethod[]; // Способы оплаты
   experience?: WorkExperience[];
@@ -123,6 +124,17 @@ export interface Order {
   notes?: string;
   clientRating?: number;
   messages?: Message[];
+}
+
+export interface Review {
+  id: string;
+  orderId: string;
+  authorId: string;
+  authorName: string;
+  text: string;
+  rating: number;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: Date;
 }
 
 // Proposal (пропозиція від майстра до клієнта)
