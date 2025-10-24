@@ -33,6 +33,14 @@ import { SpecializationStep } from './components/onboarding/SpecializationStep';
 import { ExperienceStep } from './components/onboarding/ExperienceStep';
 import { ToolsStep } from './components/onboarding/ToolsStep';
 import { AnimatedHeader } from './components/AnimatedHeader';
+import { OrderCreationModal } from './components/OrderCreationModal';
+import { MasterOrderBoard } from './components/MasterOrderBoard';
+import { AdvancedMessaging } from './components/AdvancedMessaging';
+import { FinancialAnalytics } from './components/FinancialAnalytics';
+import { MobileNavigation } from './components/MobileNavigation';
+import { Plus } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import './utils/testServices'; // Импортируем тестовые утилиты для консоли
 
 function App() {
   const { currentUser, login, logout, isOnboardingCompleted, completeOnboarding } = useAuthStore();
@@ -58,6 +66,9 @@ function App() {
   } = useOrdersStore();
   const { notifications, readNotification, removeNotification } = useNotificationsStore();
   const [activeItem, setActiveItem] = useState('dashboard');
+  const [showOrderCreationModal, setShowOrderCreationModal] = useState(false);
+  const [showMessagingModal, setShowMessagingModal] = useState(false);
+  const [selectedChatUser, setSelectedChatUser] = useState(null);
 
   if (!currentUser) {
     return <ModernLandingPage onLogin={login} />;
@@ -85,17 +96,37 @@ function App() {
 
   const clientOrders = orders.filter((o) => o.clientId === currentUser.id);
 
+  const handleCreateOrder = (orderData: any) => {
+    createOrder(orderData);
+    setShowOrderCreationModal(false);
+  };
+
+  const handleOpenMessaging = (user: any) => {
+    setSelectedChatUser(user);
+    setShowMessagingModal(true);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="flex h-screen">
-        <ModernNavigation
+      {/* Mobile Navigation */}
+      <MobileNavigation
         currentUser={currentUser}
         activeItem={activeItem}
-          setActiveItem={setActiveItem}
-          unviewedOrdersCount={0}
-          onLogout={logout}
-        />
-        <div className="flex-1 md:ml-56 overflow-y-auto overflow-x-hidden h-screen">
+        setActiveItem={setActiveItem}
+        onLogout={logout}
+      />
+      
+      <div className="flex h-screen">
+        <div className="hidden lg:block">
+          <ModernNavigation
+            currentUser={currentUser}
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
+            unviewedOrdersCount={0}
+            onLogout={logout}
+          />
+        </div>
+        <div className="flex-1 lg:ml-56 overflow-y-auto overflow-x-hidden h-screen">
           <AnimatedHeader
             currentUser={currentUser}
             notifications={notifications}
@@ -229,9 +260,85 @@ function App() {
               />
             )}
             {activeItem === 'settings' && <Settings currentUser={currentUser} onLogout={logout} />}
+
+            {/* Новые компоненты */}
+            {activeItem === 'createOrder' && currentUser?.role === 'client' && (
+              <div className="p-6">
+                <div className="max-w-4xl mx-auto">
+                  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                      Создание заказа
+                    </h1>
+                    <button
+                      onClick={() => setShowOrderCreationModal(true)}
+                      className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                    >
+                      <Plus className="w-5 h-5 mr-2" />
+                      Создать новый заказ
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeItem === 'orderBoard' && currentUser?.role === 'master' && (
+              <MasterOrderBoard currentUser={currentUser} />
+            )}
+
+            {activeItem === 'advancedMessages' && (
+              <div className="p-6 h-full">
+                <div className="h-full">
+                  <AdvancedMessaging 
+                    currentUser={currentUser}
+                    otherUser={selectedChatUser || mockUsers.find(u => u.role !== currentUser.role)}
+                  />
+                </div>
+              </div>
+            )}
+
+            {activeItem === 'financialAnalytics' && (
+              <FinancialAnalytics 
+                currentUser={currentUser}
+                role={currentUser.role}
+              />
+            )}
             </div>
         </div>
       </div>
+
+      {/* Модальные окна */}
+      <OrderCreationModal
+        isOpen={showOrderCreationModal}
+        onClose={() => setShowOrderCreationModal(false)}
+        onSubmit={handleCreateOrder}
+        currentUser={currentUser}
+      />
+
+      <AnimatePresence>
+        {showMessagingModal && selectedChatUser && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-4xl w-full h-[80vh] overflow-hidden"
+            >
+              <div className="h-full">
+                <AdvancedMessaging 
+                  currentUser={currentUser}
+                  otherUser={selectedChatUser}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <NotificationCenter />
     </div>
   );

@@ -117,7 +117,7 @@ export const AdminTable: React.FC<{
       <table className="w-full">
         <thead className="bg-gray-50 dark:bg-gray-800">
           <tr>
-            {headers.map((header, index) => (
+            {(headers || []).map((header, index) => (
               <th key={index} className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 {header}
               </th>
@@ -258,7 +258,7 @@ export const AdminSelect: React.FC<{
     `}
   >
     {placeholder && <option value="">{placeholder}</option>}
-    {options.map((option) => (
+    {(options || []).map((option) => (
       <option key={option.value} value={option.value}>
         {option.label}
       </option>

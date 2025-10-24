@@ -14,7 +14,7 @@ export const AdminDashboardModern = () => {
   const advancedStats = [
     {
       id: "revenue",
-      label: "Дохід",
+      label: "пїЅпїЅпїЅпїЅпїЅ",
       value: "?125,430",
       change: "+23.5%",
       isPositive: true,
@@ -25,7 +25,7 @@ export const AdminDashboardModern = () => {
     },
     {
       id: "orders",
-      label: "Замовлення",
+      label: "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
       value: "1,234",
       change: "+12.8%",
       isPositive: true,
@@ -36,7 +36,7 @@ export const AdminDashboardModern = () => {
     },
     {
       id: "users",
-      label: "Користувачі",
+      label: "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
       value: "842",
       change: "+8.2%",
       isPositive: true,
@@ -47,7 +47,7 @@ export const AdminDashboardModern = () => {
     },
     {
       id: "performance",
-      label: "Продуктивність",
+      label: "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
       value: "94.3%",
       change: "+5.1%",
       isPositive: true,
@@ -60,17 +60,17 @@ export const AdminDashboardModern = () => {
 
   // Recent Activities
   const activities = [
-    { id: 1, type: "order", title: "Нове замовлення", desc: "Order #1234 від John Doe", time: "2 хв назад", icon: Package, color: "blue" },
-    { id: 2, type: "user", title: "Новий користувач", desc: "maria@example.com приєдналась", time: "5 хв назад", icon: Users, color: "green" },
-    { id: 3, type: "payment", title: "Платіж отриманий", desc: "?5,000 від замовлення #1230", time: "12 хв назад", icon: DollarSign, color: "purple" },
-    { id: 4, type: "alert", title: "Попередження", desc: "Низький запас товару iPhone 15", time: "25 хв назад", icon: AlertCircle, color: "red" },
+    { id: 1, type: "order", title: "пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", desc: "Order #1234 пїЅпїЅ John Doe", time: "2 пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ", icon: Package, color: "blue" },
+    { id: 2, type: "user", title: "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", desc: "maria@example.com пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", time: "5 пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ", icon: Users, color: "green" },
+    { id: 3, type: "payment", title: "пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", desc: "?5,000 пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ #1230", time: "12 пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ", icon: DollarSign, color: "purple" },
+    { id: 4, type: "alert", title: "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", desc: "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ iPhone 15", time: "25 пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ", icon: AlertCircle, color: "red" },
   ];
 
   // Top Masters
   const topMasters = [
-    { name: "Олександр П.", rating: 4.9, orders: 234, revenue: "?45,600" },
-    { name: "Марія К.", rating: 4.8, orders: 189, revenue: "?38,200" },
-    { name: "Ігор М.", rating: 4.7, orders: 156, revenue: "?32,100" },
+    { name: "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ.", rating: 4.9, orders: 234, revenue: "?45,600" },
+    { name: "пїЅпїЅпїЅпїЅ пїЅ.", rating: 4.8, orders: 189, revenue: "?38,200" },
+    { name: "пїЅпїЅпїЅпїЅ пїЅ.", rating: 4.7, orders: 156, revenue: "?32,100" },
   ];
 
   return (
@@ -91,7 +91,7 @@ export const AdminDashboardModern = () => {
           <div className="flex items-center gap-4">
             <div className={`px-4 py-2 rounded-lg flex items-center gap-2 ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}>
               <Search className="w-4 h-4 text-gray-500" />
-              <input type="text" placeholder="Пошук..." className={`bg-transparent outline-none text-sm w-40 ${isDarkMode ? "text-white placeholder-gray-500" : "text-gray-900 placeholder-gray-400"}`} />
+              <input type="text" placeholder="пїЅпїЅпїЅпїЅпїЅ..." className={`bg-transparent outline-none text-sm w-40 ${isDarkMode ? "text-white placeholder-gray-500" : "text-gray-900 placeholder-gray-400"}`} />
             </div>
             <button className={`p-2 rounded-lg hover:${isDarkMode ? "bg-gray-800" : "bg-gray-100"} transition-colors`}>
               <Bell className="w-5 h-5 text-gray-400" />
@@ -158,10 +158,10 @@ export const AdminDashboardModern = () => {
             <div className="flex items-center justify-between mb-6">
               <h2 className={`text-lg font-semibold flex items-center gap-2 ${isDarkMode ? "text-white" : "text-gray-900"}`}>
                 <Activity className="w-5 h-5" />
-                Останні операції
+                пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
               </h2>
               <button className={`text-sm font-medium ${isDarkMode ? "text-blue-400" : "text-blue-600"}`}>
-                Див. все >
+                РџРѕРєР°Р·Р°С‚Рё РІСЃРµ в†’
               </button>
             </div>
 
@@ -193,7 +193,7 @@ export const AdminDashboardModern = () => {
 
           {/* Top Masters */}
           <div className={`rounded-2xl border p-6 ${isDarkMode ? "bg-gray-800/50 border-gray-700/50" : "bg-white border-gray-200"}`}>
-            <h2 className={`text-lg font-semibold mb-6 ${isDarkMode ? "text-white" : "text-gray-900"}`}>?? Топ майстри</h2>
+            <h2 className={`text-lg font-semibold mb-6 ${isDarkMode ? "text-white" : "text-gray-900"}`}>?? пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ</h2>
             <div className="space-y-4">
               {topMasters.map((master, idx) => (
                 <div key={idx} className={`p-4 rounded-xl border ${isDarkMode ? "border-gray-700/50 hover:bg-gray-700/30" : "border-gray-200 hover:bg-gray-50"} transition-all cursor-pointer`}>
@@ -205,7 +205,7 @@ export const AdminDashboardModern = () => {
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <p className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>?? {master.orders} замовлень</p>
+                    <p className={`text-xs ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>?? {master.orders} пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</p>
                     <p className={`text-xs font-semibold ${isDarkMode ? "text-green-400" : "text-green-600"}`}>{master.revenue}</p>
                   </div>
                 </div>

@@ -6,9 +6,13 @@ import { ReviewModeration } from './ReviewModeration';
 import { AnalyticsDashboard } from './AnalyticsDashboard';
 import { DisputeCenter } from './DisputeCenter';
 import { UserActionHistory } from './UserActionHistory';
+import { CommissionManagementPanel } from './CommissionManagementPanel';
+import { MessagesCompliancePanel } from './MessagesCompliancePanel';
+import { AdminPanel2026 } from './AdminPanel2026';
 
 export function AdminDashboard() {
   const [users, setUsers] = useState<User[]>([]);
+  const [useModernPanel, setUseModernPanel] = useState(true);
 
   useEffect(() => {
     adminService.getUsers().then(setUsers);
@@ -25,12 +29,28 @@ export function AdminDashboard() {
     setUsers(users.map(u => (u.id === userId ? updatedUser : u)));
   };
 
+  // Используем современную панель 2026
+  if (useModernPanel) {
+    return <AdminPanel2026 currentUser={{ role: 'admin' }} />;
+  }
+
+  // Классическая панель (fallback)
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Панель Адміністратора</h1>
+      <div className="mb-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Панель Адміністратора</h1>
+        <button
+          onClick={() => setUseModernPanel(true)}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Переключити на сучасну панель 2026
+        </button>
+      </div>
+      
       <div className="mb-4">
         <Financials />
       </div>
+      
       <div className="bg-white shadow rounded-lg p-4">
         <h2 className="text-xl font-semibold mb-2">Управління Користувачами</h2>
         <table className="min-w-full divide-y divide-gray-200">
@@ -78,17 +98,29 @@ export function AdminDashboard() {
           </tbody>
         </table>
       </div>
+      
       <div className="mt-4">
         <ReviewModeration />
       </div>
+      
       <div className="mt-4">
         <AnalyticsDashboard />
       </div>
+      
       <div className="mt-4">
         <DisputeCenter />
       </div>
+      
       <div className="mt-4">
         <UserActionHistory />
+      </div>
+      
+      <div className="mt-4">
+        <CommissionManagementPanel />
+      </div>
+      
+      <div className="mt-4">
+        <MessagesCompliancePanel />
       </div>
     </div>
   );

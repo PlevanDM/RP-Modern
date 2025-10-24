@@ -75,15 +75,17 @@ interface ModernNavigationProps {
 // Оптимизированная карта маршрутов - дефинируется один раз вне компонента
 const ROUTE_MAP: Record<string, string> = {
   'Дашборд': 'dashboard',
-  'Створити Заказ': 'catalog',
+  'Створити Заказ': 'createOrder',
   'Знайти Майстрів': 'priceComparison',
   'Мої Замовлення': 'myOrders',
   'Мої Пристрої': 'myDevices',
   'Пропозиції': 'proposals',
   'Платежі': 'payments',
   'Чат': 'messages',
+  'Розширений Чат': 'advancedMessages',
+  'Фінансова Аналітика': 'financialAnalytics',
   'Профіль': 'profile',
-  'Доска Замовлень': 'myOrders',
+  'Доска Замовлень': 'orderBoard',
   'Рейтинги & Рецензії': 'reports',
   'Мої Запчастини': 'inventory',
   'Мої Пропозиції': 'proposals',
@@ -109,7 +111,6 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   const menuItems = React.useMemo(() => {
     const baseItems: MenuItem[] = [
       { label: "Дашборд", href: "#", icon: LayoutDashboard },
-      { label: "Створити Заказ", href: "#", icon: Package },
     ];
 
     if (currentUser?.role === 'master') {
@@ -124,17 +125,21 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { label: "Мої Запчастини", href: "#", icon: Wrench },
         { label: "Мої Пропозиції", href: "#", icon: Tag },
         { label: "Платежі", href: "#", icon: CreditCard },
-        { label: "Чат", href: "#", icon: MessageSquare },
+        { label: "Розширений Чат", href: "#", icon: MessageSquare },
+        { label: "Фінансова Аналітика", href: "#", icon: BarChart3 },
+        { label: "Фінансова Аналітика", href: "#", icon: BarChart3 },
         { label: "Портфоліо", href: "#", icon: Briefcase }
       );
     } else if (currentUser?.role === 'client') {
       baseItems.push(
+        { label: "Створити Заказ", href: "#", icon: Package },
         { label: "Знайти Майстрів", href: "#", icon: Search },
         { label: "Мої Замовлення", href: "#", icon: ShoppingCart },
         { label: "Мої Пристрої", href: "#", icon: Smartphone },
         { label: "Пропозиції", href: "#", icon: Tag },
         { label: "Платежі", href: "#", icon: CreditCard },
-        { label: "Чат", href: "#", icon: MessageSquare }
+        { label: "Розширений Чат", href: "#", icon: MessageSquare },
+        { label: "Фінансова Аналітика", href: "#", icon: BarChart3 }
       );
     } else if (currentUser?.role === 'admin') {
       baseItems.push(
