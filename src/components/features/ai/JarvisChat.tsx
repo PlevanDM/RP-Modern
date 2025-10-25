@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { MessageCircle, X, Send } from 'lucide-react';
 
-const JarvisChat: React.FC = () => {
+export const JarvisChat: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ sender: 'user' | 'jarvis'; text: string }[]>([]);
   const [inputValue, setInputValue] = useState('');
@@ -69,5 +69,3 @@ const JarvisChat: React.FC = () => {
     </div>
   );
 };
-
-export default JarvisChat;
