@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useInView, AnimatePresence, useSpring, animate, useScroll, useTransform } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
+import { Link } from 'react-scroll';
 import {
   Wrench,
   Zap,
@@ -41,44 +42,47 @@ import {
 
 // Анимированные частицы
 const FloatingParticles: React.FC = () => {
-  const particles = Array.from({ length: 20 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 4 + 2,
-    delay: Math.random() * 5,
-    duration: Math.random() * 10 + 10,
-  }));
+    const { scrollYProgress } = useScroll();
+    const y = useTransform(scrollYProgress, [0, 1], [0, -window.innerHeight]);
 
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((particle) => (
-        <motion.div
-          key={particle.id}
-          className="absolute rounded-full bg-gradient-to-r from-primary/20 to-primary/5"
-          style={{
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-          }}
-          animate={{
-            y: [0, -100, 0],
-            x: [0, Math.random() * 50 - 25, 0],
-            scale: [1, 1.5, 1],
-            opacity: [0, 1, 0],
-          }}
-          transition={{
-            duration: particle.duration,
-            delay: particle.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-    </div>
-  );
-};
+    const particles = Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 4 + 2,
+      delay: Math.random() * 5,
+      duration: Math.random() * 10 + 10,
+    }));
+
+    return (
+      <motion.div style={{ y }} className="absolute inset-0 overflow-hidden pointer-events-none">
+        {particles.map((particle) => (
+          <motion.div
+            key={particle.id}
+            className="absolute rounded-full bg-gradient-to-r from-primary/20 to-primary/5"
+            style={{
+              left: `${particle.x}%`,
+              top: `${particle.y}%`,
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+            }}
+            animate={{
+              y: [0, -100, 0],
+              x: [0, Math.random() * 50 - 25, 0],
+              scale: [1, 1.5, 1],
+              opacity: [0, 1, 0],
+            }}
+            transition={{
+              duration: particle.duration,
+              delay: particle.delay,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </motion.div>
+    );
+  };
 
 // Анимированные заказы
 const AnimatedOrders: React.FC = () => {
@@ -173,6 +177,30 @@ const AnimatedLogo: React.FC = () => (
   </motion.div>
 );
 
+// Animated Counter
+const AnimatedCounter: React.FC<{ value: string }> = ({ value }) => {
+    const ref = React.useRef<HTMLSpanElement>(null);
+    const isInView = useInView(ref, { once: true, amount: 0.5 });
+
+    useEffect(() => {
+      if (isInView && ref.current) {
+        const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10);
+        const controls = animate(0, numericValue, {
+          duration: 2,
+          ease: "easeOut",
+          onUpdate(latest) {
+            if (ref.current) {
+                ref.current.textContent = Math.round(latest).toLocaleString() + (value.includes('K+') ? 'K+' : value.includes('+') ? '+' : value.includes('★') ? '★' : '');
+            }
+          },
+        });
+        return () => controls.stop();
+      }
+    }, [isInView, value]);
+
+    return <span ref={ref}>0</span>;
+  };
+
 // Карточка статистики
 const StatCard: React.FC<{ value: string; label: string; icon: React.ReactNode; delay?: number; trend?: string }> = ({ 
   value, 
@@ -204,7 +232,9 @@ const StatCard: React.FC<{ value: string; label: string; icon: React.ReactNode; 
               {icon}
             </motion.div>
             <div>
-              <div className="text-5xl font-bold text-foreground mb-2">{value}</div>
+              <div className="text-5xl font-bold text-foreground mb-2">
+                <AnimatedCounter value={value} />
+                </div>
               <div className="text-sm text-muted-foreground font-medium">{label}</div>
               {trend && (
                 <div className="text-xs text-green-500 font-semibold mt-1 flex items-center gap-1">
@@ -344,12 +374,14 @@ const HeroSection: React.FC = () => {
           </div>
           <div className="flex items-center gap-6">
             <LanguageSwitcher />
-            <Badge 
-              variant="secondary" 
-              className="bg-gradient-to-r from-primary/25 to-accent/15 text-primary border-primary/40 px-6 py-3 text-lg font-bold"
-            >
-              🔥 Найкращі майстри України
-            </Badge>
+            <Link to="features" smooth={true} duration={500} className="cursor-pointer">
+              <Badge
+                variant="secondary"
+                className="bg-gradient-to-r from-primary/25 to-accent/15 text-primary border-primary/40 px-6 py-3 text-lg font-bold"
+              >
+                🔥 Найкращі майстри України
+              </Badge>
+            </Link>
           </div>
         </motion.div>
 
@@ -582,7 +614,7 @@ const UniqueFeaturesSection: React.FC = () => {
   ];
 
   return (
-    <div className="py-32 bg-gradient-to-br from-primary/10 via-background to-accent/5 relative overflow-hidden">
+    <div id="features" className="py-32 bg-gradient-to-br from-primary/10 via-background to-accent/5 relative overflow-hidden">
       <div className="absolute inset-0">
         <motion.div
           animate={{
@@ -634,8 +666,7 @@ const UniqueFeaturesSection: React.FC = () => {
                   <div className="flex items-center gap-6 mb-6">
                     <motion.div 
                       className="p-6 rounded-3xl bg-gradient-to-br from-primary/30 to-accent/20 w-fit group-hover:from-primary/40 group-hover:to-accent/30 transition-all duration-700" 
-                      whileHover={{ scale: 1.2, rotate: 360 }} 
-                      transition={{ duration: 0.8 }}
+                      whileHover={{ scale: 1.2, rotate: 360, transition: { duration: 0.5, ease: 'backInOut' } }}
                     >
                       {feature.icon}
                     </motion.div>
@@ -666,7 +697,7 @@ const UniqueFeaturesSection: React.FC = () => {
 // CTA секция
 const CTASection: React.FC = () => {
   return (
-    <div className="py-32 bg-gradient-to-br from-primary/15 via-background to-accent/10 relative overflow-hidden">
+    <div id="cta" className="py-32 bg-gradient-to-br from-primary/15 via-background to-accent/10 relative overflow-hidden">
       <div className="absolute inset-0">
         <motion.div
           animate={{
