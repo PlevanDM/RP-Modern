@@ -1,0 +1,158 @@
+[1mdiff --git a/src/components/ui/Modal.tsx b/src/components/ui/Modal.tsx[m
+[1mindex c48518f..007c836 100644[m
+[1m--- a/src/components/ui/Modal.tsx[m
+[1m+++ b/src/components/ui/Modal.tsx[m
+[36m@@ -1,87 +1,77 @@[m
+[31m-import React from 'react';[m
+[31m-import { colors, spacing } from './DesignSystem';[m
+[32m+[m[32mimport React, { useEffect, useRef } from 'react';[m
+[32m+[m[32mimport { motion, AnimatePresence } from 'framer-motion';[m
+[32m+[m[32mimport { X } from 'lucide-react';[m
+ [m
+ interface ModalProps {[m
+   isOpen: boolean;[m
+   onClose: () => void;[m
+   children: React.ReactNode;[m
+[32m+[m[32m  title?: string;[m
+ }[m
+ [m
+[31m-export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {[m
+[31m-  if (!isOpen) {[m
+[31m-    return null;[m
+[31m-  }[m
+[32m+[m[32mconst Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title }) => {[m
+[32m+[m[32m  const modalRef = useRef<HTMLDivElement>(null);[m
+[32m+[m
+[32m+[m[32m  useEffect(() => {[m
+[32m+[m[32m    const handleEscape = (event: KeyboardEvent) => {[m
+[32m+[m[32m      if (event.key === 'Escape') {[m
+[32m+[m[32m        onClose();[m
+[32m+[m[32m      }[m
+[32m+[m[32m    };[m
+[32m+[m
+[32m+[m[32m    const handleClickOutside = (event: MouseEvent) => {[m
+[32m+[m[32m      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {[m
+[32m+[m[32m        onClose();[m
+[32m+[m[32m      }[m
+[32m+[m[32m    };[m
+[32m+[m
+[32m+[m[32m    if (isOpen) {[m
+[32m+[m[32m      document.addEventListener('keydown', handleEscape);[m
+[32m+[m[32m      document.addEventListener('mousedown', handleClickOutside);[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    return () => {[m
+[32m+[m[32m      document.removeEventListener('keydown', handleEscape);[m
+[32m+[m[32m      document.removeEventListener('mousedown', handleClickOutside);[m
+[32m+[m[32m    };[m
+[32m+[m[32m  }, [isOpen, onClose]);[m
+ [m
+   return ([m
+[31m-    <div style={{[m
+[31m-      position: 'fixed',[m
+[31m-      zIndex: 10,[m
+[31m-      inset: 0,[m
+[31m-      overflowY: 'auto',[m
+[31m-    }}>[m
+[31m-      <div style={{[m
+[31m-        display: 'flex',[m
+[31m-        alignItems: 'flex-end',[m
+[31m-        justifyContent: 'center',[m
+[31m-        minHeight: '100vh',[m
+[31m-        padding: `${spacing.xs} ${spacing.xs} ${spacing.xl} ${spacing.xs}`,[m
+[31m-        textAlign: 'center',[m
+[31m-      }}>[m
+[31m-        <div style={{[m
+[31m-          position: 'fixed',[m
+[31m-          inset: 0,[m
+[31m-          backgroundColor: colors.secondary,[m
+[31m-          opacity: 0.75,[m
+[31m-        }} aria-hidden="true"></div>[m
+[31m-        <span style={{[m
+[31m-          display: 'none',[m
+[31m-        }} aria-hidden="true">&#8203;</span>[m
+[31m-        <div style={{[m
+[31m-          display: 'inline-block',[m
+[31m-          verticalAlign: 'bottom',[m
+[31m-          backgroundColor: colors.surface,[m
+[31m-          borderRadius: '0.5rem',[m
+[31m-          textAlign: 'left',[m
+[31m-          overflow: 'hidden',[m
+[31m-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',[m
+[31m-          transform: 'translate(0, 0)',[m
+[31m-          transition: 'all 0.3s ease-out',[m
+[31m-          margin: '2rem 0',[m
+[31m-          maxWidth: '50vw',[m
+[31m-          width: '100%',[m
+[31m-        }}>[m
+[31m-          <div style={{[m
+[31m-            backgroundColor: colors.surface,[m
+[31m-            padding: `${spacing.lg} ${spacing.xl}`,[m
+[31m-          }}>[m
+[31m-            {children}[m
+[31m-          </div>[m
+[31m-          <div style={{[m
+[31m-            backgroundColor: colors.background,[m
+[31m-            padding: `${spacing.md} ${spacing.lg}`,[m
+[31m-            textAlign: 'right',[m
+[31m-          }}>[m
+[31m-            <button[m
+[31m-              onClick={onClose}[m
+[31m-              type="button"[m
+[31m-              style={{[m
+[31m-                display: 'inline-flex',[m
+[31m-                justifyContent: 'center',[m
+[31m-                borderRadius: '0.375rem',[m
+[31m-                border: '1px solid transparent',[m
+[31m-                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',[m
+[31m-                padding: `${spacing.sm} ${spacing.md}`,[m
+[31m-                backgroundColor: colors.primary,[m
+[31m-                fontSize: '1rem',[m
+[31m-                fontWeight: '500',[m
+[31m-                color: 'white',[m
+[31m-              }}[m
+[31m-            >[m
+[31m-              Close[m
+[31m-            </button>[m
+[31m-          </div>[m
+[31m-        </div>[m
+[31m-      </div>[m
+[31m-    </div>[m
+[32m+[m[32m    <AnimatePresence>[m
+[32m+[m[32m      {isOpen && ([m
+[32m+[m[32m        <motion.div[m
+[32m+[m[32m          initial={{ opacity: 0 }}[m
+[32m+[m[32m          animate={{ opacity: 1 }}[m
+[32m+[m[32m          exit={{ opacity: 0 }}[m
+[32m+[m[32m          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"[m
+[32m+[m[32m        >[m
+[32m+[m[32m          <motion.div[m
+[32m+[m[32m            ref={modalRef}[m
+[32m+[m[32m            initial={{ scale: 0.9, y: 20 }}[m
+[32m+[m[32m            animate={{ scale: 1, y: 0 }}[m
+[32m+[m[32m            exit={{ scale: 0.9, y: 20 }}[m
+[32m+[m[32m            transition={{ type: 'spring', stiffness: 200, damping: 25 }}[m
+[32m+[m[32m            className="bg-background rounded-2xl shadow-2xl border border-border/60 w-full max-w-lg mx-4"[m
+[32m+[m[32m          >[m
+[32m+[m[32m            <div className="p-6 border-b border-border/60 flex items-center justify-between">[m
+[32m+[m[32m              {title && <h3 className="text-xl font-bold">{title}</h3>}[m
+[32m+[m[32m              <button[m
+[32m+[m[32m                onClick={onClose}[m
+[32m+[m[32m                className="text-muted-foreground hover:text-foreground transition-colors"[m
+[32m+[m[32m                aria-label="Close modal"[m
+[32m+[m[32m              >[m
+[32m+[m[32m                <X className="w-6 h-6" />[m
+[32m+[m[32m              </button>[m
+[32m+[m[32m            </div>[m
+[32m+[m[32m            <div className="p-6">[m
+[32m+[m[32m              {children}[m
+[32m+[m[32m            </div>[m
+[32m+[m[32m          </motion.div>[m
+[32m+[m[32m        </motion.div>[m
+[32m+[m[32m      )}[m
+[32m+[m[32m    </AnimatePresence>[m
+   );[m
+ };[m
+[32m+[m
+[32m+[m[32mexport default Modal;[m
+[32m+[m[32mexport { Modal };[m
