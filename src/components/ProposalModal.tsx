@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Order, User, Proposal } from '../types/models';
-import { Modal } from './ui/modal';
+import Modal from './ui/modal';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 

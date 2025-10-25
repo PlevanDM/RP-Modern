@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Camera, Trash2 } from 'lucide-react';
 import { Order, User } from '../types/models';
-import { Modal } from './ui/modal';
+import Modal from './ui/modal';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 
