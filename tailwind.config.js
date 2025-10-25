@@ -7,6 +7,9 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      colors: {
+        primary: '#3B82F6',
+      },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
       },

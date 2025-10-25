@@ -2,10 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView, AnimatePresence, useSpring, animate, useScroll, useTransform } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
+import SettingsPanel from './ui/SettingsPanel';
+import { ToastContainer } from './ui/Toast';
+import useToastStore from '../store/toastStore';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
+import Modal from './ui/modal';
 import { Link } from 'react-scroll';
 import {
   Wrench,
@@ -37,7 +41,9 @@ import {
   Camera,
   Headphones,
   Gamepad2,
-  Helicopter
+  Helicopter,
+  Edit,
+  ChevronDown
 } from 'lucide-react';
 
 // Анимированные частицы
@@ -87,7 +93,7 @@ const FloatingParticles: React.FC = () => {
 // Анимированные заказы
 const AnimatedOrders: React.FC = () => {
   const orders = [
-    { text: "iPhone 15 Pro - замена экрана", icon: <Smartphone className="w-4 h-4" />, color: "from-blue-500/30" },
+    { text: "iPhone 15 Pro - замена экрана", icon: <Smartphone className="w-4 h-4" />, color: "from-primary/30" },
     { text: "Samsung Galaxy - ремонт батареи", icon: <Battery className="w-4 h-4" />, color: "from-green-500/30" },
     { text: "MacBook Pro - диагностика", icon: <Laptop className="w-4 h-4" />, color: "from-gray-500/30" },
     { text: "iPad Air - замена дисплея", icon: <Tablet className="w-4 h-4" />, color: "from-purple-500/30" },
@@ -150,7 +156,7 @@ const AnimatedLogo: React.FC = () => (
     className="relative inline-block" 
     whileHover={{ scale: 1.15, rotate: 5 }}
   >
-    <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-primary via-primary/90 to-accent flex items-center justify-center shadow-2xl shadow-primary/40">
+    <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-primary via-primary to-primary flex items-center justify-center shadow-2xl shadow-primary/40">
       <motion.div 
         animate={{ rotate: 360 }} 
         transition={{ duration: 20, repeat: Infinity, ease: "linear" }} 
@@ -159,7 +165,7 @@ const AnimatedLogo: React.FC = () => (
       <motion.div 
         animate={{ scale: [1, 1.4, 1], opacity: [0.4, 0.9, 0.4] }} 
         transition={{ duration: 4, repeat: Infinity }} 
-        className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary/60 to-accent/40" 
+        className="absolute inset-0 rounded-3xl bg-gradient-to-r from-primary/60 to-primary/40"
       />
       <motion.div 
         animate={{ 
@@ -225,7 +231,7 @@ const StatCard: React.FC<{ value: string; label: string; icon: React.ReactNode; 
         <CardContent className="p-8 relative z-10">
           <div className="flex items-center gap-6">
             <motion.div 
-              className="p-5 rounded-3xl bg-gradient-to-br from-primary/25 to-accent/15 text-primary group-hover:from-primary/35 group-hover:to-accent/25 transition-all duration-700" 
+              className="p-5 rounded-3xl bg-gradient-to-br from-primary/25 to-primary/15 text-primary group-hover:from-primary/35 group-hover:to-primary/25 transition-all duration-700"
               whileHover={{ rotate: 360, scale: 1.1 }} 
               transition={{ duration: 0.8 }}
             >
@@ -347,24 +353,24 @@ const HeroSection: React.FC = () => {
   const currentContent = activeRole === 'client' ? clientContent : masterContent;
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-background via-background/98 to-primary/8 overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-br from-background via-background/98 to-primary/10 overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
         <FloatingParticles />
         <AnimatedOrders />
       </div>
       
-      <div className="relative z-10 container mx-auto px-4 py-20">
+      <div className="relative z-10 container mx-auto px-4 py-12 md:py-16">
         {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: -40 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ duration: 1, type: "spring", stiffness: 100 }} 
-          className="flex items-center justify-between mb-20"
+          className="flex items-center justify-between mb-16"
         >
           <div className="flex items-center gap-6">
             <AnimatedLogo />
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-primary/90 to-accent bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-primary to-primary bg-clip-text text-transparent">
                 RepairHub Pro
               </h1>
               <p className="text-lg text-muted-foreground font-medium">
@@ -377,7 +383,7 @@ const HeroSection: React.FC = () => {
             <Link to="features" smooth={true} duration={500} className="cursor-pointer">
               <Badge
                 variant="secondary"
-                className="bg-gradient-to-r from-primary/25 to-accent/15 text-primary border-primary/40 px-6 py-3 text-lg font-bold"
+                className="bg-gradient-to-r from-primary/25 to-primary/15 text-primary border-primary/40 px-6 py-3 text-lg font-bold"
               >
                 🔥 Найкращі майстри України
               </Badge>
@@ -390,7 +396,7 @@ const HeroSection: React.FC = () => {
           initial={{ opacity: 0, y: 40 }} 
           animate={{ opacity: 1, y: 0 }} 
           transition={{ duration: 1, delay: 0.3, type: "spring", stiffness: 100 }} 
-          className="flex justify-center mb-20"
+          className="flex justify-center mb-16"
         >
           <div className="bg-gradient-to-r from-background/90 to-background/70 backdrop-blur-xl rounded-3xl p-4 border border-border/60 shadow-2xl shadow-primary/20">
             <Tabs value={activeRole} onValueChange={(value) => setActiveRole(value as 'client' | 'master')}>
@@ -415,7 +421,7 @@ const HeroSection: React.FC = () => {
         </motion.div>
 
         {/* Main Content */}
-        <div className="text-center max-w-6xl mx-auto mb-24">
+        <div className="text-center max-w-6xl mx-auto mb-16">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeRole}
@@ -426,11 +432,11 @@ const HeroSection: React.FC = () => {
               className="mb-16"
             >
               <h1 className="text-7xl md:text-8xl font-bold mb-10">
-                <span className="bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-foreground via-primary to-primary bg-clip-text text-transparent">
                   {currentContent.title}
                 </span>
                 <br />
-                <span className="bg-gradient-to-r from-primary/90 to-accent/70 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary/90 to-primary/70 bg-clip-text text-transparent">
                   {currentContent.subtitle}
                 </span>
               </h1>
@@ -449,15 +455,15 @@ const HeroSection: React.FC = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.8, type: "spring", stiffness: 100 }}
-            className="flex flex-col sm:flex-row gap-8 justify-center mb-20"
+            className="flex flex-col sm:flex-row gap-8 justify-center mb-16"
           >
             <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
+              whileHover={{ scale: 1.05, y: -5, transition: { y: { type: 'spring', stiffness: 300 } } }}
               whileTap={{ scale: 0.95 }}
             >
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-primary via-primary/90 to-accent text-white px-12 py-6 text-2xl font-bold shadow-2xl shadow-primary/40 hover:shadow-primary/60 transition-all duration-500 rounded-2xl"
+                className="bg-gradient-to-r from-primary via-primary to-primary text-white px-12 py-6 text-2xl font-bold shadow-2xl shadow-primary/40 hover:shadow-primary/60 transition-all duration-500 rounded-2xl focus:ring-4 focus:ring-primary/50 focus:outline-none"
               >
                 {currentContent.icon}
                 <span className="ml-3">{currentContent.cta}</span>
@@ -471,13 +477,13 @@ const HeroSection: React.FC = () => {
               </Button>
             </motion.div>
             <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
+              whileHover={{ scale: 1.05, y: -5, transition: { y: { type: 'spring', stiffness: 300 } } }}
               whileTap={{ scale: 0.95 }}
             >
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-3 border-primary/40 px-12 py-6 text-2xl font-bold hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/5 transition-all duration-500 rounded-2xl backdrop-blur-sm"
+                className="border-3 border-primary/40 px-12 py-6 text-2xl font-bold hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 transition-all duration-500 rounded-2xl backdrop-blur-sm focus:ring-4 focus:ring-primary/50 focus:outline-none"
               >
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
@@ -517,7 +523,7 @@ const HeroSection: React.FC = () => {
                   size="lg" 
                   variant="secondary" 
                   onClick={() => handleQuickSwitch('client')}
-                  className="px-8 py-4 text-lg font-bold"
+                  className="px-8 py-4 text-lg font-bold focus:ring-4 focus:ring-primary/50 focus:outline-none"
                 >
                   👤 Клієнт
                 </Button>
@@ -530,7 +536,7 @@ const HeroSection: React.FC = () => {
                   size="lg" 
                   variant="secondary" 
                   onClick={() => handleQuickSwitch('master')}
-                  className="px-8 py-4 text-lg font-bold"
+                  className="px-8 py-4 text-lg font-bold focus:ring-4 focus:ring-primary/50 focus:outline-none"
                 >
                   🔧 Майстер
                 </Button>
@@ -543,7 +549,7 @@ const HeroSection: React.FC = () => {
                   size="lg" 
                   variant="secondary" 
                   onClick={() => handleQuickSwitch('admin')}
-                  className="px-8 py-4 text-lg font-bold"
+                  className="px-8 py-4 text-lg font-bold focus:ring-4 focus:ring-primary/50 focus:outline-none"
                 >
                   👨‍💼 Адміністратор
                 </Button>
@@ -584,6 +590,21 @@ const HeroSection: React.FC = () => {
   );
 };
 
+// Scroll animations
+const scrollVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: (i: number = 1) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: i * 0.1,
+        type: "spring",
+        stiffness: 100,
+      },
+    }),
+  };
+
 // Секция уникальных возможностей
 const UniqueFeaturesSection: React.FC = () => {
   const uniqueFeatures = [
@@ -614,30 +635,33 @@ const UniqueFeaturesSection: React.FC = () => {
   ];
 
   return (
-    <div id="features" className="py-32 bg-gradient-to-br from-primary/10 via-background to-accent/5 relative overflow-hidden">
+    <div id="features" className="py-24 md:py-28 bg-gradient-to-br from-primary/10 via-background to-primary/5 relative overflow-hidden">
       <div className="absolute inset-0">
         <motion.div
           animate={{
             background: [
-              "radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.12) 0%, transparent 50%)",
-              "radial-gradient(circle at 80% 20%, rgba(120, 119, 198, 0.18) 0%, transparent 50%)",
-              "radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.12) 0%, transparent 50%)"
+              "radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.12) 0%, transparent 50%)",
+              "radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.18) 0%, transparent 50%)",
+              "radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.12) 0%, transparent 50%)"
             ]
           }}
           transition={{ duration: 25, repeat: Infinity }}
           className="absolute inset-0"
         />
       </div>
-      <div className="container mx-auto px-4 relative z-10">
+      <motion.div
+        className="container mx-auto px-4 relative z-10"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={scrollVariants}
+      >
         <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, type: "spring", stiffness: 100 }}
-          viewport={{ once: true }}
+          variants={scrollVariants}
           className="text-center mb-24"
         >
           <motion.h2
-            className="text-6xl font-bold mb-8 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent"
+            className="text-6xl font-bold mb-8 bg-gradient-to-r from-foreground via-primary to-primary bg-clip-text text-transparent"
             animate={{
               backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
             }}
@@ -650,14 +674,14 @@ const UniqueFeaturesSection: React.FC = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-16"
+          variants={scrollVariants}
+        >
           {uniqueFeatures.map((feature, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 60, scale: 0.9 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 1, delay: index * 0.3, type: "spring", stiffness: 100 }}
-              viewport={{ once: true }}
+              variants={scrollVariants}
               className="relative group"
               whileHover={{ y: -10, scale: 1.02 }}
             >
@@ -665,7 +689,7 @@ const UniqueFeaturesSection: React.FC = () => {
                 <CardHeader className="p-8">
                   <div className="flex items-center gap-6 mb-6">
                     <motion.div 
-                      className="p-6 rounded-3xl bg-gradient-to-br from-primary/30 to-accent/20 w-fit group-hover:from-primary/40 group-hover:to-accent/30 transition-all duration-700" 
+                      className="p-6 rounded-3xl bg-gradient-to-br from-primary/30 to-primary/20 w-fit group-hover:from-primary/40 group-hover:to-primary/30 transition-all duration-700"
                       whileHover={{ scale: 1.2, rotate: 360, transition: { duration: 0.5, ease: 'backInOut' } }}
                     >
                       {feature.icon}
@@ -674,7 +698,7 @@ const UniqueFeaturesSection: React.FC = () => {
                       <h3 className="text-3xl font-bold text-foreground group-hover:text-primary transition-colors duration-500">
                         {feature.title}
                       </h3>
-                      <Badge className="mt-2 bg-gradient-to-r from-primary/25 to-accent/15 text-primary border-primary/40">
+                      <Badge className="mt-2 bg-gradient-to-r from-primary/25 to-primary/15 text-primary border-primary/40">
                         {feature.highlight}
                       </Badge>
                     </div>
@@ -688,8 +712,8 @@ const UniqueFeaturesSection: React.FC = () => {
               </Card>
             </motion.div>
           ))}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
@@ -697,30 +721,33 @@ const UniqueFeaturesSection: React.FC = () => {
 // CTA секция
 const CTASection: React.FC = () => {
   return (
-    <div id="cta" className="py-32 bg-gradient-to-br from-primary/15 via-background to-accent/10 relative overflow-hidden">
+    <div id="cta" className="py-24 md:py-28 bg-gradient-to-br from-primary/15 via-background to-primary/10 relative overflow-hidden">
       <div className="absolute inset-0">
         <motion.div
           animate={{
             background: [
-              "radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%)",
-              "radial-gradient(circle at 80% 20%, rgba(120, 119, 198, 0.20) 0%, transparent 50%)",
-              "radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%)"
+              "radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)",
+              "radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.20) 0%, transparent 50%)",
+              "radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 50%)"
             ]
           }}
           transition={{ duration: 25, repeat: Infinity }}
           className="absolute inset-0"
         />
       </div>
-      <div className="container mx-auto px-4 text-center relative z-10">
+      <motion.div
+        className="container mx-auto px-4 text-center relative z-10"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={scrollVariants}
+      >
         <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, type: "spring", stiffness: 100 }}
-          viewport={{ once: true }}
+          variants={scrollVariants}
           className="max-w-5xl mx-auto"
         >
           <motion.h2
-            className="text-6xl font-bold mb-10 bg-gradient-to-r from-foreground via-primary to-accent bg-clip-text text-transparent"
+            className="text-6xl font-bold mb-10 bg-gradient-to-r from-foreground via-primary to-primary bg-clip-text text-transparent"
             animate={{
               backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
             }}
@@ -735,14 +762,18 @@ const CTASection: React.FC = () => {
           >
             Приєднуйтеся до тисяч задоволених користувачів
           </motion.p>
-          <div className="flex flex-col sm:flex-row gap-8 justify-center mb-16">
+          <motion.div
+            className="flex flex-col sm:flex-row gap-8 justify-center mb-16"
+            variants={scrollVariants}
+          >
             <motion.div
+              variants={scrollVariants}
               whileHover={{ scale: 1.05, y: -8 }}
               whileTap={{ scale: 0.95 }}
             >
               <Button
                 size="lg"
-                className="bg-gradient-to-r from-primary via-primary/90 to-accent hover:from-primary/90 hover:via-primary/80 hover:to-accent/90 text-white px-16 py-8 text-2xl font-bold shadow-2xl shadow-primary/40 hover:shadow-primary/60 transition-all duration-500 rounded-2xl"
+                className="bg-gradient-to-r from-primary via-primary to-primary hover:from-primary/90 hover:via-primary/90 hover:to-primary/90 text-white px-16 py-8 text-2xl font-bold shadow-2xl shadow-primary/40 hover:shadow-primary/60 transition-all duration-500 rounded-2xl"
               >
                 <motion.div
                   animate={{ rotate: [0, 360] }}
@@ -762,13 +793,14 @@ const CTASection: React.FC = () => {
               </Button>
             </motion.div>
             <motion.div
+              variants={scrollVariants}
               whileHover={{ scale: 1.05, y: -8 }}
               whileTap={{ scale: 0.95 }}
             >
               <Button
                 size="lg"
                 variant="outline"
-                className="border-3 border-primary/50 hover:bg-gradient-to-r hover:from-primary/15 hover:to-accent/10 px-16 py-8 text-2xl font-bold hover:border-primary/70 transition-all duration-500 rounded-2xl backdrop-blur-sm"
+                className="border-3 border-primary/50 hover:bg-gradient-to-r hover:from-primary/15 hover:to-primary/10 px-16 py-8 text-2xl font-bold hover:border-primary/70 transition-all duration-500 rounded-2xl backdrop-blur-sm"
               >
                 <motion.div
                   animate={{ scale: [1, 1.3, 1] }}
@@ -787,8 +819,9 @@ const CTASection: React.FC = () => {
                 </motion.div>
               </Button>
             </motion.div>
-          </div>
+          </motion.div>
           <motion.div
+            variants={scrollVariants}
             className="bg-gradient-to-r from-background/90 to-background/70 backdrop-blur-xl rounded-3xl p-12 border border-border/60 shadow-2xl shadow-primary/20"
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.4 }}
@@ -803,89 +836,276 @@ const CTASection: React.FC = () => {
             </motion.p>
           </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
     </div>
   );
 };
 
-// Футер
-const Footer: React.FC = () => {
-  return (
-    <footer className="bg-gradient-to-r from-background/95 to-background/85 backdrop-blur-xl border-t border-border/60 relative overflow-hidden">
-      <div className="absolute inset-0">
-        <motion.div
-          animate={{
-            background: [
-              "radial-gradient(circle at 10% 10%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)",
-              "radial-gradient(circle at 90% 90%, rgba(120, 119, 198, 0.08) 0%, transparent 50%)",
-              "radial-gradient(circle at 10% 10%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)"
-            ]
-          }}
-          transition={{ duration: 25, repeat: Infinity }}
-          className="absolute inset-0"
-        />
-      </div>
-      <div className="container mx-auto px-4 py-16 relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="flex items-center gap-6">
-            <AnimatedLogo />
-            <div>
-              <motion.p
-                className="font-bold text-foreground text-2xl"
-                animate={{ opacity: [0.8, 1, 0.8] }}
-                transition={{ duration: 4, repeat: Infinity }}
-              >
-                RepairHub Pro
-              </motion.p>
-              <p className="text-lg text-muted-foreground font-medium">
-                Професійна платформа ремонту
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-12 text-lg text-muted-foreground">
-            <motion.div
-              className="flex items-center gap-3"
-              whileHover={{ scale: 1.05 }}
-            >
-              <Phone className="w-6 h-6" />
-              <span className="font-medium">+380 (44) 123-45-67</span>
-            </motion.div>
-            <motion.div
-              className="flex items-center gap-3"
-              whileHover={{ scale: 1.05 }}
-            >
-              <Mail className="w-6 h-6" />
-              <span className="font-medium">info@repairhub.pro</span>
-            </motion.div>
-            <motion.div
-              className="flex items-center gap-3"
-              whileHover={{ scale: 1.05 }}
-            >
-              <MapPin className="w-6 h-6" />
-              <span className="font-medium">Київ, Україна</span>
-            </motion.div>
-          </div>
+// Contact Form
+const ContactForm: React.FC<{onClose: () => void}> = ({onClose}) => {
+    const addToast = useToastStore((state) => state.addToast);
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      addToast('Дякуємо за ваше повідомлення!', 'success');
+      onClose();
+    };
+
+    return (
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-muted-foreground">Ім'я</label>
+          <input type="text" id="name" className="mt-1 block w-full px-3 py-2 bg-background border border-border/60 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm" />
         </div>
-        <motion.div
-          className="mt-16 pt-8 border-t border-border/60 text-center text-lg text-muted-foreground"
-          animate={{ opacity: [0.7, 1, 0.7] }}
-          transition={{ duration: 4, repeat: Infinity }}
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-muted-foreground">Email</label>
+          <input type="email" id="email" className="mt-1 block w-full px-3 py-2 bg-background border border-border/60 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm" />
+        </div>
+        <div>
+          <label htmlFor="message" className="block text-sm font-medium text-muted-foreground">Повідомлення</label>
+          <textarea id="message" rows={4} className="mt-1 block w-full px-3 py-2 bg-background border border-border/60 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"></textarea>
+        </div>
+        <Button type="submit" className="w-full">Відправити</Button>
+      </form>
+    );
+  };
+
+  // Футер
+  const Footer: React.FC = () => {
+    const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
+    return (
+      <>
+        <footer className="bg-gradient-to-r from-background/95 to-background/85 backdrop-blur-xl border-t border-border/60 relative overflow-hidden">
+          <div className="absolute inset-0">
+            <motion.div
+              animate={{
+                background: [
+                  "radial-gradient(circle at 10% 10%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)",
+                  "radial-gradient(circle at 90% 90%, rgba(120, 119, 198, 0.08) 0%, transparent 50%)",
+                  "radial-gradient(circle at 10% 10%, rgba(120, 119, 198, 0.05) 0%, transparent 50%)"
+                ]
+              }}
+              transition={{ duration: 25, repeat: Infinity }}
+              className="absolute inset-0"
+            />
+          </div>
+          <div className="container mx-auto px-4 py-16 relative z-10">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-12">
+              <div className="flex items-center gap-6">
+                <AnimatedLogo />
+                <div>
+                  <motion.p
+                    className="font-bold text-foreground text-2xl"
+                    animate={{ opacity: [0.8, 1, 0.8] }}
+                    transition={{ duration: 4, repeat: Infinity }}
+                  >
+                    RepairHub Pro
+                  </motion.p>
+                  <p className="text-lg text-muted-foreground font-medium">
+                    Професійна платформа ремонту
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-12 text-lg text-muted-foreground">
+                <motion.div
+                    className="flex items-center gap-3 cursor-pointer"
+                    whileHover={{ scale: 1.05 }}
+                    onClick={() => setIsContactModalOpen(true)}
+                    data-testid="contact-us-button"
+                >
+                    <MessageSquare className="w-6 h-6" />
+                    <span className="font-medium">Зв'яжіться з нами</span>
+                </motion.div>
+                <motion.div
+                  className="flex items-center gap-3"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Phone className="w-6 h-6" />
+                  <span className="font-medium">+380 (44) 123-45-67</span>
+                </motion.div>
+                <motion.div
+                  className="flex items-center gap-3"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Mail className="w-6 h-6" />
+                  <span className="font-medium">info@repairhub.pro</span>
+                </motion.div>
+              </div>
+            </div>
+            <motion.div
+              className="mt-16 pt-8 border-t border-border/60 text-center text-lg text-muted-foreground"
+              animate={{ opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 4, repeat: Infinity }}
+            >
+              <p className="font-medium">© 2024 RepairHub Pro. Всі права захищені.</p>
+            </motion.div>
+          </div>
+        </footer>
+        <Modal
+          isOpen={isContactModalOpen}
+          onClose={() => setIsContactModalOpen(false)}
+          title="Зв'яжіться з нами"
         >
-          <p className="font-medium">© 2024 RepairHub Pro. Всі права захищені.</p>
-        </motion.div>
+          <ContactForm onClose={() => setIsContactModalOpen(false)} />
+        </Modal>
+      </>
+    );
+  };
+
+// Scroll Progress Bar
+const ScrollProgressBar: React.FC = () => {
+    const { scrollYProgress } = useScroll();
+    const scaleX = useSpring(scrollYProgress, {
+      stiffness: 100,
+      damping: 30,
+      restDelta: 0.001
+    });
+
+    return (
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-2 bg-primary origin-left z-50"
+        style={{ scaleX }}
+      />
+    );
+  };
+
+// Accordion Item
+const AccordionItem: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+      <motion.div className="border-b border-border/60">
+        <button
+          className="flex justify-between items-center w-full py-5 text-left text-lg font-semibold"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <span>{title}</span>
+          <motion.div
+            animate={{ rotate: isOpen ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <ChevronDown className="w-5 h-5" />
+          </motion.div>
+        </button>
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              <div className="pb-5 text-muted-foreground">{children}</div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    );
+  };
+
+  // FAQ Section
+  const FAQSection: React.FC = () => {
+    const faqs = [
+      {
+        question: "Скільки коштує заявка?",
+        answer: "Безкоштовно. Платите тільки за виконаний ремонт майстру."
+      },
+      {
+        question: "Як швидко відгукнуться майстри?",
+        answer: "Зазвичай перші пропозиції за 15-30 хвилин."
+      },
+      {
+        question: "Як захищені мої гроші?",
+        answer: "Ескроу-рахунок блокує платіж до завершення роботи. Майстер отримує гроші тільки після вашого підтвердження."
+      },
+      {
+        question: "Яка комісія платформи для майстрів?",
+        answer: "10% з кожного завершеного замовлення. Реєстрація та профіль безкоштовні."
+      }
+    ];
+
+    return (
+      <div className="py-24 md:py-28">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ type: 'spring', stiffness: 100 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">Часті запитання</h2>
+            <p className="text-lg text-muted-foreground">Все, що вам потрібно знати.</p>
+          </motion.div>
+          <motion.div
+            className="max-w-3xl mx-auto"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={scrollVariants}
+          >
+            {faqs.map((faq, index) => (
+              <motion.div key={index} variants={scrollVariants}>
+                <AccordionItem title={faq.question}>
+                  <p>{faq.answer}</p>
+                </AccordionItem>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </div>
-    </footer>
-  );
-};
+    );
+  };
 
 // Главный компонент
-const TopLandingPage: React.FC = () => (
-  <div className="min-h-screen bg-background">
-    <HeroSection />
-    <UniqueFeaturesSection />
-    <CTASection />
-    <Footer />
-  </div>
-);
+const TopLandingPage: React.FC = () => {
+  const [settings, setSettings] = useState({
+    theme: 'dark' as 'light' | 'dark',
+    animations: true,
+  });
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const handleSettingsChange = (newSettings: Partial<typeof settings>) => {
+    setSettings(prev => ({ ...prev, ...newSettings }));
+  };
+
+  useEffect(() => {
+    if (settings.theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [settings.theme]);
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <ToastContainer />
+      <motion.button
+        onClick={() => setIsSettingsOpen(true)}
+        className="fixed bottom-6 right-6 bg-primary text-primary-foreground p-4 rounded-full shadow-lg z-50"
+        whileHover={{ scale: 1.1, rotate: 15 }}
+        whileTap={{ scale: 0.9 }}
+        aria-label="Open settings"
+      >
+        <Edit className="w-6 h-6" />
+      </motion.button>
+
+      <SettingsPanel
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        settings={settings}
+        onSettingsChange={handleSettingsChange}
+      />
+      <ScrollProgressBar />
+      <HeroSection />
+      <UniqueFeaturesSection />
+      <CTASection />
+      <FAQSection />
+      <Footer />
+    </div>
+  );
+};
 
 export default TopLandingPage;

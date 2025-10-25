@@ -1,87 +1,76 @@
-import React from 'react';
-import { colors, spacing } from './DesignSystem';
+import React, { useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  title?: string;
 }
 
-export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
-  if (!isOpen) {
-    return null;
-  }
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title }) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
 
   return (
-    <div style={{
-      position: 'fixed',
-      zIndex: 10,
-      inset: 0,
-      overflowY: 'auto',
-    }}>
-      <div style={{
-        display: 'flex',
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        padding: `${spacing.xs} ${spacing.xs} ${spacing.xl} ${spacing.xs}`,
-        textAlign: 'center',
-      }}>
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          backgroundColor: colors.secondary,
-          opacity: 0.75,
-        }} aria-hidden="true"></div>
-        <span style={{
-          display: 'none',
-        }} aria-hidden="true">&#8203;</span>
-        <div style={{
-          display: 'inline-block',
-          verticalAlign: 'bottom',
-          backgroundColor: colors.surface,
-          borderRadius: '0.5rem',
-          textAlign: 'left',
-          overflow: 'hidden',
-          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-          transform: 'translate(0, 0)',
-          transition: 'all 0.3s ease-out',
-          margin: '2rem 0',
-          maxWidth: '50vw',
-          width: '100%',
-        }}>
-          <div style={{
-            backgroundColor: colors.surface,
-            padding: `${spacing.lg} ${spacing.xl}`,
-          }}>
-            {children}
-          </div>
-          <div style={{
-            backgroundColor: colors.background,
-            padding: `${spacing.md} ${spacing.lg}`,
-            textAlign: 'right',
-          }}>
-            <button
-              onClick={onClose}
-              type="button"
-              style={{
-                display: 'inline-flex',
-                justifyContent: 'center',
-                borderRadius: '0.375rem',
-                border: '1px solid transparent',
-                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-                padding: `${spacing.sm} ${spacing.md}`,
-                backgroundColor: colors.primary,
-                fontSize: '1rem',
-                fontWeight: '500',
-                color: 'white',
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+        >
+          <motion.div
+            ref={modalRef}
+            initial={{ scale: 0.9, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.9, y: 20 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+            className="bg-background rounded-2xl shadow-2xl border border-border/60 w-full max-w-lg mx-4"
+          >
+            <div className="p-6 border-b border-border/60 flex items-center justify-between">
+              {title && <h3 className="text-xl font-bold">{title}</h3>}
+              <button
+                onClick={onClose}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="p-6">
+              {children}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
+
+export default Modal;
