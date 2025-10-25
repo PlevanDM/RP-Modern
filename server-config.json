@@ -1,0 +1,13 @@
+{
+  "label": "repair-hub-pro",
+  "os_id": 1743,
+  "plan": "vc2-1c-1gb",
+  "region": "fra",
+  "enable_ipv6": true,
+  "enable_private_network": false,
+  "backups": "disabled",
+  "ddos_protection": false,
+  "activation_email": false,
+  "hostname": "repair-hub-pro",
+  "tag": "repair-hub-pro"
+}
