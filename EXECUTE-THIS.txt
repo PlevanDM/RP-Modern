@@ -1,0 +1,53 @@
+╔═══════════════════════════════════════════════════════════════╗
+║           ВИКОНАЙТЕ ЦІ КОМАНДИ НА СЕРВЕРІ                      ║
+╚═══════════════════════════════════════════════════════════════╝
+
+ssh root@70.34.252.148
+
+cd /root/repair-hub-pro
+
+git pull origin eploy
+
+docker compose down
+
+docker compose build --no-cache
+
+docker compose up -d
+
+sleep 30
+
+docker compose ps
+
+docker logs repair-hub-pro --tail=30
+
+
+╔═══════════════════════════════════════════════════════════════╗
+║              ПІСЛЯ ЦЬОГО - ADD DNS RECORDS                    ║
+╚═══════════════════════════════════════════════════════════════╝
+
+1. https://dash.cloudflare.com → Zones → repairhub.one → DNS
+
+2. Add record (два рази):
+
+   Record 1:
+   Type: A
+   Name: @
+   Content: 70.34.252.148
+   Proxy: OFF (сіра хмара)
+   TTL: Auto
+
+   Record 2:
+   Type: A
+   Name: www
+   Content: 70.34.252.148
+   Proxy: OFF (сіра хмара)
+   TTL: Auto
+
+3. Save обидва записи
+
+4. Чекайте 5-30 хвилин
+
+5. Відкрийте: http://repairhub.one
+
+═══════════════════════════════════════════════════════════════
+
