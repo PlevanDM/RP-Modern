@@ -1,0 +1,44 @@
+==========================================
+  АВТОМАТИЧНИЙ ДЕПЛОЙ
+==========================================
+
+Виконайте ці команди на сервері:
+
+ssh root@70.34.252.148
+
+cd /root/repair-hub-pro
+
+git pull origin eploy
+
+docker compose down
+
+docker compose build --no-cache
+
+docker compose up -d
+
+sleep 20
+
+docker compose ps
+
+docker logs repair-hub-pro --tail=30
+
+==========================================
+  АБО В ОДНУ ЛІНІЮ:
+==========================================
+
+ssh root@70.34.252.148 "cd /root/repair-hub-pro && git pull origin eploy && docker compose down && docker compose build --no-cache && docker compose up -d && sleep 20 && docker compose ps && docker logs repair-hub-pro --tail=30"
+
+==========================================
+  ПІСЛЯ ДЕПЛОЮ:
+==========================================
+
+Відкрийте: http://70.34.252.148:3000
+
+Перевірте:
+✓ Cookie consent з'являється
+✓ Error handling працює  
+✓ Mobile responsive
+✓ Всі тест аккаунти працюють
+
+==========================================
+
