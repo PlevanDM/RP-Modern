@@ -25,9 +25,16 @@ docker compose up -d
 sleep 10
 
 echo ""
-echo "📊 Status:"
+echo "📊 Container status:"
 docker compose ps
 
 echo ""
-echo "📝 Logs:"
+echo "📝 Last 50 lines of logs:"
 docker logs repair-hub-pro --tail 50
+
+echo ""
+echo "═══════════════════════════════════════════════════════════════"
+echo "✅ DEPLOYMENT COMPLETE!"
+echo ""
+echo "🌐 Test: https://repairhub.one"
+echo "═══════════════════════════════════════════════════════════════"
