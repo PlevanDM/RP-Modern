@@ -1,14 +1,13 @@
-version: '3.8'
-
 services:
   repair-hub-pro:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "80:80"   # HTTP port
-      - "443:443" # HTTPS port
     environment:
       - NODE_ENV=production
-    restart: unless-stopped
+    restart: always
     container_name: repair-hub-pro
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
@@ -22,6 +21,20 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./nginx.conf:/etc/nginx/http.d/default.conf:ro
+      - nginx-logs:/var/log/nginx
+      - app-data:/app/dist
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "production"
+
+volumes:
+  nginx-logs:
+    driver: local
+  app-data:
+    driver: local
 
 networks:
   repair-network:

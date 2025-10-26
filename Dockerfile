@@ -19,7 +19,7 @@ RUN npm ci && \
     npm cache clean --force
 
 # Устанавливаем nginx для статики и wget для healthcheck
-RUN apk add --no-cache nginx wget && \
+RUN apk add --no-cache nginx wget curl && \
     mkdir -p /etc/nginx/conf.d
 
 # Копируем nginx конфиг
@@ -38,6 +38,13 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
   CMD wget --quiet --tries=1 --spider http://localhost:80 || exit 1
 
+# Create startup script
+RUN echo '#!/bin/sh' > /start.sh && \
+    echo 'echo "Starting RepairHub Pro..."' >> /start.sh && \
+    echo 'nginx -t || exit 1' >> /start.sh && \
+    echo 'nginx -g "daemon off;"' >> /start.sh && \
+    chmod +x /start.sh
+
 # Запускаем nginx
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/start.sh"]
 
