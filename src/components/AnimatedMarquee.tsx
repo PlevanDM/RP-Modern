@@ -1,104 +1,136 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface NotificationItem {
   icon: string;
   text: string;
-  delay: number;
-  effect: 'fade' | 'bounce' | 'scale' | 'rotate';
 }
 
 const notifications: NotificationItem[] = [
-  { icon: '📱', text: 'Нове замовлення #1234', delay: 0, effect: 'fade' },
-  { icon: '🔧', text: 'Повідомлення від майстра', delay: 0.2, effect: 'bounce' },
-  { icon: '✨', text: 'Замовлення #5678 завершено', delay: 0.4, effect: 'scale' },
-  { icon: '⭐', text: 'Отримано новий відгук', delay: 0.6, effect: 'rotate' },
+  { icon: '📱', text: 'Нове замовлення #1234' },
+  { icon: '🔧', text: 'Повідомлення від майстра' },
+  { icon: '✨', text: 'Замовлення #5678 завершено' },
+  { icon: '⭐', text: 'Отримано новий відгук' },
+  { icon: '💼', text: 'Новий клієнт зареєструвався' },
+  { icon: '🎯', text: 'Запропоновано нову ціну' },
 ];
 
-const getRandomEffect = () => {
-  const effects: NotificationItem['effect'][] = ['fade', 'bounce', 'scale', 'rotate'];
-  return effects[Math.floor(Math.random() * effects.length)];
-};
-
 const AnimatedMarquee: React.FC = () => {
-  const [animatedNotifications, setAnimatedNotifications] = useState<NotificationItem[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [nextIndex, setNextIndex] = useState(1);
 
   useEffect(() => {
-    // Initialize with random effects
-    const items = notifications.map(item => ({
-      ...item,
-      effect: getRandomEffect(),
-    }));
-    setAnimatedNotifications(items);
-
-    // Change random item every 3 seconds
     const interval = setInterval(() => {
-      setAnimatedNotifications(prev => {
-        const randomIndex = Math.floor(Math.random() * prev.length);
-        const newItems = [...prev];
-        newItems[randomIndex] = {
-          ...newItems[randomIndex],
-          effect: getRandomEffect(),
-        };
-        return newItems;
-      });
-    }, 3000);
+      setNextIndex((prev) => (prev + 1) % notifications.length);
+      
+      // Delay the actual switch to allow exit animation
+      setTimeout(() => {
+        setCurrentIndex((prev) => (prev + 1) % notifications.length);
+      }, 500);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, []);
 
-  const getAnimationProps = (effect: NotificationItem['effect']) => {
-    switch (effect) {
-      case 'fade':
-        return {
-          animate: { opacity: [0.5, 1, 0.5] },
-          transition: { duration: 2, repeat: Infinity },
-        };
-      case 'bounce':
-        return {
-          animate: { y: [0, -5, 0] },
-          transition: { duration: 1.5, repeat: Infinity },
-        };
-      case 'scale':
-        return {
-          animate: { scale: [1, 1.2, 1] },
-          transition: { duration: 1.5, repeat: Infinity },
-        };
-      case 'rotate':
-        return {
-          animate: { rotate: [0, 360] },
-          transition: { duration: 2, repeat: Infinity, ease: 'linear' },
-        };
-      default:
-        return {};
-    }
-  };
+  const currentNotification = notifications[currentIndex];
 
   return (
-    <div className="overflow-hidden relative h-6 mt-1">
-      <div className="animate-marquee whitespace-nowrap text-sm text-gray-600 flex items-center gap-3">
-        {animatedNotifications.map((item, index) => (
-          <motion.span
-            key={index}
-            {...getAnimationProps(item.effect)}
-            className="inline-flex items-center gap-1"
+    <div className="overflow-hidden relative h-8 mt-1 flex items-center justify-center">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentIndex}
+          initial={{ opacity: 0, y: 20, scale: 0.8, rotateX: -90 }}
+          animate={{ 
+            opacity: 1, 
+            y: 0, 
+            scale: 1, 
+            rotateX: 0,
+          }}
+          exit={{ 
+            opacity: 0, 
+            y: -20, 
+            scale: 0.8, 
+            rotateX: 90,
+          }}
+          transition={{
+            duration: 0.6,
+            ease: [0.34, 1.56, 0.64, 1],
+          }}
+          className="flex items-center gap-2 px-4"
+        >
+          {/* Icon with rotation and glow effect */}
+          <motion.div
+            animate={{ 
+              rotate: [0, 10, -10, 0],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{ 
+              duration: 2, 
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="relative"
           >
-            <span className="text-lg">{item.icon}</span>
-            <span>{item.text}</span>
-          </motion.span>
-        ))}
-        <span className="mx-2">•</span>
-        {animatedNotifications.map((item, index) => (
+            <motion.div
+              animate={{ 
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.6, 0.3],
+              }}
+              transition={{ 
+                duration: 2, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-md"
+            />
+            <span className="text-2xl relative z-10">{currentNotification.icon}</span>
+          </motion.div>
+          
+          {/* Text with gradient and shimmer */}
           <motion.span
-            key={`dup-${index}`}
-            {...getAnimationProps(item.effect)}
-            className="inline-flex items-center gap-1"
+            animate={{ 
+              backgroundPosition: ["200% 0", "-200% 0"],
+            }}
+            transition={{ 
+              duration: 3, 
+              repeat: Infinity,
+              ease: "linear"
+            }}
+            style={{
+              background: "linear-gradient(90deg, #1f2937, #6366f1, #1f2937, #6366f1)",
+              backgroundSize: "200% 100%",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+            className="text-sm font-medium"
           >
-            <span className="text-lg">{item.icon}</span>
-            <span>{item.text}</span>
+            {currentNotification.text}
           </motion.span>
-        ))}
-      </div>
+
+          {/* Pulsing dot indicator */}
+          <motion.div
+            animate={{ 
+              scale: [1, 1.5, 1],
+              opacity: [0.5, 1, 0.5],
+            }}
+            transition={{ 
+              duration: 1.5, 
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Progress bar */}
+      <motion.div
+        initial={{ scaleX: 1 }}
+        animate={{ scaleX: 0 }}
+        transition={{ duration: 4, ease: "linear", repeat: Infinity }}
+        className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 origin-left"
+      />
     </div>
   );
 };
