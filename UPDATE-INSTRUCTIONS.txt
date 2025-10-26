@@ -1,0 +1,54 @@
+========================================
+ІНСТРУКЦІЯ ДЛЯ ОНОВЛЕННЯ ДО ОСТАННІХ ВЕРСІЙ
+========================================
+
+Підключіться до сервера Vultr через Console або SSH і виконайте ці команди:
+
+1. ПІДКЛЮЧЕННЯ:
+   ssh root@70.34.252.148
+   Пароль: 8zU%)m9$eVu-$wHd
+
+2. ОНОВЛЕННЯ:
+   cd /root/repair-hub-pro
+   sed -i 's/node:18-alpine/node:20-alpine/g' Dockerfile
+   docker compose down
+   docker compose build --no-cache
+   docker compose up -d
+   docker compose logs -f
+
+3. ПЕРЕВІРКА:
+   - Відкрийте http://70.34.252.148:3000
+   - Натисніть F12 для відкриття консолі
+   - Перевірте чи є помилки
+
+4. ЯКЩО НЕ ПРАЦЮЄ:
+   docker compose restart
+   docker compose logs --tail=50
+
+========================================
+АБО ВИКОНАЙТЕ ЦЕ В VULTR CONSOLE:
+========================================
+
+ssh root@70.34.252.148 << 'EOF'
+cd /root/repair-hub-pro
+sed -i 's/node:18-alpine/node:20-alpine/g' Dockerfile
+docker compose down
+docker compose build --no-cache  
+docker compose up -d
+sleep 5
+docker compose ps
+docker compose logs --tail=30
+echo "Updated to Node.js 20!"
+EOF
+
+========================================
+TEST COMMAND:
+========================================
+curl -I http://70.34.252.148:3000
+
+========================================
+PROBLEM FOUND:
+- Node.js 18 is not supported by latest Vite
+- Need to upgrade to Node.js 20
+- This will fix the blank page issue
+

@@ -1,169 +1,181 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { Button } from '../ui/button';
-import { Card } from '../ui/card';
+import { Card, CardContent } from '../ui/card';
 import {
-  Wrench, Zap, Shield, Users, Star, ArrowRight, Smartphone
+  Wrench, Zap, Shield, Users, Star, ArrowRight, Smartphone, Package, Clock, Award, TrendingUp
 } from 'lucide-react';
 
 interface LandingPageProps {
   onLogin?: () => void;
 }
 
-const CompactLandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
-  const { t } = useTranslation();
-
+const ModernLandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
   const handleLogin = () => {
+    console.log('Login clicked');
     if (onLogin) {
       onLogin();
     } else {
-      window.location.href = '/login';
+      console.log('No login handler');
     }
   };
 
   const handleCreateOrder = () => {
+    console.log('Create order clicked');
     if (onLogin) {
       onLogin();
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-slate-200 dark:border-slate-800">
+      <header className="fixed top-0 w-full z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <motion.div 
-            className="flex items-center space-x-2"
+            className="flex items-center space-x-3"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <Wrench className="w-8 h-8 text-primary" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-              RepairHub Pro
-            </span>
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground">
+              <Wrench className="w-6 h-6" />
+            </div>
+            <span className="text-xl font-semibold">RepairHub Pro</span>
           </motion.div>
           
-            <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
             <LanguageSwitcher />
-            <Button variant="default" size="sm" onClick={handleLogin}>
+            <Button variant="default" size="default" onClick={handleLogin}>
               Увійти
             </Button>
           </div>
         </div>
       </header>
 
-      {/* Hero Section - Compact */}
-      <section className="pt-32 pb-20 px-4">
-        <div className="container mx-auto max-w-6xl">
+      {/* Hero - Compact */}
+      <section className="pt-24 pb-12 px-4 bg-gradient-to-b from-primary/5 to-transparent">
+        <div className="container mx-auto max-w-5xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+            transition={{ duration: 0.5 }}
+            className="text-center mb-12"
           >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-blue-600 to-primary bg-clip-text text-transparent">
-              Професійний ремонт <br />мобільних пристроїв
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Професійний ремонт мобільних пристроїв
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Швидкий, якісний та надійний сервіс з ремонту вашого обладнання
+            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Швидкий, якісний та надійний сервіс
             </p>
             <div className="flex gap-4 justify-center">
               <Button size="lg" className="px-8" onClick={handleCreateOrder}>
                 Створити замовлення
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
-              <Button size="lg" variant="outline" className="px-8" onClick={handleCreateOrder}>
-                Дивитися каталог
+              <Button size="lg" variant="outline" className="px-8" onClick={handleLogin}>
+                Увійти
               </Button>
             </div>
           </motion.div>
 
-          {/* Stats - Compact */}
+          {/* Stats - Grid */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16"
+            transition={{ delay: 0.2 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"
           >
-            <Card className="p-4 text-center">
-              <Users className="w-8 h-8 text-primary mx-auto mb-2" />
-              <p className="text-2xl font-bold text-foreground">500+</p>
-              <p className="text-sm text-muted-foreground">Клієнтів</p>
+            <Card>
+              <CardContent className="p-4 text-center">
+                <Users className="w-8 h-8 text-primary mx-auto mb-2" />
+                <p className="text-2xl font-bold">500+</p>
+                <p className="text-sm text-muted-foreground">Клієнтів</p>
+              </CardContent>
             </Card>
-            <Card className="p-4 text-center">
-              <Wrench className="w-8 h-8 text-primary mx-auto mb-2" />
-              <p className="text-2xl font-bold text-foreground">1000+</p>
-              <p className="text-sm text-muted-foreground">Ремонтів</p>
+            <Card>
+              <CardContent className="p-4 text-center">
+                <Wrench className="w-8 h-8 text-primary mx-auto mb-2" />
+                <p className="text-2xl font-bold">1000+</p>
+                <p className="text-sm text-muted-foreground">Ремонтів</p>
+              </CardContent>
             </Card>
-            <Card className="p-4 text-center">
-              <Star className="w-8 h-8 text-primary mx-auto mb-2" />
-              <p className="text-2xl font-bold text-foreground">4.9/5</p>
-              <p className="text-sm text-muted-foreground">Рейтинг</p>
+            <Card>
+              <CardContent className="p-4 text-center">
+                <Star className="w-8 h-8 text-primary mx-auto mb-2" />
+                <p className="text-2xl font-bold">4.9/5</p>
+                <p className="text-sm text-muted-foreground">Рейтинг</p>
+              </CardContent>
             </Card>
-            <Card className="p-4 text-center">
-              <Zap className="w-8 h-8 text-primary mx-auto mb-2" />
-              <p className="text-2xl font-bold text-foreground">24/7</p>
-              <p className="text-sm text-muted-foreground">Підтримка</p>
+            <Card>
+              <CardContent className="p-4 text-center">
+                <Zap className="w-8 h-8 text-primary mx-auto mb-2" />
+                <p className="text-2xl font-bold">24/7</p>
+                <p className="text-sm text-muted-foreground">Підтримка</p>
+              </CardContent>
             </Card>
           </motion.div>
 
-          {/* Features - Compact 3 columns */}
+          {/* Features */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="grid md:grid-cols-3 gap-6 mb-16"
+            transition={{ delay: 0.4 }}
+            className="grid md:grid-cols-3 gap-6 mb-12"
           >
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <Shield className="w-10 h-10 text-primary mb-4" />
-              <h3 className="text-xl font-bold mb-2">Гарантія якості</h3>
-              <p className="text-muted-foreground">6 місяців гарантії на всі види ремонту</p>
+            <Card>
+              <CardContent className="p-6">
+                <Shield className="w-10 h-10 text-primary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Гарантія якості</h3>
+                <p className="text-muted-foreground">6 місяців гарантії на ремонт</p>
+              </CardContent>
             </Card>
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <Zap className="w-10 h-10 text-primary mb-4" />
-              <h3 className="text-xl font-bold mb-2">Швидкий сервіс</h3>
-              <p className="text-muted-foreground">Ремонт за 1-3 дні без черги</p>
+            <Card>
+              <CardContent className="p-6">
+                <Clock className="w-10 h-10 text-primary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Швидкий сервіс</h3>
+                <p className="text-muted-foreground">Ремонт за 1-3 дні</p>
+              </CardContent>
             </Card>
-            <Card className="p-6 hover:shadow-lg transition-shadow">
-              <Smartphone className="w-10 h-10 text-primary mb-4" />
-              <h3 className="text-xl font-bold mb-2">Багато брендів</h3>
-              <p className="text-muted-foreground">Apple, Samsung, Xiaomi та інші</p>
+            <Card>
+              <CardContent className="p-6">
+                <Smartphone className="w-10 h-10 text-primary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Багато брендів</h3>
+                <p className="text-muted-foreground">Apple, Samsung, Xiaomi</p>
+              </CardContent>
             </Card>
           </motion.div>
 
-          {/* CTA - Compact */}
+          {/* CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            className="text-center"
+            transition={{ delay: 0.6 }}
           >
-            <Card className="p-8 bg-gradient-to-r from-primary/10 to-blue-600/10 border-2 border-primary/20">
-              <h2 className="text-3xl font-bold mb-4">Готові почати?</h2>
-              <p className="text-muted-foreground mb-6">
-                Створіть замовлення прямо зараз
-              </p>
-              <Button size="lg" className="px-12" onClick={handleCreateOrder}>
-                Створити замовлення
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
+            <Card className="bg-primary/5 border-primary/20">
+              <CardContent className="p-8 text-center">
+                <Award className="w-12 h-12 text-primary mx-auto mb-4" />
+                <h2 className="text-2xl font-bold mb-4">Готові почати?</h2>
+                <p className="text-muted-foreground mb-6">
+                  Створіть замовлення зараз
+                </p>
+                <Button size="lg" className="px-12" onClick={handleCreateOrder}>
+                  Створити замовлення
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </CardContent>
             </Card>
           </motion.div>
         </div>
       </section>
 
-      {/* Footer - Compact */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 mt-20">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center text-muted-foreground">
-            <p>&copy; 2025 RepairHub Pro. Всі права захищені.</p>
-          </div>
+      <footer className="border-t py-8 mt-12">
+        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+          © 2025 RepairHub Pro. Всі права захищені.
         </div>
       </footer>
     </div>
   );
 };
 
-export default CompactLandingPage;
+export default ModernLandingPage;

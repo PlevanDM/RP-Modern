@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RepairHub Diagnostic</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; max-width: 1200px; margin: 0 auto; }
+        .test-box { background: white; padding: 20px; margin: 15px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .success { border-left: 5px solid #28a745; }
+        .error { border-left: 5px solid #dc3545; }
+        .warning { border-left: 5px solid #ffc107; }
+        button { padding: 12px 24px; margin: 5px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 5px; font-size: 14px; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .status { font-weight: bold; padding: 5px 10px; border-radius: 3px; }
+        .status-ok { background: #d4edda; color: #155724; }
+        .status-fail { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🔍 RepairHub Pro - Детальна діагностика</h1>
+    
+    <div id="results"></div>
+    
+    <div class="test-box">
+        <h3>Швидкі дії:</h3>
+        <button onclick="openRepairHub()">Відкрити RepairHub</button>
+        <button onclick="testAll()">Тестувати все</button>
+        <button onclick="runDiagnostics()">Запустити діагностику</button>
+    </div>
+
+    <script>
+        function openRepairHub() {
+            const win = window.open('http://70.34.252.148:3000', '_blank');
+            if (!win) {
+                alert('Popup заблоковано! Дозвольте popup в налаштуваннях браузера.');
+            }
+        }
+
+        async function testAll() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="test-box"><p>⏳ Тестування...</p></div>';
+            
+            const tests = [
+                { name: 'HTML (index.html)', url: 'http://70.34.252.148:3000/', expected: 200 },
+                { name: 'Main JavaScript', url: 'http://70.34.252.148:3000/assets/index-BOAV0-m9.js', expected: 200 },
+                { name: 'Vendor JavaScript', url: 'http://70.34.252.148:3000/assets/vendor-D3F3s8fL.js', expected: 200 },
+                { name: 'UI JavaScript', url: 'http://70.34.252.148:3000/assets/ui-DJ4Ca7Yx.js', expected: 200 },
+                { name: 'CSS Styles', url: 'http://70.34.252.148:3000/assets/index-C7jlTFPd.css', expected: 200 },
+                { name: 'Robots.txt', url: 'http://70.34.252.148:3000/robots.txt', expected: 200 },
+                { name: 'Sitemap', url: 'http://70.34.252.148:3000/sitemap.xml', expected: 200 }
+            ];
+            
+            let html = '';
+            let successCount = 0;
+            let failCount = 0;
+            
+            for (const test of tests) {
+                try {
+                    const startTime = Date.now();
+                    const response = await fetch(test.url, { method: 'HEAD' });
+                    const duration = Date.now() - startTime;
+                    const status = response.status;
+                    
+                    if (status === test.expected || status === 304) {
+                        successCount++;
+                        html += `<div class="test-box success">
+                            <p><span class="status status-ok">✅ OK</span> <strong>${test.name}</strong></p>
+                            <p>Status: ${status} | Time: ${duration}ms</p>
+                            <p><small>${test.url}</small></p>
+                        </div>`;
+                    } else {
+                        failCount++;
+                        html += `<div class="test-box error">
+                            <p><span class="status status-fail">❌ FAIL</span> <strong>${test.name}</strong></p>
+                            <p>Expected: ${test.expected}, Got: ${status}</p>
+                            <p><small>${test.url}</small></p>
+                        </div>`;
+                    }
+                } catch (error) {
+                    failCount++;
+                    html += `<div class="test-box error">
+                        <p><span class="status status-fail">❌ ERROR</span> <strong>${test.name}</strong></p>
+                        <p>Error: ${error.message}</p>
+                        <p><small>${test.url}</small></p>
+                    </div>`;
+                }
+                
+                results.innerHTML = html;
+            }
+            
+            html += `<div class="test-box ${failCount === 0 ? 'success' : 'warning'}">
+                <h3>Результати тестування:</h3>
+                <p><strong>Успішних:</strong> ${successCount}</p>
+                <p><strong>Помилок:</strong> ${failCount}</p>
+                <p><strong>Успішність:</strong> ${Math.round(successCount / tests.length * 100)}%</p>
+            </div>`;
+            
+            if (failCount === 0) {
+                html += `<div class="test-box success">
+                    <h3>✅ Всі тести пройдені!</h3>
+                    <p>Тепер відкрийте RepairHub і перевірте чи працює додаток:</p>
+                    <button onclick="openRepairHub()">Відкрити RepairHub</button>
+                </div>`;
+            }
+            
+            results.innerHTML = html;
+        }
+
+        async function runDiagnostics() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="test-box"><p>⏳ Діагностика...</p></div>';
+            
+            let html = '<h2>Детальна діагностика</h2>';
+            
+            // Test 1: Check if main site loads
+            try {
+                const response = await fetch('http://70.34.252.148:3000/');
+                const htmlContent = await response.text();
+                html += `<div class="test-box ${response.ok ? 'success' : 'error'}">
+                    <h3>✅ Головна сторінка</h3>
+                    <pre>${htmlContent.substring(0, 500)}...</pre>
+                </div>`;
+            } catch (error) {
+                html += `<div class="test-box error">
+                    <h3>❌ Не вдалося завантажити сторінку</h3>
+                    <p>${error.message}</p>
+                </div>`;
+            }
+            
+            // Test 2: Check if React loads
+            try {
+                const jsResponse = await fetch('http://70.34.252.148:3000/assets/index-BOAV0-m9.js');
+                const jsContent = await jsResponse.text();
+                const hasReact = jsContent.includes('react') || jsContent.includes('React');
+                html += `<div class="test-box ${hasReact ? 'success' : 'warning'}">
+                    <h3>${hasReact ? '✅' : '⚠️'} JavaScript файл завантажено</h3>
+                    <p>Розмір: ${jsContent.length} bytes</p>
+                    <p>React знайдено: ${hasReact ? 'Так' : 'Ні'}</p>
+                </div>`;
+            } catch (error) {
+                html += `<div class="test-box error">
+                    <h3>❌ Не вдалося завантажити JS</h3>
+                    <p>${error.message}</p>
+                </div>`;
+            }
+            
+            results.innerHTML = html;
+        }
+
+        // Auto test on load
+        window.onload = () => testAll();
+    </script>
+</body>
+</html>
+
