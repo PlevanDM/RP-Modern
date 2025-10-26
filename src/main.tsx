@@ -59,18 +59,16 @@ if ('serviceWorker' in navigator) {
 // ============================================================================
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center">Завантаження...</div>}>
-          <App />
-        </React.Suspense>
-        <CookieConsent />
-        <ReactQueryDevtools
-          initialIsOpen={false}
-          buttonPosition="bottom-right"
-        />
-      </QueryClientProvider>
-    </ErrorBoundary>
-  </React.StrictMode>,
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center">Завантаження...</div>}>
+        <App />
+      </React.Suspense>
+      <CookieConsent />
+      <ReactQueryDevtools
+        initialIsOpen={false}
+        buttonPosition="bottom-right"
+      />
+    </QueryClientProvider>
+  </ErrorBoundary>
 )
