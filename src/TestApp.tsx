@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import AnimatedFormsDemo from './components/AnimatedFormsDemo';
-import ModernLandingPage from './components/ModernLandingPage';
+import ModernLandingPage from './components/pages/ModernLandingPage';
 
 // Тестовая страница для анимированных форм
 const TestPage: React.FC = () => {
