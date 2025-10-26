@@ -4,17 +4,23 @@ services:
   repair-hub-pro:
     build: .
     ports:
-      - "0.0.0.0:3000:3000"  # Порт доступен везде
+      - "80:80"  # HTTP port
     environment:
       - NODE_ENV=production
-      - HOST=0.0.0.0
-      - PORT=3000
     restart: unless-stopped
     container_name: repair-hub-pro
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     networks:
       - repair-network
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    volumes:
+      - ./nginx.conf:/etc/nginx/http.d/default.conf:ro
 
 networks:
   repair-network:
