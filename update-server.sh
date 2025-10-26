@@ -1,50 +1,44 @@
 #!/bin/bash
+# Скрипт для оновлення Nginx на порт 80
+# Виконайте на сервері після додавання DNS records в Cloudflare
+
+echo "========================================="
+echo "  Updating Nginx to Port 80"
+echo "========================================="
 
 cd /root/repair-hub-pro
 
-echo "Pulling latest changes..."
-git pull origin eploy || echo "Git pull failed"
+# Backup current config
+cp nginx.conf nginx.conf.backup
 
-echo "Updating Dockerfile..."
-cat > Dockerfile << 'EOF'
-# Базовый образ Node.js
-FROM node:20-alpine
+# Update nginx.conf to use port 80
+sed -i 's/listen 3000;/listen 80;/g' nginx.conf
 
-# Устанавливаем рабочую директорию
-WORKDIR /app
+echo "✅ Nginx config updated to port 80"
 
-# Копируем package.json и package-lock.json
-COPY package*.json ./
-
-# Устанавливаем зависимости
-RUN npm ci
-
-# Копируем исходный код
-COPY . .
-
-# Собираем проект
-RUN npm run build
-
-# Устанавливаем serve для статики
-RUN npm install -g serve
-
-# Открываем порт 3000
-EXPOSE 3000
-
-# Запускаем приложение
-CMD ["serve", "-s", "dist", "-l", "3000"]
-EOF
-
-echo "Rebuilding container..."
+# Restart containers
+echo "Stopping containers..."
 docker compose down
+
+echo "Building new images..."
 docker compose build --no-cache
+
+echo "Starting containers..."
 docker compose up -d
 
-echo "Waiting for container to start..."
-sleep 5
+echo ""
+echo "Waiting 30 seconds..."
+sleep 30
 
+echo ""
 echo "Checking status..."
 docker compose ps
-echo "Recent logs:"
-docker compose logs --tail=20
 
+echo ""
+echo "Recent logs:"
+docker logs repair-hub-pro --tail=30
+
+echo ""
+echo "========================================="
+echo "✅ Done! Test: http://repairhub.com"
+echo "========================================="
