@@ -103,10 +103,9 @@ function App() {
               </div>
 
               <div className="flex-1 text-center relative">
-                <h1 className="text-2xl font-bold text-gray-900">RepairHub Pro</h1>
                 <div className="overflow-hidden relative h-6 mt-1">
                   <div className="animate-marquee whitespace-nowrap text-sm text-gray-600">
-                    🔔 Нове замовлення #1234 • 💬 Повідомлення від майстра • ✅ Замовлення #5678 завершено • 🎉 Отримано новий відгук
+                    📱 Нове замовлення #1234 • 🔧 Повідомлення від майстра • ✨ Замовлення #5678 завершено • ⭐ Отримано новий відгук
                   </div>
                 </div>
                 {currentUser && (
