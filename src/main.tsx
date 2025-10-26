@@ -6,8 +6,10 @@ import './i18n/config'
 import App from './App.tsx'
 import './index.css'
 import { ErrorBoundary } from './components/ErrorBoundary'
-import { ErrorHandler } from './utils/errorHandler'
 import { CookieConsent } from './components/CookieConsent'
+
+// Initialize error handling
+import './utils/errorHandler'
 
 // ============================================================================
 // QUERY CLIENT CONFIGURATION

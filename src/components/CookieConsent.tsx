@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Button } from './ui/button';
 import { X, Cookie } from 'lucide-react';
 
 const COOKIE_CONSENT_KEY = 'cookie-consent-accepted';
@@ -44,27 +43,24 @@ export const CookieConsent = () => {
           </p>
           
           <div className="flex flex-wrap gap-3">
-            <Button 
+            <button 
               onClick={acceptCookies}
-              size="sm"
+              className="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition"
             >
               Прийняти все
-            </Button>
-            <Button 
+            </button>
+            <button 
               onClick={declineCookies}
-              variant="outline"
-              size="sm"
+              className="px-4 py-2 border border-gray-300 text-sm rounded-md hover:bg-gray-50 transition"
             >
               Відхилити
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={() => setShowConsent(false)}
-              variant="ghost"
-              size="icon"
-              className="ml-auto"
+              className="p-2 hover:bg-gray-100 rounded-md transition"
             >
               <X className="w-4 h-4" />
-            </Button>
+            </button>
           </div>
         </div>
       </div>
