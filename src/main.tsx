@@ -7,6 +7,7 @@ import App from './App.tsx'
 import './index.css'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { ErrorHandler } from './utils/errorHandler'
+import { CookieConsent } from './components/CookieConsent'
 
 // ============================================================================
 // QUERY CLIENT CONFIGURATION
@@ -59,6 +60,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center">Завантаження...</div>}>
           <App />
         </React.Suspense>
+        <CookieConsent />
         <ReactQueryDevtools
           initialIsOpen={false}
           buttonPosition="bottom-right"
