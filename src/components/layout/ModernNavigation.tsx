@@ -23,7 +23,12 @@ import {
   Pin,
   PinOff,
   Smartphone,
-  Search
+  Search,
+  BarChart3,
+  Shield,
+  AlertTriangle,
+  Activity,
+  Database
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Badge } from "../ui/badge";
@@ -92,7 +97,11 @@ const ROUTE_MAP: Record<string, string> = {
   'Користувачі': 'users',
   'Замовлення': 'orders',
   'Фінанси': 'finance',
-  'Налаштування': 'settings'
+  'Налаштування': 'settings',
+  'Аналітика': 'analytics',
+  'Безпека': 'security',
+  'Активність': 'activity',
+  'База даних': 'database'
 };
 
 const ModernNavigation: React.FC<ModernNavigationProps> = ({
@@ -108,13 +117,25 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
 
   // Оптимизация: используем useMemo чтобы не пересчитывать меню на каждый рендер
   const menuItems = React.useMemo(() => {
-    const baseItems: MenuItem[] = [
-      { label: "Дашборд", href: "#", icon: LayoutDashboard },
-      { label: "Створити Заказ", href: "#", icon: Package },
-    ];
+    let baseItems: MenuItem[] = [];
 
-    if (currentUser?.role === 'master') {
-      baseItems.push(
+    if (currentUser?.role === 'admin') {
+      // Admin menu - без "Створити Заказ", з повним функціоналом адміна
+      baseItems = [
+        { label: "Дашборд", href: "#", icon: LayoutDashboard },
+        { label: "Користувачі", href: "#", icon: User },
+        { label: "Замовлення", href: "#", icon: ShoppingCart },
+        { label: "Аналітика", href: "#", icon: BarChart3 },
+        { label: "Фінанси", href: "#", icon: CreditCard },
+        { label: "Безпека", href: "#", icon: Shield },
+        { label: "Активність", href: "#", icon: Activity },
+        { label: "База даних", href: "#", icon: Database },
+        { label: "Налаштування", href: "#", icon: Settings }
+      ];
+    } else if (currentUser?.role === 'master') {
+      // Master menu
+      baseItems = [
+        { label: "Дашборд", href: "#", icon: LayoutDashboard },
         { 
           label: "Доска Замовлень", 
           href: "#", 
@@ -127,23 +148,19 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { label: "Платежі", href: "#", icon: CreditCard },
         { label: "Чат", href: "#", icon: MessageSquare },
         { label: "Портфоліо", href: "#", icon: Briefcase }
-      );
+      ];
     } else if (currentUser?.role === 'client') {
-      baseItems.push(
+      // Client menu
+      baseItems = [
+        { label: "Дашборд", href: "#", icon: LayoutDashboard },
+        { label: "Створити Заказ", href: "#", icon: Package },
         { label: "Знайти Майстрів", href: "#", icon: Search },
         { label: "Мої Замовлення", href: "#", icon: ShoppingCart },
         { label: "Мої Пристрої", href: "#", icon: Smartphone },
         { label: "Пропозиції", href: "#", icon: Tag },
         { label: "Платежі", href: "#", icon: CreditCard },
         { label: "Чат", href: "#", icon: MessageSquare }
-      );
-    } else if (currentUser?.role === 'admin') {
-      baseItems.push(
-        { label: "Користувачі", href: "#", icon: User },
-        { label: "Замовлення", href: "#", icon: ShoppingCart },
-        { label: "Фінанси", href: "#", icon: CreditCard },
-        { label: "Налаштування", href: "#", icon: Settings }
-      );
+      ];
     }
 
     return baseItems;
