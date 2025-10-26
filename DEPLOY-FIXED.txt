@@ -1,0 +1,28 @@
+============================================
+  ВИПРАВЛЕНО ПОМИЛКУ - ЗАДЕПЛОЇТЬ ЗАРАЗ
+============================================
+
+Проблема: ErrorBoundary показував помилку на сайті
+Виправлення: Оновлено імпорти та кнопки в CookieConsent
+
+АБО ШВИДКИЙ СПОСІБ:
+
+Скопіюйте і виконайте цю команду в PowerShell:
+
+ssh root@70.34.252.148 "cd /root/repair-hub-pro && git pull origin eploy && docker compose down && docker compose build --no-cache && docker compose up -d"
+
+АБО ВВИД КОК ДРУГИЙ:
+
+ssh root@70.34.252.148
+cd /root/repair-hub-pro
+git pull origin eploy
+docker compose down
+docker compose build --no-cache
+docker compose up -d
+docker logs repair-hub-pro --tail=50
+
+============================================
+ПІСЛЯ ДЕПЛОЮ ВІДКРИЙТЕ:
+http://70.34.252.148:3000
+============================================
+

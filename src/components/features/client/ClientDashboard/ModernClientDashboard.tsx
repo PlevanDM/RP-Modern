@@ -106,9 +106,9 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
     },
     {
       title: 'Витрачено',
-      value: `₴${clientOrders
+      value: `₴${(clientOrders
         .filter((o) => o.status === 'completed')
-        .reduce((acc, o) => acc + o.price, 0)
+        .reduce((acc, o) => acc + (o.price || 0), 0))
         .toLocaleString()}`,
       change: '+18%',
       icon: <DollarSign className="w-5 h-5" />,
@@ -342,7 +342,7 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                           <MapPin className="w-4 h-4" />
                           {order.location.split(',')[0]}
                         </span>
-                        <span className="font-semibold text-foreground">₴{order.price.toLocaleString()}</span>
+                        <span className="font-semibold text-foreground">₴{(order.price || 0).toLocaleString()}</span>
                       </div>
                       <Button
                         variant="ghost"
@@ -394,7 +394,7 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold">₴{order.price.toLocaleString()}</p>
+                        <p className="font-semibold">₴{(order.price || 0).toLocaleString()}</p>
                         <p className="text-xs text-muted-foreground">{new Date(order.date).toLocaleDateString('uk-UA')}</p>
                       </div>
                     </div>
