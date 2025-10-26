@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Login</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        #result { margin: 20px 0; padding: 10px; background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>Test Login to RepairHub</h1>
+    <button onclick="testAccess()">1. Test if site is accessible</button>
+    <button onclick="testClick()">2. Test button click</button>
+    <div id="result"></div>
+
+    <script>
+        function testAccess() {
+            fetch('http://70.34.252.148:3000')
+                .then(res => {
+                    document.getElementById('result').innerHTML = '✓ Site is accessible! Status: ' + res.status;
+                })
+                .catch(err => {
+                    document.getElementById('result').innerHTML = '✗ Error: ' + err.message;
+                });
+        }
+
+        function testClick() {
+            window.open('http://70.34.252.148:3000', '_blank');
+            document.getElementById('result').innerHTML = 'Opening RepairHub in new tab...';
+        }
+    </script>
+</body>
+</html>
+

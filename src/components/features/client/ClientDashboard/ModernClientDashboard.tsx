@@ -25,7 +25,7 @@ import { Progress } from '../../../ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { Input } from '../../../ui/input';
-import AnimatedCreateOrderModal from '../../../AnimatedCreateOrderModal';
+import { AnimatedCreateOrderModal } from '../../../AnimatedCreateOrderModal';
 import { User } from '../../../../types/models';
 
 interface Order {
