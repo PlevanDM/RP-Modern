@@ -5,6 +5,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import './i18n/config'
 import App from './App.tsx'
 import './index.css'
+import { ErrorBoundary } from './components/ErrorBoundary'
+import { ErrorHandler } from './utils/errorHandler'
 
 // ============================================================================
 // QUERY CLIENT CONFIGURATION
@@ -52,14 +54,16 @@ if ('serviceWorker' in navigator) {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <React.Suspense fallback="loading...">
-        <App />
-      </React.Suspense>
-      <ReactQueryDevtools
-        initialIsOpen={false}
-        buttonPosition="bottom-right"
-      />
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center">Завантаження...</div>}>
+          <App />
+        </React.Suspense>
+        <ReactQueryDevtools
+          initialIsOpen={false}
+          buttonPosition="bottom-right"
+        />
+      </QueryClientProvider>
+    </ErrorBoundary>
   </React.StrictMode>,
 )
