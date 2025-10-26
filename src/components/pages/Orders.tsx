@@ -410,42 +410,7 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
               {/* Description */}
               <div>
                 <p className="text-sm text-gray-500 mb-2">Опис</p>
-                {isEditing ? (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Назва замовлення</label>
-                      <input
-                        type="text"
-                        value={editForm.title}
-                        onChange={(e) => setEditForm({...editForm, title: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Опис проблеми</label>
-                      <textarea
-                        value={editForm.description}
-                        onChange={(e) => setEditForm({...editForm, description: e.target.value})}
-                        rows={4}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Терміновість</label>
-                      <select
-                        value={editForm.urgency}
-                        onChange={(e) => setEditForm({...editForm, urgency: e.target.value})}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      >
-                        <option value="high">🔴 Терміно</option>
-                        <option value="medium">🟡 Звичайно</option>
-                        <option value="low">🟢 Не терміно</option>
-                      </select>
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-gray-900 bg-gray-50 p-4 rounded-lg">{selectedOrder.description}</p>
-                )}
+                <p className="text-gray-900 bg-gray-50 p-4 rounded-lg">{selectedOrder.description}</p>
               </div>
 
               {/* Master Info */}
@@ -486,7 +451,7 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                       </>
                     )}
 
-                    {selectedOrder.status === 'open' && !isEditing && (
+                    {selectedOrder.status === 'open' && (
                       <>
                         <button 
                           onClick={handleEditOrder}
@@ -531,22 +496,7 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                       </>
                     )}
 
-                    {selectedOrder.status === 'open' && isEditing && (
-                      <>
-                        <button 
-                          onClick={handleSaveOrder}
-                          className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center justify-center gap-2"
-                        >
-                          <CheckCircleIcon sx={{ fontSize: 20 }} /> Зберегти зміни
-                        </button>
-                        <button 
-                          onClick={handleCancelEdit}
-                          className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 font-medium transition-colors flex items-center justify-center gap-2"
-                        >
-                          <CancelIcon sx={{ fontSize: 20 }} /> Скасувати
-                        </button>
-                      </>
-                    )}
+
 
                     {selectedOrder.status === 'in_progress' && (
                       <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors flex items-center justify-center gap-2">
@@ -557,7 +507,7 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                 )}
 
                 {/* ADMIN ACTIONS */}
-                {currentUser?.role === 'admin' && !isEditing && (
+                {currentUser?.role === 'admin' && (
                   <>
                     <button
                       onClick={handleEditOrder}
