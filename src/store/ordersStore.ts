@@ -1,13 +1,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Order, Proposal, User } from '../types';
-import { mockOrders, mockProposals } from '../utils/mockData';
+import { orderService } from '../services/orderService';
+import { mockProposals } from '../utils/mockData';
 import { useAuthStore } from './authStore';
 import { useUIStore } from './uiStore';
 
 interface OrdersState {
   orders: Order[];
   proposals: Proposal[];
+  fetchOrders: () => Promise<void>;
   createOrder: (order: Omit<Order, 'id'>) => void;
   deleteOrder: (orderId: string) => void;
   restoreOrder: (orderId: string) => void;
@@ -33,8 +35,12 @@ interface OrdersState {
 export const useOrdersStore = create<OrdersState>()(
   persist(
     (set, get) => ({
-      orders: mockOrders,
+      orders: [],
       proposals: mockProposals,
+      fetchOrders: async () => {
+        const orders = await orderService.getOrders();
+        set({ orders });
+      },
       createOrder: (order) => {
         const newOrder: Order = { ...order, id: Date.now().toString() };
         set((state) => ({ orders: [...state.orders, newOrder] }));
@@ -202,6 +208,10 @@ export const useOrdersStore = create<OrdersState>()(
     }),
     {
       name: 'orders-storage',
+      onRehydrateStorage: (state) => {
+        // fetch orders on rehydration
+        state.fetchOrders();
+      },
     }
   )
 );

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ModernNavigation from './components/layout/ModernNavigation';
 import ModernLandingPage from './components/pages/ModernLandingPage';
 import ModernMasterDashboard from './components/features/master/MasterDashboard/ModernMasterDashboard';
@@ -6,10 +6,8 @@ import ModernClientDashboard from './components/features/client/ClientDashboard/
 import { MyDevices } from './components/features/client/MyDevices';
 import { DeviceCatalog } from './components/pages/DeviceCatalog';
 import { AdminDashboard } from './components/features/admin/AdminDashboard';
-import { ModernSettingsPanel } from './components/features/admin/ModernSettingsPanel';
 import { SettingsConfiguration } from './components/features/admin/SettingsConfiguration';
 import { ModernUsersPanel } from './components/features/admin/ModernUsersPanel';
-
 import { ModernFinancialPanel } from './components/features/admin/ModernFinancialPanel';
 import { Orders } from './components/pages/Orders';
 import { Portfolio } from './components/pages/Portfolio';
@@ -21,13 +19,12 @@ import { MastersList } from './components/features/master/MastersList';
 import { PartsInventory } from './components/features/parts/PartsInventory';
 import { MasterReviews } from './components/features/reviews/MasterReviews';
 import { PaymentManagement } from './components/pages/PaymentManagement';
-import { mockUsers, mockPortfolio } from './utils/mockData';
 import { useAuthStore } from './store/authStore';
 import { useOrdersStore } from './store/ordersStore';
 import { useNotificationsStore } from './store/notificationsStore';
 import { NotificationCenter } from './components/NotificationCenter';
 import { OnboardingWizard } from './components/OnboardingWizard';
-import { Order } from './types/models';
+import { Order, User } from './types/models';
 import { ClientProfileStep } from './components/onboarding/ClientProfileStep';
 import { DeviceStep } from './components/onboarding/DeviceStep';
 import { OnboardingCompletionStep } from './components/onboarding/OnboardingCompletionStep';
@@ -35,6 +32,7 @@ import { SpecializationStep } from './components/onboarding/SpecializationStep';
 import { ExperienceStep } from './components/onboarding/ExperienceStep';
 import { ToolsStep } from './components/onboarding/ToolsStep';
 import AnimatedMarquee from './components/AnimatedMarquee';
+import { userService } from './services/userService';
 
 function App() {
   const { currentUser, login, logout, isOnboardingCompleted, completeOnboarding } = useAuthStore();
@@ -61,6 +59,18 @@ function App() {
   const { notifications, readNotification, removeNotification } = useNotificationsStore();
   const [activeItem, setActiveItem] = useState('dashboard');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const allUsers = await userService.getUsers();
+      setUsers(allUsers);
+    };
+
+    if (currentUser) {
+      fetchUsers();
+    }
+  }, [currentUser]);
 
   if (!currentUser) {
     return <ModernLandingPage onLogin={(userId) => login(userId)} />;
@@ -87,13 +97,14 @@ function App() {
   }
 
   const clientOrders = orders.filter((o) => o.clientId === currentUser.id);
+  const masters = users.filter((u) => u.role === 'master');
 
-    return (
-      <div className="min-h-screen bg-gray-50">
+  return (
+    <div className="min-h-screen bg-gray-50">
       <div className="flex h-screen">
         <ModernNavigation
-            currentUser={currentUser}
-            activeItem={activeItem}
+          currentUser={currentUser}
+          activeItem={activeItem}
           setActiveItem={setActiveItem}
           unviewedOrdersCount={0}
           onLogout={logout}
@@ -132,60 +143,60 @@ function App() {
                   title="Налаштування"
                 >
                   <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </button>
 
-            <button
+                <button
                   onClick={logout}
                   className="p-2 hover:bg-gray-100 rounded-lg transition"
                   title="Вихід"
-            >
+                >
                   <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
-            </button>
+                </button>
 
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
           <div className="pl-2 pr-4 lg:pl-3 lg:pr-6 py-2 w-full">
             {activeItem === 'dashboard' &&
               (currentUser.role === 'master' ? (
                 <ModernMasterDashboard
-                currentUser={currentUser}
-                stats={{
-                  activeOrders: orders.filter((o) => o.status === 'in_progress').length,
-                  completedOrders: orders.filter(
-                    (o) => o.status === 'completed' || o.status === 'paid'
-                  ).length,
-                  totalEarned: 125000,
-                  rating: currentUser.rating || 4.9,
-                }}
-                orders={orders}
-                tasks={orders.map((o) => ({
-                  id: o.id,
-                  title: o.title,
-                  client: o.client,
-                  status: o.status,
-                  priority: o.urgency,
-                  deadline: o.deadline,
-                  progress: o.progress,
-                }))}
-                notifications={notifications}
-                revenueData={[
-                  { month: 'Jan', value: 85 },
-                  { month: 'Feb', value: 72 },
-                  { month: 'Mar', value: 90 },
-                  { month: 'Apr', value: 78 },
-                  { month: 'May', value: 95 },
-                  { month: 'Jun', value: 88 },
-                ]}
-                setActiveItem={setActiveItem}
-                setSelectedOrder={setSelectedOrder}
-              />
-            ) : currentUser.role === 'client' ? (
+                  currentUser={currentUser}
+                  stats={{
+                    activeOrders: orders.filter((o) => o.status === 'in_progress').length,
+                    completedOrders: orders.filter(
+                      (o) => o.status === 'completed' || o.status === 'paid'
+                    ).length,
+                    totalEarned: 125000,
+                    rating: currentUser.rating || 4.9,
+                  }}
+                  orders={orders}
+                  tasks={orders.map((o) => ({
+                    id: o.id,
+                    title: o.title,
+                    client: o.client,
+                    status: o.status,
+                    priority: o.urgency,
+                    deadline: o.deadline,
+                    progress: o.progress,
+                  }))}
+                  notifications={notifications}
+                  revenueData={[
+                    { month: 'Jan', value: 85 },
+                    { month: 'Feb', value: 72 },
+                    { month: 'Mar', value: 90 },
+                    { month: 'Apr', value: 78 },
+                    { month: 'May', value: 95 },
+                    { month: 'Jun', value: 88 },
+                  ]}
+                  setActiveItem={setActiveItem}
+                  setSelectedOrder={setSelectedOrder}
+                />
+              ) : currentUser.role === 'client' ? (
                 <ModernClientDashboard
                   currentUser={currentUser}
                   orders={clientOrders}
@@ -194,7 +205,7 @@ function App() {
                   createOrder={createOrder}
                   setSelectedOrder={setSelectedOrder}
                 />
-            ) : currentUser.role === 'admin' ? (
+              ) : currentUser.role === 'admin' ? (
                 <AdminDashboard />
               ) : (
                 <div className="text-center p-8">
@@ -217,7 +228,7 @@ function App() {
                 onRestoreOrder={restoreOrder}
                 onToggleActiveSearch={toggleActiveSearch}
                 onUpdateOrderStatus={updateOrderStatus}
-                masters={mockUsers}
+                masters={masters}
                 onEditOrder={editOrder}
                 onCreateProposal={() => {}}
                 acceptProposal={acceptProposal}
@@ -230,64 +241,64 @@ function App() {
 
             {activeItem === 'settings' && currentUser?.role === 'admin' && <SettingsConfiguration />}
 
-          {activeItem === 'myOrders' && (
-            <Orders
-              currentUser={currentUser}
-              orders={selectedOrder ? [selectedOrder] : orders}
+            {activeItem === 'myOrders' && (
+              <Orders
+                currentUser={currentUser}
+                orders={selectedOrder ? [selectedOrder] : orders}
                 onSendToMaster={sendToMaster}
-              onCreateOrder={createOrder}
-              onDeleteOrder={deleteOrder}
-              onRestoreOrder={restoreOrder}
-              onToggleActiveSearch={toggleActiveSearch}
-              onUpdateOrderStatus={updateOrderStatus}
-                masters={mockUsers}
-              onEditOrder={editOrder}
+                onCreateOrder={createOrder}
+                onDeleteOrder={deleteOrder}
+                onRestoreOrder={restoreOrder}
+                onToggleActiveSearch={toggleActiveSearch}
+                onUpdateOrderStatus={updateOrderStatus}
+                masters={masters}
+                onEditOrder={editOrder}
                 onCreateProposal={() => {}}
                 acceptProposal={acceptProposal}
                 rejectProposal={rejectProposal}
                 setActiveItem={setActiveItem}
-            />
-          )}
+              />
+            )}
 
             {activeItem === 'myDevices' && <MyDevices />}
 
-          {activeItem === 'inventory' && (
-            <div className="p-8">
-              <PartsInventory 
-                userRole={currentUser?.role}
-                onBuyPart={(part) => console.log('Buy part:', part)}
-                onViewMaster={(masterId) => console.log('View master:', masterId)}
-              />
-            </div>
-          )}
+            {activeItem === 'inventory' && (
+              <div className="p-8">
+                <PartsInventory
+                  userRole={currentUser?.role}
+                  onBuyPart={(part) => console.log('Buy part:', part)}
+                  onViewMaster={(masterId) => console.log('View master:', masterId)}
+                />
+              </div>
+            )}
 
-          {activeItem === 'portfolio' && (
-              <Portfolio portfolio={mockPortfolio} currentUser={currentUser} />
-          )}
+            {activeItem === 'portfolio' && (
+              <Portfolio portfolio={[]} currentUser={currentUser} />
+            )}
 
             {activeItem === 'proposals' && (
-            <Proposals
-              currentUser={currentUser}
+              <Proposals
+                currentUser={currentUser}
                 proposals={proposals}
-              orders={orders}
-              isMaster={currentUser?.role === 'master'}
+                orders={orders}
+                isMaster={currentUser?.role === 'master'}
                 onSubmitProposal={submitProposal}
                 onUpdateProposal={updateProposal}
-              onAcceptProposal={acceptProposal}
-              onRejectProposal={rejectProposal}
-            />
-          )}
-
-          {activeItem === 'priceComparison' && (
-            <div className="p-8">
-              <MastersList 
-                  masters={mockUsers.filter((u) => u.role === 'master')}
-                currentUserCity={currentUser?.city}
+                onAcceptProposal={acceptProposal}
+                onRejectProposal={rejectProposal}
               />
-            </div>
-          )}
+            )}
 
-          {activeItem === 'reports' && (
+            {activeItem === 'priceComparison' && (
+              <div className="p-8">
+                <MastersList
+                  masters={masters}
+                  currentUserCity={currentUser?.city}
+                />
+              </div>
+            )}
+
+            {activeItem === 'reports' && (
               <div className="p-8">
                 <MasterReviews currentUser={currentUser} orders={orders} />
               </div>
@@ -295,8 +306,8 @@ function App() {
 
             {activeItem === 'payments' && currentUser && (
               <PaymentManagement
-              currentUser={currentUser}
-              orders={orders}
+                currentUser={currentUser}
+                orders={orders}
                 onUpdatePayment={updatePayment}
                 onReleasePayment={releasePayment}
                 onRefundPayment={refundPayment}
@@ -306,17 +317,17 @@ function App() {
             )}
 
             {activeItem === 'messages' && (
-              <Messages currentUser={currentUser} masters={mockUsers} orders={orders} />
-          )}
+              <Messages currentUser={currentUser} masters={masters} orders={orders} />
+            )}
 
-          {activeItem === 'profile' && (
-            <Profile
+            {activeItem === 'profile' && (
+              <Profile
                 currentUser={currentUser}
                 orders={orders}
               />
             )}
             {activeItem === 'settings' && <Settings currentUser={currentUser} onLogout={logout} />}
-            </div>
+          </div>
         </div>
       </div>
     </div>

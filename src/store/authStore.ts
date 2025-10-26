@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { mockUsers } from '../utils/mockData';
+import { userService } from '../services/userService';
 import { User } from '../types';
 
 interface AuthState {
   currentUser: User | null;
   isOnboardingCompleted: boolean;
-  login: (id: string) => void;
+  login: (id: string) => Promise<void>;
   logout: () => void;
   completeOnboarding: () => void;
 }
@@ -16,8 +16,8 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       currentUser: null,
       isOnboardingCompleted: false,
-      login: (id: string) => {
-        const user = mockUsers.find((u) => u.id === id);
+      login: async (id: string) => {
+        const user = await userService.getUserById(id);
         if (user) {
           // Для тестовых аккаунтов сразу считаем онбординг завершенным
           set({ currentUser: user, isOnboardingCompleted: true });
