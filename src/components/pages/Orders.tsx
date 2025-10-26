@@ -7,7 +7,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
 import { Search, Filter, ChevronDown, Package, User, Calendar, DollarSign, Clock, MessageCircle } from 'lucide-react';
-import { Order, User as CurrentUser } from '../../types/models';
+import { Order, User as CurrentUser, Proposal } from '../../types/models';
 import { CreateOrderModal } from '../CreateOrderModal';
 import { ProposalModal } from '../ProposalModal';
 
@@ -56,6 +56,10 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
       // Если пользователь клиент, показываем только его заказы
       if (currentUser?.role === 'client') {
         return order?.clientId === currentUser?.id;
+      }
+      // Если администратор, показываем все заказы
+      if (currentUser?.role === 'admin') {
+        return true;
       }
       // Если мастер, показываем все заказы
       return true;
@@ -137,8 +141,18 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
   };
 
   const handleSaveOrder = () => {
-    if (selectedOrder && onEditOrder) {
-      onEditOrder(selectedOrder.id, editForm);
+    if (selectedOrder) {
+      if (onEditOrder) {
+        onEditOrder(selectedOrder.id, editForm);
+      } else {
+        // Збереження в localStorage якщо немає callback
+        const orders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
+        const updatedOrders = orders.map((o: Order) =>
+          o.id === selectedOrder.id ? { ...o, ...editForm } : o
+        );
+        localStorage.setItem('repair_master_orders', JSON.stringify(updatedOrders));
+        window.dispatchEvent(new CustomEvent('ordersUpdated'));
+      }
     }
     setIsEditing(false);
   };
