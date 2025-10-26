@@ -62,7 +62,7 @@ function App() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   if (!currentUser) {
-    return <ModernLandingPage onLogin={login} />;
+    return <ModernLandingPage onLogin={(userId) => login(userId)} />;
   }
 
   if (!isOnboardingCompleted) {
