@@ -8,8 +8,26 @@ import {
   Wrench, Zap, Shield, Users, Star, ArrowRight, Smartphone
 } from 'lucide-react';
 
-const CompactLandingPage: React.FC = () => {
+interface LandingPageProps {
+  onLogin?: () => void;
+}
+
+const CompactLandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
   const { t } = useTranslation();
+
+  const handleLogin = () => {
+    if (onLogin) {
+      onLogin();
+    } else {
+      window.location.href = '/login';
+    }
+  };
+
+  const handleCreateOrder = () => {
+    if (onLogin) {
+      onLogin();
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -27,9 +45,9 @@ const CompactLandingPage: React.FC = () => {
             </span>
           </motion.div>
           
-          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4">
             <LanguageSwitcher />
-            <Button variant="default" size="sm">
+            <Button variant="default" size="sm" onClick={handleLogin}>
               Увійти
             </Button>
           </div>
@@ -52,11 +70,11 @@ const CompactLandingPage: React.FC = () => {
               Швидкий, якісний та надійний сервіс з ремонту вашого обладнання
             </p>
             <div className="flex gap-4 justify-center">
-              <Button size="lg" className="px-8">
+              <Button size="lg" className="px-8" onClick={handleCreateOrder}>
                 Створити замовлення
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
-              <Button size="lg" variant="outline" className="px-8">
+              <Button size="lg" variant="outline" className="px-8" onClick={handleCreateOrder}>
                 Дивитися каталог
               </Button>
             </div>
@@ -127,7 +145,7 @@ const CompactLandingPage: React.FC = () => {
               <p className="text-muted-foreground mb-6">
                 Створіть замовлення прямо зараз
               </p>
-              <Button size="lg" className="px-12">
+              <Button size="lg" className="px-12" onClick={handleCreateOrder}>
                 Створити замовлення
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
