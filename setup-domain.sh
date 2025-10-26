@@ -1,36 +1,61 @@
 #!/bin/bash
-# Script for setting up domain
+# Оновлення Nginx на порт 80 для домену
 
-echo "========================================="
-echo "  Setting up domain repairhub.com"
-echo "========================================="
+echo "╔════════════════════════════════════════════════════════════╗"
+echo "║         ОНОВЛЕННЯ NGINX ДЛЯ ДОМЕНУ                        ║"
+echo "╚════════════════════════════════════════════════════════════╝"
 
-# Check if we need to add domain to /etc/hosts
-if ! grep -q "70.34.252.148.*repairhub.com" /etc/hosts; then
-    echo "Adding domain to /etc/hosts..."
-    echo "70.34.252.148 repairhub.com www.repairhub.com" >> /etc/hosts
-fi
+cd /root/repair-hub-pro
 
-# Check DNS resolution
-echo ""
-echo "Checking DNS resolution..."
-dig +short repairhub.com || echo "DNS not propagated yet"
+echo "1. Pulling latest changes..."
+git pull origin eploy
+
+echo "2. Updating nginx.conf..."
+# Backup
+cp nginx.conf nginx.conf.backup-$(date +%Y%m%d-%H%M%S)
+
+# Update to port 80
+sed -i 's/listen 3000;/listen 80;/g' nginx.conf
+
+# Also update CSP if needed
+sed -i 's|http://70.34.252.148:\*|http://repairhub.com:*|g' nginx.conf
+
+echo "✅ nginx.conf updated to port 80"
 
 echo ""
-echo "========================================="
-echo "  Domain setup complete"
-echo "========================================="
-echo ""
-echo "Site accessible at:"
-echo "  - http://repairhub.com:3000"
-echo "  - http://www.repairhub.com:3000"
-echo "  - http://70.34.252.148:3000"
-echo ""
-echo "If DNS not propagated yet, add to hosts:"
-echo "  Windows: C:\\Windows\\System32\\drivers\\etc\\hosts"
-echo "  Linux/Mac: /etc/hosts"
-echo ""
-echo "Add this line:"
-echo "  70.34.252.148 repairhub.com www.repairhub.com"
-echo ""
+echo "3. Stopping containers..."
+docker compose down
 
+echo ""
+echo "4. Building new images..."
+docker compose build --no-cache
+
+echo ""
+echo "5. Starting containers..."
+docker compose up -d
+
+echo ""
+echo "6. Waiting for services to start..."
+sleep 30
+
+echo ""
+echo "7. Checking status..."
+docker compose ps
+
+echo ""
+echo "8. Recent logs:"
+docker logs repair-hub-pro --tail=30
+
+echo ""
+echo "╔════════════════════════════════════════════════════════════╗"
+echo "║                 ✅ ГОТОВО!                                ║"
+echo "╚════════════════════════════════════════════════════════════╝"
+echo ""
+echo "Чекайте 5-30 хвилин і відкрийте:"
+echo "  http://repairhub.com"
+echo "  http://www.repairhub.com"
+echo ""
+echo "Для HTTPS (після http працює):"
+echo "  apt install certbot python3-certbot-nginx"
+echo "  certbot --nginx -d repairhub.com -d www.repairhub.com"
+echo "═══════════════════════════════════════════════════════════════"
