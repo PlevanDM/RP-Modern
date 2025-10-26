@@ -45,7 +45,7 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
   const [showProposalModal, setShowProposalModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
+  const [_showEditModal, setShowEditModal] = useState(false);
   const [orderToEdit, setOrderToEdit] = useState<Order | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -185,11 +185,6 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
       setOrderToDelete(null);
       setSelectedOrder(null); // Закрываем детальный просмотр
     }
-  };
-
-  const cancelDeleteOrder = () => {
-    setShowDeleteConfirm(false);
-    setOrderToDelete(null);
   };
 
   const handleRestoreOrder = (order: Order) => {
