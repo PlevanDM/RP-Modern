@@ -13,8 +13,8 @@ RUN npm ci
 # Копируем исходный код
 COPY . .
 
-# Собираем проект (только production зависимости)
-RUN npm ci --only=production && \
+# Устанавливаем все зависимости, собираем проект
+RUN npm ci && \
     npm run build && \
     npm cache clean --force
 
