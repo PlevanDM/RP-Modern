@@ -10,6 +10,8 @@ import { Search, Filter, ChevronDown, Package, User, Calendar, DollarSign, Clock
 import { Order, User as CurrentUser, Proposal } from '../../types/models';
 import { CreateOrderModal } from '../CreateOrderModal';
 import { ProposalModal } from '../ProposalModal';
+import { OrderEditModal } from '../features/admin/OrderEditModal';
+import { ConfirmationDialog } from '../features/admin/ConfirmationDialog';
 
 interface OrdersProps {
   currentUser: CurrentUser;
@@ -35,12 +37,6 @@ interface OrdersProps {
 export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder, onDeleteOrder, onRestoreOrder, onToggleActiveSearch, onUpdateOrderStatus, masters = [], onEditOrder, onCreateProposal }: OrdersProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editForm, setEditForm] = useState({
-    title: '',
-    description: '',
-    urgency: 'medium'
-  });
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'date' | 'price'>('date');
   const [showMasterSelection, setShowMasterSelection] = useState(false);
@@ -49,6 +45,9 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
   const [showProposalModal, setShowProposalModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [orderToEdit, setOrderToEdit] = useState<Order | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const filteredOrders = useMemo(() => {
     // Фільтруємо заказы: если клиент, то только его заказы; если мастер, то все
@@ -131,35 +130,33 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
 
   const handleEditOrder = () => {
     if (selectedOrder) {
-      setEditForm({
-        title: selectedOrder.title,
-        description: selectedOrder.description,
-        urgency: selectedOrder.urgency || 'medium'
-      });
+      setOrderToEdit(selectedOrder);
+      setShowEditModal(true);
     }
-    setIsEditing(true);
   };
 
-  const handleSaveOrder = () => {
-    if (selectedOrder) {
+  const handleSaveEditOrder = async (editedOrder: Order) => {
+    setIsLoading(true);
+    try {
       if (onEditOrder) {
-        onEditOrder(selectedOrder.id, editForm);
+        onEditOrder(editedOrder.id, editedOrder);
       } else {
-        // Збереження в localStorage якщо немає callback
         const orders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
         const updatedOrders = orders.map((o: Order) =>
-          o.id === selectedOrder.id ? { ...o, ...editForm } : o
+          o.id === editedOrder.id ? editedOrder : o
         );
         localStorage.setItem('repair_master_orders', JSON.stringify(updatedOrders));
         window.dispatchEvent(new CustomEvent('ordersUpdated'));
       }
+      setShowEditModal(false);
+      setOrderToEdit(null);
+      setSelectedOrder(null);
+    } finally {
+      setIsLoading(false);
     }
-    setIsEditing(false);
   };
 
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-  };
+
 
   const handleSendToMaster = (orderId: string) => {
     setSelectedOrderForMaster(orderId);
@@ -689,50 +686,32 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
         />
       )}
 
-      {/* Модальное окно подтверждения удаления */}
-      {showDeleteConfirm && orderToDelete && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-x-hidden">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-auto shadow-xl">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                <CloseIcon sx={{ fontSize: 24 }} className="text-red-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Видалити замовлення</h3>
-                <p className="text-sm text-gray-600">Цю дію неможливо скасувати</p>
-              </div>
-            </div>
-            
-            <div className="mb-6">
-              <p className="text-gray-700 mb-2">
-                Ви впевнені, що хочете видалити замовлення:
-              </p>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <h4 className="font-medium text-gray-900">{orderToDelete.title}</h4>
-                <p className="text-sm text-gray-600">{orderToDelete.deviceType} - {orderToDelete.issue}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Створено: {new Date(orderToDelete.createdAt).toLocaleDateString('uk-UA')}
-                </p>
-              </div>
-            </div>
 
-            <div className="flex gap-3">
-              <button
-                onClick={cancelDeleteOrder}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-              >
-                Скасувати
-              </button>
-              <button
-                onClick={confirmDeleteOrder}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
-              >
-                Видалити
-              </button>
-            </div>
-          </div>
-        </div>
+
+      {/* Модальне вікно редагування замовлення */}
+      {orderToEdit && (
+        <OrderEditModal
+          order={orderToEdit}
+          onClose={() => {
+            setShowEditModal(false);
+            setOrderToEdit(null);
+          }}
+          onSave={handleSaveEditOrder}
+          loading={isLoading}
+        />
       )}
+
+      {/* Модальне вікно підтвердження видалення */}
+      <ConfirmationDialog
+        isOpen={showDeleteConfirm}
+        onClose={() => {
+          setShowDeleteConfirm(false);
+          setOrderToDelete(null);
+        }}
+        onConfirm={confirmDeleteOrder}
+        title="Видалити замовлення"
+        description={orderToDelete ? `Ви впевнені, що хочете видалити замовлення "${orderToDelete.title}"?` : ''}
+      />
     </div>
   );
 }
