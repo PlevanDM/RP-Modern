@@ -19,7 +19,8 @@ export const useAuthStore = create<AuthState>()(
       login: (id: string) => {
         const user = mockUsers.find((u) => u.id === id);
         if (user) {
-          set({ currentUser: user, isOnboardingCompleted: false }); // Сбрасываем при новом логине
+          // Для тестовых аккаунтов сразу считаем онбординг завершенным
+          set({ currentUser: user, isOnboardingCompleted: true });
         }
       },
       logout: () => set({ currentUser: null, isOnboardingCompleted: false }),
