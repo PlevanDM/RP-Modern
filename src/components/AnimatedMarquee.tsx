@@ -78,7 +78,7 @@ const AnimatedMarquee: React.FC = () => {
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur-md"
+              className="absolute inset-0 bg-gradient-to-r from-gray-300 to-gray-400 rounded-full blur-md"
             />
             <span className="text-2xl relative z-10">{currentNotification.icon}</span>
           </motion.div>
@@ -94,11 +94,7 @@ const AnimatedMarquee: React.FC = () => {
               ease: "linear"
             }}
             style={{
-              background: "linear-gradient(90deg, #1f2937, #6366f1, #1f2937, #6366f1)",
-              backgroundSize: "200% 100%",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
+              color: "#374151"
             }}
             className="text-sm font-medium"
           >
@@ -116,7 +112,7 @@ const AnimatedMarquee: React.FC = () => {
               repeat: Infinity,
               ease: "easeInOut"
             }}
-            className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+            className="w-2 h-2 bg-gray-500 rounded-full"
           />
         </motion.div>
       </AnimatePresence>
@@ -126,7 +122,7 @@ const AnimatedMarquee: React.FC = () => {
         initial={{ scaleX: 1 }}
         animate={{ scaleX: 0 }}
         transition={{ duration: 4, ease: "linear", repeat: Infinity }}
-        className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 origin-left"
+        className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-300 origin-left"
       />
     </div>
   );
