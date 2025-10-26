@@ -7,6 +7,7 @@ import { MyDevices } from './components/features/client/MyDevices';
 import { DeviceCatalog } from './components/pages/DeviceCatalog';
 import { AdminDashboard } from './components/features/admin/AdminDashboard';
 import { ModernSettingsPanel } from './components/features/admin/ModernSettingsPanel';
+import { SettingsConfiguration } from './components/features/admin/SettingsConfiguration';
 import { ModernUsersPanel } from './components/features/admin/ModernUsersPanel';
 
 import { ModernFinancialPanel } from './components/features/admin/ModernFinancialPanel';
@@ -227,7 +228,7 @@ function App() {
 
             {activeItem === 'finance' && currentUser?.role === 'admin' && <ModernFinancialPanel />}
 
-            {activeItem === 'settings' && currentUser?.role === 'admin' && <ModernSettingsPanel />}
+            {activeItem === 'settings' && currentUser?.role === 'admin' && <SettingsConfiguration />}
 
           {activeItem === 'myOrders' && (
             <Orders
