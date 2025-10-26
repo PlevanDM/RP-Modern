@@ -14,6 +14,7 @@ interface OrderItem {
   title: string;
   clientName: string;
   device: string;
+  deviceType: string;
   issue: string;
   city: string;
   status: 'open' | 'proposed' | 'in_progress' | 'completed' | 'awaiting_client_confirmation' | 'awaiting_payment_confirmation' | 'paid';
@@ -39,6 +40,7 @@ interface OrdersBoardProps {
 // Mock дані замовлень
 const generateMockOrders = (): OrderItem[] => {
   const devices = ['iPhone 15 Pro', 'Samsung Galaxy S24', 'Xiaomi Mi 14', 'iPad Air', 'MacBook Pro', 'Huawei P60', 'OnePlus 12', 'Google Pixel 8'];
+  const deviceTypes = ['Смартфон', 'Планшет', 'Ноутбук'];
   const issues = [
     'Розбитий екран',
     'Швидка розрядка батареї',
@@ -67,6 +69,7 @@ const generateMockOrders = (): OrderItem[] => {
       }`,
       clientName: `Клієнт ${i + 1}`,
       device: devices[Math.floor(Math.random() * devices.length)],
+      deviceType: deviceTypes[Math.floor(Math.random() * deviceTypes.length)],
       issue: issues[Math.floor(Math.random() * issues.length)],
       city: cities[Math.floor(Math.random() * cities.length)],
       status,
@@ -105,10 +108,19 @@ export const OrdersBoard: React.FC<OrdersBoardProps> = ({
   const [showFilters, setShowFilters] = useState(false);
   const [editingOrder, setEditingOrder] = useState<OrderItem | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [isFormDirty, setIsFormDirty] = useState(false);
   const [editFormData, setEditFormData] = useState({
     title: '',
+    deviceType: '',
+    issue: '',
     budget: 0,
     urgency: 'medium' as const,
+  });
+  const [editFormErrors, setEditFormErrors] = useState({
+    title: '',
+    deviceType: '',
+    issue: '',
+    budget: '',
   });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState<OrderItem | null>(null);
@@ -214,22 +226,70 @@ export const OrdersBoard: React.FC<OrdersBoardProps> = ({
     setEditingOrder(order);
     setEditFormData({
       title: order.title,
+      deviceType: order.deviceType,
+      issue: order.issue,
       budget: order.budget,
       urgency: order.urgency,
     });
+    setEditFormErrors({ title: '', deviceType: '', issue: '', budget: '' });
     setShowEditModal(true);
   };
 
   const handleEditSave = () => {
     if (editingOrder) {
+      const errors = {
+        title: '',
+        deviceType: '',
+        issue: '',
+        budget: '',
+      };
+      let isValid = true;
+
+      if (!editFormData.title.trim()) {
+        errors.title = "Назва замовлення не може бути порожньою.";
+        isValid = false;
+      }
+      if (!editFormData.deviceType.trim()) {
+        errors.deviceType = "Тип пристрою не може бути порожнім.";
+        isValid = false;
+      }
+      if (!editFormData.issue.trim()) {
+        errors.issue = "Проблема не може бути порожньою.";
+        isValid = false;
+      }
+      if (editFormData.budget <= 0) {
+        errors.budget = "Бюджет має бути позитивним числом.";
+        isValid = false;
+      }
+
+      setEditFormErrors(errors);
+
+      if (!isValid) {
+        return;
+      }
+
       onEditOrder?.({
         ...editingOrder,
         title: editFormData.title,
+        deviceType: editFormData.deviceType,
+        issue: editFormData.issue,
         budget: editFormData.budget,
         urgency: editFormData.urgency,
       });
       setShowEditModal(false);
       setEditingOrder(null);
+      setIsFormDirty(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    if (isFormDirty) {
+      if (window.confirm("Ви впевнені, що хочете скасувати зміни?")) {
+        setShowEditModal(false);
+        setIsFormDirty(false);
+      }
+    } else {
+      setShowEditModal(false);
     }
   };
 
@@ -246,8 +306,13 @@ export const OrdersBoard: React.FC<OrdersBoardProps> = ({
     }
   };
 
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+    setIsFormDirty(true);
+  };
+
   return (
-    <div className="w-full">
+    <div className="w-full" data-testid="orders-board">
       {/* Заголовок */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -601,7 +666,7 @@ export const OrdersBoard: React.FC<OrdersBoardProps> = ({
             <div className="bg-blue-600 text-white p-4 md:p-6 flex justify-between items-center rounded-t-lg">
               <h2 className="text-lg md:text-xl font-bold">Редагувати замовлення</h2>
               <button
-                onClick={() => setShowEditModal(false)}
+                onClick={handleCancelEdit}
                 className="text-white hover:bg-blue-700 rounded p-1 transition-colors"
               >
                 <CloseIcon sx={{ fontSize: 24 }} />
@@ -613,27 +678,56 @@ export const OrdersBoard: React.FC<OrdersBoardProps> = ({
                 <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1 md:mb-2">Назва замовлення</label>
                 <input
                   type="text"
+                  name="title"
                   value={editFormData.title}
-                  onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
+                  onChange={handleFormChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                 />
+                {editFormErrors.title && <p className="text-red-500 text-xs mt-1">{editFormErrors.title}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1 md:mb-2">Тип пристрою</label>
+                <input
+                  type="text"
+                  name="deviceType"
+                  value={editFormData.deviceType}
+                  onChange={handleFormChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                />
+                {editFormErrors.deviceType && <p className="text-red-500 text-xs mt-1">{editFormErrors.deviceType}</p>}
+              </div>
+
+              <div>
+                <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1 md:mb-2">Проблема</label>
+                <input
+                  type="text"
+                  name="issue"
+                  value={editFormData.issue}
+                  onChange={handleFormChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                />
+                {editFormErrors.issue && <p className="text-red-500 text-xs mt-1">{editFormErrors.issue}</p>}
               </div>
 
               <div>
                 <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1 md:mb-2">Бюджет (грн)</label>
                 <input
                   type="number"
+                  name="budget"
                   value={editFormData.budget}
-                  onChange={(e) => setEditFormData({ ...editFormData, budget: parseInt(e.target.value) || 0 })}
+                  onChange={handleFormChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                 />
+                {editFormErrors.budget && <p className="text-red-500 text-xs mt-1">{editFormErrors.budget}</p>}
               </div>
 
               <div>
                 <label className="block text-xs md:text-sm font-medium text-gray-700 mb-1 md:mb-2">Терміновість</label>
                 <select
+                  name="urgency"
                   value={editFormData.urgency}
-                  onChange={(e) => setEditFormData({ ...editFormData, urgency: e.target.value as 'low' | 'medium' | 'high' })}
+                  onChange={handleFormChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
                 >
                   <option value="low">🟢 Не терміно</option>
@@ -650,7 +744,7 @@ export const OrdersBoard: React.FC<OrdersBoardProps> = ({
                   Зберегти
                 </button>
                 <button
-                  onClick={() => setShowEditModal(false)}
+                  onClick={handleCancelEdit}
                   className="flex-1 px-3 md:px-4 py-2 bg-gray-300 text-gray-900 rounded-lg hover:bg-gray-400 font-medium transition-colors text-sm"
                 >
                   Скасувати
