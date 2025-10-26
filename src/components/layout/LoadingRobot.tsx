@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface LoadingRobotProps {
   collapsed: boolean;
@@ -7,6 +7,27 @@ interface LoadingRobotProps {
 }
 
 const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true }) => {
+  const [hasNewOrders, setHasNewOrders] = useState(false);
+  const [newOrdersCount, setNewOrdersCount] = useState(0);
+
+  // Симуляция получения новых заказов
+  useEffect(() => {
+    if (!isLoading) return;
+
+    const interval = setInterval(() => {
+      const count = Math.floor(Math.random() * 3) + 1; // 1-3 новых заказа
+      setNewOrdersCount(count);
+      setHasNewOrders(true);
+      
+      // Сброс индикатора через 2 секунды
+      setTimeout(() => {
+        setHasNewOrders(false);
+      }, 2000);
+    }, 8000); // Каждые 8 секунд
+
+    return () => clearInterval(interval);
+  }, [isLoading]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -16,7 +37,7 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
     >
       {/* Robot Container */}
       <div className="relative flex items-end justify-center pb-8">
-        {/* Modern Head with Glass Morphism */}
+                {/* Modern Head with Glass Morphism */}
         <motion.div
           animate={{
             y: [0, -3, 0],
@@ -32,19 +53,25 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
           {/* Futuristic Head */}
           <motion.div
             animate={{
-              scale: [1, 1.03, 1],
-              boxShadow: [
-                "0 10px 40px rgba(59, 130, 246, 0.3)",
-                "0 15px 50px rgba(147, 51, 234, 0.4)",
-                "0 10px 40px rgba(59, 130, 246, 0.3)",
-              ],
+              scale: hasNewOrders ? [1, 1.15, 1.1, 1] : [1, 1.03, 1],
+              boxShadow: hasNewOrders 
+                ? [
+                    "0 20px 60px rgba(34, 211, 238, 0.6)",
+                    "0 25px 80px rgba(147, 51, 234, 0.7)",
+                    "0 20px 60px rgba(34, 211, 238, 0.6)",
+                  ]
+                : [
+                    "0 10px 40px rgba(59, 130, 246, 0.3)",
+                    "0 15px 50px rgba(147, 51, 234, 0.4)",
+                    "0 10px 40px rgba(59, 130, 246, 0.3)",
+                  ],
             }}
             transition={{
-              duration: 3,
-              repeat: Infinity,
+              duration: hasNewOrders ? 0.6 : 3,
+              repeat: hasNewOrders ? 0 : Infinity,
               ease: "easeInOut",
             }}
-                         className="relative w-16 h-16 bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 rounded-2xl shadow-2xl backdrop-blur-sm"
+                          className="relative w-16 h-16 bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 rounded-2xl shadow-2xl backdrop-blur-sm"
             style={{
               background: "linear-gradient(135deg, #22d3ee 0%, #3b82f6 50%, #4f46e5 100%)",
               boxShadow: "0 20px 60px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
@@ -67,35 +94,49 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
               }}
             />
 
-                         {/* Glowing Eyes */}
-             <div className="absolute top-3 left-3 right-3 flex justify-between items-center">
-              <motion.div
-                animate={{ 
-                  opacity: [1, 0.1, 1], 
-                  scale: [1, 0.7, 1],
-                  boxShadow: [
-                    "0 0 10px rgba(255, 255, 255, 0.8)",
-                    "0 0 30px rgba(59, 130, 246, 1)",
-                    "0 0 10px rgba(255, 255, 255, 0.8)",
-                  ],
-                }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                                 className="w-3 h-3 bg-white rounded-full shadow-xl"
-               />
+                                                   {/* Glowing Eyes */}
+              <div className="absolute top-3 left-3 right-3 flex justify-between items-center">
                <motion.div
-                 animate={{ 
+                 animate={hasNewOrders ? {
+                   scale: [1, 1.5, 1],
+                   boxShadow: [
+                     "0 0 20px rgba(34, 211, 238, 1)",
+                     "0 0 40px rgba(34, 211, 238, 1)",
+                     "0 0 20px rgba(34, 211, 238, 1)",
+                   ],
+                 } : { 
                    opacity: [1, 0.1, 1], 
                    scale: [1, 0.7, 1],
                    boxShadow: [
                      "0 0 10px rgba(255, 255, 255, 0.8)",
-                     "0 0 30px rgba(147, 51, 234, 1)",
+                     "0 0 30px rgba(59, 130, 246, 1)",
                      "0 0 10px rgba(255, 255, 255, 0.8)",
                    ],
                  }}
-                 transition={{ duration: 1.5, repeat: Infinity, delay: 0.7 }}
-                 className="w-3 h-3 bg-white rounded-full shadow-xl"
-              />
-            </div>
+                 transition={{ duration: hasNewOrders ? 0.4 : 1.5, repeat: hasNewOrders ? 3 : Infinity }}
+                                  className="w-3 h-3 bg-white rounded-full shadow-xl"
+                />
+                <motion.div
+                  animate={hasNewOrders ? {
+                    scale: [1, 1.5, 1],
+                    boxShadow: [
+                      "0 0 20px rgba(147, 51, 234, 1)",
+                      "0 0 40px rgba(147, 51, 234, 1)",
+                      "0 0 20px rgba(147, 51, 234, 1)",
+                    ],
+                  } : { 
+                    opacity: [1, 0.1, 1], 
+                    scale: [1, 0.7, 1],
+                    boxShadow: [
+                      "0 0 10px rgba(255, 255, 255, 0.8)",
+                      "0 0 30px rgba(147, 51, 234, 1)",
+                      "0 0 10px rgba(255, 255, 255, 0.8)",
+                    ],
+                  }}
+                  transition={{ duration: hasNewOrders ? 0.4 : 1.5, repeat: hasNewOrders ? 3 : Infinity, delay: hasNewOrders ? 0 : 0.7 }}
+                  className="w-3 h-3 bg-white rounded-full shadow-xl"
+               />
+             </div>
 
             {/* Futuristic Mouth/Speaker */}
             <motion.div
@@ -314,47 +355,60 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
           </div>
         </div>
 
-        {/* Floating Orders */}
-        {isLoading && !collapsed && (
-          <>
-            <motion.div
-              animate={{
-                y: [0, -25, 0],
-                opacity: [0.2, 1, 0.2],
-                scale: [0.7, 1, 0.7],
-                rotate: [0, 360],
-              }}
-              transition={{ duration: 3, repeat: Infinity, delay: 0 }}
-              className="absolute -left-8 top-2 text-2xl"
-            >
-              📱
-            </motion.div>
-            <motion.div
-              animate={{
-                y: [0, -25, 0],
-                opacity: [0.2, 1, 0.2],
-                scale: [0.7, 1, 0.7],
-                rotate: [0, -360],
-              }}
-              transition={{ duration: 3, repeat: Infinity, delay: 0.8 }}
-              className="absolute -right-8 top-6 text-2xl"
-            >
-              💻
-            </motion.div>
-            <motion.div
-              animate={{
-                y: [0, -25, 0],
-                opacity: [0.2, 1, 0.2],
-                scale: [0.7, 1, 0.7],
-                rotate: [0, 360],
-              }}
-              transition={{ duration: 3, repeat: Infinity, delay: 1.6 }}
-              className="absolute -left-10 bottom-4 text-xl"
-            >
-              ⌚
-            </motion.div>
-          </>
-        )}
+                 {/* Floating Orders with enhanced animation */}
+         {isLoading && !collapsed && (
+           <>
+             <AnimatePresence>
+               {hasNewOrders && (
+                 <motion.div
+                   initial={{ scale: 0, opacity: 0 }}
+                   animate={{ scale: 1.2, opacity: 1 }}
+                   exit={{ scale: 0, opacity: 0 }}
+                   transition={{ duration: 0.5 }}
+                   className="absolute -left-6 top-0 text-3xl z-30"
+                 >
+                   📦
+                 </motion.div>
+               )}
+             </AnimatePresence>
+             <motion.div
+               animate={{
+                 y: [0, -25, 0],
+                 opacity: [0.2, 1, 0.2],
+                 scale: [0.7, 1, 0.7],
+                 rotate: [0, 360],
+               }}
+               transition={{ duration: 3, repeat: Infinity, delay: 0 }}
+               className="absolute -left-8 top-2 text-2xl"
+             >
+               📱
+             </motion.div>
+             <motion.div
+               animate={{
+                 y: [0, -25, 0],
+                 opacity: [0.2, 1, 0.2],
+                 scale: [0.7, 1, 0.7],
+                 rotate: [0, -360],
+               }}
+               transition={{ duration: 3, repeat: Infinity, delay: 0.8 }}
+               className="absolute -right-8 top-6 text-2xl"
+             >
+               💻
+             </motion.div>
+             <motion.div
+               animate={{
+                 y: [0, -25, 0],
+                 opacity: [0.2, 1, 0.2],
+                 scale: [0.7, 1, 0.7],
+                 rotate: [0, 360],
+               }}
+               transition={{ duration: 3, repeat: Infinity, delay: 1.6 }}
+               className="absolute -left-10 bottom-4 text-xl"
+             >
+               ⌚
+             </motion.div>
+           </>
+         )}
 
         {/* Advanced Energy Field */}
         {isLoading && (
@@ -425,22 +479,49 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
         </motion.div>
       </div>
 
-      {/* Status Text */}
-      {!collapsed && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap"
-        >
-          <motion.span
-            animate={{ opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="text-xs font-medium text-gray-600"
-          >
-            {isLoading ? 'Завантаження замовлень...' : 'Готово'}
-          </motion.span>
-        </motion.div>
-      )}
+             {/* Status Text */}
+       {!collapsed && (
+         <motion.div
+           initial={{ opacity: 0 }}
+           animate={{ opacity: 1 }}
+           className="absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap"
+         >
+           <AnimatePresence mode="wait">
+             {hasNewOrders ? (
+                                <motion.span
+                   key="new-orders"
+                   initial={{ opacity: 0, scale: 0.5, y: 10 }}
+                   animate={{ 
+                     opacity: 1, 
+                     scale: [1, 1.1, 1], 
+                     y: 0,
+                   }}
+                   exit={{ opacity: 0, scale: 0.5, y: -10 }}
+                   transition={{ 
+                     opacity: { duration: 0.3 },
+                     scale: { duration: 1, repeat: Infinity },
+                     y: { duration: 0.3 }
+                   }}
+                   className="text-xs font-bold text-cyan-600 bg-gradient-to-r from-cyan-100 to-purple-100 px-3 py-1 rounded-full shadow-lg relative"
+                 >
+                   ✨ {newOrdersCount} нових замовлень!
+                 </motion.span>
+             ) : (
+               <motion.span
+                 key="loading"
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: 1 }}
+                 exit={{ opacity: 0 }}
+                 animate={{ opacity: [0.6, 1, 0.6] }}
+                 transition={{ duration: 2, repeat: Infinity }}
+                 className="text-xs font-medium text-gray-600"
+               >
+                 {isLoading ? 'Завантаження замовлень...' : 'Готово'}
+               </motion.span>
+             )}
+           </AnimatePresence>
+         </motion.div>
+       )}
     </motion.div>
   );
 };
