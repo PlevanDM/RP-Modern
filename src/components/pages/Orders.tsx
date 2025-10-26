@@ -199,6 +199,17 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
     }
   };
 
+  const handleEditOrder = () => {
+    if (selectedOrder) {
+      setEditForm({
+        title: selectedOrder.title,
+        description: selectedOrder.description,
+        urgency: selectedOrder.urgency || 'medium'
+      });
+      setIsEditing(true);
+    }
+  };
+
   const statuses = [
     { value: 'all', label: 'Усі замовлення' },
     { value: 'open', label: 'Відкрито' },
@@ -542,6 +553,24 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                         <MessageIcon sx={{ fontSize: 20 }} /> Чат з майстром
                       </button>
                     )}
+                  </>
+                )}
+
+                {/* ADMIN ACTIONS */}
+                {currentUser?.role === 'admin' && !isEditing && (
+                  <>
+                    <button
+                      onClick={handleEditOrder}
+                      className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center justify-center gap-2"
+                    >
+                      <EditIcon sx={{ fontSize: 20 }} /> Редагувати
+                    </button>
+                    <button
+                      onClick={() => handleDeleteOrder(selectedOrder)}
+                      className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors flex items-center justify-center gap-2"
+                    >
+                      <CloseIcon sx={{ fontSize: 20 }} /> Видалити
+                    </button>
                   </>
                 )}
 
