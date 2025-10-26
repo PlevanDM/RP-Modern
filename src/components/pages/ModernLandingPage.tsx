@@ -111,23 +111,35 @@ const ModernLandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="max-w-md z-10"
+                className="max-w-lg z-10 px-4"
               >
                 <motion.div
                   initial={{ scale: 0.8 }}
                   animate={{ scale: hoveredSide === 'master' ? 1.1 : 1 }}
                   className="mb-6"
                 >
-                  <Wrench className={`w-24 h-24 mx-auto mb-4 ${hoveredSide === 'master' ? 'text-white' : 'text-gray-400'}`} />
+                  <Wrench className={`w-24 h-24 mx-auto mb-4 ${hoveredSide === 'master' ? 'text-white' : 'text-gray-600'}`} />
                 </motion.div>
                 
-                <h2 className={`text-5xl font-bold mb-4 ${hoveredSide === 'master' ? 'text-white' : 'text-gray-700'}`}>
+                <h2 className={`text-5xl font-bold mb-4 ${hoveredSide === 'master' ? 'text-white' : 'text-gray-800'}`}>
                   МАЙСТЕР
                 </h2>
                 
-                <p className={`text-xl mb-6 ${hoveredSide === 'master' ? 'text-blue-100' : 'text-gray-500'}`}>
-                  {hoveredSide === 'master' ? 'Отримуй замовлення напряму' : 'Потрібні замовлення без пошуку'}
+                <p className={`text-2xl font-semibold mb-3 ${hoveredSide === 'master' ? 'text-white' : 'text-gray-700'}`}>
+                  {hoveredSide === 'master' ? 'Стабільний потік замовлень' : 'Стабільний потік замовлень'}
                 </p>
+                
+                <div className="flex flex-col gap-2 mb-6">
+                  <p className={`text-sm ${hoveredSide === 'master' ? 'text-blue-100' : 'text-gray-600'}`}>
+                    📦 Робота приходить до тебе
+                  </p>
+                  <p className={`text-sm ${hoveredSide === 'master' ? 'text-blue-100' : 'text-gray-600'}`}>
+                    💼 500+ майстрів вже працюють
+                  </p>
+                  <p className={`text-sm font-bold ${hoveredSide === 'master' ? 'text-white' : 'text-gray-800'}`}>
+                    ⚡ Середня ціна: 3000₴
+                  </p>
+                </div>
               </motion.div>
             </div>
           </div>
@@ -176,23 +188,35 @@ const ModernLandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="max-w-md z-10"
+                className="max-w-lg z-10 px-4"
               >
                 <motion.div
                   initial={{ scale: 0.8 }}
                   animate={{ scale: hoveredSide === 'client' ? 1.1 : 1 }}
                   className="mb-6"
                 >
-                  <DollarSign className={`w-24 h-24 mx-auto mb-4 ${hoveredSide === 'client' ? 'text-white' : 'text-gray-500'}`} />
+                  <DollarSign className={`w-24 h-24 mx-auto mb-4 ${hoveredSide === 'client' ? 'text-white' : 'text-gray-600'}`} />
                 </motion.div>
                 
-                <h2 className={`text-5xl font-bold mb-4 ${hoveredSide === 'client' ? 'text-white' : 'text-gray-700'}`}>
+                <h2 className={`text-5xl font-bold mb-4 ${hoveredSide === 'client' ? 'text-white' : 'text-gray-800'}`}>
                   КЛІЄНТ
                 </h2>
                 
-                <p className={`text-xl mb-6 ${hoveredSide === 'client' ? 'text-purple-100' : 'text-gray-500'}`}>
-                  {hoveredSide === 'client' ? 'Економ час і гроші' : 'Знайди перевіреного майстра'}
+                <p className={`text-2xl font-semibold mb-3 ${hoveredSide === 'client' ? 'text-white' : 'text-gray-700'}`}>
+                  {hoveredSide === 'client' ? 'Економ до 40% на ремонті' : 'Економ до 40% на ремонті'}
                 </p>
+                
+                <div className="flex flex-col gap-2 mb-6">
+                  <p className={`text-sm ${hoveredSide === 'client' ? 'text-purple-100' : 'text-gray-600'}`}>
+                    ⚡ Швидкий пошук майстра поруч
+                  </p>
+                  <p className={`text-sm ${hoveredSide === 'client' ? 'text-purple-100' : 'text-gray-600'}`}>
+                    ⭐ 2000+ ремонтів з рейтингом 4.9/5
+                  </p>
+                  <p className={`text-sm font-bold ${hoveredSide === 'client' ? 'text-white' : 'text-gray-800'}`}>
+                    💰 Конкуренція майстрів = краща ціна
+                  </p>
+                </div>
               </motion.div>
             </div>
           </div>
