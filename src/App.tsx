@@ -32,6 +32,7 @@ import { OnboardingCompletionStep } from './components/onboarding/OnboardingComp
 import { SpecializationStep } from './components/onboarding/SpecializationStep';
 import { ExperienceStep } from './components/onboarding/ExperienceStep';
 import { ToolsStep } from './components/onboarding/ToolsStep';
+import AnimatedMarquee from './components/AnimatedMarquee';
 
 function App() {
   const { currentUser, login, logout, isOnboardingCompleted, completeOnboarding } = useAuthStore();
@@ -103,22 +104,7 @@ function App() {
               </div>
 
               <div className="flex-1 text-center relative">
-                <div className="overflow-hidden relative h-6 mt-1">
-                  <div className="animate-marquee whitespace-nowrap text-sm text-gray-600">
-                    📱 Нове замовлення #1234 • 🔧 Повідомлення від майстра • ✨ Замовлення #5678 завершено • ⭐ Отримано новий відгук
-                  </div>
-                </div>
-                {currentUser && (
-                  <div className={`absolute bottom-0 left-0 px-3 py-1 rounded-full text-xs font-semibold ${
-                    currentUser.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                    currentUser.role === 'master' ? 'bg-blue-100 text-blue-700' :
-                    'bg-green-100 text-green-700'
-                  }`}>
-                    {currentUser.role === 'admin' ? '👨‍💼 Адміністратор' :
-                     currentUser.role === 'master' ? '🔧 Майстер' :
-                     '👤 Клієнт'}
-                  </div>
-                )}
+                <AnimatedMarquee />
               </div>
 
               <div className="flex items-center gap-3 min-w-fit">
