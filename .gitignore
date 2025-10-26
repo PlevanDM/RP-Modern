@@ -47,19 +47,70 @@ desktop.ini
 *-old.ps1
 *BACKUP*
 
-# Documentation (keep only essential)
-*-GUIDE.txt
-*-INSTRUCTIONS.txt
-MANUAL-*.txt
-LAST-*.txt
-FINAL-*.txt
-FULL-*.txt
-QUICK-*.txt
-VNC-*.txt
-AUTO-*.txt
-DEBUG-*.txt
-CHECK-*.txt
+# Documentation - keep only README.md and essential production docs
+*-GUIDE.*
+*-INSTRUCTIONS.*
+MANUAL-*
+LAST-*
+FINAL-*
+FULL-*
+QUICK-*
+VNC-*
+AUTO-*
+DEBUG-*
+CHECK-*
+*-SUMMARY.*
+*-STATUS.*
+*-REPORT.*
+*-INFO.*
+*-COMMANDS.*
+*-COPY-PASTE.*
+*-THIS.*
+*-NOW.*
+*-STEP.*
+*-FIX.*
+*-DEPLOY.*
+*-UPDATE.*
+*-SETUP.*
+*-DNS.*
+*-CLOUDFLARE.*
+*-GODADDY.*
+*-NAMESERVERS.*
+*-RESET.*
+*-ACCESS.*
+*-TROUBLESHOOTING.*
+*-SOLUTION.*
+*-SCHEDULE.*
+*-SUMMARY.*
+*-COMPLETE.*
+*-FINAL.*
+*-SUCCESS.*
+*-REPORT.*
 
-# Test results
-TEST-RESULTS.md
-test-summary.md
+# Test results and temporary files
+TEST-*
+test-*
+*-test.*
+
+# Old deployment scripts
+*-deploy.sh
+*-startup.sh
+*-setup.sh
+deploy-*.sh
+vultr-*.sh
+auto-*.ps1
+check-*.ps1
+disable-*.ps1
+test-*.ps1
+vultr-api-test.ps1
+
+# Keep only these essential files:
+# - deploy-production.sh
+# - PRODUCTION-DEPLOY.md
+# - README.md
+# - docker-compose.yml
+# - Dockerfile
+# - nginx.conf
+# - package.json
+# - src/
+# - public/
