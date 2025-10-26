@@ -13,9 +13,8 @@ RUN npm ci
 # Копируем исходный код
 COPY . .
 
-# Устанавливаем все зависимости, собираем проект
-RUN npm ci && \
-    npm run build && \
+# Собираем проект
+RUN npm run build && \
     npm cache clean --force
 
 # Устанавливаем nginx для статики и wget для healthcheck
