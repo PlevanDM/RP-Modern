@@ -1,0 +1,18 @@
+Копіюйте і вставте ці команди в VNC Console:
+
+cd /root/repair-hub-pro && git pull origin eploy && docker compose down && docker compose build --no-cache && docker compose up -d && sleep 20 && docker compose ps && echo "DONE! Test http://repairhub.one"
+
+═══════════════════════════════════════════════════════════════
+
+ІНСТРУКЦІЇ:
+
+1. https://my.vultr.com
+2. Servers → Select your server
+3. View Console
+4. Вставте команди вище
+5. Enter
+6. Чекайте 2-3 хвилини
+7. http://repairhub.one ← ПРАЦЮВАТИМЕ!
+
+═══════════════════════════════════════════════════════════════
+
