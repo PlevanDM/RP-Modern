@@ -4,7 +4,7 @@ import {
   Package, Search, Filter, Plus, Eye, Edit, Trash2, 
   Clock, CheckCircle, XCircle, AlertTriangle, MapPin,
   Calendar, DollarSign, User, Phone, MessageSquare,
-  Truck, CreditCard, Star, MoreVertical
+  Truck, CreditCard, Star, MoreVertical, Loader2
 } from 'lucide-react';
 import {
   AdminCard,
@@ -18,94 +18,62 @@ import {
   Badge,
   EmptyState
 } from './AdminDesignSystem';
+import { useOrdersStore } from '../../../store/ordersStore';
+import { useUIStore } from '../../../store/uiStore';
+import { Order } from '../../../types';
+import { OrderEditModal } from './OrderEditModal';
+import { ConfirmationDialog } from './ConfirmationDialog';
 
 export const ModernOrdersPanel = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterPriority, setFilterPriority] = useState('all');
+  const [loading, setLoading] = useState(false);
+  const { orders, editOrder, deleteOrder } = useOrdersStore();
+  const { showNotification } = useUIStore();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  const orders = [
-    {
-      id: 1,
-      orderNumber: '#RH-2024-001',
-      client: 'Анна Коваленко',
-      master: 'Олександр Петренко',
-      service: 'Заміна екрану iPhone 15',
-      status: 'in_progress',
-      priority: 'high',
-      price: 4500,
-      createdAt: '2024-01-15',
-      dueDate: '2024-01-20',
-      location: 'Київ, вул. Хрещатик, 10',
-      phone: '+380501234567',
-      rating: 4.8,
-      progress: 65
-    },
-    {
-      id: 2,
-      orderNumber: '#RH-2024-002',
-      client: 'Марія Сидоренко',
-      master: 'Максим Іванов',
-      service: 'Ремонт MacBook Pro',
-      status: 'completed',
-      priority: 'medium',
-      price: 8500,
-      createdAt: '2024-01-10',
-      dueDate: '2024-01-18',
-      location: 'Львів, пр. Свободи, 25',
-      phone: '+380671234567',
-      rating: 4.9,
-      progress: 100
-    },
-    {
-      id: 3,
-      orderNumber: '#RH-2024-003',
-      client: 'Ігор Мельник',
-      master: 'Олександр Петренко',
-      service: 'Заміна батареї Samsung Galaxy',
-      status: 'pending',
-      priority: 'low',
-      price: 2200,
-      createdAt: '2024-01-12',
-      dueDate: '2024-01-25',
-      location: 'Харків, вул. Сумська, 5',
-      phone: '+380931234567',
-      rating: 0,
-      progress: 0
-    },
-    {
-      id: 4,
-      orderNumber: '#RH-2024-004',
-      client: 'Ольга Петренко',
-      master: 'Максим Іванов',
-      service: 'Чистка від вологи iPhone 14',
-      status: 'cancelled',
-      priority: 'high',
-      price: 3200,
-      createdAt: '2024-01-08',
-      dueDate: '2024-01-15',
-      location: 'Одеса, вул. Дерибасівська, 15',
-      phone: '+380441234567',
-      rating: 0,
-      progress: 0
-    },
-    {
-      id: 5,
-      orderNumber: '#RH-2024-005',
-      client: 'Дмитро Коваль',
-      master: 'Олександр Петренко',
-      service: 'Ремонт iPad Air',
-      status: 'in_progress',
-      priority: 'medium',
-      price: 6800,
-      createdAt: '2024-01-14',
-      dueDate: '2024-01-22',
-      location: 'Дніпро, пр. Дмитра Яворницького, 88',
-      phone: '+380631234567',
-      rating: 4.7,
-      progress: 40
+  const handleEditClick = (order: Order) => {
+    setSelectedOrder(order);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDeleteClick = (order: Order) => {
+    setSelectedOrder(order);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleSaveOrder = async (order: Order) => {
+    setLoading(true);
+    try {
+      await editOrder(order);
+      showNotification('Order updated successfully!', 'success');
+      setIsEditModalOpen(false);
+      setSelectedOrder(null);
+    } catch (error) {
+      showNotification('Failed to update order.', 'error');
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const handleDeleteOrder = async () => {
+    if (!selectedOrder) return;
+    setLoading(true);
+    try {
+      await deleteOrder(selectedOrder.id);
+      showNotification('Order deleted successfully!', 'success');
+      setIsDeleteModalOpen(false);
+      setSelectedOrder(null);
+    } catch (error) {
+      showNotification('Failed to delete order.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -342,11 +310,11 @@ export const ModernOrdersPanel = () => {
                   
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <AdminButton variant="ghost" size="sm">
-                        <Eye className="w-4 h-4" />
-                      </AdminButton>
-                      <AdminButton variant="ghost" size="sm">
+                      <AdminButton variant="ghost" size="sm" onClick={() => handleEditClick(order)} disabled={loading}>
                         <Edit className="w-4 h-4" />
+                      </AdminButton>
+                      <AdminButton variant="ghost" size="sm" onClick={() => handleDeleteClick(order)} disabled={loading}>
+                        <Trash2 className="w-4 h-4" />
                       </AdminButton>
                       <AdminButton variant="ghost" size="sm">
                         <MessageSquare className="w-4 h-4" />
@@ -372,12 +340,27 @@ export const ModernOrdersPanel = () => {
               <AdminButton variant="ghost" size="sm">Попередня</AdminButton>
               <AdminButton variant="primary" size="sm">1</AdminButton>
               <AdminButton variant="ghost" size="sm">2</AdminButton>
-              <AdminButton variant="ghost" size="sm">3</AdminButton>
+              <AdminButton variant="ghost" size="sm">3</Button>
               <AdminButton variant="ghost" size="sm">Наступна</AdminButton>
             </div>
           </div>
         )}
       </div>
+      {isEditModalOpen && selectedOrder && (
+        <OrderEditModal
+          order={selectedOrder}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleSaveOrder}
+          loading={loading}
+        />
+      )}
+      <ConfirmationDialog
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteOrder}
+        title="Delete Order"
+        description="Are you sure you want to delete this order? This action cannot be undone."
+      />
     </div>
   );
 };

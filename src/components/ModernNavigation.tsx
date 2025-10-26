@@ -431,6 +431,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
 
         {/* Desktop sidebar */}
         <motion.div
+            data-testid="desktop-sidebar"
             className="fixed left-0 top-0 h-screen w-56 bg-background md:flex md:flex-col hidden z-30"
             initial={false}
             animate={isCollapsed ? "closed" : "open"}
