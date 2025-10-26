@@ -12,15 +12,15 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="relative w-full h-32 flex items-center justify-center bg-white border-t border-gray-200"
+      className="relative w-full h-40 flex items-end justify-center overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 border-t border-gradient-to-r from-blue-200/50 to-purple-200/50"
     >
       {/* Robot Container */}
-      <div className="relative flex items-end justify-center">
-        {/* Head */}
+      <div className="relative flex items-end justify-center pb-8">
+        {/* Modern Head with Glass Morphism */}
         <motion.div
           animate={{
             y: [0, -3, 0],
-            rotate: [0, 3, -3, 0],
+            rotate: [0, 4, -4, 0],
           }}
           transition={{
             duration: 2,
@@ -29,77 +29,111 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
           }}
           className="relative z-20"
         >
-          {/* Head Base */}
+          {/* Futuristic Head */}
           <motion.div
             animate={{
-              scale: [1, 1.02, 1],
+              scale: [1, 1.03, 1],
+              boxShadow: [
+                "0 10px 40px rgba(59, 130, 246, 0.3)",
+                "0 15px 50px rgba(147, 51, 234, 0.4)",
+                "0 10px 40px rgba(59, 130, 246, 0.3)",
+              ],
             }}
             transition={{
               duration: 3,
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="relative w-16 h-16 bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 rounded-xl shadow-xl"
+                         className="relative w-16 h-16 bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 rounded-2xl shadow-2xl backdrop-blur-sm"
+            style={{
+              background: "linear-gradient(135deg, #22d3ee 0%, #3b82f6 50%, #4f46e5 100%)",
+              boxShadow: "0 20px 60px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+            }}
           >
-            {/* Eyes */}
-            <div className="absolute top-3 left-3 right-3 flex justify-between items-center">
+            {/* Glassmorphism overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-2xl" />
+            
+            {/* Animated grid pattern */}
+            <motion.div
+              animate={{ opacity: [0.1, 0.3, 0.1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute inset-0 rounded-2xl"
+              style={{
+                backgroundImage: `
+                  linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
+                `,
+                backgroundSize: '8px 8px',
+              }}
+            />
+
+                         {/* Glowing Eyes */}
+             <div className="absolute top-3 left-3 right-3 flex justify-between items-center">
               <motion.div
-                animate={{ opacity: [1, 0.2, 1], scale: [1, 0.8, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-3 h-3 bg-white rounded-full shadow-lg"
-              />
-              <motion.div
-                animate={{ opacity: [1, 0.2, 1], scale: [1, 0.8, 1] }}
-                transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                className="w-3 h-3 bg-white rounded-full shadow-lg"
+                animate={{ 
+                  opacity: [1, 0.1, 1], 
+                  scale: [1, 0.7, 1],
+                  boxShadow: [
+                    "0 0 10px rgba(255, 255, 255, 0.8)",
+                    "0 0 30px rgba(59, 130, 246, 1)",
+                    "0 0 10px rgba(255, 255, 255, 0.8)",
+                  ],
+                }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                                 className="w-3 h-3 bg-white rounded-full shadow-xl"
+               />
+               <motion.div
+                 animate={{ 
+                   opacity: [1, 0.1, 1], 
+                   scale: [1, 0.7, 1],
+                   boxShadow: [
+                     "0 0 10px rgba(255, 255, 255, 0.8)",
+                     "0 0 30px rgba(147, 51, 234, 1)",
+                     "0 0 10px rgba(255, 255, 255, 0.8)",
+                   ],
+                 }}
+                 transition={{ duration: 1.5, repeat: Infinity, delay: 0.7 }}
+                 className="w-3 h-3 bg-white rounded-full shadow-xl"
               />
             </div>
 
-            {/* Mouth */}
+            {/* Futuristic Mouth/Speaker */}
             <motion.div
-              animate={{ width: ['1.5rem', '1.8rem', '1.5rem'] }}
+              animate={{ width: ['2rem', '2.5rem', '2rem'], opacity: [0.6, 1, 0.6] }}
               transition={{ duration: 1.5, repeat: Infinity }}
-              className="absolute bottom-2.5 left-1/2 -translate-x-1/2 h-1.5 bg-white rounded-full opacity-90"
+              className="absolute bottom-3 left-1/2 -translate-x-1/2 h-2 bg-white/90 rounded-full backdrop-blur-sm shadow-lg"
             />
 
-            {/* Antenna */}
+            {/* Holographic Antenna */}
             <motion.div
-              animate={{
-                y: [0, -2, 0],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="absolute -top-3 left-1/2 -translate-x-1/2"
+              animate={{ y: [0, -3, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -top-4 left-1/2 -translate-x-1/2 flex flex-col items-center"
             >
-              <div className="w-1 h-3 bg-blue-400 rounded-full" />
+              <div className="w-1.5 h-4 bg-gradient-to-t from-cyan-300 to-blue-400 rounded-full shadow-lg" />
               <motion.div
                 animate={{
-                  scale: [1, 1.3, 1],
-                  opacity: [0.8, 0.3, 0.8],
+                  scale: [1, 1.5, 1],
+                  opacity: [0.9, 0.2, 0.9],
                 }}
                 transition={{ duration: 1, repeat: Infinity }}
-                className="w-1 h-1 bg-yellow-400 rounded-full mx-auto"
+                className="w-1.5 h-1.5 bg-cyan-300 rounded-full shadow-2xl"
+                style={{ boxShadow: "0 0 20px rgba(34, 211, 238, 1)" }}
               />
             </motion.div>
 
-            {/* Glow Effect */}
+            {/* Pulsing glow rings */}
             <motion.div
-              animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.4, 0.1, 0.4],
-              }}
+              animate={{ scale: [1, 1.5, 1], opacity: [0.6, 0, 0.6] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-xl blur-md -z-10"
+              className="absolute inset-0 rounded-2xl border-2 border-cyan-400/50"
             />
           </motion.div>
         </motion.div>
 
-        {/* Body with Arms and Legs */}
-        <div className="absolute top-16 flex flex-col items-center">
-          {/* Body */}
+        {/* Futuristic Body with Neon Accents */}
+        <div className="absolute top-14 flex flex-col items-center">
+          {/* Sleek Body */}
           <motion.div
             animate={{
               y: [0, -2, 0],
@@ -110,24 +144,45 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
               ease: "easeInOut",
               delay: 0.1,
             }}
-            className="relative w-14 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-700 rounded-lg shadow-lg"
+            className="relative w-14 h-12 bg-gradient-to-br from-indigo-500 via-blue-600 to-purple-700 rounded-2xl shadow-2xl"
+            style={{
+              background: "linear-gradient(135deg, #6366f1 0%, #2563eb 50%, #7c3aed 100%)",
+              boxShadow: "0 10px 40px rgba(99, 102, 241, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+            }}
           >
-            {/* Chest Panel */}
-            <div className="absolute inset-2 bg-blue-500/20 rounded border border-blue-300/30 flex items-center justify-center">
+            {/* Glass panel with holographic effect */}
+            <div className="absolute inset-1 bg-gradient-to-br from-blue-400/10 to-purple-500/10 rounded-xl border border-white/20 backdrop-blur-sm flex items-center justify-center">
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="w-4 h-4 border-2 border-blue-300 border-t-transparent rounded-full"
-              />
+                className="relative"
+              >
+                <div className="w-6 h-6 border-3 border-cyan-300 border-t-transparent rounded-full shadow-lg" 
+                     style={{ boxShadow: "0 0 20px rgba(34, 211, 238, 0.5)" }}
+                />
+                <motion.div
+                  animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="absolute inset-0 border-2 border-cyan-300 rounded-full"
+                />
+              </motion.div>
             </div>
+
+            {/* Neon accent lines */}
+            <motion.div
+              animate={{ width: ['100%', '80%', '100%'] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 h-1 bg-gradient-to-r from-transparent via-cyan-300 to-transparent"
+              style={{ boxShadow: "0 0 10px rgba(34, 211, 238, 0.8)" }}
+            />
           </motion.div>
 
-          {/* Arms */}
-          <div className="absolute top-5 -left-6 flex gap-1">
+          {/* Sleek Articulated Arms */}
+          <div className="absolute top-6 -left-7 flex gap-1">
             {/* Left Arm */}
             <motion.div
               animate={{
-                rotate: [0, 30, -10, 0],
+                rotate: [0, 35, -15, 0],
               }}
               transition={{
                 duration: 2,
@@ -136,26 +191,31 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
               }}
               className="flex flex-col items-center"
             >
-              <div className="w-2 h-8 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full shadow-md" />
+              <div 
+                className="w-2.5 h-9 bg-gradient-to-b from-cyan-400 to-blue-600 rounded-full shadow-lg"
+                style={{ boxShadow: "0 4px 15px rgba(34, 211, 238, 0.3)" }}
+              />
               <motion.div
                 animate={{
-                  rotate: [0, -20, 20, 0],
+                  rotate: [0, -25, 25, 0],
+                  scale: [1, 1.1, 1],
                 }}
                 transition={{
                   duration: 1.5,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="w-2.5 h-2.5 bg-blue-500 rounded-full"
+                className="w-3 h-3 bg-cyan-400 rounded-full"
+                style={{ boxShadow: "0 0 15px rgba(34, 211, 238, 0.8)" }}
               />
             </motion.div>
           </div>
 
-          <div className="absolute top-5 -right-6 flex gap-1">
+          <div className="absolute top-6 -right-7 flex gap-1">
             {/* Right Arm */}
             <motion.div
               animate={{
-                rotate: [0, -30, 10, 0],
+                rotate: [0, -35, 15, 0],
               }}
               transition={{
                 duration: 2,
@@ -165,75 +225,90 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
               }}
               className="flex flex-col items-center"
             >
-              <div className="w-2 h-8 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full shadow-md" />
+              <div 
+                className="w-2.5 h-9 bg-gradient-to-b from-indigo-400 to-purple-600 rounded-full shadow-lg"
+                style={{ boxShadow: "0 4px 15px rgba(139, 92, 246, 0.3)" }}
+              />
               <motion.div
                 animate={{
-                  rotate: [0, 20, -20, 0],
+                  rotate: [0, 25, -25, 0],
+                  scale: [1, 1.1, 1],
                 }}
                 transition={{
                   duration: 1.5,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="w-2.5 h-2.5 bg-blue-500 rounded-full"
+                className="w-3 h-3 bg-purple-400 rounded-full"
+                style={{ boxShadow: "0 0 15px rgba(139, 92, 246, 0.8)" }}
               />
             </motion.div>
           </div>
 
-          {/* Legs */}
-          <div className="absolute top-[3.5rem] flex gap-2">
-            {/* Left Leg */}
-            <motion.div
-              animate={{
-                y: [0, -3, 0],
-                rotate: [0, -5, 0],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="flex flex-col items-center"
-            >
-              <div className="w-3 h-8 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full shadow-md" />
-              <motion.div
-                animate={{
-                  rotate: [0, 10, -5, 0],
-                }}
-                transition={{
-                  duration: 1.2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="w-4 h-3 bg-blue-700 rounded-b-lg shadow-md"
+                     {/* Advanced Legs */}
+           <div className="absolute top-[3rem] flex gap-2">
+             {/* Left Leg */}
+             <motion.div
+               animate={{
+                 y: [0, -2, 0],
+                 rotate: [0, -5, 0],
+               }}
+               transition={{
+                 duration: 1.5,
+                 repeat: Infinity,
+                 ease: "easeInOut",
+               }}
+               className="flex flex-col items-center"
+             >
+               <div 
+                 className="w-3 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full shadow-lg"
+                style={{ boxShadow: "0 4px 20px rgba(59, 130, 246, 0.4)" }}
               />
-            </motion.div>
-
-            {/* Right Leg */}
-            <motion.div
-              animate={{
-                y: [0, -3, 0],
-                rotate: [0, 5, 0],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 0.5,
-              }}
-              className="flex flex-col items-center"
-            >
-              <div className="w-3 h-8 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full shadow-md" />
               <motion.div
                 animate={{
-                  rotate: [0, -10, 5, 0],
+                  rotate: [0, 12, -8, 0],
+                  scale: [1, 1.05, 1],
                 }}
                 transition={{
                   duration: 1.2,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="w-4 h-3 bg-blue-700 rounded-b-lg shadow-md"
+                                 className="w-4 h-3 bg-gradient-to-br from-indigo-700 to-purple-800 rounded-b-xl shadow-xl"
+                 style={{ boxShadow: "0 4px 15px rgba(79, 70, 229, 0.5)" }}
+               />
+             </motion.div>
+
+             {/* Right Leg */}
+             <motion.div
+               animate={{
+                 y: [0, -2, 0],
+                 rotate: [0, 5, 0],
+               }}
+               transition={{
+                 duration: 1.5,
+                 repeat: Infinity,
+                 ease: "easeInOut",
+                 delay: 0.5,
+               }}
+               className="flex flex-col items-center"
+             >
+               <div 
+                 className="w-3 h-8 bg-gradient-to-b from-purple-500 to-indigo-600 rounded-full shadow-lg"
+                 style={{ boxShadow: "0 4px 20px rgba(147, 51, 234, 0.4)" }}
+               />
+               <motion.div
+                 animate={{
+                   rotate: [0, -8, 5, 0],
+                   scale: [1, 1.05, 1],
+                 }}
+                 transition={{
+                   duration: 1.2,
+                   repeat: Infinity,
+                   ease: "easeInOut",
+                 }}
+                 className="w-4 h-3 bg-gradient-to-br from-purple-700 to-indigo-800 rounded-b-xl shadow-xl"
+                style={{ boxShadow: "0 4px 15px rgba(124, 58, 237, 0.5)" }}
               />
             </motion.div>
           </div>
@@ -281,44 +356,69 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
           </>
         )}
 
-        {/* Energy Waves */}
+        {/* Advanced Energy Field */}
         {isLoading && (
           <>
             <motion.div
-              animate={{ scale: [1, 2.5], opacity: [0.3, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity }}
-              className="absolute inset-0 border-2 border-blue-400 rounded-full blur-sm"
+              animate={{ scale: [1, 3], opacity: [0.4, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="absolute inset-0 rounded-full"
+              style={{
+                border: "2px solid rgba(34, 211, 238, 0.6)",
+                filter: "blur(3px)",
+                boxShadow: "0 0 30px rgba(34, 211, 238, 0.4)",
+              }}
             />
             <motion.div
-              animate={{ scale: [1, 2], opacity: [0.2, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity, delay: 0.5 }}
-              className="absolute inset-0 border-2 border-purple-400 rounded-full blur-sm"
+              animate={{ scale: [1, 2.5], opacity: [0.3, 0] }}
+              transition={{ duration: 3, repeat: Infinity, delay: 0.7 }}
+              className="absolute inset-0 rounded-full"
+              style={{
+                border: "2px solid rgba(147, 51, 234, 0.5)",
+                filter: "blur(2px)",
+                boxShadow: "0 0 25px rgba(147, 51, 234, 0.3)",
+              }}
+            />
+            <motion.div
+              animate={{ scale: [1, 2], opacity: [0.5, 0] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 1.3 }}
+              className="absolute inset-0 rounded-full"
+              style={{
+                border: "2px solid rgba(59, 130, 246, 0.7)",
+                filter: "blur(1px)",
+                boxShadow: "0 0 20px rgba(59, 130, 246, 0.5)",
+              }}
             />
           </>
         )}
 
-        {/* Sparkles */}
+        {/* Holographic Particles */}
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-4 -right-4 w-6 h-6"
+          transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-6 -right-6 w-8 h-8"
         >
-          {[...Array(6)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <motion.div
               key={i}
               animate={{
                 opacity: [0, 1, 0],
-                scale: [0.5, 1.2, 0.5],
+                scale: [0.3, 1.5, 0.3],
+                boxShadow: [
+                  "0 0 10px rgba(34, 211, 238, 0.5)",
+                  "0 0 30px rgba(147, 51, 234, 1)",
+                  "0 0 10px rgba(34, 211, 238, 0.5)",
+                ],
               }}
               transition={{
                 duration: 2,
                 repeat: Infinity,
-                delay: i * 0.3,
+                delay: i * 0.25,
               }}
-              className="absolute top-1/2 left-1/2 w-1 h-1 bg-yellow-400 rounded-full"
+              className="absolute top-1/2 left-1/2 w-1.5 h-1.5 rounded-full bg-gradient-to-br from-cyan-300 to-purple-400"
               style={{
-                transformOrigin: '0 1.5rem',
-                transform: `rotate(${i * 60}deg) translateY(-1.5rem)`,
+                transformOrigin: '0 2rem',
+                transform: `rotate(${i * 45}deg) translateY(-2rem)`,
               }}
             />
           ))}
