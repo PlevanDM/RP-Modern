@@ -199,17 +199,6 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
     }
   };
 
-  const handleEditOrder = () => {
-    if (selectedOrder) {
-      setEditForm({
-        title: selectedOrder.title,
-        description: selectedOrder.description,
-        urgency: selectedOrder.urgency || 'medium'
-      });
-      setIsEditing(true);
-    }
-  };
-
   const statuses = [
     { value: 'all', label: 'Усі замовлення' },
     { value: 'open', label: 'Відкрито' },
