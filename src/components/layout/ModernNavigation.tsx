@@ -198,68 +198,24 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
             whileHover={{ scale: 1.15 }}
             transition={{ type: "spring", stiffness: 200, damping: 10 }}
           >
-            {/* Мощный вращающийся градиент внешний */}
+            {/* Тонке свічення без синього */}
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 bg-gradient-to-r from-blue-400/30 via-purple-400/30 to-blue-400/30 rounded-lg blur-md"
-            />
-            
-            {/* Пульсирующее свечение */}
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-lg blur-lg"
+              className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-lg"
             />
 
-            {/* Внутреннее контрвращение */}
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-1 bg-gradient-to-r from-purple-400/20 to-blue-400/20 rounded-lg blur-sm"
-            />
-
-            {/* Центральная иконка с улучшенной анимацией */}
+            {/* Центральная иконка з простою анімацією */}
             <motion.div
               animate={{ 
-                y: [0, -2, 0],
-                scale: [1, 1.05, 1],
-                rotateZ: [0, 5, -5, 0]
+                y: [0, -1, 0],
+                scale: [1, 1.02, 1]
               }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="relative z-10 w-7 h-7 bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/50"
+              className="relative z-10 w-7 h-7 bg-primary rounded-lg flex items-center justify-center shadow-sm"
             >
-              <motion.div
-                animate={{ rotateZ: [0, -30, 30, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Wrench className="h-4 w-4 text-white drop-shadow-md" />
-              </motion.div>
+              <Wrench className="h-4 w-4 text-white" />
             </motion.div>
-
-            {/* Две орбитирующие частицы */}
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0"
-            >
-              <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-blue-400 rounded-full opacity-70 shadow-md shadow-blue-400/50" />
-            </motion.div>
-
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0"
-            >
-              <div className="absolute bottom-0.5 right-0.5 w-0.5 h-0.5 bg-purple-400 rounded-full opacity-60" />
-            </motion.div>
-
-            {/* Пульсирующий внешний край */}
-            <motion.div
-              animate={{ opacity: [0.3, 0.8, 0.3] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0 rounded-lg border-2 border-blue-400/50"
-            />
           </motion.div>
 
           <AnimatePresence mode="wait">
@@ -272,9 +228,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                 className="flex flex-col"
               >
                 <motion.span 
-                  className="text-lg font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent"
-                  animate={{ backgroundPosition: ["0%", "100%", "0%"] }}
-                  transition={{ duration: 8, repeat: Infinity }}
+                  className="text-lg font-bold text-foreground"
                 >
                   Repair HUB
                 </motion.span>
@@ -328,18 +282,11 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
             // Анимированная иконка для сворачиваемого состояния
             const AnimatedIcon = () => (
               <div className="relative w-8 h-8 flex items-center justify-center">
-                {/* Тонкий вращающийся градиент */}
+                    {/* Тонка анімація без синього */}
                 <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-md"
-                />
-                
-                {/* Лёгкая волна */}
-                <motion.div
-                  animate={{ scale: [1, 1.08, 1] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute inset-0 bg-gradient-to-r from-primary/15 to-purple-500/15 rounded-full"
+                  animate={{ opacity: [0.3, 0.6, 0.3] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-full"
                 />
 
                 {/* Центральная иконка */}
@@ -351,13 +298,13 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                   <Icon className="h-5 w-5 text-muted-foreground" />
                 </motion.div>
 
-                {/* Одна маленькая орбитирующая частица */}
+                {/* Легка анімація частиці */}
                 <motion.div
                   animate={{ rotate: -360 }}
                   transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
                   className="absolute inset-0"
                 >
-                  <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-0.5 h-0.5 bg-blue-400 rounded-full opacity-50" />
+                  <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-0.5 h-0.5 bg-gray-400 rounded-full opacity-30" />
                 </motion.div>
               </div>
             );
@@ -370,9 +317,9 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                     setIsMobileMenuOpen(false);
                 }}
                 className={cn(
-                  "group relative flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium transition-all w-full text-left",
+                  "group relative flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-all w-full text-left",
                   isActive
-                    ? "bg-primary text-primary-foreground shadow-md font-semibold ring-1 ring-primary/50"
+                    ? "bg-primary text-primary-foreground shadow-sm font-semibold"
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                   collapsed && "justify-center px-1 py-2"
                 )}
