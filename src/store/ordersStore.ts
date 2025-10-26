@@ -136,11 +136,43 @@ export const useOrdersStore = create<OrdersState>()(
         useUIStore.getState().showNotification('Proposal rejected!');
       },
       updateOrderStatus: (orderId, status) => {
-        set((state) => ({
-          orders: state.orders.map((o) =>
-            o.id === orderId ? { ...o, status } : o
-          ),
-        }));
+        const currentUser = useAuthStore.getState().currentUser;
+        const order = get().orders.find((o) => o.id === orderId);
+
+        if (!order || !currentUser) return;
+
+        const allowedTransitions: Record<Order['status'], Order['status'][]> = {
+          open: ['proposed', 'cancelled', 'deleted'],
+          proposed: ['accepted', 'cancelled', 'deleted'],
+          accepted: ['in_progress', 'cancelled'],
+          in_progress: ['completed', 'cancelled'],
+          completed: [],
+          cancelled: [],
+          deleted: ['open'],
+          searching: ['proposed', 'cancelled'],
+          active_search: ['proposed', 'cancelled'],
+        };
+
+        const hasPermission =
+          currentUser.role === 'admin' ||
+          (currentUser.role === 'client' && order.clientId === currentUser.id) ||
+          (currentUser.role === 'master' && order.assignedMasterId === currentUser.id);
+
+        if (!hasPermission) {
+          useUIStore.getState().showNotification('You do not have permission to update this order.', 'error');
+          return;
+        }
+
+        if (allowedTransitions[order.status].includes(status)) {
+          set((state) => ({
+            orders: state.orders.map((o) =>
+              o.id === orderId ? { ...o, status } : o
+            ),
+          }));
+          useUIStore.getState().showNotification('Order status updated successfully!');
+        } else {
+          useUIStore.getState().showNotification(`Cannot change status from ${order.status} to ${status}.`, 'error');
+        }
       },
       updatePayment: (orderId, amount) => {
         get().updateOrderStatus(orderId, 'paid');

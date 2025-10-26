@@ -176,7 +176,21 @@ function App() {
 
             {activeItem === 'users' && currentUser?.role === 'admin' && <ModernUsersPanel />}
 
-            {activeItem === 'orders' && currentUser?.role === 'admin' && <ModernOrdersPanel />}
+            {activeItem === 'orders' && currentUser?.role === 'admin' && (
+              <Orders
+                currentUser={currentUser}
+                orders={orders}
+                onSendToMaster={sendToMaster}
+                onCreateOrder={createOrder}
+                onDeleteOrder={deleteOrder}
+                onRestoreOrder={restoreOrder}
+                onToggleActiveSearch={toggleActiveSearch}
+                onUpdateOrderStatus={updateOrderStatus}
+                masters={mockUsers}
+                onEditOrder={editOrder}
+                onCreateProposal={() => {}}
+              />
+            )}
 
             {activeItem === 'finance' && currentUser?.role === 'admin' && <ModernFinancialPanel />}
 
