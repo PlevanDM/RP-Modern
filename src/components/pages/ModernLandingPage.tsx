@@ -22,11 +22,12 @@ const ModernLandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
   const handleCreateOrder = () => {
     // Quick login as client
     if (onLogin) {
-      onLogin('1'); // Client ID
+      onLogin('client1'); // Client ID
     }
   };
 
   const handleQuickLogin = (userId: string) => {
+    console.log('Quick login with userId:', userId);
     if (onLogin) {
       onLogin(userId);
     }
@@ -39,14 +40,14 @@ const ModernLandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
         {bot_id: 'YOUR_BOT_ID', request_access: true},
         (data: any) => {
           if (onLogin) {
-            onLogin('1'); // Login as client with Telegram data
+            onLogin('client1'); // Login as client with Telegram data
           }
         }
       );
     } else {
       // Fallback: direct login
       if (onLogin) {
-        onLogin('1');
+        onLogin('client1');
       }
     }
   };
@@ -54,7 +55,7 @@ const ModernLandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
   const handleGoogleLogin = () => {
     // Google OAuth simulation
     if (onLogin) {
-      onLogin('1');
+      onLogin('client1');
     }
   };
 
@@ -140,15 +141,15 @@ const ModernLandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
             <div className="mt-6">
               <p className="text-sm text-muted-foreground mb-2 text-center">Тестові акаунти:</p>
               <div className="flex gap-2 justify-center">
-                <Button variant="outline" size="sm" onClick={() => handleQuickLogin('1')}>
+                <Button variant="outline" size="sm" onClick={() => handleQuickLogin('client1')}>
                   <User className="w-4 h-4 mr-2" />
                   Клієнт
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => handleQuickLogin('2')}>
+                <Button variant="outline" size="sm" onClick={() => handleQuickLogin('master1')}>
                   <Wrench className="w-4 h-4 mr-2" />
                   Майстер
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => handleQuickLogin('3')}>
+                <Button variant="outline" size="sm" onClick={() => handleQuickLogin('admin1')}>
                   <Shield className="w-4 h-4 mr-2" />
                   Адмін
                 </Button>
