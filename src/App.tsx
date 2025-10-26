@@ -264,7 +264,7 @@ function App() {
               <Portfolio portfolio={mockPortfolio} currentUser={currentUser} />
           )}
 
-          {activeItem === 'proposals' && (
+            {activeItem === 'proposals' && (
             <Proposals
               currentUser={currentUser}
                 proposals={proposals}
@@ -274,7 +274,6 @@ function App() {
                 onUpdateProposal={updateProposal}
               onAcceptProposal={acceptProposal}
               onRejectProposal={rejectProposal}
-                onShowToast={() => {}}
             />
           )}
 
@@ -283,10 +282,6 @@ function App() {
               <MastersList 
                   masters={mockUsers.filter((u) => u.role === 'master')}
                 currentUserCity={currentUser?.city}
-                  onSelectMaster={() => {}}
-                  onContact={() => {}}
-                  onToggleFavorite={() => {}}
-                  favoriteMasters={[]}
               />
             </div>
           )}
@@ -317,14 +312,12 @@ function App() {
             <Profile
                 currentUser={currentUser}
                 orders={orders}
-                onUpdateProfile={() => {}}
               />
             )}
             {activeItem === 'settings' && <Settings currentUser={currentUser} onLogout={logout} />}
             </div>
         </div>
       </div>
-      <NotificationCenter />
     </div>
   );
 }
