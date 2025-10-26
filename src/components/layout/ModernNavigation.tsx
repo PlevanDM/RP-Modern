@@ -38,6 +38,7 @@ import {
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import { JarvisChat } from "../features/ai/JarvisChat";
+import LoadingRobot from "./LoadingRobot";
 
 interface SidebarContextProps {
   open: boolean;
@@ -449,6 +450,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
             <UserProfile collapsed={isCollapsed} />
             <div className="mt-auto">
               <Logo collapsed={isCollapsed} />
+              <LoadingRobot collapsed={isCollapsed} isLoading={true} />
             </div>
         </motion.div>
     </>
