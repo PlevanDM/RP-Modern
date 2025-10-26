@@ -25,6 +25,7 @@ export const MasterCard: React.FC<MasterCardProps> = ({
 
   return (
     <div
+      data-testid="master-card"
       className={`group relative overflow-hidden rounded-xl bg-white border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
