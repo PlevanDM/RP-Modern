@@ -16,21 +16,18 @@ const notifications: NotificationItem[] = [
 ];
 
 const AnimatedMarquee: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [nextIndex, setNextIndex] = useState(1);
+      const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNextIndex((prev) => (prev + 1) % notifications.length);
-      
-      // Delay the actual switch to allow exit animation
-      setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % notifications.length);
-      }, 500);
-    }, 4000);
+        useEffect(() => {
+        const interval = setInterval(() => {
+          // Delay the actual switch to allow exit animation
+          setTimeout(() => {
+            setCurrentIndex((prev) => (prev + 1) % notifications.length);
+          }, 500);
+        }, 4000);
 
-    return () => clearInterval(interval);
-  }, []);
+        return () => clearInterval(interval);
+      }, []);
 
   const currentNotification = notifications[currentIndex];
 

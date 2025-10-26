@@ -532,15 +532,14 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
                    ✨ {newOrdersCount} нових замовлень!
                  </motion.span>
              ) : (
-               <motion.span
-                 key="loading"
-                 initial={{ opacity: 0 }}
-                 animate={{ opacity: 1 }}
-                 exit={{ opacity: 0 }}
-                 animate={{ opacity: [0.6, 1, 0.6] }}
-                 transition={{ duration: 2, repeat: Infinity }}
-                 className="text-xs font-medium text-gray-600"
-               >
+                                 <motion.span
+                    key="loading"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: [0.6, 1, 0.6] }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="text-xs font-medium text-gray-600"
+                  >
                  {isLoading ? 'Завантаження замовлень...' : 'Готово'}
                </motion.span>
              )}

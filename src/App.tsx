@@ -8,7 +8,7 @@ import { DeviceCatalog } from './components/pages/DeviceCatalog';
 import { AdminDashboard } from './components/features/admin/AdminDashboard';
 import { ModernSettingsPanel } from './components/features/admin/ModernSettingsPanel';
 import { ModernUsersPanel } from './components/features/admin/ModernUsersPanel';
-import { ModernOrdersPanel } from './components/features/admin/ModernOrdersPanel';
+
 import { ModernFinancialPanel } from './components/features/admin/ModernFinancialPanel';
 import { Orders } from './components/pages/Orders';
 import { Portfolio } from './components/pages/Portfolio';

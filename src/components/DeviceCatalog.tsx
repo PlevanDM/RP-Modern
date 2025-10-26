@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { DeviceModel, User } from '../types/models';
 import { DeviceGallery } from './DeviceGallery';
 import { useIFixitGuides } from '../hooks/useApi';
-import { CreateOrderModal } from './CreateOrderModal';
+
 import { AnimatedCreateOrderModal } from './AnimatedCreateOrderModal';
 import { Order } from '../types/models';
 

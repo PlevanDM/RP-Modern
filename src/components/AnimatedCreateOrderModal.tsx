@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Trash2, Upload, CheckCircle, AlertCircle, X } from 'lucide-react';
+import { Camera, Upload, CheckCircle, AlertCircle, X } from 'lucide-react';
 import { Order, User } from '../types/models';
 import { Modal } from './ui/modal';
 import { Button } from './ui/button';

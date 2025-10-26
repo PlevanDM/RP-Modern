@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu, X, Home, Search, Package, MessageCircle, User, ChevronRight, Bell, MapPin, Star } from 'lucide-react';
+import { Menu, X, Home, Search, MessageCircle, User, ChevronRight, Bell, Star } from 'lucide-react';
 
 export function MobileOptimizedDashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Cloud, Droplets, Wind, TrendingUp } from 'lucide-react';
+import { Cloud, TrendingUp } from 'lucide-react';
 
 interface Weather {
   temp: number;
@@ -18,13 +18,13 @@ interface Rates {
 export function HeaderWidgets() {
   const [time, setTime] = useState<string>('');
   const [date, setDate] = useState<string>('');
-  const [weather, setWeather] = useState<Weather>({
+  const [weather] = useState<Weather>({
     temp: 15,
     condition: 'Хмарно',
     humidity: 65,
     windSpeed: 12,
   });
-  const [rates, setRates] = useState<Rates>({
+  const [rates] = useState<Rates>({
     usd: 41.5,
     usdt: 41.45,
     btc: 67500,
