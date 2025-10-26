@@ -26,8 +26,13 @@ export default defineConfig({
         // Разделение кода для лучшей производительности
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          ui: ['lucide-react']
-        }
+          ui: ['lucide-react'],
+          stores: ['zustand', 'zustand/middleware'],
+        },
+        // Hash для cache busting
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
       }
     },
     // Оптимизация изображений

@@ -20,8 +20,8 @@ RUN npm run build
 RUN apk add --no-cache nginx && \
     mkdir -p /etc/nginx/conf.d
 
-# Создаем nginx конфиг
-RUN echo 'server { listen 3000; root /app/dist; index index.html; location / { try_files $uri $uri/ /index.html; } location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ { expires 1y; add_header Cache-Control "public, immutable"; } }' > /etc/nginx/http.d/default.conf
+# Копируем nginx конфиг
+COPY nginx.conf /etc/nginx/http.d/default.conf
 
 # Открываем порт 3000
 EXPOSE 3000

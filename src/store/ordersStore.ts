@@ -70,7 +70,12 @@ export const useOrdersStore = create<OrdersState>()(
         }));
       },
       sendToMaster: (orderId, masterId) => {
-        console.log(`Order ${orderId} sent to master ${masterId}`);
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId ? { ...o, assignedMasterId: masterId, status: 'proposed' } : o
+          ),
+        }));
+        useUIStore.getState().showNotification('Order sent to master successfully!');
       },
       submitProposal: (orderId, price, description) => {
         const currentUser = useAuthStore.getState().currentUser;

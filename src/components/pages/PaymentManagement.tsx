@@ -119,8 +119,6 @@ export function PaymentManagement({
 
   const handleTopUpBalance = () => {
     if (topUpAmount && parseFloat(topUpAmount) > 0) {
-      // Mock top up
-      console.log(`Top up balance by ${topUpAmount} UAH`);
       setTopUpAmount('');
       setShowBalanceModal(false);
     }
@@ -161,24 +159,6 @@ export function PaymentManagement({
     order.clientId === currentUser.id
   );
 
-  // Debug info
-  console.log('Current user ID:', currentUser.id);
-  console.log('All orders:', orders.length);
-  console.log('Orders with payments:', ordersWithPayments.length);
-  console.log('Orders for current user:', orders.filter(order => order.clientId === currentUser.id).length);
-  console.log('All orders details:', orders.map(order => ({
-    id: order.id,
-    clientId: order.clientId,
-    paymentAmount: order.paymentAmount,
-    paymentStatus: order.paymentStatus,
-    hasPaymentAmount: !!order.paymentAmount,
-    paymentAmountType: typeof order.paymentAmount
-  })));
-  
-  // Check if orders are loaded correctly
-  if (orders.length === 0) {
-    console.log('No orders loaded!');
-  }
 
   return (
     <div className="space-y-6">
