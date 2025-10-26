@@ -13,18 +13,30 @@ RUN npm ci
 # Копируем исходный код
 COPY . .
 
-# Собираем проект
-RUN npm run build
+# Собираем проект (только production зависимости)
+RUN npm ci --only=production && \
+    npm run build && \
+    npm cache clean --force
 
-# Устанавливаем nginx для статики
-RUN apk add --no-cache nginx && \
+# Устанавливаем nginx для статики и wget для healthcheck
+RUN apk add --no-cache nginx wget && \
     mkdir -p /etc/nginx/conf.d
 
 # Копируем nginx конфиг
 COPY nginx.conf /etc/nginx/http.d/default.conf
 
-# Открываем порт 3000
-EXPOSE 3000
+# Создаем необходимые директории для nginx
+RUN mkdir -p /var/log/nginx && \
+    mkdir -p /var/cache/nginx && \
+    mkdir -p /etc/nginx/http.d && \
+    mkdir -p /run/nginx
+
+# Открываем порт 80
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
+  CMD wget --quiet --tries=1 --spider http://localhost:80 || exit 1
 
 # Запускаем nginx
 CMD ["nginx", "-g", "daemon off;"]

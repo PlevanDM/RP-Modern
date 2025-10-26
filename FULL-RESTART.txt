@@ -1,0 +1,22 @@
+╔═══════════════════════════════════════════════════════════════╗
+║         ПОВНИЙ ПЕРЕЗАПУСК СЕРВЕРА (VNC CONSOLE)               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+1. https://my.vultr.com → Servers → View Console (VNC)
+
+2. ВСТАВТЕ ЦІ КОМАНДИ (одним блоком):
+
+cd /root/repair-hub-pro && git pull origin eploy && docker compose down -v && docker compose build --no-cache && docker compose up -d && sleep 20 && docker compose ps && echo "=== DOCKER LOGS ===" && docker logs repair-hub-pro --tail=50
+
+3. Натисніть Enter і чекайте 3-5 хвилин
+
+4. Перевірте: http://repairhub.one
+
+═══════════════════════════════════════════════════════════════
+
+ЯКЩО ПОТРІБНО ПОВНЕ ЧИСТЕ ПОЧИСЛЕННЯ:
+
+cd /root/repair-hub-pro && git pull origin eploy && docker compose down -v --remove-orphans && docker system prune -a -f --volumes && docker compose build --no-cache && docker compose up -d && sleep 20 && docker compose ps && docker logs repair-hub-pro --tail=50
+
+═══════════════════════════════════════════════════════════════
+

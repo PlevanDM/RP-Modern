@@ -1,0 +1,32 @@
+╔═══════════════════════════════════════════════════════════════╗
+║         ВИПРАВЛЕННЯ ПОМИЛКИ GIT PULL                         ║
+╚═══════════════════════════════════════════════════════════════╝
+
+ПРОБЛЕМА: Git відмовляється оновити файли, бо є локальні зміни
+
+═══════════════════════════════════════════════════════════════
+
+РІШЕННЯ: Виконайте ці команди в VNC Console
+
+КОМАНДА 1 (скинути всі локальні зміни):
+git fetch origin && git reset --hard origin/eploy && git clean -fd
+
+КОМАНДА 2 (після КОМАНДИ 1):
+docker compose down -v && docker compose build --no-cache && docker compose up -d && sleep 20 && docker compose ps && docker logs repair-hub-pro --tail=50
+
+═══════════════════════════════════════════════════════════════
+
+АБО ОДНА КОМАНДА (все разом):
+
+cd /root/repair-hub-pro && git fetch origin && git reset --hard origin/eploy && git clean -fd && docker compose down -v && docker compose build --no-cache && docker compose up -d && sleep 20 && docker compose ps && docker logs repair-hub-pro --tail=50
+
+═══════════════════════════════════════════════════════════════
+
+ЩО ЦЕ РОБИТЬ:
+1. git fetch origin - завантажує останні зміни
+2. git reset --hard - перезаписує всі локальні файли
+3. git clean -fd - видаляє невідстежені файли
+4. docker compose... - перезапускає контейнери
+
+═══════════════════════════════════════════════════════════════
+
