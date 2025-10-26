@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { cn } from '../../lib/utils';
 
 interface SwitchProps {
@@ -7,11 +7,11 @@ interface SwitchProps {
   disabled?: boolean;
 }
 
-export const Switch: React.FC<SwitchProps> = ({ 
+export const Switch = ({ 
   checked = false, 
   onCheckedChange,
   disabled = false 
-}) => {
+}: SwitchProps) => {
   const [internalChecked, setInternalChecked] = useState(checked);
   
   const isChecked = checked !== undefined ? checked : internalChecked;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
@@ -7,7 +7,7 @@ import { Switch } from '../../ui/switch';
 import { useSettingsStore } from '../../../store/settingsStore';
 import { Settings, Save, RotateCcw, CheckCircle, AlertCircle } from 'lucide-react';
 
-export const SettingsConfiguration: React.FC = () => {
+export const SettingsConfiguration = () => {
   const { settings, updateSettings, resetSettings } = useSettingsStore();
   const [activeTab, setActiveTab] = useState('api');
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
