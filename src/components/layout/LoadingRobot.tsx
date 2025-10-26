@@ -72,10 +72,17 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
               ease: "easeInOut",
             }}
                           className="relative w-16 h-16 bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 rounded-2xl shadow-2xl backdrop-blur-sm"
-            style={{
-              background: "linear-gradient(135deg, #22d3ee 0%, #3b82f6 50%, #4f46e5 100%)",
-              boxShadow: "0 20px 60px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
-            }}
+                                                   style={{
+                background: `
+                  radial-gradient(circle at 30% 30%, rgba(34, 211, 238, 0.8) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 70%, rgba(147, 51, 234, 0.6) 0%, transparent 50%),
+                  linear-gradient(135deg, #22d3ee 0%, #3b82f6 50%, #4f46e5 100%)
+                `,
+                boxShadow: "0 20px 60px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3)",
+                backgroundSize: '200% 200%, 200% 200%, 100% 100%',
+                backgroundPosition: '0% 0%, 100% 100%, center',
+                animation: hasNewOrders ? 'shimmer 0.8s ease-in-out' : 'none',
+              }}
           >
             {/* Glassmorphism overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-2xl" />
@@ -186,10 +193,16 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
               delay: 0.1,
             }}
             className="relative w-14 h-12 bg-gradient-to-br from-indigo-500 via-blue-600 to-purple-700 rounded-2xl shadow-2xl"
-            style={{
-              background: "linear-gradient(135deg, #6366f1 0%, #2563eb 50%, #7c3aed 100%)",
-              boxShadow: "0 10px 40px rgba(99, 102, 241, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
-            }}
+                                                   style={{
+                background: `
+                  repeating-linear-gradient(45deg, rgba(99, 102, 241, 0.2) 0px, rgba(99, 102, 241, 0.2) 2px, transparent 2px, transparent 8px),
+                  radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
+                  repeating-linear-gradient(90deg, transparent 0px, transparent 4px, rgba(147, 51, 234, 0.1) 4px, rgba(147, 51, 234, 0.1) 6px),
+                  linear-gradient(135deg, #6366f1 0%, #2563eb 50%, #7c3aed 100%)
+                `,
+                boxShadow: "0 10px 40px rgba(99, 102, 241, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
+                backgroundSize: '16px 16px, 100% 100%, 12px 12px, 100% 100%',
+              }}
           >
             {/* Glass panel with holographic effect */}
             <div className="absolute inset-1 bg-gradient-to-br from-blue-400/10 to-purple-500/10 rounded-xl border border-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -233,8 +246,11 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
               className="flex flex-col items-center"
             >
               <div 
-                className="w-2.5 h-9 bg-gradient-to-b from-cyan-400 to-blue-600 rounded-full shadow-lg"
-                style={{ boxShadow: "0 4px 15px rgba(34, 211, 238, 0.3)" }}
+                className="w-2.5 h-9 bg-gradient-to-b from-cyan-400 to-blue-600 rounded-full shadow-lg relative"
+                style={{ 
+                  boxShadow: "0 4px 15px rgba(34, 211, 238, 0.3)",
+                  background: 'repeating-linear-gradient(0deg, rgba(34, 211, 238, 0.3), transparent 1px, transparent 3px, rgba(34, 211, 238, 0.3) 3px, rgba(34, 211, 238, 0.3) 4px)'
+                }}
               />
               <motion.div
                 animate={{
@@ -268,7 +284,10 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
             >
               <div 
                 className="w-2.5 h-9 bg-gradient-to-b from-indigo-400 to-purple-600 rounded-full shadow-lg"
-                style={{ boxShadow: "0 4px 15px rgba(139, 92, 246, 0.3)" }}
+                style={{ 
+                  boxShadow: "0 4px 15px rgba(139, 92, 246, 0.3)",
+                  background: 'repeating-linear-gradient(0deg, rgba(147, 51, 234, 0.3), transparent 1px, transparent 3px, rgba(147, 51, 234, 0.3) 3px, rgba(147, 51, 234, 0.3) 4px)'
+                }}
               />
               <motion.div
                 animate={{
@@ -301,10 +320,13 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
                }}
                className="flex flex-col items-center"
              >
-               <div 
-                 className="w-3 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full shadow-lg"
-                style={{ boxShadow: "0 4px 20px rgba(59, 130, 246, 0.4)" }}
-              />
+                               <div 
+                  className="w-3 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full shadow-lg"
+                 style={{ 
+                   boxShadow: "0 4px 20px rgba(59, 130, 246, 0.4)",
+                   background: 'repeating-linear-gradient(90deg, rgba(59, 130, 246, 0.4), transparent 1px, transparent 3px, rgba(59, 130, 246, 0.4) 3px, rgba(59, 130, 246, 0.4) 4px)'
+                 }}
+               />
               <motion.div
                 animate={{
                   rotate: [0, 12, -8, 0],
@@ -334,10 +356,13 @@ const LoadingRobot: React.FC<LoadingRobotProps> = ({ collapsed, isLoading = true
                }}
                className="flex flex-col items-center"
              >
-               <div 
-                 className="w-3 h-8 bg-gradient-to-b from-purple-500 to-indigo-600 rounded-full shadow-lg"
-                 style={{ boxShadow: "0 4px 20px rgba(147, 51, 234, 0.4)" }}
-               />
+                               <div 
+                  className="w-3 h-8 bg-gradient-to-b from-purple-500 to-indigo-600 rounded-full shadow-lg"
+                  style={{ 
+                    boxShadow: "0 4px 20px rgba(147, 51, 234, 0.4)",
+                    background: 'repeating-linear-gradient(90deg, rgba(147, 51, 234, 0.4), transparent 1px, transparent 3px, rgba(147, 51, 234, 0.4) 3px, rgba(147, 51, 234, 0.4) 4px)'
+                  }}
+                />
                <motion.div
                  animate={{
                    rotate: [0, -8, 5, 0],

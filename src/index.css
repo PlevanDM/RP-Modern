@@ -21,6 +21,18 @@
   animation: marquee 20s linear infinite;
 }
 
+@keyframes shimmer {
+  0% {
+    background-position: 0% 0%, 100% 100%;
+  }
+  50% {
+    background-position: 100% 100%, 0% 0%;
+  }
+  100% {
+    background-position: 0% 0%, 100% 100%;
+  }
+}
+
 @layer utilities {
   .line-clamp-1 {
     overflow: hidden;
