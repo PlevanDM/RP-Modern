@@ -11,6 +11,9 @@ import { CookieConsent } from './components/CookieConsent'
 // Initialize error handling
 import './utils/errorHandler'
 
+// Initialize cache management
+import './utils/browserCache'
+
 // ============================================================================
 // QUERY CLIENT CONFIGURATION
 // ============================================================================
