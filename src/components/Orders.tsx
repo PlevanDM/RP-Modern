@@ -52,14 +52,10 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
 
   const filteredOrders = useMemo(() => {
     // Фільтруємо заказы: если клиент, то только его заказы; если мастер, то все
-    let result = orders.filter(order => {
-      // Если пользователь клиент, показываем только его заказы
-      if (currentUser?.role === 'client') {
-        return order?.clientId === currentUser?.id;
-      }
-      // Если мастер, показываем все заказы
-      return true;
-    });
+    let result = orders;
+    if (currentUser?.role === 'client') {
+      result = orders.filter(order => order?.clientId === currentUser?.id);
+    }
 
     // Фільтр за пошуковим термом
     result = result.filter(order =>
@@ -308,19 +304,13 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                       </p>
                     )}
                   </div>
-                  <select 
-                    value={order.status}
-                    onChange={(e) => handleStatusChange(order, e.target.value)}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ml-4 border-0 outline-none cursor-pointer ${getStatusColor(order.status)}`}
-                    onClick={(e) => e.stopPropagation()}
+                  <div
+                    className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ml-4 ${getStatusColor(
+                      order.status
+                    )}`}
                   >
-                    <option value="open">🟡 Відкрито</option>
-                    <option value="active_search">🔍 Активний пошук майстра</option>
-                    <option value="accepted">✅ Прийнято</option>
-                    <option value="in_progress">🔧 В роботі</option>
-                    <option value="completed">✔️ Завершено</option>
-                    <option value="deleted">🗑️ Видалено</option>
-                  </select>
+                    {getStatusText(order.status)}
+                  </div>
                 </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -542,6 +532,24 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                         <MessageIcon sx={{ fontSize: 20 }} /> Чат з майстром
                       </button>
                     )}
+                  </>
+                )}
+
+                {/* ADMIN ACTIONS */}
+                {currentUser?.role === 'admin' && !isEditing && (
+                  <>
+                    <button
+                      onClick={handleEditOrder}
+                      className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center justify-center gap-2"
+                    >
+                      <EditIcon sx={{ fontSize: 20 }} /> Редагувати
+                    </button>
+                    <button
+                      onClick={() => handleDeleteOrder(selectedOrder)}
+                      className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors flex items-center justify-center gap-2"
+                    >
+                      <CloseIcon sx={{ fontSize: 20 }} /> Видалити
+                    </button>
                   </>
                 )}
 
