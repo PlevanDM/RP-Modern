@@ -25,6 +25,8 @@ import { Progress } from '../../../ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { Input } from '../../../ui/input';
+import AnimatedCreateOrderModal from '../../../AnimatedCreateOrderModal';
+import { User } from '../../../../types/models';
 
 interface Order {
   id: string;
@@ -58,140 +60,66 @@ interface StatCard {
   trend: 'up' | 'down';
 }
 
-const ModernClientDashboard: React.FC = () => {
+interface ModernClientDashboardProps {
+  currentUser: User;
+  orders: Order[];
+  notifications: Notification[];
+  setActiveItem: (item: string) => void;
+  createOrder: (order: Omit<Order, 'id'>) => void;
+  setSelectedOrder: (order: Order | null) => void;
+}
+
+const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
+  currentUser,
+  orders: clientOrders,
+  notifications,
+  setActiveItem,
+  createOrder,
+  setSelectedOrder,
+}) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isCreateOrderModalOpen, setCreateOrderModalOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const stats: StatCard[] = [
     {
       title: 'Всього замовлень',
-      value: '24',
+      value: clientOrders.length.toString(),
       change: '+12%',
       icon: <Package className="w-5 h-5" />,
-      trend: 'up'
+      trend: 'up',
     },
     {
       title: 'В роботі',
-      value: '3',
+      value: clientOrders.filter((o) => o.status === 'in-progress').length.toString(),
       change: '+2',
       icon: <Clock className="w-5 h-5" />,
-      trend: 'up'
+      trend: 'up',
     },
     {
       title: 'Завершено',
-      value: '18',
+      value: clientOrders.filter((o) => o.status === 'completed').length.toString(),
       change: '+5',
       icon: <CheckCircle2 className="w-5 h-5" />,
-      trend: 'up'
+      trend: 'up',
     },
     {
       title: 'Витрачено',
-      value: '₴45,230',
+      value: `₴${clientOrders
+        .filter((o) => o.status === 'completed')
+        .reduce((acc, o) => acc + o.price, 0)
+        .toLocaleString()}`,
       change: '+18%',
       icon: <DollarSign className="w-5 h-5" />,
-      trend: 'up'
-    }
+      trend: 'up',
+    },
   ];
 
-  const orders: Order[] = [
-    {
-      id: '1',
-      title: 'Ремонт пральної машини',
-      status: 'in-progress',
-      progress: 65,
-      master: {
-        name: 'Іван Петренко',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Ivan',
-        rating: 4.8
-      },
-      date: '2024-01-15',
-      price: 3500,
-      category: 'Побутова техніка',
-      location: 'Київ, вул. Ленінградська 45'
-    },
-    {
-      id: '2',
-      title: 'Установка кондиціонера',
-      status: 'in-progress',
-      progress: 30,
-      master: {
-        name: 'Сергій Іванов',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sergey',
-        rating: 4.9
-      },
-      date: '2024-01-16',
-      price: 8500,
-      category: 'Кліматична техніка',
-      location: 'Київ, пр. Миру 12'
-    },
-    {
-      id: '3',
-      title: 'Ремонт холодильника',
-      status: 'pending',
-      progress: 0,
-      date: '2024-01-17',
-      price: 4200,
-      category: 'Побутова техніка',
-      location: 'Харків, вул. Сумська 8'
-    }
-  ];
-
-  const orderHistory: Order[] = [
-    {
-      id: '4',
-      title: 'Заміна розеток',
-      status: 'completed',
-      progress: 100,
-      master: {
-        name: 'Олексій Смірнов',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
-        rating: 4.7
-      },
-      date: '2024-01-10',
-      price: 2500,
-      category: 'Електрика',
-      location: 'Львів, вул. Арбату 22'
-    },
-    {
-      id: '5',
-      title: 'Чищення вентиляції',
-      status: 'completed',
-      progress: 100,
-      master: {
-        name: 'Дмитро Козлов',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dmitry',
-        rating: 4.6
-      },
-      date: '2024-01-05',
-      price: 3000,
-      category: 'Вентиляція',
-      location: 'Одеса, вул. Пушкіна 15'
-    }
-  ];
-
-  const notifications: Notification[] = [
-    {
-      id: '1',
-      type: 'success',
-      message: 'Майстер Іван Петренко розпочав роботу над замовленням "Ремонт пральної машини"',
-      time: '10 хв назад',
-      read: false
-    },
-    {
-      id: '2',
-      type: 'info',
-      message: 'Нова пропозиція від майстра для замовлення "Ремонт холодильника"',
-      time: '1 год назад',
-      read: false
-    },
-    {
-      id: '3',
-      type: 'success',
-      message: 'Замовлення "Заміна розеток" успішно завершено',
-      time: '2 дні назад',
-      read: true
-    }
-  ];
+  const orders = clientOrders
+    .filter((order) => order.status === 'in-progress' || order.status === 'pending')
+    .filter((order) => statusFilter === 'all' || order.status === statusFilter);
+  const orderHistory = clientOrders.filter((order) => order.status === 'completed');
 
   const getStatusColor = (status: Order['status']) => {
     switch (status) {
@@ -245,7 +173,7 @@ const ModernClientDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-2 md:p-4 flex flex-col items-center w-full">
+    <div data-testid="client-dashboard" className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-2 md:p-4 flex flex-col items-center w-full">
       <motion.div
         initial="hidden"
         animate="visible"
@@ -281,6 +209,15 @@ const ModernClientDashboard: React.FC = () => {
         </motion.div>
 
         {/* Quick Actions */}
+        {isCreateOrderModalOpen && (
+          <AnimatedCreateOrderModal
+            isOpen={isCreateOrderModalOpen}
+            onClose={() => setCreateOrderModalOpen(false)}
+            createOrder={createOrder}
+            currentUser={currentUser}
+          />
+        )}
+
         <motion.div variants={itemVariants}>
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
             <CardHeader>
@@ -292,7 +229,11 @@ const ModernClientDashboard: React.FC = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button className="w-full h-auto py-6 flex items-center justify-between group" size="lg">
+                  <Button
+                    className="w-full h-auto py-6 flex items-center justify-between group"
+                    size="lg"
+                    onClick={() => setCreateOrderModalOpen(true)}
+                  >
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-white/20 rounded-lg">
                         <Plus className="w-6 h-6" />
@@ -306,7 +247,12 @@ const ModernClientDashboard: React.FC = () => {
                   </Button>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button variant="outline" className="w-full h-auto py-6 flex items-center justify-between group" size="lg">
+                  <Button
+                    variant="outline"
+                    className="w-full h-auto py-6 flex items-center justify-between group"
+                    size="lg"
+                    onClick={() => setActiveItem('priceComparison')}
+                  >
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-primary/10 rounded-lg">
                         <Search className="w-6 h-6" />
@@ -335,10 +281,15 @@ const ModernClientDashboard: React.FC = () => {
                     <Clock className="w-5 h-5 text-primary" />
                     Поточні замовлення
                   </CardTitle>
-                  <Button variant="ghost" size="sm">
-                    <Filter className="w-4 h-4 mr-2" />
-                    Фільтр
-                  </Button>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="p-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="all">All</option>
+                    <option value="pending">Pending</option>
+                    <option value="in-progress">In Progress</option>
+                  </select>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -393,7 +344,14 @@ const ModernClientDashboard: React.FC = () => {
                         </span>
                         <span className="font-semibold text-foreground">₴{order.price.toLocaleString()}</span>
                       </div>
-                      <Button variant="ghost" size="sm">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedOrder(order);
+                          setActiveItem('myOrders');
+                        }}
+                      >
                         Деталі
                         <ChevronRight className="w-4 h-4 ml-1" />
                       </Button>
@@ -419,7 +377,11 @@ const ModernClientDashboard: React.FC = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     whileHover={{ scale: 1.01 }}
-                    className="p-4 border border-border rounded-lg bg-background/50 hover:shadow-md transition-all duration-300"
+                    className="p-4 border border-border rounded-lg bg-background/50 hover:shadow-md transition-all duration-300 cursor-pointer"
+                    onClick={() => {
+                      setSelectedOrder(order);
+                      setActiveItem('myOrders');
+                    }}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">

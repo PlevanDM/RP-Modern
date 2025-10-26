@@ -26,6 +26,7 @@ import { useOrdersStore } from './store/ordersStore';
 import { useNotificationsStore } from './store/notificationsStore';
 import { NotificationCenter } from './components/NotificationCenter';
 import { OnboardingWizard } from './components/OnboardingWizard';
+import { Order } from './types/models';
 import { ClientProfileStep } from './components/onboarding/ClientProfileStep';
 import { DeviceStep } from './components/onboarding/DeviceStep';
 import { OnboardingCompletionStep } from './components/onboarding/OnboardingCompletionStep';
@@ -58,6 +59,7 @@ function App() {
   } = useOrdersStore();
   const { notifications, readNotification, removeNotification } = useNotificationsStore();
   const [activeItem, setActiveItem] = useState('dashboard');
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   if (!currentUser) {
     return <ModernLandingPage onLogin={login} />;
@@ -153,16 +155,44 @@ function App() {
                 <ModernMasterDashboard
                 currentUser={currentUser}
                 stats={{
-                    activeOrders: orders.filter((o) => o.status === 'in_progress').length,
-                    completedOrders: orders.filter(
-                      (o) => o.status === 'completed' || o.status === 'paid'
-                    ).length,
+                  activeOrders: orders.filter((o) => o.status === 'in_progress').length,
+                  completedOrders: orders.filter(
+                    (o) => o.status === 'completed' || o.status === 'paid'
+                  ).length,
                   totalEarned: 125000,
                   rating: currentUser.rating || 4.9,
                 }}
+                orders={orders}
+                tasks={orders.map((o) => ({
+                  id: o.id,
+                  title: o.title,
+                  client: o.client,
+                  status: o.status,
+                  priority: o.urgency,
+                  deadline: o.deadline,
+                  progress: o.progress,
+                }))}
+                notifications={notifications}
+                revenueData={[
+                  { month: 'Jan', value: 85 },
+                  { month: 'Feb', value: 72 },
+                  { month: 'Mar', value: 90 },
+                  { month: 'Apr', value: 78 },
+                  { month: 'May', value: 95 },
+                  { month: 'Jun', value: 88 },
+                ]}
+                setActiveItem={setActiveItem}
+                setSelectedOrder={setSelectedOrder}
               />
             ) : currentUser.role === 'client' ? (
-                <ModernClientDashboard currentUser={currentUser} orders={clientOrders} />
+                <ModernClientDashboard
+                  currentUser={currentUser}
+                  orders={clientOrders}
+                  notifications={notifications}
+                  setActiveItem={setActiveItem}
+                  createOrder={createOrder}
+                  setSelectedOrder={setSelectedOrder}
+                />
             ) : currentUser.role === 'admin' ? (
                 <AdminDashboard />
               ) : (
@@ -189,6 +219,9 @@ function App() {
                 masters={mockUsers}
                 onEditOrder={editOrder}
                 onCreateProposal={() => {}}
+                acceptProposal={acceptProposal}
+                rejectProposal={rejectProposal}
+                setActiveItem={setActiveItem}
               />
             )}
 
@@ -199,7 +232,7 @@ function App() {
           {activeItem === 'myOrders' && (
             <Orders
               currentUser={currentUser}
-              orders={orders}
+              orders={selectedOrder ? [selectedOrder] : orders}
                 onSendToMaster={sendToMaster}
               onCreateOrder={createOrder}
               onDeleteOrder={deleteOrder}
@@ -209,6 +242,9 @@ function App() {
                 masters={mockUsers}
               onEditOrder={editOrder}
                 onCreateProposal={() => {}}
+                acceptProposal={acceptProposal}
+                rejectProposal={rejectProposal}
+                setActiveItem={setActiveItem}
             />
           )}
 

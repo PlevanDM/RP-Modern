@@ -12,6 +12,7 @@ import { CreateOrderModal } from '../CreateOrderModal';
 import { ProposalModal } from '../ProposalModal';
 import { OrderEditModal } from '../features/admin/OrderEditModal';
 import { ConfirmationDialog } from '../features/admin/ConfirmationDialog';
+import OrderDetails from './OrderDetails';
 
 interface OrdersProps {
   currentUser: CurrentUser;
@@ -32,9 +33,27 @@ interface OrdersProps {
     city: string;
   }[];
   onEditOrder?: (orderId: string, updates: Partial<Order>) => void;
+  acceptProposal?: (proposalId: string) => void;
+  rejectProposal?: (proposalId: string) => void;
+  setActiveItem?: (item: string) => void;
 }
 
-export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder, onDeleteOrder, onRestoreOrder, onToggleActiveSearch, onUpdateOrderStatus, masters = [], onEditOrder, onCreateProposal }: OrdersProps) {
+export function Orders({
+  currentUser,
+  orders = [],
+  onSendToMaster,
+  onCreateOrder,
+  onDeleteOrder,
+  onRestoreOrder,
+  onToggleActiveSearch,
+  onUpdateOrderStatus,
+  masters = [],
+  onEditOrder,
+  onCreateProposal,
+  acceptProposal,
+  rejectProposal,
+  setActiveItem,
+}: OrdersProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -380,183 +399,19 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
                 ✕
               </button>
             </div>
-
-            <div className="p-6 space-y-6">
-              {/* Order Info */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Пристрій</p>
-                  <p className="font-medium text-gray-900">{selectedOrder.deviceType}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Проблема</p>
-                  <p className="font-medium text-gray-900">{selectedOrder.issue}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Статус</p>
-                  <p className="font-medium text-gray-900">{getStatusText(selectedOrder.status)}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Терміновість</p>
-                  <p className="font-medium text-gray-900">{getUrgencyBadge(selectedOrder.urgency)}</p>
-                </div>
-              </div>
-
-              {/* Description */}
-              <div>
-                <p className="text-sm text-gray-500 mb-2">Опис</p>
-                <p className="text-gray-900 bg-gray-50 p-4 rounded-lg">{selectedOrder.description}</p>
-              </div>
-
-              {/* Master Info */}
-              {selectedOrder.assignedMasterId && (
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <p className="text-sm text-gray-500 mb-2">Призначений майстер</p>
-                  <p className="font-medium text-gray-900">Alex Master</p>
-                </div>
-              )}
-
-              {/* Pricing Info */}
-              {selectedOrder.agreedPrice && (
-                <div className="grid grid-cols-2 gap-4 bg-green-50 p-4 rounded-lg border border-green-200">
-                  <div>
-                    <p className="text-sm text-gray-500">Запропонована ціна</p>
-                    <p className="text-lg font-bold text-green-600">${selectedOrder.proposedPrice || selectedOrder.agreedPrice}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Узгоджена ціна</p>
-                    <p className="text-lg font-bold text-green-600">${selectedOrder.agreedPrice}</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-2 pt-4">
-                {/* CLIENT ACTIONS */}
-                {currentUser?.role === 'client' && (
-                  <>
-                    {selectedOrder.status === 'proposed' && (
-                      <>
-                        <button className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center justify-center gap-2">
-                          <CheckCircleIcon sx={{ fontSize: 20 }} /> Прийняти пропозицію
-                        </button>
-                        <button className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors flex items-center justify-center gap-2">
-                          <CancelIcon sx={{ fontSize: 20 }} /> Відхилити
-                        </button>
-                      </>
-                    )}
-
-                    {selectedOrder.status === 'open' && (
-                      <>
-                        <button 
-                          onClick={handleEditOrder}
-                          className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center justify-center gap-2"
-                        >
-                          <EditIcon sx={{ fontSize: 20 }} /> Редагувати замовлення
-                        </button>
-                        <button 
-                          onClick={() => handleSendToMaster(selectedOrder.id)}
-                          className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center justify-center gap-2"
-                        >
-                          <MessageIcon sx={{ fontSize: 20 }} /> Відправити майстрам
-                        </button>
-                        <button 
-                          onClick={() => handleToggleActiveSearch(selectedOrder)}
-                          className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 ${
-                            selectedOrder.isActiveSearch !== false 
-                              ? 'bg-orange-600 text-white hover:bg-orange-700' 
-                              : 'bg-gray-600 text-white hover:bg-gray-700'
-                          }`}
-                        >
-                          <SearchIcon sx={{ fontSize: 20 }} /> 
-                          {selectedOrder.isActiveSearch !== false ? 'Призупинити пошук' : 'Активувати пошук'}
-                        </button>
-                        <button 
-                          onClick={() => handleDeleteOrder(selectedOrder)}
-                          className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors flex items-center justify-center gap-2"
-                        >
-                          <CloseIcon sx={{ fontSize: 20 }} /> Видалити замовлення
-                        </button>
-                      </>
-                    )}
-
-                    {selectedOrder.status === 'deleted' && (
-                      <>
-                        <button 
-                          onClick={() => handleRestoreOrder(selectedOrder)}
-                          className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center justify-center gap-2"
-                        >
-                          <CheckCircleIcon sx={{ fontSize: 20 }} /> Відновити замовлення
-                        </button>
-                      </>
-                    )}
-
-
-
-                    {selectedOrder.status === 'in_progress' && (
-                      <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors flex items-center justify-center gap-2">
-                        <MessageIcon sx={{ fontSize: 20 }} /> Чат з майстром
-                      </button>
-                    )}
-                  </>
-                )}
-
-                {/* ADMIN ACTIONS */}
-                {currentUser?.role === 'admin' && (
-                  <>
-                    <button
-                      onClick={handleEditOrder}
-                      className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center justify-center gap-2"
-                    >
-                      <EditIcon sx={{ fontSize: 20 }} /> Редагувати
-                    </button>
-                    <button
-                      onClick={() => handleDeleteOrder(selectedOrder)}
-                      className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors flex items-center justify-center gap-2"
-                    >
-                      <CloseIcon sx={{ fontSize: 20 }} /> Видалити
-                    </button>
-                  </>
-                )}
-
-                {/* MASTER ACTIONS */}
-                {currentUser?.role === 'master' && (
-                  <>
-                    {selectedOrder.status === 'proposed' && (
-                      <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors">
-                        📊 Переглянути пропозиції
-                      </button>
-                    )}
-
-                    {selectedOrder.status === 'open' && (
-                      <button
-                        onClick={() => setShowProposalModal(true)}
-                        className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center justify-center gap-2">
-                        <EditIcon sx={{ fontSize: 20 }} /> Розмістити пропозицію
-                      </button>
-                    )}
-
-                    {selectedOrder.status === 'in_progress' && (
-                      <>
-                        <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors flex items-center justify-center gap-2">
-                          <MessageIcon sx={{ fontSize: 20 }} /> Чат з клієнтом
-                        </button>
-                        <button className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium transition-colors">
-                          📸 Поділитися фото
-                        </button>
-                      </>
-                    )}
-                  </>
-                )}
-
-                <button
-                  onClick={() => setSelectedOrder(null)}
-                  className="px-4 py-2 bg-gray-300 text-gray-900 rounded-lg hover:bg-gray-400 font-medium transition-colors"
-                >
-                  Закрити
-                </button>
-              </div>
-            </div>
+            <OrderDetails
+              order={selectedOrder}
+              currentUser={currentUser}
+              handleEditOrder={handleEditOrder}
+              handleSendToMaster={handleSendToMaster}
+              handleToggleActiveSearch={handleToggleActiveSearch}
+              handleDeleteOrder={handleDeleteOrder}
+              handleRestoreOrder={handleRestoreOrder}
+              setShowProposalModal={setShowProposalModal}
+              acceptProposal={acceptProposal}
+              rejectProposal={rejectProposal}
+              setActiveItem={setActiveItem}
+            />
           </div>
         </div>
       )}
