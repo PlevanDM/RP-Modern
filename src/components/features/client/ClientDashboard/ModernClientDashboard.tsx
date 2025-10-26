@@ -31,17 +31,18 @@ import { User } from '../../../../types/models';
 interface Order {
   id: string;
   title: string;
-  status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
-  progress: number;
+  status: 'pending' | 'in-progress' | 'completed' | 'cancelled' | 'open' | 'accepted' | 'proposed';
+  progress?: number;
   master?: {
     name: string;
     avatar: string;
     rating: number;
   };
-  date: string;
-  price: number;
-  category: string;
-  location: string;
+  date?: string;
+  createdAt?: Date | string;
+  price?: number;
+  category?: string;
+  location?: string;
 }
 
 interface Notification {
@@ -117,9 +118,9 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
   ];
 
   const orders = clientOrders
-    .filter((order) => order.status === 'in-progress' || order.status === 'pending')
+    .filter((order) => ['in-progress', 'pending', 'open', 'proposed'].includes(order.status))
     .filter((order) => statusFilter === 'all' || order.status === statusFilter);
-  const orderHistory = clientOrders.filter((order) => order.status === 'completed');
+  const orderHistory = clientOrders.filter((order) => ['completed', 'paid'].includes(order.status));
 
   const getStatusColor = (status: Order['status']) => {
     switch (status) {
@@ -307,7 +308,11 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                         <h3 className="font-semibold text-lg">{order.title}</h3>
                         <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
                           <Calendar className="w-4 h-4" />
-                          {new Date(order.date).toLocaleDateString('uk-UA')}
+                          {order.date 
+                            ? new Date(order.date).toLocaleDateString('uk-UA')
+                            : order.createdAt 
+                              ? new Date(order.createdAt).toLocaleDateString('uk-UA')
+                              : 'Без дати'}
                         </div>
                       </div>
                       <Badge className={getStatusColor(order.status)}>
@@ -395,7 +400,13 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                       </div>
                       <div className="text-right">
                         <p className="font-semibold">₴{(order.price || 0).toLocaleString()}</p>
-                        <p className="text-xs text-muted-foreground">{new Date(order.date).toLocaleDateString('uk-UA')}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {(order.date 
+                            ? new Date(order.date)
+                            : order.createdAt 
+                              ? new Date(order.createdAt)
+                              : null)?.toLocaleDateString('uk-UA') || 'Без дати'}
+                        </p>
                       </div>
                     </div>
                   </motion.div>
