@@ -446,10 +446,10 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
             onMouseEnter={() => setIsCollapsed(false)}
             onMouseLeave={() => !isPinned && setIsCollapsed(true)}
         >
+            <Logo collapsed={isCollapsed} />
             <NavigationMenu collapsed={isCollapsed} />
             <UserProfile collapsed={isCollapsed} />
             <div className="mt-auto">
-              <Logo collapsed={isCollapsed} />
               <LoadingRobot collapsed={isCollapsed} isLoading={true} />
             </div>
         </motion.div>
