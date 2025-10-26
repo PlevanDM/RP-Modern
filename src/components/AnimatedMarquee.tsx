@@ -117,13 +117,6 @@ const AnimatedMarquee: React.FC = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Progress bar */}
-      <motion.div
-        initial={{ scaleX: 1 }}
-        animate={{ scaleX: 0 }}
-        transition={{ duration: 4, ease: "linear", repeat: Infinity }}
-        className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-300 origin-left"
-      />
     </div>
   );
 };
