@@ -1,0 +1,24 @@
+╔═══════════════════════════════════════════════════════════════╗
+║     СКОПІЮЙТЕ ЦІ КОМАНДИ В VNC CONSOLE                        ║
+╚═══════════════════════════════════════════════════════════════╝
+
+1. https://my.vultr.com → Servers → View Console
+
+2. Скопіюйте і вставте ці команди:
+
+cd /root/repair-hub-pro && git pull origin eploy && docker compose down && docker compose build --no-cache && docker compose up -d && sleep 20 && docker compose ps && docker logs repair-hub-pro --tail=30
+
+3. Натисніть Enter
+4. Чекайте 2-3 хвилини
+5. Відкрийте: http://repairhub.one
+
+═══════════════════════════════════════════════════════════════
+
+ПОКИ ЩО САЙТ ПРАЦЮЄ:
+http://70.34.252.148:3000
+
+ПІСЛЯ VNC:
+http://repairhub.one
+
+═══════════════════════════════════════════════════════════════
+

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Deploy Commands</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #1a1a1a;
+            color: #0f0;
+            padding: 20px;
+        }
+        .command {
+            background: #2a2a2a;
+            border: 1px solid #0f0;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .copy-btn {
+            background: #0f0;
+            color: #1a1a1a;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-top: 10px;
+        }
+        .copy-btn:hover {
+            background: #0c0;
+        }
+        h1 {
+            color: #0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Deploy Commands для VNC Console</h1>
+    
+    <p>Скопіюйте кожну команду і вставте в VNC Console.</p>
+    
+    <div class="command">
+        <h3>1. Перехід в директорію</h3>
+        <code id="cmd1">cd /root/repair-hub-pro</code>
+        <button class="copy-btn" onclick="copy('cmd1')">Copy</button>
+    </div>
+    
+    <div class="command">
+        <h3>2. Pull зміни</h3>
+        <code id="cmd2">git pull origin eploy</code>
+        <button class="copy-btn" onclick="copy('cmd2')">Copy</button>
+    </div>
+    
+    <div class="command">
+        <h3>3. Зупинити Docker</h3>
+        <code id="cmd3">docker compose down</code>
+        <button class="copy-btn" onclick="copy('cmd3')">Copy</button>
+    </div>
+    
+    <div class="command">
+        <h3>4. Rebuild</h3>
+        <code id="cmd4">docker compose build --no-cache</code>
+        <button class="copy-btn" onclick="copy('cmd4')">Copy</button>
+    </div>
+    
+    <div class="command">
+        <h3>5. Запустити</h3>
+        <code id="cmd5">docker compose up -d</code>
+        <button class="copy-btn" onclick="copy('cmd5')">Copy</button>
+    </div>
+    
+    <div class="command">
+        <h3>6. Перевірити</h3>
+        <code id="cmd6">docker compose ps</code>
+        <button class="copy-btn" onclick="copy('cmd6')">Copy</button>
+    </div>
+    
+    <div class="command">
+        <h3>АБО ВСЕ РАЗОМ:</h3>
+        <code id="cmd-all">cd /root/repair-hub-pro && git pull origin eploy && docker compose down && docker compose build --no-cache && docker compose up -d && echo "DONE! Test http://repairhub.one"</code>
+        <button class="copy-btn" onclick="copy('cmd-all')">Copy All</button>
+    </div>
+    
+    <script>
+        function copy(id) {
+            const text = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(text);
+            alert('Copied!');
+        }
+    </script>
+</body>
+</html>
+
