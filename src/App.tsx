@@ -178,11 +178,11 @@ function App() {
                   tasks={orders.map((o) => ({
                     id: o.id,
                     title: o.title,
-                    client: o.client,
-                    status: o.status,
+                    client: o.clientName || o.clientId,
+                    status: o.status === 'in_progress' ? 'in-progress' : o.status === 'completed' ? 'completed' : 'pending' as 'pending' | 'in-progress' | 'completed',
                     priority: o.urgency,
-                    deadline: o.deadline,
-                    progress: o.progress,
+                    deadline: o.deadline ? o.deadline.toISOString().split('T')[0] : '',
+                    progress: 0, // Default progress since Order doesn't have this field
                   }))}
                   notifications={notifications}
                   revenueData={[

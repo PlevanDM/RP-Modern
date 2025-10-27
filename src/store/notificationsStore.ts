@@ -10,14 +10,14 @@ interface NotificationsState {
 
 export const useNotificationsStore = create<NotificationsState>((set) => ({
   notifications: [
-    { id: '1', userId: 'client1', message: 'New proposal on your order!', type: 'order', read: false, createdAt: new Date() },
-    { id: '2', userId: 'client1', message: 'Your order is in progress.', type: 'status', read: false, createdAt: new Date() },
+    { id: '1', userId: 'client1', message: 'New proposal on your order!', type: 'order', read: false, createdAt: new Date(), time: new Date().toLocaleTimeString() },
+    { id: '2', userId: 'client1', message: 'Your order is in progress.', type: 'status', read: false, createdAt: new Date(), time: new Date().toLocaleTimeString() },
   ],
   addNotification: (notification) =>
     set((state) => ({
       notifications: [
         ...state.notifications,
-        { ...notification, id: Date.now().toString(), createdAt: new Date(), read: false },
+        { ...notification, id: Date.now().toString(), createdAt: new Date(), read: false, time: new Date().toLocaleTimeString() },
       ],
     })),
   readNotification: (id) =>

@@ -9,7 +9,7 @@ import { Input } from './ui/input';
 interface AnimatedCreateOrderModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (orderData: Partial<Order>) => void;
+  createOrder: (order: Omit<Order, 'id'>) => void;
   currentUser: User;
   initialData?: Partial<Order>;
 }
@@ -17,7 +17,7 @@ interface AnimatedCreateOrderModalProps {
 export function AnimatedCreateOrderModal({
   isOpen,
   onClose,
-  onSubmit,
+  createOrder,
   currentUser,
   initialData,
 }: AnimatedCreateOrderModalProps) {
@@ -116,24 +116,51 @@ export function AnimatedCreateOrderModal({
 
     setIsSubmitting(true);
 
-    const orderData: Partial<Order> = {
+    const orderData: Omit<Order, 'id'> = {
       ...formData,
       clientId: currentUser.id,
-      clientName: currentUser.name || currentUser.fullName,
+      clientName: currentUser.name || currentUser.fullName || '',
       status: 'open',
       createdAt: new Date(),
       updatedAt: new Date(),
+      device: formData.deviceType,
+      city: formData.location || currentUser.city,
+      budget: 0, // Default budget
+      proposalCount: 0,
+      issue: formData.issue,
+      urgency: formData.urgency,
       devicePhotos: devicePhotos.length > 0 ? devicePhotos : undefined,
       defectPhotos: defectPhotos.length > 0 ? defectPhotos : undefined,
       location: formData.location || undefined,
       clientPhone: formData.clientPhone || undefined,
-      clientEmail: formData.clientEmail || undefined
+      clientEmail: formData.clientEmail || undefined,
+      isActiveSearch: false,
+      deletedAt: undefined,
+      paymentStatus: 'pending',
+      paymentAmount: 0,
+      paymentMethod: '',
+      escrowId: '',
+      paymentDate: new Date(),
+      releaseDate: undefined,
+      disputeStatus: 'none',
+      disputeReason: undefined,
+      disputeDescription: undefined,
+      disputeCreatedAt: undefined,
+      supportTicketId: undefined,
+      masterId: undefined,
+      brand: undefined,
+      assignedBy: undefined,
+      assignedAt: undefined,
+      priority: formData.urgency,
+      notes: undefined,
+      clientRating: undefined,
+      messages: undefined
     };
 
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    onSubmit(orderData);
+
+    createOrder(orderData);
     setIsSubmitting(false);
     onClose();
     

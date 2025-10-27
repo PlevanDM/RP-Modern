@@ -20,22 +20,13 @@ export interface Notification {
   type: NotificationType;
   read: boolean;
   createdAt: Date;
+  time?: string;
   actionUrl?: string;
   priority?: Urgency;
 }
 
 import { PaymentMethod } from './models';
 
-export interface Transaction {
-  id: string;
-  userId: string;
-  amount: number;
-  type: 'income' | 'expense' | 'refund';
-  category?: 'labor_income' | 'parts_markup' | 'platform_commission' | 'client_commission' | 'refund';
-  description: string;
-  date: string;
-  status: 'completed' | 'pending' | 'failed';
-}
 
 // ESCROW PAYMENT TYPES
 export enum EscrowStatus {
@@ -92,27 +83,6 @@ export interface IEscrowDataProvider {
   save(payment: EscrowPayment): void;
 }
 
-export interface PaymentMethod {
-  id: string;
-  userId: string;
-  type: 'card' | 'bank_transfer' | 'crypto' | 'mono' | 'privat24';
-  name: string;
-  isDefault: boolean;
-  isVerified: boolean;
-  
-  // Card details
-  cardLast4?: string;
-  cardBrand?: string;
-  
-  // Bank details
-  bankAccount?: string;
-  
-  // Crypto
-  walletAddress?: string;
-  chainId?: string;
-  
-  createdAt: string;
-}
 
 export interface BookedDate {
   id: string;
