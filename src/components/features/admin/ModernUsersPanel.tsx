@@ -1,5 +1,5 @@
 // Modern Users Management Panel
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Users, Search, Plus, Edit,
   Mail, MapPin, Calendar, Star, MoreVertical,
@@ -16,99 +16,44 @@ import {
   Badge,
   EmptyState
 } from './AdminDesignSystem';
+import { apiUserService } from '../../../services/apiUserService';
+import { User } from '../../../types';
 
 export const ModernUsersPanel = () => {
+  const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRole, setFilterRole] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
 
-  const users = [
-    {
-      id: 1,
-      name: 'Анна Коваленко',
-      email: 'anna@example.com',
-      role: 'client',
-      status: 'active',
-      joinDate: '2024-01-15',
-      rating: 4.8,
-      orders: 12,
-      avatar: 'AK',
-      phone: '+380501234567',
-      city: 'Київ',
-      lastActive: '2 години назад'
-    },
-    {
-      id: 2,
-      name: 'Олександр Петренко',
-      email: 'master@example.com',
-      role: 'master',
-      status: 'active',
-      joinDate: '2023-11-20',
-      rating: 4.9,
-      orders: 156,
-      avatar: 'OP',
-      phone: '+380671234567',
-      city: 'Львів',
-      lastActive: '30 хвилин назад'
-    },
-    {
-      id: 3,
-      name: 'Максим Іванов',
-      email: 'max@example.com',
-      role: 'master',
-      status: 'active',
-      joinDate: '2024-02-10',
-      rating: 4.7,
-      orders: 89,
-      avatar: 'MI',
-      phone: '+380931234567',
-      city: 'Харків',
-      lastActive: '1 день назад'
-    },
-    {
-      id: 4,
-      name: 'Марія Сидоренко',
-      email: 'maria@example.com',
-      role: 'client',
-      status: 'pending',
-      joinDate: '2024-03-05',
-      rating: 0,
-      orders: 0,
-      avatar: 'MS',
-      phone: '+380441234567',
-      city: 'Одеса',
-      lastActive: '3 дні назад'
-    },
-    {
-      id: 5,
-      name: 'Ігор Мельник',
-      email: 'igor@example.com',
-      role: 'master',
-      status: 'blocked',
-      joinDate: '2023-08-15',
-      rating: 3.2,
-      orders: 45,
-      avatar: 'IM',
-      phone: '+380631234567',
-      city: 'Дніпро',
-      lastActive: '1 тиждень назад'
-    }
-  ];
+  useEffect(() => {
+    apiUserService.getUsers().then(setUsers);
+  }, []);
+
+  const toggleUserBlock = async (userId: string) => {
+    const user = users.find((u) => u.id === userId);
+    if (!user) return;
+
+    const updatedUser = user.blocked
+      ? await apiUserService.unblockUser(userId)
+      : await apiUserService.blockUser(userId);
+
+    setUsers(users.map((u) => (u.id === userId ? updatedUser : u)));
+  };
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          user.email.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRole = filterRole === 'all' || user.role === filterRole;
-    const matchesStatus = filterStatus === 'all' || user.status === filterStatus;
+    const matchesStatus = filterStatus === 'all' || (filterStatus === 'blocked' && user.blocked) || (filterStatus === 'active' && !user.blocked);
     
     return matchesSearch && matchesRole && matchesStatus;
   });
 
   const stats = [
     { title: 'Всього користувачів', value: users.length, icon: Users, color: 'text-blue-600' },
-    { title: 'Активні майстри', value: users.filter(u => u.role === 'master' && u.status === 'active').length, icon: Wrench, color: 'text-green-600' },
-    { title: 'Нові клієнти', value: users.filter(u => u.role === 'client' && u.status === 'active').length, icon: UserCheck, color: 'text-purple-600' },
-    { title: 'Заблоковані', value: users.filter(u => u.status === 'blocked').length, icon: UserX, color: 'text-red-600' }
+    { title: 'Активні майстри', value: users.filter(u => u.role === 'master' && !u.blocked).length, icon: Wrench, color: 'text-green-600' },
+    { title: 'Нові клієнти', value: users.filter(u => u.role === 'client' && !u.blocked).length, icon: UserCheck, color: 'text-purple-600' },
+    { title: 'Заблоковані', value: users.filter(u => u.blocked).length, icon: UserX, color: 'text-red-600' }
   ];
 
   const getRoleIcon = (role: string) => {
@@ -164,7 +109,7 @@ export const ModernUsersPanel = () => {
                 <AdminInput
                   placeholder="Пошук по імені або email..."
                   value={searchQuery}
-                  onChange={setSearchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
                 />
               </div>
@@ -173,7 +118,7 @@ export const ModernUsersPanel = () => {
             <div className="flex gap-4">
               <AdminSelect
                 value={filterRole}
-                onChange={setFilterRole}
+                onChange={(e) => setFilterRole(e.target.value)}
                 options={[
                   { value: 'all', label: 'Всі ролі' },
                   { value: 'client', label: 'Клієнти' },
@@ -185,11 +130,10 @@ export const ModernUsersPanel = () => {
               
               <AdminSelect
                 value={filterStatus}
-                onChange={setFilterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
                 options={[
                   { value: 'all', label: 'Всі статуси' },
                   { value: 'active', label: 'Активні' },
-                  { value: 'pending', label: 'Очікують' },
                   { value: 'blocked', label: 'Заблоковані' }
                 ]}
                 className="w-40"
@@ -242,11 +186,10 @@ export const ModernUsersPanel = () => {
                   
                   <TableCell>
                     <Badge 
-                      variant={user.status === 'active' ? 'success' : user.status === 'pending' ? 'warning' : 'error'}
+                      variant={!user.blocked ? 'success' : 'error'}
                       size="sm"
                     >
-                      {user.status === 'active' ? 'Активний' : 
-                       user.status === 'pending' ? 'Очікує' : 'Заблокований'}
+                      {!user.blocked ? 'Активний' : 'Заблокований'}
                     </Badge>
                   </TableCell>
                   
@@ -260,20 +203,20 @@ export const ModernUsersPanel = () => {
                   </TableCell>
                   
                   <TableCell>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">{user.orders}</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">{user.orders?.length || 0}</span>
                   </TableCell>
                   
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Calendar className="w-3 h-3 text-gray-400" />
-                      <span className="text-sm text-gray-500 dark:text-gray-400">{user.lastActive}</span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">{user.lastActive || 'Невідомо'}</span>
                     </div>
                   </TableCell>
                   
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <AdminButton variant="ghost" size="sm">
-                        <Eye className="w-4 h-4" />
+                      <AdminButton variant="ghost" size="sm" onClick={() => toggleUserBlock(user.id)}>
+                        {user.blocked ? <UserCheck className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
                       </AdminButton>
                       <AdminButton variant="ghost" size="sm">
                         <Edit className="w-4 h-4" />

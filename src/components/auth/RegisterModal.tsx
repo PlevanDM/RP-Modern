@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, User, Wrench, AlertCircle } from 'lucide-react';
-import { authService } from '../../services/authService';
+import { apiAuthService } from '../../services/apiAuthService';
 import { useAuthStore } from '../../store/authStore';
 import { ClientRegistrationQuestions } from './ClientRegistrationQuestions';
 import { MasterRegistrationQuestions } from './MasterRegistrationQuestions';
@@ -18,14 +18,20 @@ export function RegisterModal({ onClose }: RegisterModalProps) {
 
   const handleSocialRegister = async (provider: 'google' | 'telegram') => {
     try {
-      let newUser;
-      if (provider === 'google') {
-        newUser = await authService.signInWithGoogle();
-      } else {
-        newUser = await authService.signInWithTelegram();
-      }
-      
-      // Спочатку вибір ролі
+      const tempUser = {
+        id: `${provider}-${Date.now()}`,
+        name: '',
+        email: `${provider}.user@example.com`,
+        role: 'client',
+        city: '',
+        avatar: `https://i.pravatar.cc/96?img=${Math.floor(Math.random() * 70)}`,
+        balance: 0,
+        skills: [],
+        specialization: 'Client',
+        verified: false,
+        blocked: false,
+      };
+      setUserData(tempUser);
       setStep('role');
     } catch (err) {
       setError('Registration failed. Please try again.');
@@ -91,19 +97,19 @@ export function RegisterModal({ onClose }: RegisterModalProps) {
                 </div>
               )}
 
-              <div className="space-y-3">
+              <div className="space-y-3" title="Social registration is not yet implemented.">
                 <button
-                  onClick={() => handleSocialRegister('google')}
-                  className="w-full py-4 border-2 border-gray-200 rounded-2xl flex items-center justify-center gap-4 hover:bg-gray-50 hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-200 active:scale-[0.97] font-semibold text-gray-700 min-h-[56px] group"
+                  disabled
+                  className="w-full py-4 border-2 border-gray-200 rounded-2xl flex items-center justify-center gap-4 font-semibold text-gray-400 min-h-[56px] group cursor-not-allowed"
                 >
-                  <img src="/icons/google.svg" alt="Google" className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                  <img src="/icons/google.svg" alt="Google" className="w-6 h-6 opacity-50" />
                   <span className="text-base">Продовжити з Google</span>
                 </button>
                 <button
-                  onClick={() => handleSocialRegister('telegram')}
-                  className="w-full py-4 border-2 border-gray-200 rounded-2xl flex items-center justify-center gap-4 hover:bg-gray-50 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-200 active:scale-[0.97] font-semibold text-gray-700 min-h-[56px] group"
+                  disabled
+                  className="w-full py-4 border-2 border-gray-200 rounded-2xl flex items-center justify-center gap-4 font-semibold text-gray-400 min-h-[56px] group cursor-not-allowed"
                 >
-                  <img src="/icons/telegram.svg" alt="Telegram" className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                  <img src="/icons/telegram.svg" alt="Telegram" className="w-6 h-6 opacity-50" />
                   <span className="text-base">Продовжити з Telegram</span>
                 </button>
               </div>
