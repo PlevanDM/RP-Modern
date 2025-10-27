@@ -1,0 +1,163 @@
+/* Material Design 3 Color Palette */
+:root {
+  /* Material Design 3 Primary Colors */
+  --md-primary: #1976d2;
+  --md-primary-hover: #1565c0;
+  --md-primary-light: #42a5f5;
+  --md-primary-dark: #0d47a1;
+  
+  /* Material Design 3 Secondary Colors */
+  --md-secondary: #dc004e;
+  --md-secondary-hover: #c51162;
+  
+  /* Material Design 3 Surface Colors */
+  --md-surface: #ffffff;
+  --md-surface-variant: #f5f5f5;
+  --md-surface-container: #fafafa;
+  
+  /* Material Design 3 Text Colors */
+  --md-on-surface: #1c1b1f;
+  --md-on-surface-variant: #44464f;
+  
+  /* Material Design 3 State Colors */
+  --md-success: #2e7d32;
+  --md-warning: #ed6c02;
+  --md-error: #d32f2f;
+  --md-info: #0288d1;
+  
+  /* Material Design 3 Elevation */
+  --md-elevation-0: 0px 0px 0px 0px rgba(0, 0, 0, 0.2);
+  --md-elevation-1: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --md-elevation-2: 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --md-elevation-3: 0px 4px 8px 3px rgba(0, 0, 0, 0.15);
+  --md-elevation-4: 0px 6px 10px 4px rgba(0, 0, 0, 0.15);
+  --md-elevation-5: 0px 8px 12px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Material Design 3 Utility Classes */
+.md-card {
+  background: var(--md-surface);
+  border-radius: 12px;
+  box-shadow: var(--md-elevation-1);
+  transition: all 0.2s ease;
+}
+
+.md-card:hover {
+  box-shadow: var(--md-elevation-2);
+}
+
+.md-button-primary {
+  background: var(--md-primary);
+  color: white;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: var(--md-elevation-2);
+}
+
+.md-button-primary:hover {
+  background: var(--md-primary-hover);
+  box-shadow: var(--md-elevation-3);
+}
+
+.md-button-primary:active {
+  box-shadow: var(--md-elevation-1);
+  transform: scale(0.97);
+}
+
+/* Material Design 3 Focus State */
+.md-focus-ring {
+  outline: 2px solid var(--md-primary);
+  outline-offset: 2px;
+}
+
+/* Material Design 3 Typography */
+.md-headline-large {
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 40px;
+  color: var(--md-on-surface);
+}
+
+.md-headline-medium {
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 36px;
+  color: var(--md-on-surface);
+}
+
+.md-headline-small {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+  color: var(--md-on-surface);
+}
+
+.md-title-large {
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 28px;
+  color: var(--md-on-surface);
+}
+
+.md-title-medium {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: var(--md-on-surface);
+}
+
+.md-title-small {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--md-on-surface);
+}
+
+.md-body-large {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: var(--md-on-surface-variant);
+}
+
+.md-body-medium {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--md-on-surface-variant);
+}
+
+.md-body-small {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--md-on-surface-variant);
+}
+
+/* Material Design 3 Ripple Effect */
+.md-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.md-ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.md-ripple:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+

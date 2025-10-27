@@ -1,0 +1,4 @@
+КОПІЮЙТЕ ЦЮ КОМАНДУ І ВИКОНАЙТЕ В GIT BASH:
+
+cd ~/Desktop/LST/RP-Modern-pdate-fix2 && git init && git add . && git commit -m "Update: Clean files" && git remote remove origin 2>/dev/null; git remote add origin https://github.com/PlevanDM/RP-Modern.git && git checkout -b pdate-fix2 && git push -u origin pdate-fix2 --force
+
