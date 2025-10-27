@@ -131,8 +131,6 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { label: "Безпека", href: "#", icon: Shield },
         { label: "Активність", href: "#", icon: Activity },
         { label: "База даних", href: "#", icon: Database },
-        { label: "Демо", href: "#", icon: Palette },
-        { label: "Тесты", href: "#", icon: TestTube },
         { label: "Налаштування", href: "#", icon: Settings }
       ];
     } else if (currentUser?.role === 'master') {
@@ -150,9 +148,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { label: "Мої Пропозиції", href: "#", icon: Tag },
         { label: "Платежі", href: "#", icon: CreditCard },
         { label: "Чат", href: "#", icon: MessageSquare },
-        { label: "Портфоліо", href: "#", icon: Briefcase },
-        { label: "Демо", href: "#", icon: Palette },
-        { label: "Тесты", href: "#", icon: TestTube }
+        { label: "Портфоліо", href: "#", icon: Briefcase }
       ];
     } else if (currentUser?.role === 'client') {
       // Client menu
@@ -164,9 +160,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { label: "Мої Пристрої", href: "#", icon: Smartphone },
         { label: "Пропозиції", href: "#", icon: Tag },
         { label: "Платежі", href: "#", icon: CreditCard },
-        { label: "Чат", href: "#", icon: MessageSquare },
-        { label: "Демо", href: "#", icon: Palette },
-        { label: "Тесты", href: "#", icon: TestTube }
+        { label: "Чат", href: "#", icon: MessageSquare }
       ];
     }
 

@@ -33,8 +33,6 @@ import { ExperienceStep } from './components/onboarding/ExperienceStep';
 import { ToolsStep } from './components/onboarding/ToolsStep';
 import AnimatedMarquee from './components/AnimatedMarquee';
 import { userService } from './services/userService';
-import { PortfolioDemo } from './components/features/demo/PortfolioDemo';
-import AuthSwitchDemo from './components/ui/auth-switch-demo';
 
 function App() {
   const { currentUser, login, logout, isOnboardingCompleted, completeOnboarding } = useAuthStore();
@@ -329,9 +327,6 @@ function App() {
               />
             )}
             {activeItem === 'settings' && <Settings currentUser={currentUser} onLogout={logout} />}
-
-            {activeItem === 'demo' && <PortfolioDemo />}
-            {activeItem === 'tests' && <AuthSwitchDemo />}
           </div>
         </div>
       </div>
