@@ -3,17 +3,17 @@
 import * as React from "react";
 import { cn } from "../../lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Star, 
-  Wrench, 
-  Tag, 
-  CreditCard, 
-  MessageSquare, 
-  Briefcase, 
-  User, 
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Star,
+  Wrench,
+  Tag,
+  CreditCard,
+  MessageSquare,
+  Briefcase,
+  User,
   LogOut,
   Menu,
   X,
@@ -28,7 +28,9 @@ import {
   Shield,
   AlertTriangle,
   Activity,
-  Database
+  Database,
+  Palette,
+  TestTube
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Badge } from "../ui/badge";
@@ -129,15 +131,17 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { label: "Безпека", href: "#", icon: Shield },
         { label: "Активність", href: "#", icon: Activity },
         { label: "База даних", href: "#", icon: Database },
+        { label: "Демо", href: "#", icon: Palette },
+        { label: "Тесты", href: "#", icon: TestTube },
         { label: "Налаштування", href: "#", icon: Settings }
       ];
     } else if (currentUser?.role === 'master') {
       // Master menu
       baseItems = [
         { label: "Дашборд", href: "#", icon: LayoutDashboard },
-        { 
-          label: "Доска Замовлень", 
-          href: "#", 
+        {
+          label: "Доска Замовлень",
+          href: "#",
           icon: ShoppingCart,
           badge: unviewedOrdersCount > 0 ? { text: `${unviewedOrdersCount} нових`, variant: "destructive" } : undefined
         },
@@ -146,7 +150,9 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { label: "Мої Пропозиції", href: "#", icon: Tag },
         { label: "Платежі", href: "#", icon: CreditCard },
         { label: "Чат", href: "#", icon: MessageSquare },
-        { label: "Портфоліо", href: "#", icon: Briefcase }
+        { label: "Портфоліо", href: "#", icon: Briefcase },
+        { label: "Демо", href: "#", icon: Palette },
+        { label: "Тесты", href: "#", icon: TestTube }
       ];
     } else if (currentUser?.role === 'client') {
       // Client menu
@@ -158,7 +164,9 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { label: "Мої Пристрої", href: "#", icon: Smartphone },
         { label: "Пропозиції", href: "#", icon: Tag },
         { label: "Платежі", href: "#", icon: CreditCard },
-        { label: "Чат", href: "#", icon: MessageSquare }
+        { label: "Чат", href: "#", icon: MessageSquare },
+        { label: "Демо", href: "#", icon: Palette },
+        { label: "Тесты", href: "#", icon: TestTube }
       ];
     }
 
