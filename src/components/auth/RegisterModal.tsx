@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, User, Wrench, AlertCircle } from 'lucide-react';
-import { authService } from '../../services/authService';
+import { apiAuthService } from '../../services/apiAuthService';
 import { useAuthStore } from '../../store/authStore';
 import { ClientRegistrationQuestions } from './ClientRegistrationQuestions';
 import { MasterRegistrationQuestions } from './MasterRegistrationQuestions';
@@ -17,19 +17,7 @@ export function RegisterModal({ onClose }: RegisterModalProps) {
   const register = useAuthStore((state) => state.register);
 
   const handleSocialRegister = async (provider: 'google' | 'telegram') => {
-    try {
-      let newUser;
-      if (provider === 'google') {
-        newUser = await authService.signInWithGoogle();
-      } else {
-        newUser = await authService.signInWithTelegram();
-      }
-      
-      // Спочатку вибір ролі
-      setStep('role');
-    } catch (err) {
-      setError('Registration failed. Please try again.');
-    }
+    // TODO: Implement social login
   };
 
   const handleRoleSelected = (role: 'client' | 'master') => {

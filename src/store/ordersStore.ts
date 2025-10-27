@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Order, Proposal } from '../types';
-import { orderService } from '../services/orderService';
+import { apiOrderService } from '../services/apiOrderService';
 import { mockProposals } from '../utils/mockData';
 import { useAuthStore } from './authStore';
 import { useUIStore } from './uiStore';
@@ -32,17 +32,19 @@ interface OrdersState {
   escalateDispute: (orderId: string) => void;
 }
 
+import { persist } from 'zustand/middleware';
+
 export const useOrdersStore = create<OrdersState>()(
   persist(
     (set, get) => ({
       orders: [],
       proposals: mockProposals,
       fetchOrders: async () => {
-        const orders = await orderService.getOrders();
+        const orders = await apiOrderService.getOrders();
         set({ orders });
       },
-      createOrder: (order) => {
-        const newOrder: Order = { ...order, id: Date.now().toString() };
+      createOrder: async (order) => {
+        const newOrder = await apiOrderService.createOrder(order);
         set((state) => ({ orders: [...state.orders, newOrder] }));
         useUIStore.getState().showNotification('Order created successfully!');
       },
@@ -78,7 +80,9 @@ export const useOrdersStore = create<OrdersState>()(
       sendToMaster: (orderId, masterId) => {
         set((state) => ({
           orders: state.orders.map((o) =>
-            o.id === orderId ? { ...o, assignedMasterId: masterId, status: 'proposed' } : o
+            o.id === orderId
+              ? { ...o, assignedMasterId: masterId, status: 'proposed' }
+              : o
           ),
         }));
         useUIStore.getState().showNotification('Order sent to master successfully!');
@@ -117,13 +121,16 @@ export const useOrdersStore = create<OrdersState>()(
       acceptProposal: (proposalId) => {
         const currentUser = useAuthStore.getState().currentUser;
         const proposal = get().proposals.find((p) => p.id === proposalId);
-        if(!proposal) return;
-        const order = get().orders.find(o => o.id === proposal.orderId);
+        if (!proposal) return;
+        const order = get().orders.find((o) => o.id === proposal.orderId);
 
-        if (!currentUser || currentUser.id !== order.clientId) {
+        if (!currentUser || !order || currentUser.id !== order.clientId) {
           useUIStore
             .getState()
-            .showNotification('Only the client can accept a proposal.', 'error');
+            .showNotification(
+              'Only the client can accept a proposal.',
+              'error'
+            );
           return;
         }
 
@@ -167,10 +174,16 @@ export const useOrdersStore = create<OrdersState>()(
         const hasPermission =
           currentUser.role === 'admin' ||
           (currentUser.role === 'client' && order.clientId === currentUser.id) ||
-          (currentUser.role === 'master' && order.assignedMasterId === currentUser.id);
+          (currentUser.role === 'master' &&
+            order.assignedMasterId === currentUser.id);
 
         if (!hasPermission) {
-          useUIStore.getState().showNotification('You do not have permission to update this order.', 'error');
+          useUIStore
+            .getState()
+            .showNotification(
+              'You do not have permission to update this order.',
+              'error'
+            );
           return;
         }
 
@@ -180,9 +193,16 @@ export const useOrdersStore = create<OrdersState>()(
               o.id === orderId ? { ...o, status } : o
             ),
           }));
-          useUIStore.getState().showNotification('Order status updated successfully!');
+          useUIStore
+            .getState()
+            .showNotification('Order status updated successfully!');
         } else {
-          useUIStore.getState().showNotification(`Cannot change status from ${order.status} to ${status}.`, 'error');
+          useUIStore
+            .getState()
+            .showNotification(
+              `Cannot change status from ${order.status} to ${status}.`,
+              'error'
+            );
         }
       },
       updatePayment: (orderId, _amount) => {
@@ -202,16 +222,12 @@ export const useOrdersStore = create<OrdersState>()(
         useUIStore.getState().showNotification('Dispute created!');
       },
       escalateDispute: (orderId) => {
-        get().updateOrderStatus(orderId, 'escalated_dispute');
+        get().updateOrderStatus(orderid, 'escalated_dispute');
         useUIStore.getState().showNotification('Dispute escalated!');
       },
     }),
     {
       name: 'orders-storage',
-      onRehydrateStorage: (state) => {
-        // fetch orders on rehydration
-        state.fetchOrders();
-      },
     }
   )
 );

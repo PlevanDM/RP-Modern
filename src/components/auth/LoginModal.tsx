@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, AlertCircle } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
-import { authService } from '../../services/authService';
+import { apiAuthService } from '../../services/apiAuthService';
 
 interface LoginModalProps {
   onClose: () => void;
@@ -31,18 +31,7 @@ export function LoginModal({ onClose }: LoginModalProps) {
   };
 
   const handleSocialLogin = async (provider: 'google' | 'telegram') => {
-    try {
-      let newUser;
-      if (provider === 'google') {
-        newUser = await authService.signInWithGoogle();
-      } else {
-        newUser = await authService.signInWithTelegram();
-      }
-      await register(newUser); // Registering the user since they are new
-      window.location.reload();
-    } catch (err) {
-      setError('Login failed. Please try again.');
-    }
+    // TODO: Implement social login
   };
 
   return (

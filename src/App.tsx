@@ -31,7 +31,7 @@ import { SpecializationStep } from './components/onboarding/SpecializationStep';
 import { ExperienceStep } from './components/onboarding/ExperienceStep';
 import { ToolsStep } from './components/onboarding/ToolsStep';
 import AnimatedMarquee from './components/AnimatedMarquee';
-import { userService } from './services/userService';
+import { apiUserService } from './services/apiUserService';
 
 function App() {
   const { currentUser, logout, isOnboardingCompleted, completeOnboarding } = useAuthStore();
@@ -99,7 +99,7 @@ function App() {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const allUsers = await userService.getUsers();
+      const allUsers = await apiUserService.getUsers();
       setUsers(allUsers);
     };
 
