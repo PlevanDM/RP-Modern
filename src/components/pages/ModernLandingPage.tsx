@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { User, Wrench, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface LandingPageProps {
   onLogin?: (userId: string) => void;
@@ -11,11 +12,12 @@ interface LandingPageProps {
 
 const ModernLandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
   const login = useAuthStore((state) => state.login);
-
+  const t = useTranslation();
+  
   const handleRoleSelect = (role: 'client' | 'master') => {
     // Map role to user ID
     const userId = role === 'client' ? 'client1' : 'master1';
-
+    
     if (onLogin) {
       onLogin(userId);
     } else if (login) {
@@ -68,7 +70,7 @@ const ModernLandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
             </div>
           </div>
           <p className="text-gray-300 text-xl max-w-2xl mx-auto">
-            Современная платформа для ремонта мобильной электроники
+            {t('common.modernPlatform')}
           </p>
         </motion.div>
 

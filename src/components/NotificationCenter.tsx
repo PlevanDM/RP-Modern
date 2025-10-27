@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Bell, X, Check, AlertCircle, Info, MessageSquare } from 'lucide-react';
 import { Notification } from '../types';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface NotificationCenterProps {
   notifications?: Notification[];
@@ -11,6 +12,7 @@ interface NotificationCenterProps {
 export function NotificationCenter({ notifications = [], onRead, onRemove }: NotificationCenterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const unreadCount = notifications.filter(n => !n.read).length;
+  const t = useTranslation();
 
   const getIcon = (type: Notification['type']) => {
     switch (type) {
@@ -34,10 +36,10 @@ export function NotificationCenter({ notifications = [], onRead, onRemove }: Not
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
 
-    if (minutes < 1) return 'щойно';
-    if (minutes < 60) return `${minutes}м назад`;
-    if (hours < 24) return `${hours}г назад`;
-    if (days < 7) return `${days}д назад`;
+    if (minutes < 1) return t('common.justNow');
+    if (minutes < 60) return `${minutes}m ${t('common.ago')}`;
+    if (hours < 24) return `${hours}h ${t('common.ago')}`;
+    if (days < 7) return `${days}d ${t('common.ago')}`;
     return date.toLocaleDateString();
   };
 

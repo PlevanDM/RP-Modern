@@ -1,28 +1,8 @@
-// Simple translation hook that returns Ukrainian text
-export function useTranslation() {
-  const t = (key: string): string => {
-    const translations: Record<string, string> = {
-      'dashboard': 'Дашборд',
-      'myOrders': 'Мої замовлення',
-      'orders': 'Замовлення',
-      'findMasters': 'Знайти майстра',
-      'portfolio': 'Портфоліо',
-      'inventory': 'Запчастини',
-      'proposals': 'Пропозиції',
-      'paymentMethods': 'Способи оплати',
-      'messages': 'Повідомлення',
-      'profile': 'Профіль',
-      'reports': 'Звіти',
-      'priceComparison': 'Порівняння цін',
-      'mastersInventory': 'Склади майстрів',
-      'outsourceOrders': 'Замовлення на обробку',
-      'transactionHistory': 'Історія операцій',
-      'bookingCalendar': 'Календар бронювання',
-      'orderHistory': 'Історія замовлень'
-    };
+import { useTranslation as useI18nTranslation } from 'react-i18next';
 
-    return translations[key] || key;
-  };
+// Hook that uses react-i18next for proper internationalization
+export function useTranslation() {
+  const { t } = useI18nTranslation();
 
   return t;
 }

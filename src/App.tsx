@@ -36,6 +36,7 @@ import { userService } from './services/userService';
 
 function App() {
   const { currentUser, login, logout, isOnboardingCompleted, completeOnboarding } = useAuthStore();
+  const [currentTime, setCurrentTime] = useState(new Date());
   const {
     orders,
     proposals,
@@ -71,6 +72,14 @@ function App() {
       fetchUsers();
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   if (!currentUser) {
     return <ModernLandingPage onLogin={(userId) => login(userId)} />;
@@ -113,8 +122,20 @@ function App() {
           <div className="w-full bg-white border-b border-gray-200 shadow-sm">
             <div className="flex justify-between items-center px-6 py-4">
               <div className="text-right min-w-fit">
-                <div className="text-xl font-bold text-gray-900 font-mono">22:44:20</div>
-                <div className="text-xs text-gray-500 uppercase tracking-wider">чт, 23 ЖОВТ.</div>
+                <div className="text-xl font-bold text-gray-900 font-mono">
+                  {currentTime.toLocaleTimeString('uk-UA', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                  })}
+                </div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider">
+                  {currentTime.toLocaleDateString('uk-UA', {
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'short'
+                  })}
+                </div>
               </div>
 
               <div className="flex-1 text-center relative">
@@ -130,7 +151,7 @@ function App() {
                 <button
                   onClick={() => setActiveItem('profile')}
                   className="p-2 hover:bg-gray-100 rounded-lg transition"
-                  title="Профіль"
+                  title="Profile"
                 >
                   <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM6.5 18a3 3 0 00-3 3v1h15v-1a3 3 0 00-3-3H6.5z" />
@@ -140,7 +161,7 @@ function App() {
                 <button
                   onClick={() => setActiveItem('settings')}
                   className="p-2 hover:bg-gray-100 rounded-lg transition"
-                  title="Налаштування"
+                  title="Settings"
                 >
                   <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />

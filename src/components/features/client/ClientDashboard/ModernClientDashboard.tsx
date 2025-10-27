@@ -27,6 +27,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { Input } from '../../../ui/input';
 import { AnimatedCreateOrderModal } from '../../../AnimatedCreateOrderModal';
 import { User } from '../../../../types/models';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 interface Order {
   id: string;
@@ -78,6 +79,7 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
   createOrder,
   setSelectedOrder,
 }) => {
+  const t = useTranslation();
   const [activeTab, setActiveTab] = useState('overview');
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreateOrderModalOpen, setCreateOrderModalOpen] = useState(false);
@@ -85,28 +87,28 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
 
   const stats: StatCard[] = [
     {
-      title: 'Всього замовлень',
+      title: t('common.totalOrders'),
       value: clientOrders.length.toString(),
       change: '+12%',
       icon: <Package className="w-5 h-5" />,
       trend: 'up',
     },
     {
-      title: 'В роботі',
+      title: t('status.in_progress'),
       value: clientOrders.filter((o) => o.status === 'in-progress').length.toString(),
       change: '+2',
       icon: <Clock className="w-5 h-5" />,
       trend: 'up',
     },
     {
-      title: 'Завершено',
+      title: t('status.completed'),
       value: clientOrders.filter((o) => o.status === 'completed').length.toString(),
       change: '+5',
       icon: <CheckCircle2 className="w-5 h-5" />,
       trend: 'up',
     },
     {
-      title: 'Витрачено',
+      title: t('common.spent'),
       value: `₴${(clientOrders
         .filter((o) => o.status === 'completed')
         .reduce((acc, o) => acc + (o.price || 0), 0))
@@ -146,19 +148,19 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
   const getStatusText = (status: Order['status']) => {
     switch (status) {
       case 'pending':
-        return 'Очікує';
+        return t('status.pending');
       case 'in-progress':
-        return 'В роботі';
+        return t('status.in_progress');
       case 'completed':
-        return 'Завершено';
+        return t('status.completed');
       case 'cancelled':
-        return 'Відмінено';
+        return t('status.cancelled');
       case 'open':
-        return 'Відкрите';
+        return t('status.open');
       case 'proposed':
-        return 'Є пропозиції';
+        return t('status.proposed');
       case 'accepted':
-        return 'Прийнято';
+        return t('status.accepted');
       default:
         return status;
     }
@@ -272,7 +274,7 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                       </div>
                       <div className="text-left">
                         <p className="font-semibold">Знайти майстра</p>
-                        <p className="text-xs text-muted-foreground">Пошук спеціалістів</p>
+                        <p className="text-xs text-muted-foreground">{t('common.searchSpecialists')}</p>
                       </div>
                     </div>
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -292,16 +294,16 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2">
                     <Clock className="w-5 h-5 text-primary" />
-                    Поточні замовлення
+                    {t('common.currentOrders')}
                   </CardTitle>
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
                     className="p-2 border border-gray-300 rounded-md"
                   >
-                    <option value="all">All</option>
-                    <option value="pending">Pending</option>
-                    <option value="in-progress">In Progress</option>
+                    <option value="all">{t('common.allStatuses')}</option>
+                    <option value="pending">{t('status.pending')}</option>
+                    <option value="in-progress">{t('status.in_progress')}</option>
                   </select>
                 </div>
               </CardHeader>

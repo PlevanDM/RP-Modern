@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { X, Cookie } from 'lucide-react';
+import { useTranslation } from '../hooks/useTranslation';
 
 const COOKIE_CONSENT_KEY = 'cookie-consent-accepted';
 
 export const CookieConsent = () => {
   const [showConsent, setShowConsent] = useState(false);
+  const t = useTranslation();
 
   useEffect(() => {
     const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
@@ -32,28 +34,27 @@ export const CookieConsent = () => {
         
         <div className="flex-1">
           <h3 className="font-semibold text-gray-900 mb-2">
-            Використання cookies
+            {t('common.cookiesUsage')}
           </h3>
           <p className="text-sm text-gray-600 mb-4">
-            Ми використовуємо cookies для покращення вашего досвіду. 
-            Продовжуючи використання сайту, ви погоджуєтесь з нашою 
+            {t('common.cookiesDescription')}
             <a href="/privacy" className="text-blue-600 hover:underline ml-1">
-              Політикою конфіденційності
+              {t('common.privacyPolicy')}
             </a>.
           </p>
-          
+
           <div className="flex flex-wrap gap-3">
-            <button 
+            <button
               onClick={acceptCookies}
               className="px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition"
             >
-              Прийняти все
+              {t('common.acceptAll')}
             </button>
-            <button 
+            <button
               onClick={declineCookies}
               className="px-4 py-2 border border-gray-300 text-sm rounded-md hover:bg-gray-50 transition"
             >
-              Відхилити
+              {t('common.decline')}
             </button>
             <button
               onClick={() => setShowConsent(false)}

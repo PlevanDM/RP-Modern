@@ -30,6 +30,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../ui/tabs';
 import { Input } from '../../../ui/input';
 import { ScrollArea } from '../../../ui/scroll-area';
 import { User } from '../../../../types';
+import { useTranslation } from '../../../../hooks/useTranslation';
 
 interface StatCardProps {
   title: string;
@@ -64,7 +65,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon, trend }
             <span className={trend === 'up' ? 'text-green-500' : 'text-red-500'}>
               {change}%
             </span>
-            <span className="text-muted-foreground ml-1">от прошлого месяца</span>
+            <span className="text-muted-foreground ml-1">{t('common.fromLastMonth')}</span>
           </div>
         </CardContent>
       </Card>
@@ -115,6 +116,7 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
   setActiveItem,
   setSelectedOrder,
 }) => {
+  const t = useTranslation();
   const [activeTab, setActiveTab] = useState('overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -131,28 +133,28 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
 
   const stats = [
     {
-      title: 'Активные заказы',
+      title: t('navigation.orders'),
       value: masterStats.activeOrders.toString(),
       change: 12,
       icon: <Wrench className="h-4 w-4" />,
       trend: 'up' as const,
     },
     {
-      title: 'Доход за месяц',
+      title: t('common.revenue'),
       value: `₽${masterStats.totalEarned.toLocaleString()}`,
       change: 8,
       icon: <DollarSign className="h-4 w-4" />,
       trend: 'up' as const,
     },
     {
-      title: 'Средний рейтинг',
+      title: t('common.rating'),
       value: masterStats.rating.toString(),
       change: 5,
       icon: <Star className="h-4 w-4" />,
       trend: 'up' as const,
     },
     {
-      title: 'Завершено заказов',
+      title: t('common.completedOrders'),
       value: masterStats.completedOrders.toString(),
       change: -3,
       icon: <CheckCircle2 className="h-4 w-4" />,
@@ -162,18 +164,18 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
 
   const getStatusBadge = (status: Task['status']) => {
     const variants = {
-      pending: { label: 'Ожидает', className: 'bg-yellow-500/10 text-yellow-500' },
-      'in-progress': { label: 'В работе', className: 'bg-blue-500/10 text-blue-500' },
-      completed: { label: 'Завершено', className: 'bg-green-500/10 text-green-500' },
+      pending: { label: t('status.pending'), className: 'bg-yellow-500/10 text-yellow-500' },
+      'in-progress': { label: t('status.in_progress'), className: 'bg-blue-500/10 text-blue-500' },
+      completed: { label: t('status.completed'), className: 'bg-green-500/10 text-green-500' },
     };
     return variants[status];
   };
 
   const getPriorityBadge = (priority: Task['priority']) => {
     const variants = {
-      low: { label: 'Низкий', className: 'bg-gray-500/10 text-gray-500' },
-      medium: { label: 'Средний', className: 'bg-orange-500/10 text-orange-500' },
-      high: { label: 'Высокий', className: 'bg-red-500/10 text-red-500' },
+      low: { label: t('priority.low'), className: 'bg-gray-500/10 text-gray-500' },
+      medium: { label: t('priority.medium'), className: 'bg-orange-500/10 text-orange-500' },
+      high: { label: t('priority.high'), className: 'bg-red-500/10 text-red-500' },
     };
     return variants[priority];
   };
@@ -194,13 +196,13 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
               <Wrench className="h-8 w-8 text-primary" />
               {currentUser.name}
             </h1>
-            <p className="text-muted-foreground mt-1">Панель управления мастера</p>
+            <p className="text-muted-foreground mt-1">{t('navigation.dashboard')}</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Поиск заказов..."
+                placeholder={t('common.searchOrders')}
                 className="pl-9 w-64"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -211,20 +213,20 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
               onChange={(e) => setStatusFilter(e.target.value)}
               className="p-2 border border-gray-300 rounded-md"
             >
-              <option value="all">All Statuses</option>
-              <option value="pending">Pending</option>
-              <option value="in-progress">In Progress</option>
-              <option value="completed">Completed</option>
+              <option value="all">{t('common.allStatuses')}</option>
+              <option value="pending">{t('status.pending')}</option>
+              <option value="in-progress">{t('status.in_progress')}</option>
+              <option value="completed">{t('status.completed')}</option>
             </select>
             <select
               value={priorityFilter}
               onChange={(e) => setPriorityFilter(e.target.value)}
               className="p-2 border border-gray-300 rounded-md"
             >
-              <option value="all">All Priorities</option>
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
+              <option value="all">{t('common.allPriorities')}</option>
+              <option value="low">{t('priority.low')}</option>
+              <option value="medium">{t('priority.medium')}</option>
+              <option value="high">{t('priority.high')}</option>
             </select>
             <Button variant="outline" size="icon" className="relative">
               <Bell className="h-4 w-4" />
