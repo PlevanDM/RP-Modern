@@ -1,0 +1,18 @@
+СПОЧАТКУ ВИКОНАЙТЕ ЦІ КОМАНДИ (налаштування Git):
+
+git config --global user.name "PlevanDM"
+
+git config --global user.email "plevandm@example.com"
+
+ПОТІМ ПРОДОВЖУЙТЕ:
+
+git commit -m "Update: Clean files"
+
+git remote remove origin
+
+git remote add origin https://github.com/PlevanDM/RP-Modern.git
+
+git checkout -b pdate-fix2
+
+git push -u origin pdate-fix2 --force
+
