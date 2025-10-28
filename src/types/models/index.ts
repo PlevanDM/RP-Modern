@@ -61,7 +61,7 @@ export interface User {
   city: string;
   skills: string[];
   specialization: string;
-  role: 'client' | 'master' | 'admin';
+  role: 'client' | 'master' | 'admin' | 'superadmin';
   avatar: string;
   rating: number;
   phone?: string;
@@ -106,13 +106,14 @@ export interface Order {
   budget: number;
   proposalCount: number;
   issue: string; // Проблема
-  status: 'open' | 'proposed' | 'in_progress' | 'completed' | 'awaiting_payment_confirmation' | 'paid' | 'cancelled' | 'deleted' | 'searching' | 'active_search' | 'accepted' | 'awaiting_client_confirmation';
+  status: 'open' | 'accepted' | 'in_progress' | 'completed' | 'cancelled' | 'disputed';
   proposedPrice?: number;
   agreedPrice?: number;
   deadline?: Date;
   urgency: 'low' | 'medium' | 'high';
   createdAt: Date;
   updatedAt: Date;
+  completedAt?: Date; // Дата завершения заказа
   assignedMasterId?: string;
   devicePhotos?: string[]; // Фото устройства
   defectPhotos?: string[]; // Фото дефекта
@@ -169,8 +170,8 @@ export interface UserAction {
   timestamp: Date;
 }
 
-// Proposal (пропозиція від майстра до клієнта)
-export interface Proposal {
+// Offer (пропозиція від майстра до клієнта)
+export interface Offer {
   id: string;
   orderId: string;
   masterId: string;

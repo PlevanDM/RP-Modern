@@ -1,7 +1,4 @@
 import { DevicePhoto, DeviceModel } from '../types/models';
-import {
-  allDevicesDatabase
-} from '../data/appleDevicesDatabase';
 import { allComprehensiveDevices } from '../data/comprehensiveDeviceDatabase';
 
 // Базовый путь к фото стоку на рабочем столе
@@ -42,13 +39,11 @@ export class DevicePhotoService {
    */
   private async initializeDeviceModels(): Promise<void> {
     try {
-      console.log('🔄 Инициализация базы фото устройств...');
-      console.log('📁 Путь к фото стоку:', PHOTO_STOCK_BASE);
+      console.log('🔄 Инициализация базы данных устройств...');
 
-      // Загружаем модели устройств
-      this.loadDeviceModels();
+      await this.loadDeviceModels();
 
-      console.log('✅ База фото устройств инициализирована');
+      console.log('✅ База данных устройств инициализирована');
       console.log(`📊 Загружено моделей: ${this.deviceModels.size}`);
     } catch (error) {
       console.error('❌ Ошибка при инициализации моделей устройств:', error);
@@ -81,11 +76,15 @@ export class DevicePhotoService {
   /**
    * Загрузить модели устройств
    */
-  private loadDeviceModels(): void {
+  private async loadDeviceModels(): Promise<void> {
     try {
-      // Загружаем все модели из всех баз данных
-      allDevicesDatabase.forEach(model => {
-        // Добавляем фото для каждой модели
+      const response = await fetch('http://localhost:3001/api/devices');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const devices: DeviceModel[] = await response.json();
+
+      devices.forEach(model => {
         const modelWithPhotos = {
           ...model,
           photos: this.generatePhotosForModel(model)
@@ -93,74 +92,7 @@ export class DevicePhotoService {
         this.deviceModels.set(model.id, modelWithPhotos);
       });
 
-      // Загружаем модели из новой комплексной базы данных
-      allComprehensiveDevices.forEach(device => {
-        // Определяем характеристики в зависимости от категории
-        const isAudioDevice = device.category === 'Earbuds' || device.category === 'Accessories';
-        const isSmartwatch = device.category === 'Smartwatch';
-        
-        // Для наушников - реалистичные характеристики
-        let colors = [];
-        let storageOptions = [];
-        let specs = {};
-        
-        if (isAudioDevice) {
-          // Наушники - только белый цвет (AirPods) или 1-2 варианта
-          colors = ['White']; // AirPods только белые, Galaxy Buds - разные
-          storageOptions = []; // У наушников нет памяти
-          specs = {
-            batteryLife: 'До 6 годин',
-            chargingCase: 'До 30 годин',
-            weight: '5.4 г',
-            microphones: true,
-            noiseCancellation: device.name.includes('Pro') || device.name.includes('Buds Pro'),
-            waterResistance: 'IPX4'
-          };
-        } else if (isSmartwatch) {
-          // Часы - черный, белый
-          colors = ['Black', 'White', 'Silver'];
-          storageOptions = ['32GB'];
-          specs = {
-            screenSize: '1.9"',
-            batteryLife: 'До 18 годин',
-            strapMaterial: 'Silicone, Leather'
-          };
-        } else {
-          // Смартфоны, планшеты, ноутбуки
-          colors = ['Black', 'White', 'Blue', 'Purple', 'Gold'];
-          storageOptions = ['64GB', '128GB', '256GB', '512GB'];
-          specs = {
-            display: device.specs?.display || '6.1"',
-            processor: device.specs?.processor || 'A15',
-            camera: device.specs?.camera || '12MP',
-            battery: '4000 mAh'
-          };
-        }
-        
-        const deviceModel: DeviceModel = {
-          id: device.id,
-          name: device.name,
-          brand: device.brand,
-          category: device.category as any,
-          colors: colors,
-          storageOptions: storageOptions,
-          photos: [],
-          price: { min: 10000, max: 50000 },
-          specifications: specs
-        };
-
-        // Добавляем в Map
-        if (!this.deviceModels.has(device.id)) {
-          this.deviceModels.set(device.id, {
-            ...deviceModel,
-            photos: this.generatePhotosForModel(deviceModel)
-          });
-        }
-      });
-
       console.log(`📱 Загружено моделей устройств: ${this.deviceModels.size}`);
-      console.log(`📦 Из appleDevicesDatabase: ${allDevicesDatabase.length}`);
-      console.log(`📦 Из comprehensiveDeviceDatabase: ${allComprehensiveDevices.length}`);
     } catch (error) {
       console.error('❌ Ошибка загрузки моделей устройств:', error);
     }
