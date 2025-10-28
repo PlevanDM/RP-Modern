@@ -75,7 +75,6 @@ export function QuickActions({ isMaster, onMakeOffer, onOfferPart, onNegotiate }
 }
 
 interface ProposalMessageProps {
-  proposalId: string;
   price: number;
   description: string;
   status: 'pending' | 'accepted' | 'rejected';
@@ -85,7 +84,6 @@ interface ProposalMessageProps {
 }
 
 export function ProposalMessage({
-  proposalId,
   price,
   description,
   status,

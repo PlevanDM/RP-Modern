@@ -1,5 +1,5 @@
 import React from 'react';
-import { User } from '../../../../types';
+import { User, Order } from '../../../../types';
 import { safeLocaleDate } from '../../../../utils/localeUtils';
 
 interface UsersTabProps {
@@ -8,7 +8,7 @@ interface UsersTabProps {
   roleFilter: string;
   statusFilter: string;
   toggleUserBlock: (userId: string) => void;
-  orders: any[];
+  orders: Order[];
 }
 
 export const UsersTab: React.FC<UsersTabProps> = ({

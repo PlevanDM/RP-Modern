@@ -1,9 +1,9 @@
 // Modern Admin Dashboard v2025 - Advanced UI with Analytics
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import {
-  BarChart3, TrendingUp, Users, DollarSign, Package, Activity,
-  CheckCircle, AlertCircle, Clock, Zap, ArrowUp, ArrowDown,
-  Search, Filter, MoreVertical, Bell, Settings, LogOut
+  BarChart3, Users, DollarSign, Package, Activity,
+  AlertCircle, Zap, ArrowUp,
+  Search, Bell, Settings
 } from "lucide-react";
 
 export const AdminDashboardModern = () => {

@@ -13,7 +13,7 @@ const SuperadminDashboard: React.FC = () => {
       try {
         const usersData = await apiUserService.getUsers();
         setUsers(usersData);
-      } catch (err) {
+      } catch {
         setError('Failed to fetch users.');
       } finally {
         setLoading(false);
@@ -26,7 +26,7 @@ const SuperadminDashboard: React.FC = () => {
     try {
       const updatedUser = await apiUserService.updateUserRole(userId, newRole);
       setUsers(users.map(user => (user._id === userId ? updatedUser : user)));
-    } catch (err) {
+    } catch {
       setError('Failed to update user role.');
     }
   };

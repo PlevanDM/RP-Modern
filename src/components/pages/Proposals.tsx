@@ -1,14 +1,11 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  CheckCircle2, 
   X, 
   Clock, 
   DollarSign, 
-  Calendar, 
   User,
   Star,
-  AlertCircle,
   Send,
   Check,
   Ban

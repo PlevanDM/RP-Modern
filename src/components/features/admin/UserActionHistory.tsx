@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { UserAction } from '../../../types';
-import { adminService } from '../../../services/adminService';
+import { UserAction, Order } from '../../../types';
 
 export function UserActionHistory() {
   const [actions, setActions] = useState<UserAction[]>([]);
@@ -11,8 +10,8 @@ export function UserActionHistory() {
     
     if (storedActions.length === 0) {
       // Generate actions from orders and other events
-      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-      const generatedActions = orders.map((order: any) => ({
+      const orders: Order[] = JSON.parse(localStorage.getItem('orders') || '[]');
+      const generatedActions = orders.map((order: Order) => ({
         id: `action-${order.id}`,
         userId: order.clientId,
         action: `Створено замовлення: ${order.title}`,

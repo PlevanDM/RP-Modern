@@ -9,11 +9,9 @@ import {
   Save,
   X,
   Camera,
-  Shield,
   Star,
   Award,
   Briefcase,
-  MessageSquare,
   Heart,
   Share2,
   Smartphone,
@@ -42,9 +40,11 @@ interface ProfileData {
   memberSince?: string;
 }
 
+import { Order } from '../../types/models';
+
 interface ProfileProps {
   currentUser: UserType | undefined;
-  orders?: any[];
+  orders?: Order[];
 }
 
 export function Profile({ currentUser, orders = [] }: ProfileProps) {

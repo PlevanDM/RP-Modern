@@ -1,16 +1,13 @@
 import { Button } from '../ui/button';
-import { Wrench, Shield, Globe, Calendar, Clock, Youtube, Instagram, Send, Mail, Phone, Smartphone, Laptop, Tablet, MapPin, Circle, CreditCard, Star, Lock, CheckCircle2 } from 'lucide-react';
+import { Wrench, Shield, Globe, Calendar, Clock, Youtube, Instagram, Send, Mail, Phone, Smartphone, Laptop, Tablet, MapPin, CreditCard, Star, Lock, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '../../hooks/useTranslation';
 import { safeLocaleCurrency, safeLocaleDate, safeLocaleDateTime } from '../../utils/localeUtils';
 import { LoginModal } from '../auth/LoginModal';
 import { RegisterModal } from '../auth/RegisterModal';
-import { useState, useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
+import { useState, useEffect } from 'react';
 
-interface LandingPageProps {}
-
-const ModernLandingPage: React.FC<LandingPageProps> = () => {
+const ModernLandingPage: React.FC = () => {
   const t = useTranslation();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
@@ -31,15 +28,6 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
   }
   
   const [fallingOrders, setFallingOrders] = useState<FallingOrder[]>([]);
-  const contentRef = useRef<HTMLDivElement>(null);
-  
-  // Контентна зона (центр екрану)
-  const contentBounds = {
-    top: window.innerHeight * 0.25,
-    bottom: window.innerHeight * 0.75,
-    left: window.innerWidth * 0.2,
-    right: window.innerWidth * 0.8
-  };
 
   // Оновлення часу
   useEffect(() => {
@@ -150,15 +138,6 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
     };
   }, []);
 
-  // Зона скуповування внизу екрану
-  const collectionZone = {
-    top: window.innerHeight * 0.85,
-    bottom: window.innerHeight,
-    left: 0,
-    right: window.innerWidth
-  };
-
-
   return (
     <div className="dark min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
       {/* Підкладка для падаючих елементів */}
@@ -170,7 +149,6 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
           {fallingOrders.map((order, index) => {
             const startX = order.x;
             const rotation = (Math.random() * 10 - 5);
-            const delay = index * 1.5; // Збільшена затримка між елементами
             
             // Визначаємо іконку на основі пристрою
             const getIcon = () => {
@@ -182,19 +160,6 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
             };
             
             const Icon = getIcon();
-            const colors = [
-              'from-gray-100/80 to-gray-200/80 border-gray-300/40',
-              'from-gray-100/80 to-gray-200/80 border-gray-300/40',
-              'from-gray-100/80 to-gray-200/80 border-gray-300/40',
-              'from-gray-100/80 to-gray-200/80 border-gray-300/40'
-            ];
-            const textColors = [
-              'text-gray-700',
-              'text-gray-700',
-              'text-gray-700',
-              'text-gray-700'
-            ];
-            const colorIndex = index % colors.length;
             const finalY = window.innerHeight * 0.82;
             
             return (

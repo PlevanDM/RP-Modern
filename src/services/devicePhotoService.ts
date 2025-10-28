@@ -1,8 +1,4 @@
 import { DevicePhoto, DeviceModel } from '../types/models';
-import { allComprehensiveDevices } from '../data/comprehensiveDeviceDatabase';
-
-// Базовый путь к фото стоку на рабочем столе
-const PHOTO_STOCK_BASE = 'C:/Users/dmitr/Desktop/PHOTO STOK';
 
 /**
  * Интерфейс для iFixit гайда

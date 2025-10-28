@@ -46,10 +46,12 @@ interface Chat {
   messages: Message[];
 }
 
+import { Order } from '../../types/models';
+
 interface MessagesProps {
   currentUser?: User;
   masters?: User[];
-  orders?: any[];
+  orders?: Order[];
   selectedMaster?: User;
 }
 

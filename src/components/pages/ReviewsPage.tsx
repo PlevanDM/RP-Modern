@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Send, Edit, Trash2, Reply } from 'lucide-react';
+import { Star, Edit, Trash2, Reply } from 'lucide-react';
 import { useReviewsStore } from '../../store/reviewsStore';
 import { useAuthStore } from '../../store/authStore';
 import { useOrdersStore } from '../../store/ordersStore';
@@ -122,10 +122,9 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
 
 export const ReviewsPage: React.FC = () => {
   const { currentUser } = useAuthStore();
-  const { reviews, deleteReview, getReviewsByMasterId, getReviewStats } = useReviewsStore();
-  const { orders } = useOrdersStore();
+  const { reviews, deleteReview, getReviewsByMasterId } = useReviewsStore();
 
-  const [selectedMasterId, setSelectedMasterId] = useState<string | null>(null);
+  const [selectedMasterId, _setSelectedMasterId] = useState<string | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showResponseModal, setShowResponseModal] = useState(false);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
@@ -149,15 +148,6 @@ export const ReviewsPage: React.FC = () => {
   const handleMasterRespond = (review: Review) => {
     setSelectedReview(review);
     setShowResponseModal(true);
-  };
-
-  const handleUpdateReview = (updates: Partial<Review>) => {
-    if (selectedReview) {
-      const { updateReview } = useReviewsStore.getState();
-      updateReview(selectedReview.id, updates);
-      setShowEditModal(false);
-      setSelectedReview(null);
-    }
   };
 
   const handleMasterResponse = (response: string) => {
@@ -191,7 +181,6 @@ export const ReviewsPage: React.FC = () => {
         ) : (
           <div className="space-y-4">
             {displayedReviews.map((review) => {
-              const order = orders.find(o => o.id === review.orderId);
               const isOwnReview = review.clientId === currentUser?.id;
               
               return (

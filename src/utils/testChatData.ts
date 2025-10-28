@@ -1,4 +1,3 @@
-import { Order } from '../types/models';
 import { testUsers } from './testUsers';
 
 export interface ChatMessage {

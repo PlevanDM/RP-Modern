@@ -56,7 +56,7 @@ export function Settings({ onLogout }: SettingsProps) {
     }));
   };
 
-  const handleChange = (key: string, value: any) => {
+  const handleChange = (key: string, value: string | boolean) => {
     setSettings(prev => ({
       ...prev,
       [key]: value

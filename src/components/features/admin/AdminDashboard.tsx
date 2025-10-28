@@ -14,11 +14,12 @@ import { UsersTab } from './tabs/UsersTab';
 import { OrdersTab } from './tabs/OrdersTab';
 import { StatCards } from './StatCards';
 import SuperadminDashboard from '../superadmin/SuperadminDashboard';
+import { Order, Transaction } from '../../../types';
 
 interface AdminDashboardProps {
   users?: User[];
-  orders?: any[];
-  transactions?: any[];
+  orders?: Order[];
+  transactions?: Transaction[];
 }
 
 export function AdminDashboard({ users: propUsers = [], orders: propOrders = [], transactions: propTransactions = [] }: AdminDashboardProps) {

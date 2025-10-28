@@ -1,10 +1,6 @@
 import React from 'react';
 
-interface ToolsStepProps {
-  // Props to handle form data will be added later
-}
-
-export const ToolsStep: React.FC<ToolsStepProps> = () => {
+export const ToolsStep = () => {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-center">Ваш инструмент</h2>

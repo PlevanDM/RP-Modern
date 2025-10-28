@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Smartphone, Monitor, Tablet, Laptop, Watch } from 'lucide-react';
+import { Smartphone, Monitor, Laptop } from 'lucide-react';
 
 interface ClientProfileStepProps {
-  onComplete?: (data: any) => void;
+  onComplete?: (data: Record<string, unknown>) => void;
 }
 
 export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
@@ -227,7 +227,7 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
               ].map(option => (
                 <button
                   key={option.id}
-                  onClick={() => setSkillLevel(option.id as any)}
+                  onClick={() => setSkillLevel(option.id as 'beginner' | 'intermediate' | 'advanced' | null)}
                   className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                     skillLevel === option.id
                       ? 'border-blue-500 bg-blue-50 shadow-md'
@@ -285,7 +285,7 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
               ].map(option => (
                 <button
                   key={option.id}
-                  onClick={() => setBudgetRange(option.id as any)}
+                  onClick={() => setBudgetRange(option.id as 'low' | 'medium' | 'high' | null)}
                   className={`p-3 rounded-xl border-2 transition-all duration-200 ${
                     budgetRange === option.id
                       ? 'border-blue-500 bg-blue-50 shadow-md'
@@ -311,7 +311,7 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
               ].map(option => (
                 <button
                   key={option.id}
-                  onClick={() => setWorkLocation(option.id as any)}
+                  onClick={() => setWorkLocation(option.id as 'service' | 'home' | 'both' | null)}
                   className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                     workLocation === option.id
                       ? 'border-blue-500 bg-blue-50 shadow-md'

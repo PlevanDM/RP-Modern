@@ -1,4 +1,4 @@
-import { Order, Proposal, User } from '../types';
+import { Order, Proposal } from '../types';
 
 export interface RoleNotification {
   type: 'info' | 'success' | 'warning' | 'error';
@@ -118,7 +118,7 @@ export const generateOrderNotifications = (
 export const getRoleNotificationMessage = (
   userRole: 'client' | 'master' | 'admin',
   action: string,
-  context: any
+  _context: Record<string, unknown>
 ): string => {
   const messages: Record<string, Record<string, string>> = {
     client: {

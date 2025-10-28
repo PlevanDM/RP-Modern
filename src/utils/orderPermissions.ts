@@ -82,7 +82,7 @@ export function getClientAvailableActions(
       );
       break;
 
-    case 'completed':
+    case 'completed': {
       // Check if within 7 days for dispute
       const completedAt = order.completedAt || order.updatedAt;
       const daysSince = completedAt 
@@ -107,7 +107,7 @@ export function getClientAvailableActions(
         }
       );
       break;
-
+    }
     default:
       break;
   }

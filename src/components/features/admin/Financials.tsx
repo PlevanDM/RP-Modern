@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { adminService } from '../../../services/adminService';
 import { safeLocaleCurrency } from '../../../utils/localeUtils';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Order, EscrowTransaction } from '../../../../types';
 
 export function Financials() {
   const [totalRevenue, setTotalRevenue] = useState<number>(0);
@@ -10,20 +11,20 @@ export function Financials() {
 
   useEffect(() => {
     const fetchData = async () => {
-        const orders = await adminService.getOrders();
-        const transactions = await adminService.getTransactions();
+        const orders: Order[] = await adminService.getOrders();
+        const transactions: EscrowTransaction[] = await adminService.getTransactions();
 
         const revenue = transactions
-            .filter((t: any) => t.type === 'income' && t.status === 'completed')
-            .reduce((sum: number, t: any) => sum + (t.amount || 0), 0);
+            .filter((t: EscrowTransaction) => t.type === 'income' && t.status === 'completed')
+            .reduce((sum: number, t: EscrowTransaction) => sum + (t.amount || 0), 0);
 
-        const completedTransactions = transactions.filter((t: any) => t.status === 'completed');
+        const completedTransactions = transactions.filter((t: EscrowTransaction) => t.status === 'completed');
 
         const totalOrderValue = orders
-            .filter((o: any) => o.status === 'completed')
-            .reduce((sum: number, o: any) => sum + (o.agreedPrice || o.proposedPrice || 0), 0);
+            .filter((o: Order) => o.status === 'completed')
+            .reduce((sum: number, o: Order) => sum + (o.agreedPrice || o.proposedPrice || 0), 0);
 
-        const completedOrders = orders.filter((o: any) => o.status === 'completed').length;
+        const completedOrders = orders.filter((o: Order) => o.status === 'completed').length;
 
         setTotalRevenue(revenue || 0);
         setTotalTransactions(completedTransactions.length);

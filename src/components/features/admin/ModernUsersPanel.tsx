@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { 
   Users, Search, Plus, Edit,
   Mail, MapPin, Calendar, Star, MoreVertical,
-  UserCheck, UserX, Crown, Wrench, Eye
+  UserCheck, UserX, Crown, Wrench
 } from 'lucide-react';
 import {
   AdminCard,

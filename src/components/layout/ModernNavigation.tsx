@@ -30,7 +30,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { JarvisChat } from "../features/ai/JarvisChat";
-import { User as CurrentUser } from "../../types/models";
+import { User as CurrentUser, Order } from "../../types/models";
 import { useTranslation } from "react-i18next";
 
 interface MenuItem {
@@ -49,7 +49,7 @@ interface ModernNavigationProps {
   setActiveItem: (item: string) => void;
   unviewedOrdersCount: number;
   onLogout?: () => void;
-  onCreateOrder?: (orderData: any) => void;
+  onCreateOrder?: (orderData: Omit<Order, 'id'>) => void;
 }
 
 // Оптимизированная карта маршрутов - дефинируется один раз вне компонента
@@ -84,11 +84,10 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   activeItem,
   setActiveItem,
   unviewedOrdersCount,
-  onLogout,
   onCreateOrder,
 }) => {
   const { t } = useTranslation();
-  const [isCollapsed, setIsCollapsed] = React.useState(false); // По умолчанию развернуто
+  const [isCollapsed, _setIsCollapsed] = React.useState(false); // По умолчанию развернуто
   const [isPinned, setIsPinned] = React.useState(true); // По умолчанию закреплено
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 

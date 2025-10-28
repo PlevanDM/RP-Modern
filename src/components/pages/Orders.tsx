@@ -226,10 +226,6 @@ export function Orders({
     setSelectedOrderForMaster('');
   };
 
-  const handleCreateOrder = (orderData: Partial<Order>) => {
-    onCreateOrder?.(orderData);
-  };
-
   const handleDeleteOrder = (order: Order) => {
     setOrderToDelete(order);
     setShowDeleteConfirm(true);
@@ -253,21 +249,6 @@ export function Orders({
   const handleToggleActiveSearch = (order: Order) => {
     if (onToggleActiveSearch) {
       onToggleActiveSearch(order.id);
-    }
-  };
-
-  const handleStatusChange = (order: Order, newStatus: string) => {
-    // Clients cannot manually change status
-    if (currentUser?.role === 'client') {
-      console.log('Clients cannot manually change order status');
-      return;
-    }
-    
-    // Only admin and master can change status
-    if (currentUser?.role === 'admin' || currentUser?.role === 'master') {
-      if (onUpdateOrderStatus) {
-        onUpdateOrderStatus(order.id, newStatus as Order['status']);
-      }
     }
   };
 

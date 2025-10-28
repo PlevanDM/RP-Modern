@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { User, Order } from '../../../../types';
 
 export function AnalyticsDashboard() {
   const [stats, setStats] = useState({
@@ -9,22 +10,22 @@ export function AnalyticsDashboard() {
   });
 
   useEffect(() => {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+    const users: User[] = JSON.parse(localStorage.getItem('users') || '[]');
+    const orders: Order[] = JSON.parse(localStorage.getItem('orders') || '[]');
     
     const totalUsers = users.length;
-    const activeUsers = users.filter((u: any) => !u.blocked).length;
+    const activeUsers = users.filter((u: User) => !u.blocked).length;
     
     // Users created in last 30 days
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const newUsers = users.filter((u: any) => {
+    const newUsers = users.filter((u: User) => {
       const created = new Date(u.createdAt || Date.now());
       return created >= thirtyDaysAgo;
     }).length;
     
     // Calculate retention: users who made at least 1 order
-    const usersWithOrders = new Set(orders.map((o: any) => o.clientId));
+    const usersWithOrders = new Set(orders.map((o: Order) => o.clientId));
     const retentionRate = totalUsers > 0 ? Math.round((usersWithOrders.size / totalUsers) * 100) : 0;
     
     setStats({

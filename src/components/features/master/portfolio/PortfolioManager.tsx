@@ -11,7 +11,7 @@ export const PortfolioManager: React.FC = () => {
   const { currentUser } = useAuthStore();
   const [items, setItems] = useState<PortfolioItem[]>([]);
   const [isEditing, setIsEditing] = useState<string | null>(null);
-  const [editedItem, setEditedItem] = useState<any>(null);
+  const [editedItem, setEditedItem] = useState<PortfolioItem | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [newItem, setNewItem] = useState({
     title: '',
@@ -24,7 +24,7 @@ export const PortfolioManager: React.FC = () => {
     completedAt: new Date(),
   });
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: PortfolioItem) => {
     setIsEditing(item.id);
     setEditedItem({ ...item });
   };
