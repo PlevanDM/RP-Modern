@@ -168,6 +168,98 @@ const DEVICE_BRANDS: Brand[] = [
       'Hero 10',
       'Max'
     ]
+  },
+  {
+    id: 'honor',
+    name: 'HONOR',
+    icon: <Smartphone className="w-6 h-6 text-red-500" />,
+    color: 'from-red-700 to-red-500',
+    models: [
+      'HONOR 90',
+      'HONOR 90 Pro',
+      'HONOR 100',
+      'HONOR 100 Pro',
+      'HONOR Magic 6',
+      'HONOR Magic 6 Pro',
+      'HONOR X50',
+      'HONOR X60'
+    ]
+  },
+  {
+    id: 'motorola',
+    name: 'Motorola',
+    icon: <Smartphone className="w-6 h-6 text-red-600" />,
+    color: 'from-red-800 to-red-600',
+    models: [
+      'Moto Edge 40',
+      'Moto Edge 50',
+      'Moto G84',
+      'Moto G73',
+      'Moto Razr 2023',
+      'Moto ThinkPhone'
+    ]
+  },
+  {
+    id: 'nothing',
+    name: 'Nothing Phone',
+    icon: <Smartphone className="w-6 h-6 text-black" />,
+    color: 'from-gray-900 to-gray-700',
+    models: [
+      'Nothing Phone 1',
+      'Nothing Phone 2',
+      'Nothing Phone 2a',
+      'Nothing Phone 3'
+    ]
+  },
+  {
+    id: 'infinix',
+    name: 'Infinix',
+    icon: <Smartphone className="w-6 h-6 text-gray-800" />,
+    color: 'from-gray-800 to-gray-600',
+    models: [
+      'Infinix Note 30 Pro',
+      'Infinix Note 12',
+      'Infinix Smart 8',
+      'Infinix Hot 40',
+      'Infinix Zero Ultra'
+    ]
+  },
+  {
+    id: 'tecno',
+    name: 'Tecno',
+    icon: <Smartphone className="w-6 h-6 text-blue-500" />,
+    color: 'from-blue-600 to-blue-400',
+    models: [
+      'Tecno Camon 30 Pro',
+      'Tecno Camon 20',
+      'Tecno Spark 20',
+      'Tecno Phantom V Fold'
+    ]
+  },
+  {
+    id: 'meizu',
+    name: 'Meizu',
+    icon: <Smartphone className="w-6 h-6 text-yellow-500" />,
+    color: 'from-yellow-600 to-yellow-400',
+    models: [
+      'Meizu 20',
+      'Meizu 19',
+      'Meizu 18',
+      'Meizu Note 10'
+    ]
+  },
+  {
+    id: 'realme',
+    name: 'Realme',
+    icon: <Smartphone className="w-6 h-6 text-yellow-500" />,
+    color: 'from-yellow-700 to-yellow-500',
+    models: [
+      'Realme GT 5',
+      'Realme 12 Pro',
+      'Realme 11 Pro',
+      'Realme C65',
+      'Realme GT Neo 5'
+    ]
   }
 ];
 
@@ -191,6 +283,8 @@ interface CreateOrderData {
   issue: string;
   description: string;
   phone: string;
+  imei?: string;
+  serialNumber?: string;
 }
 
 export function DeviceCatalog({ onCreateOrder }: { onCreateOrder?: (data: CreateOrderData) => void }) {
@@ -204,7 +298,9 @@ export function DeviceCatalog({ onCreateOrder }: { onCreateOrder?: (data: Create
     model: '',
     issue: '',
     description: '',
-    phone: ''
+    phone: '',
+    imei: '',
+    serialNumber: ''
   });
 
   const filteredBrands = DEVICE_BRANDS.filter(brand =>
@@ -252,7 +348,9 @@ export function DeviceCatalog({ onCreateOrder }: { onCreateOrder?: (data: Create
         model: '',
         issue: '',
         description: '',
-        phone: ''
+        phone: '',
+        imei: '',
+        serialNumber: ''
       });
     }
   };
@@ -325,7 +423,6 @@ export function DeviceCatalog({ onCreateOrder }: { onCreateOrder?: (data: Create
                   </div>
                   <div className="flex-1 text-left">
                     <p className="font-medium">{brand.name}</p>
-                    <p className="text-xs opacity-70">{brand.models.length} моделей</p>
                   </div>
                   <ChevronRight className="w-4 h-4 opacity-50" />
                 </motion.button>
@@ -487,6 +584,36 @@ export function DeviceCatalog({ onCreateOrder }: { onCreateOrder?: (data: Create
                     className="w-full p-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     rows={3}
                   />
+                </div>
+
+                {/* IMEI and Serial Number */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      IMEI (опціонально)
+                    </label>
+                    <Input
+                      type="text"
+                      placeholder="000000000000000"
+                      value={orderData.imei}
+                      onChange={(e) =>
+                        setOrderData({ ...orderData, imei: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Серійний номер (опціонально)
+                    </label>
+                    <Input
+                      type="text"
+                      placeholder="SNXXXXXXXXXX"
+                      value={orderData.serialNumber}
+                      onChange={(e) =>
+                        setOrderData({ ...orderData, serialNumber: e.target.value })
+                      }
+                    />
+                  </div>
                 </div>
 
                 {/* Buttons */}

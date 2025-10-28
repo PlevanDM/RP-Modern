@@ -136,7 +136,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { label: "Платежі", href: "#", icon: CreditCard },
         { label: "Чат", href: "#", icon: MessageSquare }
       );
-    } else if (currentUser?.role === 'admin') {
+    } else if (currentUser?.role === 'admin' || currentUser?.role === 'superadmin') {
       baseItems.push(
         { label: "Користувачі", href: "#", icon: User },
         { label: "Замовлення", href: "#", icon: ShoppingCart },
@@ -354,17 +354,17 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                 className={cn(
                   "group relative flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium transition-all w-full text-left",
                   isActive
-                    ? "bg-primary text-primary-foreground shadow-md font-semibold ring-1 ring-primary/50"
+                    ? "bg-primary text-primary-foreground shadow-lg font-bold ring-2 ring-primary/80 scale-[1.02]"
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                   collapsed && "justify-center px-1 py-2"
                 )}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: isActive ? 1.02 : 1.05 }}
+                whileTap={{ scale: 0.97 }}
               >
                 {collapsed ? (
                   <AnimatedIcon />
                 ) : (
-                  <Icon className={cn("h-5 w-5 flex-shrink-0", isActive && "text-primary-foreground")} />
+                  <Icon className={cn("h-5 w-5 flex-shrink-0", isActive && "text-primary-foreground scale-110")} />
                 )}
                 <AnimatePresence mode="wait">
                   {!collapsed && (

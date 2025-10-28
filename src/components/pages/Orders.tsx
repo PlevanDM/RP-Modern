@@ -9,6 +9,7 @@ import { OrderEditModal } from '../features/admin/OrderEditModal';
 import { ConfirmationDialog } from '../features/admin/ConfirmationDialog';
 import OrderDetails from './OrderDetails';
 import { useTranslation } from 'react-i18next';
+import { getClientAvailableActions } from '../../utils/orderPermissions';
 
 interface OrdersProps {
   currentUser: CurrentUser;
@@ -110,6 +111,21 @@ export function Orders({
     return result;
   }, [orders, searchTerm, statusFilter, sortBy, currentUser?.id, currentUser?.role]);
 
+  const getStatusIcon = (status: string) => {
+    const icons: Record<string, string> = {
+      'open': '🟡',
+      'proposed': '💬',
+      'accepted': '✅',
+      'in_progress': '🔧',
+      'completed': '✔️',
+      'cancelled': '🚫',
+      'deleted': '🗑️',
+      'searching': '🔍',
+      'active_search': '🔍'
+    };
+    return icons[status] || '⚪';
+  };
+
   const getStatusColor = (status: string) => {
     const statusColors: Record<string, string> = {
       'open': 'bg-blue-100 text-blue-800',
@@ -132,6 +148,41 @@ export function Orders({
       'low': '🟢 Не терміно'
     };
     return urgencyMap[urgency || 'low'] || '🟢 Не терміно';
+  };
+
+  const handleClientAction = (order: Order, actionId: string) => {
+    switch (actionId) {
+      case 'cancel':
+        // TODO: Implement cancel order
+        console.log('Cancel order:', order.id);
+        if (onUpdateOrderStatus) {
+          onUpdateOrderStatus(order.id, 'cancelled');
+        }
+        break;
+      case 'edit':
+        // TODO: Implement edit order
+        setOrderToEdit(order);
+        setShowEditModal(true);
+        break;
+      case 'create_payment':
+        // TODO: Navigate to payment page
+        setActiveItem?.('payments');
+        break;
+      case 'release_payment':
+        // TODO: Release payment from escrow
+        console.log('Release payment for order:', order.id);
+        break;
+      case 'create_dispute':
+        // TODO: Open dispute modal
+        console.log('Create dispute for order:', order.id);
+        break;
+      case 'create_review':
+        // TODO: Navigate to review page
+        console.log('Create review for order:', order.id);
+        break;
+      default:
+        console.log('Unknown action:', actionId);
+    }
   };
 
   const handleEditOrder = () => {
@@ -206,8 +257,17 @@ export function Orders({
   };
 
   const handleStatusChange = (order: Order, newStatus: string) => {
-    if (onUpdateOrderStatus) {
-      onUpdateOrderStatus(order.id, newStatus as Order['status']);
+    // Clients cannot manually change status
+    if (currentUser?.role === 'client') {
+      console.log('Clients cannot manually change order status');
+      return;
+    }
+    
+    // Only admin and master can change status
+    if (currentUser?.role === 'admin' || currentUser?.role === 'master') {
+      if (onUpdateOrderStatus) {
+        onUpdateOrderStatus(order.id, newStatus as Order['status']);
+      }
     }
   };
 
@@ -322,20 +382,34 @@ export function Orders({
                       </p>
                     )}
                   </div>
-                  <select 
-                    value={order.status}
-                    onChange={(e) => handleStatusChange(order, e.target.value)}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ml-4 border-0 outline-none cursor-pointer ${getStatusColor(order.status)}`}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <option value="open">🟡 {t('status.open')}</option>
-                    <option value="active_search">🔍 {t('status.active_search')}</option>
-                    <option value="accepted">✅ {t('status.accepted')}</option>
-                    <option value="in_progress">🔧 {t('status.in_progress')}</option>
-                    <option value="completed">✔️ {t('status.completed')}</option>
-                    <option value="deleted">🗑️ {t('status.deleted')}</option>
-                  </select>
+                  {/* Status badge - not changeable by client */}
+                  <div className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ml-4 border-0 ${getStatusColor(order.status)}`}>
+                    {getStatusIcon(order.status)} {t(`status.${order.status}`)}
+                  </div>
                 </div>
+
+                {/* Client Actions */}
+                {currentUser?.role === 'client' && (
+                  <div className="flex gap-2 mt-3 flex-wrap">
+                    {(() => {
+                      const availableActions = getClientAvailableActions(order, currentUser);
+                      return availableActions
+                        .filter(action => action.allowed)
+                        .map(action => (
+                          <button
+                            key={action.id}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleClientAction(order, action.id);
+                            }}
+                            className="px-3 py-1 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-colors"
+                          >
+                            {action.icon} {action.label}
+                          </button>
+                        ));
+                    })()}
+                  </div>
+                )}
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 {order.assignedMasterId && (

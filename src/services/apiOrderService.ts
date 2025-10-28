@@ -4,6 +4,33 @@ import { Order } from '../types';
 
 const API_URL = 'http://localhost:3001/api';
 
+// Create axios instance with auth interceptor
+const apiClient = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add auth token to all requests
+apiClient.interceptors.request.use((config) => {
+  const authStorage = localStorage.getItem('auth-storage');
+  if (authStorage) {
+    try {
+      const parsed = JSON.parse(authStorage);
+      const user = parsed.state?.currentUser;
+      if (user) {
+        // Get token from localStorage or use a mock token for testing
+        const token = localStorage.getItem('jwt-token') || 'test-token';
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (e) {
+      console.error('Failed to parse auth storage:', e);
+    }
+  }
+  return config;
+});
+
 class ApiOrderService {
   private static instance: ApiOrderService;
 
@@ -17,12 +44,12 @@ class ApiOrderService {
   }
 
   public async getOrders(): Promise<Order[]> {
-    const response = await axios.get(`${API_URL}/orders`);
+    const response = await apiClient.get('/orders');
     return response.data;
   }
 
   public async createOrder(order: Omit<Order, 'id'>): Promise<Order> {
-    const response = await axios.post(`${API_URL}/orders`, order);
+    const response = await apiClient.post('/orders', order);
     return response.data;
   }
 }

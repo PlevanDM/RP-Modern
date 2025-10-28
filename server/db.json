@@ -1,0 +1,80 @@
+{
+  "users": [
+    {
+      "id": "test-client-1",
+      "name": "Test Client",
+      "email": "client@test.com",
+      "role": "client",
+      "city": "Київ",
+      "phone": "+380501234567",
+      "avatar": "",
+      "balance": 0,
+      "skills": [],
+      "specialization": "Client",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 0,
+      "rating": 0,
+      "password": "$2b$10$LeSOTyZZzQuG6cGUuBnmSeNZ/.t4nsVh3CmZX6SBk.U4vpROXyySS"
+    },
+    {
+      "id": "test-master-1",
+      "name": "Test Master",
+      "email": "master@test.com",
+      "role": "master",
+      "city": "Київ",
+      "phone": "+380509876543",
+      "avatar": "",
+      "balance": 0,
+      "skills": [
+        "iPhone Repair",
+        "Screen Replacement"
+      ],
+      "specialization": "iPhone Specialist",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 0,
+      "rating": 4.8,
+      "password": "$2b$10$AEjhDrzGUqxVFsNrnBeeCuKu7FXv16gxejqH9x2USQBS8aAbH58Jy"
+    },
+    {
+      "id": "test-admin-1",
+      "name": "Admin",
+      "email": "admin@test.com",
+      "role": "admin",
+      "city": "Київ",
+      "phone": "+380500000000",
+      "avatar": "",
+      "balance": 0,
+      "skills": [],
+      "specialization": "Administrator",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 0,
+      "rating": 0,
+      "password": "$2b$10$27b6nq4aF7dHYXwtAAahkexbQSqSg5UtnztT.SjxpX.1o52rz13k2"
+    },
+    {
+      "id": "test-superadmin-1",
+      "name": "Super Admin",
+      "email": "superadmin@test.com",
+      "role": "superadmin",
+      "city": "Київ",
+      "phone": "+380500000001",
+      "avatar": "",
+      "balance": 0,
+      "skills": [],
+      "specialization": "Super Administrator",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 0,
+      "rating": 0,
+      "password": "$2b$10$JGxdStIRA79M6O/G.d8iCecTY3R5ByHGhb0A178FqDfE8zLjkiAga"
+    }
+  ],
+  "orders": [],
+  "offers": [],
+  "payments": [],
+  "disputes": [],
+  "reviews": []
+}

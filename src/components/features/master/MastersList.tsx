@@ -89,42 +89,25 @@ export const MastersList: React.FC<MastersListProps> = ({
   return (
     <div className="w-full">
       {/* Заголовок */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          🔍 Знайти майстра
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          Знайти майстра
         </h1>
-        <p className="text-lg text-gray-600 mb-4">
-          Виберіть найкращого фахівця для вашої техніки Apple
+        <p className="text-sm text-gray-600">
+          Оберіть найкращого фахівця для вашої техніки
         </p>
-        
-        {/* Подсказки для клиентов */}
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <div className="flex items-start gap-3">
-            <div className="text-green-600 text-xl">💡</div>
-            <div>
-              <h3 className="font-semibold text-green-800 mb-2">Як користуватися пошуком:</h3>
-              <ul className="text-sm text-green-700 space-y-1">
-                <li>• <strong>Пошук:</strong> Введіть ім'я майстра або тип послуги (наприклад: "екран", "батарея")</li>
-                <li>• <strong>Фільтри:</strong> Оберіть місто, тип пристрою та послуги для точного пошуку</li>
-                <li>• <strong>Карточка майстра:</strong> Натисніть "Написати" для чату, "Портфоліо" для перегляду робіт</li>
-                <li>• <strong>Зірка:</strong> Додайте майстра до обраних для швидкого доступу</li>
-              </ul>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Пошук та фільтри */}
-      <div className="mb-8 space-y-6">
+      <div className="mb-6 space-y-3">
         {/* Основний пошук */}
         <div className="relative">
           <input
             type="text"
-            placeholder="🔍 Пошук за ім'ям майстра або спеціальністю..."
+            placeholder="Пошук за ім'ям майстра або спеціальністю..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-            title="Введіть ім'я майстра або тип послуги для пошуку"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all text-sm"
           />
         </div>
 
@@ -150,25 +133,23 @@ export const MastersList: React.FC<MastersListProps> = ({
           </div>
         )}
 
-        {/* Панель фільтрів - завжди видима */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
-          <div className="flex items-center gap-2 mb-4">
-            <Filter className="w-5 h-5 text-indigo-600" />
-            <h3 className="text-lg font-semibold text-gray-800">Фільтри пошуку</h3>
-            <span className="text-sm text-gray-500">(оберіть критерії для точного пошуку)</span>
+        {/* Панель фільтрів */}
+        <div className="bg-white rounded-lg p-4 border border-gray-200">
+          <div className="flex items-center gap-2 mb-3">
+            <Filter className="w-4 h-4 text-gray-600" />
+            <h3 className="text-sm font-medium text-gray-700">Фільтри пошуку</h3>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {/* Фільтр по місту */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                🏙️ Місто
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Місто
               </label>
               <select
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
-                title="Оберіть місто для пошуку майстрів"
+                className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white"
               >
                 <option value="">Всі міста</option>
                 {allCities.map((city) => (
@@ -181,14 +162,13 @@ export const MastersList: React.FC<MastersListProps> = ({
 
             {/* Фільтр по типу пристрою */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                📱 Тип пристрою
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Тип пристрою
               </label>
               <select
                 value={selectedDeviceType}
                 onChange={(e) => setSelectedDeviceType(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
-                title="Оберіть тип пристрою Apple для ремонту"
+                className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white"
               >
                 <option value="">Всі пристрої</option>
                 {deviceTypes.map((device) => (
@@ -201,14 +181,13 @@ export const MastersList: React.FC<MastersListProps> = ({
 
             {/* Фільтр по типу послуги */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                🔧 Тип послуги
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Тип послуги
               </label>
               <select
                 value={selectedServiceType}
                 onChange={(e) => setSelectedServiceType(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
-                title="Оберіть тип послуги або проблему з пристроєм"
+                className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white"
               >
                 <option value="">Всі послуги</option>
                 {serviceTypes.map((service) => (
@@ -223,27 +202,15 @@ export const MastersList: React.FC<MastersListProps> = ({
       </div>
 
       {/* Результати */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-600">
-            Знайдено <span className="font-semibold text-indigo-600">{filteredMasters.length}</span> майстрів
-            {hasActiveFilters && (
-              <span className="ml-2 text-xs text-gray-500">
-                (з фільтрами)
-              </span>
-            )}
-          </p>
-          {filteredMasters.length > 0 && (
-            <div className="text-xs text-gray-500">
-              💡 Натисніть на карточку майстра для деталей
-            </div>
-          )}
-        </div>
+      <div className="mb-4">
+        <p className="text-xs text-gray-600">
+          Знайдено {filteredMasters.length} майстрів
+        </p>
       </div>
 
       {/* Сітка мастерів */}
       {filteredMasters.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredMasters.map((master) => (
             <div key={master.id} onClick={() => onSelectMaster?.(master)}>
               <MasterCard 
@@ -258,34 +225,23 @@ export const MastersList: React.FC<MastersListProps> = ({
           ))}
         </div>
       ) : (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-xl font-medium text-gray-900 mb-3">
-            Майстрів не знайдено
-          </h3>
-          <p className="text-gray-600 mb-6 max-w-md mx-auto">
-            Спробуйте змінити фільтри або критерії пошуку. Можливо, варто:
+        <div className="text-center py-8">
+          <p className="text-sm text-gray-500">
+            Майстрів не знайдено. Спробуйте змінити фільтри пошуку.
           </p>
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 max-w-md mx-auto">
-            <ul className="text-sm text-yellow-800 text-left space-y-1">
-              <li>• Очистити всі фільтри</li>
-              <li>• Змінити місто пошуку</li>
-              <li>• Спробувати інший тип пристрою</li>
-              <li>• Ввести інші ключові слова</li>
-            </ul>
-          </div>
-          <button
-            onClick={() => {
-              setSearchQuery('');
-              setSelectedCity('');
-              setSelectedDeviceType('');
-              setSelectedServiceType('');
-            }}
-            className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-            title="Очистити всі фільтри та показати всіх майстрів"
-          >
-            🔄 Очистити фільтри
-          </button>
+          {hasActiveFilters && (
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCity('');
+                setSelectedDeviceType('');
+                setSelectedServiceType('');
+              }}
+              className="mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200 transition-colors"
+            >
+              Очистити фільтри
+            </button>
+          )}
         </div>
       )}
 

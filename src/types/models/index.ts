@@ -21,6 +21,17 @@ export interface EscrowTransaction {
   refundedAt?: Date;
 }
 
+export interface Payment {
+  id: string;
+  orderId: string;
+  amount: number;
+  status: 'pending' | 'escrowed' | 'released' | 'refunded' | 'frozen';
+  commission: number; // e.g., 0.10 (10%)
+  createdAt: Date;
+  releasedAt?: Date;
+  refundedAt?: Date;
+}
+
 export interface Dispute {
   id: string;
   orderId: string;
@@ -34,6 +45,7 @@ export interface Dispute {
   supportTicketId?: string;
   resolution?: string;
   resolutionBy?: string; // ID пользователя, который решил спор
+  decision?: 'client_wins' | 'master_wins' | 'compromise'; // Решение админа
 }
 
 export interface WorkExperience {
@@ -120,6 +132,8 @@ export interface Order {
   location?: string; // Местоположение
   clientPhone?: string;
   clientEmail?: string;
+  imei?: string; // IMEI номер для ідентифікації пристрою
+  serialNumber?: string; // Серійний номер пристрою
   isActiveSearch?: boolean; // Активный поиск мастеров
   deletedAt?: Date; // Дата удаления
   paymentStatus: 'pending' | 'escrowed' | 'released' | 'refunded'; // Статус платежа

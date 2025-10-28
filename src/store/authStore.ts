@@ -22,6 +22,7 @@ export const useAuthStore = create<AuthState>()(
         if (user) {
           // Перевіряємо чи користувач має всі необхідні дані для автоматичного завершення онбордингу
           const hasCompleteProfile = user.name && user.city && user.phone;
+          console.log('🔐 Login user:', { email, name: user.name, city: user.city, phone: user.phone, hasCompleteProfile });
           set({
             currentUser: user,
             isOnboardingCompleted: hasCompleteProfile,
@@ -32,7 +33,10 @@ export const useAuthStore = create<AuthState>()(
         const newUser = await apiAuthService.register(user);
         set({ currentUser: newUser, isOnboardingCompleted: false });
       },
-      logout: () => set({ currentUser: null, isOnboardingCompleted: false }),
+      logout: () => {
+        localStorage.removeItem('jwt-token');
+        set({ currentUser: null, isOnboardingCompleted: false });
+      },
       completeOnboarding: () => set({ isOnboardingCompleted: true }),
     }),
     {

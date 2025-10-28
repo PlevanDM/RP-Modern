@@ -5,6 +5,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import { LoginModal } from '../auth/LoginModal';
 import { RegisterModal } from '../auth/RegisterModal';
 import { useState, useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 
 interface LandingPageProps {}
 
@@ -63,41 +64,19 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
     const statuses: Array<'new' | 'in_progress' | 'completed'> = ['new', 'in_progress', 'completed'];
     const amounts = [1200, 1500, 1800, 2000, 2500, 3000, 3500, 4000, 4500, 5000];
     
-    const cardWidth = 300; // Ширина картки
-    const minGap = 40; // Мінімальна відстань між картками
-    const availableWidth = window.innerWidth * 0.7; // 70% ширини екрану
-    const startX = window.innerWidth * 0.15; // Початок зони
+    const cardWidth = 280;
     
-    // Створюємо "слоти" для позиціонування
-    const slots: number[] = [];
-    for (let x = startX; x <= startX + availableWidth - cardWidth; x += cardWidth + minGap) {
-      slots.push(x);
-    }
-    
-    const findFreeSlot = (usedPositions: number[]): number => {
-      // Шукаємо вільний слот
-      for (const slot of slots) {
-        const isFree = !usedPositions.some(pos => Math.abs(pos - slot) < cardWidth + minGap);
-        if (isFree) return slot;
-      }
-      
-      // Якщо всі слоти зайняті, генеруємо випадкову позицію з більшою відстанню
-      let newX: number;
-      let attempts = 0;
-      do {
-        newX = Math.random() * availableWidth + startX;
-        const isFarEnough = usedPositions.every(pos => {
-          return Math.abs(newX - pos) > (cardWidth + minGap);
-        });
-        attempts++;
-        if (isFarEnough || attempts > 100) break;
-      } while (attempts < 100);
-      
-      return newX;
+    // Випадкова позиція по всій ширині екрану (з відступами)
+    const getRandomX = (): number => {
+      const padding = 50; // Відступи з боків
+      const minX = padding;
+      const maxX = window.innerWidth - cardWidth - padding;
+      return Math.random() * (maxX - minX) + minX;
     };
     
-    const newOrder = (usedSlots: number[] = []) => {
-      const freeX = findFreeSlot(usedSlots);
+    const newOrder = (): FallingOrder => {
+      // Випадкова позиція по всій площі екрану
+      const randomX = getRandomX();
       
       // Визначаємо вагу на основі типу пристрою і суми
       const deviceType = devices[Math.floor(Math.random() * devices.length)];
@@ -131,50 +110,43 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
         status: statuses[Math.floor(Math.random() * statuses.length)],
         issue: issues[Math.floor(Math.random() * issues.length)],
         y: -100,
-        x: freeX,
+        x: randomX,
         weight: weight,
         velocity: velocity,
         bounce: bounce
       };
     };
 
-    // Перша хвиля - 5 карток
-    const initial: FallingOrder[] = [];
-    const usedSlots: number[] = [];
-    
-    for (let i = 0; i < 5; i++) {
-      const order = newOrder(usedSlots);
-      initial.push(order);
-      usedSlots.push(order.x);
-    }
-    setFallingOrders(initial);
-    
-    const interval = setInterval(() => {
-      // Падає по 1 елементу
-      setFallingOrders(prev => {
-        if (prev.length >= 7) return prev;
-        
-        const usedSlots = prev.map(order => order.x);
-        const newOrderData = newOrder(usedSlots);
-        return [...prev, newOrderData];
-      });
-    }, 2500); // Кожні 2.5 секунди
-    
-    return () => clearInterval(interval);
-  }, []); // Видалено залежність від fallingOrders.length
+    // Нескінченний фоновий ефект - постійно падають і зникають
+    const generateCard = () => {
+      const order = newOrder();
+      setFallingOrders(prev => [...prev, order]);
+    };
 
-  // Накопичення елементів внизу - не більше 8
-  useEffect(() => {
-    const timer = setInterval(() => {
+    // Генеруємо 8-10 карток на старті
+    for (let i = 0; i < 8; i++) {
+      setTimeout(() => generateCard(), i * 400);
+    }
+
+    // Додаємо нові картки кожні 1.5-2 секунди
+    const addInterval = setInterval(() => {
+      generateCard();
+    }, 2000);
+
+    // Видаляємо старі картки після анімації (після 8 секунд)
+    const removeInterval = setInterval(() => {
       setFallingOrders(prev => {
-        if (prev.length > 8) {
-          // Видаляємо найстаріші
-          return prev.slice(-8);
+        if (prev.length > 10) {
+          return prev.slice(prev.length - 10);
         }
         return prev;
       });
-    }, 1500);
-    return () => clearInterval(timer);
+    }, 2000);
+    
+    return () => {
+      clearInterval(addInterval);
+      clearInterval(removeInterval);
+    };
   }, []);
 
   // Зона скуповування внизу екрану
@@ -210,18 +182,19 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
             
             const Icon = getIcon();
             const colors = [
-              'from-blue-500/20 to-purple-500/20 border-blue-400/30',
-              'from-green-500/20 to-teal-500/20 border-green-400/30',
-              'from-purple-500/20 to-pink-500/20 border-purple-400/30',
-              'from-orange-500/20 to-red-500/20 border-orange-400/30'
+              'from-gray-100/80 to-gray-200/80 border-gray-300/40',
+              'from-gray-100/80 to-gray-200/80 border-gray-300/40',
+              'from-gray-100/80 to-gray-200/80 border-gray-300/40',
+              'from-gray-100/80 to-gray-200/80 border-gray-300/40'
             ];
             const textColors = [
-              'text-blue-300',
-              'text-green-300',
-              'text-purple-300',
-              'text-orange-300'
+              'text-gray-700',
+              'text-gray-700',
+              'text-gray-700',
+              'text-gray-700'
             ];
             const colorIndex = index % colors.length;
+            const finalY = window.innerHeight * 0.82;
             
             return (
               <motion.div
@@ -232,135 +205,83 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
                   x: startX, 
                   opacity: 0,
                   scale: 0.8,
-                  rotate: rotation
+                  rotate: rotation * 0.2
                 }}
                 animate={{ 
-                  y: [
-                    -200,
-                    window.innerHeight * 0.3,  // 30% шляху
-                    window.innerHeight * 0.55,  // 55%
-                    window.innerHeight * 0.75,  // 75%
-                    window.innerHeight * 0.82,  // Зупинка
-                    window.innerHeight * 0.78 + (order.bounce * 50),  // Відскок вгору
-                    window.innerHeight * 0.82  // Фінальна позиція
-                  ],
-                  opacity: [0, 0.7, 1, 1, 1, 0.9],
-                  x: startX, // Фіксована X-позиція для кожного елемента
-                  rotate: [
-                    rotation * 0.1,
-                    rotation * 0.4,
-                    rotation * 0.7,
-                    rotation * 1.0,  // До відскоку
-                    rotation * 1.1,  // Відскок
-                    rotation * 1.0   // Фінал
-                  ],
-                  scale: [0.85, 0.95, 0.92, 0.9, 0.93, 0.9]
+                  y: finalY,
+                  opacity: 0.85,
+                  scale: 0.9,
+                  rotate: rotation,
                 }}
                 exit={{ 
                   opacity: 0,
-                  scale: 0.6,
                   y: window.innerHeight + 100,
-                  transition: { duration: 0.6, ease: "easeIn" }
+                  scale: 0.6,
+                  transition: { duration: 0.3, ease: "easeIn" }
                 }}
                 transition={{ 
-                  duration: (10 / order.velocity) + (Math.random() * 3 / order.velocity), // Важкіші швидше
-                  times: [0, 0.25, 0.5, 0.7, 0.8, 1],
-                  ease: ["easeInOut", "easeOut", "easeIn", "easeOut", "easeInOut", "easeInOut"]
+                  duration: 8 + (Math.random() * 3),
+                  ease: "easeOut",
+                  delay: index * 0.05
                 }}
                 className="absolute"
                 style={{ 
                   left: `${startX}px`,
-                  willChange: 'transform',
-                  filter: 'blur(0.4px) brightness(0.95)',
-                  opacity: 0.85,
-                  pointerEvents: 'none'
+                  pointerEvents: 'none',
+                  filter: 'blur(0.3px)'
                 }}
               >
                 <motion.div 
                   className={`
-                    backdrop-blur-md bg-gradient-to-br ${colors[colorIndex]} 
-                    border ${colors[colorIndex].split(' ')[2]}
-                    px-4 py-3 rounded-2xl shadow-2xl
-                    flex items-center gap-3
-                    transition-all duration-300
+                    backdrop-blur-sm bg-white/90 
+                    border border-gray-300
+                    px-3 py-2 rounded-lg shadow-lg
+                    flex items-center gap-2
+                    transition-all duration-200
                     transform-gpu
                   `}
-                  whileHover={{ scale: 1.08, y: -3 }}
                   style={{
-                    minWidth: `${250 + (order.weight * 10)}px`,
-                    maxWidth: `${280 + (order.weight * 15)}px`,
+                    minWidth: `${200 + (order.weight * 10)}px`,
+                    maxWidth: `${230 + (order.weight * 15)}px`,
                     transformStyle: 'preserve-3d',
                     backfaceVisibility: 'hidden',
-                    fontSize: `${14 + (order.weight * 2)}px`
+                    fontSize: `${13 + (order.weight * 1)}px`
                   }}
                   animate={{
                     boxShadow: [
-                      `0 ${20 + (order.weight * 5)}px ${25 + (order.weight * 10)}px -5px rgba(0, 0, 0, ${0.2 + (order.weight * 0.1)}), 0 ${10 + (order.weight * 3)}px ${10 + (order.weight * 5)}px -5px rgba(0, 0, 0, 0.1)`,
-                      `0 ${25 + (order.weight * 8)}px ${50 + (order.weight * 15)}px -12px rgba(0, 0, 0, ${0.3 + (order.weight * 0.15)}), 0 0 0 1px rgba(255, 255, 255, 0.05)`,
-                      `0 ${15 + (order.weight * 5)}px ${30 + (order.weight * 10)}px -5px rgba(0, 0, 0, ${0.25 + (order.weight * 0.1)})`
-                    ],
-                    y: [0, -8, 0]
+                      `0 4px 8px rgba(0, 0, 0, 0.08)`,
+                      `0 6px 12px rgba(0, 0, 0, 0.1)`,
+                      `0 4px 8px rgba(0, 0, 0, 0.08)`
+                    ]
                   }}
                   transition={{
-                    duration: 2,
+                    duration: 3,
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}
                 >
                   <div className="relative">
-                    <Icon className={`w-6 h-6 ${textColors[colorIndex]} animate-pulse`} />
-                    <motion.div
-                      className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping"
-                      style={{ animationDelay: `${delay}s` }}
-                    />
+                    <Icon className={`w-5 h-5 text-gray-600`} />
                   </div>
                   <div className="flex flex-col gap-1.5 flex-1">
-                    <div className={`font-bold ${textColors[colorIndex]} text-sm leading-tight`}>
+                    <div className="font-bold text-gray-900 text-sm leading-tight">
                       {order.device}
                     </div>
-                    <div className={`text-xs font-medium ${textColors[colorIndex]}/90 opacity-90`}>
+                    <div className="text-xs text-gray-600">
                       {order.issue}
                     </div>
-                    <div className="flex items-center justify-between gap-2 mt-1 pt-1 border-t border-white/10">
-                      <div className="flex items-center gap-1.5 text-xs text-foreground/70">
-                        <MapPin className="w-3.5 h-3.5 opacity-70" />
+                    <div className="flex items-center justify-between gap-2 mt-1 pt-1 border-t border-gray-200">
+                      <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                        <MapPin className="w-3.5 h-3.5" />
                         <span className="font-medium">{order.city}</span>
                       </div>
-                      <div className={`font-bold text-sm px-2 py-0.5 rounded-md ${
-                        order.status === 'new' ? 'bg-green-500/20 text-green-300' : 
-                        order.status === 'in_progress' ? 'bg-yellow-500/20 text-yellow-300' : 
-                        'bg-blue-500/20 text-blue-300'
-                      }`}>
+                      <div className="font-bold text-sm text-gray-900">
                         ₴{order.amount.toLocaleString('uk-UA')}
                       </div>
                     </div>
                   </div>
-                  <div className="ml-auto flex flex-col items-end gap-1">
-                    <motion.div
-                      className={`w-2.5 h-2.5 rounded-full ${
-                        order.status === 'new' ? 'bg-green-400' : 
-                        order.status === 'in_progress' ? 'bg-yellow-400' : 
-                        'bg-blue-400'
-                      }`}
-                      animate={{ 
-                        scale: [1, 1.2, 1],
-                        opacity: [0.6, 1, 0.6]
-                      }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                    />
-                    <div className={`text-[10px] ${
-                      order.status === 'new' ? 'text-green-300' : 
-                      order.status === 'in_progress' ? 'text-yellow-300' : 
-                      'text-blue-300'
-                    }`}>
-                      {order.status === 'new' ? 'Нове' : 
-                       order.status === 'in_progress' ? 'В роботі' : 
-                       'Готово'}
-                    </div>
+                  <div className="ml-auto">
+                    <div className="w-1.5 h-1.5 rounded-full bg-gray-400" />
                   </div>
                 </motion.div>
               </motion.div>
@@ -371,7 +292,7 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
 
       {/* Верхня панель з мовою і часом - Анімація */}
       <motion.div 
-        className="absolute top-6 left-0 right-0 flex justify-between items-center px-8 z-[100]"
+            className="absolute top-4 sm:top-6 left-0 right-0 flex justify-between items-center px-4 sm:px-8 z-[100]"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -394,20 +315,20 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
           </motion.button>
         </motion.div>
 
-        <div className="flex items-center gap-6 text-sm">
+        <div className="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm">
           <motion.div 
-            className="flex items-center gap-2 text-foreground/70"
+            className="flex items-center gap-1 sm:gap-2 text-foreground/70"
             animate={{ opacity: [1, 0.5, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            <Clock className="w-4 h-4" />
-            <span className="font-mono">
+            <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="font-mono hidden sm:inline">
               {currentTime.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
             </span>
           </motion.div>
-          <div className="flex items-center gap-2 text-foreground/70">
-            <Calendar className="w-4 h-4" />
-            <span className="font-mono">
+          <div className="flex items-center gap-1 sm:gap-2 text-foreground/70">
+            <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="font-mono text-xs sm:text-sm">
               {currentTime.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' })}
             </span>
           </div>
@@ -437,7 +358,7 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
               transition={{ duration: 3, repeat: Infinity }}
             >
               <motion.div 
-                className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center"
+                className="w-10 h-10 sm:w-12 sm:h-12 bg-primary rounded-lg flex items-center justify-center"
                 animate={{ 
                   boxShadow: [
                     "0 0 20px rgba(59, 130, 246, 0.3)",
@@ -451,13 +372,13 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
                   animate={{ rotate: [0, 360] }}
                   transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 >
-                  <Wrench className="w-7 h-7 text-primary-foreground" />
+                  <Wrench className="w-6 h-6 sm:w-7 sm:h-7 text-primary-foreground" />
                 </motion.div>
               </motion.div>
             </motion.div>
             <div>
               <motion.h1 
-                className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent"
                 animate={{ 
                   backgroundPosition: ['0%', '100%', '0%'],
                   scale: [1, 1.02, 1]
@@ -470,7 +391,7 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
                 Repair HUB
               </motion.h1>
               <motion.p 
-                className="text-primary text-lg"
+                className="text-primary text-base sm:text-lg md:text-xl"
                 animate={{ opacity: [1, 0.7, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
@@ -479,7 +400,7 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
             </div>
           </div>
           <motion.p 
-            className="text-muted-foreground text-xl max-w-2xl mx-auto"
+            className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
@@ -493,19 +414,21 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex justify-center gap-4"
+          className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 px-4"
         >
           <motion.div
             whileHover={{ scale: 1.05, y: -3 }}
             whileTap={{ scale: 0.95 }}
+            className="w-full sm:w-auto"
           >
-            <Button size="lg" onClick={() => setIsRegisterModalOpen(true)}>Начать работу</Button>
+            <Button size="lg" className="w-full sm:w-auto" onClick={() => setIsRegisterModalOpen(true)}>Начать работу</Button>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05, y: -3 }}
             whileTap={{ scale: 0.95 }}
+            className="w-full sm:w-auto"
           >
-            <Button size="lg" variant="outline" onClick={() => setIsLoginModalOpen(true)}>Войти</Button>
+            <Button size="lg" variant="outline" className="w-full sm:w-auto" onClick={() => setIsLoginModalOpen(true)}>Войти</Button>
           </motion.div>
         </motion.div>
 
@@ -557,112 +480,212 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
               <span>Безопасная платформа • Гарантия качества</span>
             </motion.div>
 
-            {/* Карточки з перевагами */}
-            <div className="flex flex-wrap justify-center gap-4 max-w-4xl">
-              {/* Безпечна оплата */}
-              <motion.div
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400"
-                whileHover={{ scale: 1.05, y: -2 }}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
-                <Lock className="w-4 h-4" />
-                <span className="text-xs">Безпечна оплата після виконання</span>
-              </motion.div>
-
-              {/* Рейтинг майстрів */}
-              <motion.div
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-400"
-                whileHover={{ scale: 1.05, y: -2 }}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
-                <Star className="w-4 h-4" />
-                <span className="text-xs">Підвірені майстри з рейтингом 4.5+</span>
-              </motion.div>
-
-              {/* Гарантія */}
-              <motion.div
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400"
-                whileHover={{ scale: 1.05, y: -2 }}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
-                <CheckCircle2 className="w-4 h-4" />
-                <span className="text-xs">Гарантія на послуги 30 днів</span>
-              </motion.div>
-
-              {/* Комісія (завуальовано) */}
-              <motion.div
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400"
-                whileHover={{ scale: 1.05, y: -2 }}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
-                <CreditCard className="w-4 h-4" />
-                <span className="text-xs">Мінімальна комісія платформи</span>
-              </motion.div>
-
-              {/* Швидке вирішення */}
-              <motion.div
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400"
-                whileHover={{ scale: 1.05, y: -2 }}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
-                <Clock className="w-4 h-4" />
-                <span className="text-xs">Швидке вирішення питань 24/7</span>
-              </motion.div>
-            </div>
+            {/* Карточки з перевагами - топові анімації */}
+            <motion.div 
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3 max-w-7xl px-4"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.1,
+                    delayChildren: 0.2
+                  }
+                }
+              }}
+            >
+              {[
+                { icon: Lock, text: 'Безпечна оплата', gradient: 'from-emerald-50 to-emerald-100' },
+                { icon: Star, text: 'Рейтинг 4.5+', gradient: 'from-amber-50 to-amber-100' },
+                { icon: CheckCircle2, text: 'Гарантія 30 днів', gradient: 'from-blue-50 to-blue-100' },
+                { icon: CreditCard, text: 'Мінімальна комісія', gradient: 'from-purple-50 to-purple-100' },
+                { icon: Clock, text: 'Підтримка 24/7', gradient: 'from-cyan-50 to-cyan-100' }
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  className={`flex items-center gap-2 px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg border border-gray-200 bg-gradient-to-br ${item.gradient} backdrop-blur-sm cursor-pointer relative overflow-hidden text-xs sm:text-sm`}
+                  variants={{
+                    hidden: { opacity: 0, y: 20, scale: 0.9 },
+                    visible: { 
+                      opacity: 1, 
+                      y: 0, 
+                      scale: 1,
+                      transition: {
+                        type: "spring",
+                        stiffness: 100,
+                        damping: 15,
+                        mass: 1
+                      }
+                    }
+                  }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    rotate: [0, -2, 2, 0],
+                    transition: { 
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 10
+                    }
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {/* Шimmer effect */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                    animate={{
+                      x: ['-100%', '100%'],
+                      transition: {
+                        duration: 2,
+                        repeat: Infinity,
+                        repeatDelay: 3,
+                        ease: "linear"
+                      }
+                    }}
+                  />
+                  
+                  <motion.div
+                    animate={{
+                      rotate: [0, 5, -5, 0],
+                      transition: {
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }
+                    }}
+                  >
+                    <item.icon className="w-4 h-4 text-gray-700 relative z-10" />
+                  </motion.div>
+                  <span className="text-xs font-medium text-gray-800 relative z-10">{item.text}</span>
+                  
+                  {/* Magnetic effect background */}
+                  <motion.div
+                    className="absolute inset-0 rounded-lg opacity-0 hover:opacity-100 bg-white/20 blur-xl"
+                    whileHover={{ scale: 2 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
           </motion.div>
 
-          {/* Соціальні мережі */}
-          <div className="flex flex-col gap-6 items-center">
-            <div className="flex items-center gap-4">
+          {/* Соціальні мережі - топові анімації з magnetic hover */}
+          <div className="flex flex-col gap-6 items-center px-4">
+            <div className="flex flex-col sm:flex-row items-center gap-2">
               <motion.a
                 href="https://youtube.com/@repairhub"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.15, y: -4, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition relative overflow-hidden group"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 relative overflow-hidden group w-full sm:w-auto"
+                whileHover={{ scale: 1.1, rotateY: 10 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1, type: "spring", stiffness: 100 }}
               >
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/20 to-red-500/0"
-                  animate={{ x: ['-100%', '100%'] }}
-                  transition={{ duration: 3, repeat: Infinity }}
+                  className="absolute inset-0 bg-gradient-to-br from-red-400/20 via-transparent to-transparent"
+                  animate={{
+                    scale: [1, 1.5, 1],
+                    opacity: [0, 0.3, 0]
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
                 />
-                <Youtube className="w-5 h-5 relative z-10" />
-                <span className="text-sm font-medium relative z-10">YouTube</span>
+                <motion.div
+                  animate={{
+                    rotate: [0, 5, 0],
+                    transition: {
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }
+                  }}
+                >
+                  <Youtube className="w-4 h-4 text-gray-700 relative z-10" />
+                </motion.div>
+                <span className="text-sm text-gray-700 relative z-10">YouTube</span>
               </motion.a>
 
               <motion.a
                 href="https://instagram.com/repairhub"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.15, y: -4, rotate: -5 }}
-                whileTap={{ scale: 0.9 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-pink-500/10 text-pink-400 border border-pink-500/20 hover:bg-pink-500/20 transition relative overflow-hidden group"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 relative overflow-hidden group w-full sm:w-auto"
+                whileHover={{ scale: 1.1, rotateY: -10 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.15, type: "spring", stiffness: 100 }}
               >
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-pink-500/0 via-pink-500/20 to-pink-500/0"
-                  animate={{ x: ['-100%', '100%'] }}
-                  transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
+                  className="absolute inset-0 bg-gradient-to-br from-pink-400/20 via-transparent to-transparent"
+                  animate={{
+                    scale: [1, 1.5, 1],
+                    opacity: [0, 0.3, 0]
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
                 />
-                <Instagram className="w-5 h-5 relative z-10" />
-                <span className="text-sm font-medium relative z-10">Instagram</span>
+                <motion.div
+                  animate={{
+                    rotate: [0, -5, 0],
+                    transition: {
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }
+                  }}
+                >
+                  <Instagram className="w-4 h-4 text-gray-700 relative z-10" />
+                </motion.div>
+                <span className="text-sm text-gray-700 relative z-10">Instagram</span>
               </motion.a>
 
               <motion.a
                 href="https://t.me/repairhub"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.15, y: -4, rotate: 5 }}
-                whileTap={{ scale: 0.9 }}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition relative overflow-hidden group"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 relative overflow-hidden group w-full sm:w-auto"
+                whileHover={{ scale: 1.1, rotateZ: 5 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
               >
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/20 to-blue-500/0"
-                  animate={{ x: ['-100%', '100%'] }}
-                  transition={{ duration: 3, repeat: Infinity, delay: 1 }}
+                  className="absolute inset-0 bg-gradient-to-br from-blue-400/20 via-transparent to-transparent"
+                  animate={{
+                    scale: [1, 1.5, 1],
+                    opacity: [0, 0.3, 0]
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
                 />
-                <Send className="w-5 h-5 relative z-10" />
-                <span className="text-sm font-medium relative z-10">Telegram</span>
+                <motion.div
+                  animate={{
+                    x: [0, 3, 0],
+                    transition: {
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }
+                  }}
+                >
+                  <Send className="w-4 h-4 text-gray-700 relative z-10" />
+                </motion.div>
+                <span className="text-sm text-gray-700 relative z-10">Telegram</span>
               </motion.a>
             </div>
 

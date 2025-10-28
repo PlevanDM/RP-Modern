@@ -157,25 +157,111 @@ export const SUPPORTED_BRANDS = [
     ]
   },
   {
+    id: 'honor',
+    name: 'HONOR',
+    logo: '📱',
+    color: '#FF0000',
+    devices: [
+      // HONOR flagship series
+      'HONOR 90', 'HONOR 90 Pro',
+      'HONOR 100', 'HONOR 100 Pro',
+      'HONOR Magic 5', 'HONOR Magic 5 Pro',
+      'HONOR Magic 6', 'HONOR Magic 6 Pro',
+      // V series
+      'HONOR V30', 'HONOR V40', 'HONOR V50',
+      // Magic series
+      'HONOR Magic 3', 'HONOR Magic 4',
+      // Budget X series
+      'HONOR X9', 'HONOR X50', 'HONOR X60',
+      'HONOR 9X', 'HONOR 10X'
+    ]
+  },
+  {
+    id: 'motorola',
+    name: 'Motorola',
+    logo: '📱',
+    color: '#E1142D',
+    devices: [
+      // Edge series 2022-2024
+      'Moto Edge 30', 'Moto Edge 30 Pro', 'Moto Edge 40',
+      'Moto Edge 40 Pro', 'Moto Edge 50',
+      // G series budget
+      'Moto G53', 'Moto G54', 'Moto G63',
+      'Moto G73', 'Moto G84',
+      // E series ultra budget
+      'Moto E13', 'Moto E14', 'Moto E22',
+      // Razr foldables
+      'Moto Razr 2022', 'Moto Razr 2023',
+      // ThinkPhone
+      'Motorola ThinkPhone'
+    ]
+  },
+  {
+    id: 'nothing',
+    name: 'Nothing Phone',
+    logo: '📱',
+    color: '#000000',
+    devices: [
+      'Nothing Phone 1',
+      'Nothing Phone 2',
+      'Nothing Phone 2a',
+      'Nothing Phone 3'
+    ]
+  },
+  {
+    id: 'infinix',
+    name: 'Infinix',
+    logo: '📱',
+    color: '#0E0C0C',
+    devices: [
+      // Note series
+      'Infinix Note 12', 'Infinix Note 12 Pro',
+      'Infinix Note 30', 'Infinix Note 30 Pro',
+      // Smart series
+      'Infinix Smart 7', 'Infinix Smart 8',
+      'Infinix Smart 8 Plus',
+      // Hot series
+      'Infinix Hot 30', 'Infinix Hot 40',
+      // Zero series
+      'Infinix Zero 30', 'Infinix Zero Ultra'
+    ]
+  },
+  {
+    id: 'tecno',
+    name: 'Tecno',
+    logo: '📱',
+    color: '#000000',
+    devices: [
+      // Camon series
+      'Tecno Camon 20', 'Tecno Camon 20 Pro',
+      'Tecno Camon 30', 'Tecno Camon 30 Pro',
+      // Spark series
+      'Tecno Spark 10', 'Tecno Spark 11',
+      'Tecno Spark 20',
+      // Phantom series
+      'Tecno Phantom V Fold'
+    ]
+  },
+  {
     id: 'asus',
     name: 'ASUS',
-    logo: '📱',
+    logo: '💻',
     color: '#000000',
-    devices: ['ROG Phone', 'ZenFone', 'ASUS ROG']
+    devices: [
+      'ROG Phone 5', 'ROG Phone 6', 'ROG Phone 7',
+      'ZenFone 9', 'ZenFone 10',
+      'ASUS ROG Ally'
+    ]
   },
   {
-    id: 'sony',
-    name: 'Sony',
+    id: 'meizu',
+    name: 'Meizu',
     logo: '📱',
-    color: '#000000',
-    devices: ['Xperia 1', 'Xperia 5', 'Xperia 10']
-  },
-  {
-    id: 'lg',
-    name: 'LG',
-    logo: '📱',
-    color: '#A50034',
-    devices: ['G8', 'V60', 'Wing']
+    color: '#FFC107',
+    devices: [
+      'Meizu 18', 'Meizu 19', 'Meizu 20',
+      'Meizu Note 9', 'Meizu Note 10'
+    ]
   }
 ];
 

@@ -18,7 +18,16 @@ class ApiAuthService {
 
   public async login(email: string, password?: string): Promise<User | null> {
     const response = await axios.post(`${API_URL}/auth/login`, { email, password });
-    return response.data;
+    
+    // Backend returns { token, user: {...} }
+    const { token, user } = response.data;
+    
+    // Store token in localStorage
+    if (token) {
+      localStorage.setItem('jwt-token', token);
+    }
+    
+    return user;
   }
 
   public async register(user: User): Promise<User> {

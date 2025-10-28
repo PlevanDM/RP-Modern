@@ -3,6 +3,7 @@ import { X, AlertCircle } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { apiAuthService } from '../../services/apiAuthService';
 import { registerTestUsers } from '../../utils/testUsers';
+import { initializeTestData } from '../../utils/testData';
 
 interface LoginModalProps {
   onClose: () => void;
@@ -21,37 +22,22 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
   useEffect(() => {
     registerTestUsers();
     // Initialize test orders if they don't exist
-    const { initializeTestData } = require('../../utils/testData');
     initializeTestData();
   }, []);
 
   // Quick login for test users
-  const handleQuickLogin = async (role: 'client' | 'master') => {
+  const handleQuickLogin = async (role: 'client' | 'master' | 'admin' | 'superadmin') => {
     try {
-      // Знаходимо тестового користувача
-      const testUsers = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
-      const testUser = testUsers.find((u: any) => u.role === role);
+      // Determine test credentials based on role (these users exist in db.json)
+      const credentials = 
+        role === 'client' ? { email: 'client@test.com', password: 'password123' } :
+        role === 'master' ? { email: 'master@test.com', password: 'password123' } :
+        role === 'admin' ? { email: 'admin@test.com', password: 'password123' } :
+        { email: 'superadmin@test.com', password: 'password123' };
       
-      if (testUser) {
-        // Зберігаємо в auth-storage (Zustand persist)
-        localStorage.setItem('auth-storage', JSON.stringify({
-          state: {
-            currentUser: testUser,
-            isOnboardingCompleted: true
-          },
-          version: 0
-        }));
-        
-        // Встановлюємо в store
-        useAuthStore.setState({ currentUser: testUser, isOnboardingCompleted: true });
-        
-        // Перенаправляємо через невеликий delay для синхронізації
-        setTimeout(() => {
-          window.location.reload();
-        }, 100);
-      } else {
-        setError('Тестовий користувач не знайдено');
-      }
+      // Call backend API to login
+      await login(credentials.email, credentials.password);
+      onClose();
     } catch (err) {
       console.error('Quick login error:', err);
       setError('Помилка входу');
@@ -197,18 +183,30 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
           {activeTab === 'social' && (
             <div className="space-y-3">
               {/* Quick login buttons for test users */}
-              <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="grid grid-cols-2 gap-2 mb-4">
                 <button
                   onClick={() => handleQuickLogin('client')}
-                  className="py-3 px-4 bg-blue-50 text-blue-700 rounded-xl font-semibold hover:bg-blue-100 transition-all text-sm border-2 border-blue-200"
+                  className="py-3 px-3 bg-gray-100 text-gray-900 rounded-lg font-semibold hover:bg-gray-200 transition-all text-xs border border-gray-300"
                 >
-                  🔵 Тест Клієнт
+                  Клієнт
                 </button>
                 <button
                   onClick={() => handleQuickLogin('master')}
-                  className="py-3 px-4 bg-orange-50 text-orange-700 rounded-xl font-semibold hover:bg-orange-100 transition-all text-sm border-2 border-orange-200"
+                  className="py-3 px-3 bg-gray-100 text-gray-900 rounded-lg font-semibold hover:bg-gray-200 transition-all text-xs border border-gray-300"
                 >
-                  🔧 Тест Майстер
+                  Майстер
+                </button>
+                <button
+                  onClick={() => handleQuickLogin('admin')}
+                  className="py-3 px-3 bg-gray-100 text-gray-900 rounded-lg font-semibold hover:bg-gray-200 transition-all text-xs border border-gray-300"
+                >
+                  Admin
+                </button>
+                <button
+                  onClick={() => handleQuickLogin('superadmin')}
+                  className="py-3 px-3 bg-gray-100 text-gray-900 rounded-lg font-semibold hover:bg-gray-200 transition-all text-xs border border-gray-300"
+                >
+                  SuperAdmin
                 </button>
               </div>
 

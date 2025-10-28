@@ -4,7 +4,7 @@ import ModernLandingPage from './components/pages/ModernLandingPage';
 import ModernMasterDashboard from './components/features/master/MasterDashboard/ModernMasterDashboard';
 import ModernClientDashboard from './components/features/client/ClientDashboard/ModernClientDashboard';
 import { MyDevices } from './components/features/client/MyDevices';
-import { DeviceCatalog } from './components/pages/DeviceCatalog';
+import { DeviceCatalog } from './components/features/client/DeviceCatalog';
 import { AdminDashboard } from './components/features/admin/AdminDashboard';
 import { SettingsConfiguration } from './components/features/admin/SettingsConfiguration';
 import { ModernUsersPanel } from './components/features/admin/ModernUsersPanel';
@@ -314,7 +314,7 @@ function App() {
                   createOrder={createOrder}
                   setSelectedOrder={setSelectedOrder}
                 />
-              ) : currentUser.role === 'admin' ? (
+              ) : (currentUser.role === 'admin' || currentUser.role === 'superadmin') ? (
                 <AdminDashboard />
               ) : (
                 <div className="text-center p-8">
@@ -323,19 +323,19 @@ function App() {
                 </div>
               ))}
 
-            {activeItem === 'catalog' && <DeviceCatalog />}
+            {activeItem === 'catalog' && <DeviceCatalog onCreateOrder={handleJarvisCreateOrder} />}
 
-            {activeItem === 'users' && currentUser?.role === 'admin' && <ModernUsersPanel />}
+            {activeItem === 'users' && (currentUser?.role === 'admin' || currentUser?.role === 'superadmin') && <ModernUsersPanel />}
 
-            {activeItem === 'finance' && currentUser?.role === 'admin' && <ModernFinancialPanel />}
+            {activeItem === 'finance' && (currentUser?.role === 'admin' || currentUser?.role === 'superadmin') && <ModernFinancialPanel />}
 
-            {activeItem === 'analytics' && currentUser?.role === 'admin' && (
+            {activeItem === 'analytics' && (currentUser?.role === 'admin' || currentUser?.role === 'superadmin') && (
               <div className="p-8">
                 <AdminDashboard />
               </div>
             )}
 
-            {activeItem === 'security' && currentUser?.role === 'admin' && (
+            {activeItem === 'security' && (currentUser?.role === 'admin' || currentUser?.role === 'superadmin') && (
               <div className="p-8">
                 <div className="bg-white rounded-lg shadow p-6">
                   <h2 className="text-2xl font-semibold mb-4">Безпека</h2>
@@ -344,7 +344,7 @@ function App() {
               </div>
             )}
 
-            {activeItem === 'activity' && currentUser?.role === 'admin' && (
+            {activeItem === 'activity' && (currentUser?.role === 'admin' || currentUser?.role === 'superadmin') && (
               <div className="p-8">
                 <div className="bg-white rounded-lg shadow p-6">
                   <h2 className="text-2xl font-semibold mb-4">Активність</h2>
@@ -353,7 +353,7 @@ function App() {
               </div>
             )}
 
-            {activeItem === 'database' && currentUser?.role === 'admin' && (
+            {activeItem === 'database' && (currentUser?.role === 'admin' || currentUser?.role === 'superadmin') && (
               <div className="p-8">
                 <div className="bg-white rounded-lg shadow p-6">
                   <h2 className="text-2xl font-semibold mb-4">База даних</h2>
@@ -362,7 +362,7 @@ function App() {
               </div>
             )}
 
-            {activeItem === 'settings' && currentUser?.role === 'admin' && <SettingsConfiguration />}
+            {activeItem === 'settings' && (currentUser?.role === 'admin' || currentUser?.role === 'superadmin') && <SettingsConfiguration />}
 
             {activeItem === 'myOrders' && (
               <Orders

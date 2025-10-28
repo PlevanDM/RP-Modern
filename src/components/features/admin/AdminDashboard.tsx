@@ -140,6 +140,16 @@ export function AdminDashboard({ users: propUsers = [], orders: propOrders = [],
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="disputes">Disputes</TabsTrigger>
           <TabsTrigger value="history">History</TabsTrigger>
+          {currentUser?.role === 'superadmin' && (
+            <>
+              <TabsTrigger value="admins">Manage Admins</TabsTrigger>
+              <TabsTrigger value="system">System Settings</TabsTrigger>
+              <TabsTrigger value="logs">Logs Viewer</TabsTrigger>
+              <TabsTrigger value="backup">Backup Manager</TabsTrigger>
+              <TabsTrigger value="audit">Audit Trail</TabsTrigger>
+              <TabsTrigger value="tax">Tax Reports</TabsTrigger>
+            </>
+          )}
         </TabsList>
         
         <TabsContent value="overview" className="space-y-4">
@@ -344,6 +354,202 @@ export function AdminDashboard({ users: propUsers = [], orders: propOrders = [],
         <TabsContent value="history">
           <UserActionHistory />
         </TabsContent>
+
+        {/* SuperAdmin Tabs */}
+        {currentUser?.role === 'superadmin' && (
+          <>
+            <TabsContent value="admins">
+              <div className="bg-white shadow rounded-lg p-6">
+                <h2 className="text-xl font-semibold mb-4">Manage Administrators</h2>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {users.filter(u => u.role === 'admin' || u.role === 'superadmin').map((user) => (
+                        <tr key={user.id}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{user.name}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2 py-1 text-xs rounded-full ${user.role === 'superadmin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}>
+                              {user.role}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2 py-1 text-xs rounded-full ${user.blocked ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                              {user.blocked ? 'Blocked' : 'Active'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <button
+                              onClick={() => toggleUserBlock(user.id)}
+                              className={`${user.blocked ? 'text-green-600 hover:text-green-900' : 'text-red-600 hover:text-red-900'}`}
+                            >
+                              {user.blocked ? 'Unblock' : 'Block'}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="system">
+              <div className="bg-white shadow rounded-lg p-6">
+                <h2 className="text-xl font-semibold mb-4">System Settings</h2>
+                <div className="space-y-6">
+                  <div className="border-b pb-4">
+                    <h3 className="text-lg font-medium mb-3">Commission Settings</h3>
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Platform Commission (%)
+                      </label>
+                      <input type="number" defaultValue="10" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                    </div>
+                  </div>
+                  <div className="border-b pb-4">
+                    <h3 className="text-lg font-medium mb-3">Auto-Release Settings</h3>
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Days before auto-release
+                      </label>
+                      <input type="number" defaultValue="7" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                    </div>
+                  </div>
+                  <div className="border-b pb-4">
+                    <h3 className="text-lg font-medium mb-3">Dispute Settings</h3>
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Timeout for dispute response (hours)
+                      </label>
+                      <input type="number" defaultValue="24" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                    </div>
+                  </div>
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Save Settings
+                  </button>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="logs">
+              <div className="bg-white shadow rounded-lg p-6">
+                <h2 className="text-xl font-semibold mb-4">System Logs</h2>
+                <div className="bg-gray-900 text-green-400 font-mono text-sm p-4 rounded-lg overflow-auto h-96">
+                  <div>[2025-10-28 15:30:00] INFO: Server started on http://localhost:3001</div>
+                  <div>[2025-10-28 15:30:01] INFO: Database initialized</div>
+                  <div>[2025-10-28 15:30:02] INFO: Cron job for auto-release started</div>
+                  <div>[2025-10-28 15:30:03] INFO: Cron job for auto-dispute timeout started</div>
+                  <div className="text-yellow-400">[2025-10-28 15:30:15] WARN: High CPU usage detected: 85%</div>
+                  <div>[2025-10-28 15:30:20] INFO: User login: admin@test.com</div>
+                  <div className="text-blue-400">[2025-10-28 15:30:25] DEBUG: Order created: order-1761654591120</div>
+                  <div>[2025-10-28 15:30:30] INFO: Payment processed: payment-123456</div>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="backup">
+              <div className="bg-white shadow rounded-lg p-6">
+                <h2 className="text-xl font-semibold mb-4">Backup Manager</h2>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                      <h3 className="font-medium">Full Database Backup</h3>
+                      <p className="text-sm text-gray-500">Last backup: 2025-10-28 14:00:00</p>
+                    </div>
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                      Create Backup
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                      <h3 className="font-medium">Users Data Backup</h3>
+                      <p className="text-sm text-gray-500">Last backup: 2025-10-28 14:05:00</p>
+                    </div>
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                      Create Backup
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                      <h3 className="font-medium">Orders Data Backup</h3>
+                      <p className="text-sm text-gray-500">Last backup: 2025-10-28 14:10:00</p>
+                    </div>
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                      Create Backup
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="audit">
+              <div className="bg-white shadow rounded-lg p-6">
+                <h2 className="text-xl font-semibold mb-4">Audit Trail</h2>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Timestamp</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Details</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">2025-10-28 15:30:25</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">admin@test.com</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">User blocked</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">User ID: user-123</td>
+                      </tr>
+                      <tr>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">2025-10-28 15:29:15</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">admin@test.com</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">Settings changed</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Commission: 10% → 12%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="tax">
+              <div className="bg-white shadow rounded-lg p-6">
+                <h2 className="text-xl font-semibold mb-4">Tax Reports</h2>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="p-4 border rounded-lg">
+                      <h3 className="font-medium text-sm text-gray-500">Total Revenue</h3>
+                      <p className="text-2xl font-bold">₴{stats.totalRevenue.toLocaleString()}</p>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <h3 className="font-medium text-sm text-gray-500">Commission Earned</h3>
+                      <p className="text-2xl font-bold">₴{(stats.totalRevenue * 0.1).toLocaleString()}</p>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <h3 className="font-medium text-sm text-gray-500">Active Transactions</h3>
+                      <p className="text-2xl font-bold">{orders.filter(o => o.status === 'in_progress').length}</p>
+                    </div>
+                  </div>
+                  <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    Export PDF Report
+                  </button>
+                </div>
+              </div>
+            </TabsContent>
+          </>
+        )}
       </Tabs>
     </div>
   );

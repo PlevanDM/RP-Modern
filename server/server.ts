@@ -7,31 +7,116 @@ import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-import { User, Order, Offer, Dispute, Review } from '../src/types/models'; // Assuming all models are here
+import { User, Order, Offer, Dispute, Review, Payment } from '../src/types/models';
 import { allDevicesDatabase } from './data/deviceDatabase.js';
+import * as businessLogic from './businessLogic.js';
 
 // --- DATABASE SETUP ---
 interface DbData {
   users: User[];
   orders: Order[];
   offers: Offer[];
+  payments: Payment[];
   disputes: Dispute[];
   reviews: Review[];
-  // Add other entities as needed
 }
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const file = path.join(__dirname, 'db.json');
 const adapter = new JSONFile<DbData>(file);
-const db = new Low<DbData>(adapter);
+const defaultData: DbData = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [] };
+const db = new Low<DbData>(adapter, defaultData);
 
 async function initializeDatabase() {
   await db.read();
-  db.data = db.data || { users: [], orders: [], offers: [], disputes: [], reviews: [] };
-  // Optionally seed data if empty
-  await db.write();
-  console.log('Database initialized.');
+  if (!db.data) {
+    db.data = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [] };
+    await db.write();
+  }
+  
+  // Initialize test users if empty
+  if (db.data.users.length === 0) {
+    console.log('📝 Initializing test users...');
+    
+    const testUsers: User[] = [
+      {
+        id: 'test-client-1',
+        name: 'Test Client',
+        email: 'client@test.com',
+        role: 'client',
+        city: 'Київ',
+        phone: '+380501234567',
+        avatar: '',
+        balance: 0,
+        skills: [],
+        specialization: 'Client',
+        verified: true,
+        blocked: false,
+        completedOrders: 0,
+        rating: 0
+      },
+      {
+        id: 'test-master-1',
+        name: 'Test Master',
+        email: 'master@test.com',
+        role: 'master',
+        city: 'Київ',
+        phone: '+380509876543',
+        avatar: '',
+        balance: 0,
+        skills: ['iPhone Repair', 'Screen Replacement'],
+        specialization: 'iPhone Specialist',
+        verified: true,
+        blocked: false,
+        completedOrders: 0,
+        rating: 4.8
+      },
+      {
+        id: 'test-admin-1',
+        name: 'Admin',
+        email: 'admin@test.com',
+        role: 'admin',
+        city: 'Київ',
+        phone: '+380500000000',
+        avatar: '',
+        balance: 0,
+        skills: [],
+        specialization: 'Administrator',
+        verified: true,
+        blocked: false,
+        completedOrders: 0,
+        rating: 0
+      },
+      {
+        id: 'test-superadmin-1',
+        name: 'Super Admin',
+        email: 'superadmin@test.com',
+        role: 'superadmin',
+        city: 'Київ',
+        phone: '+380500000001',
+        avatar: '',
+        balance: 0,
+        skills: [],
+        specialization: 'Super Administrator',
+        verified: true,
+        blocked: false,
+        completedOrders: 0,
+        rating: 0
+      }
+    ];
+    
+    // Hash passwords
+    for (const user of testUsers) {
+      user.password = await bcrypt.hash('password123', 10);
+      db.data.users.push(user);
+    }
+    
+    await db.write();
+    console.log('✅ Test users initialized:', testUsers.length);
+  }
+  
+  console.log('✅ Database initialized.');
 }
 
 // --- EXPRESS APP SETUP ---
@@ -111,7 +196,9 @@ app.post('/api/auth/login', async (req, res) => {
 
   const token = jwt.sign({ userId: user.id, role: user.role, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
 
-  res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+  // Return all necessary user data (without password)
+  const { password: _, ...userData } = user;
+  res.json({ token, user: userData });
 });
 
 
@@ -180,6 +267,33 @@ const getOffer = async (req: AuthRequest, res: Response, next: NextFunction) => 
         return res.status(404).json({ message: 'Offer not found.' });
     }
     (req as any).offer = offer; // Attach offer to request
+    next();
+};
+
+// 3. Check order ownership (for protected order operations)
+const checkOrderOwnership = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const user = req.user!;
+    
+    await db.read();
+    const order = db.data.orders.find(o => o.id === id);
+    
+    if (!order) {
+        return res.status(404).json({ message: 'Order not found.' });
+    }
+    
+    // Admin can access any order
+    if (user.role === 'admin' || user.role === 'superadmin') {
+        (req as any).order = order;
+        return next();
+    }
+    
+    // Check ownership: client OR master OR admin
+    if (order.clientId !== user.id && order.masterId !== user.id) {
+        return res.status(403).json({ message: 'You do not have permission to access this order.' });
+    }
+    
+    (req as any).order = order;
     next();
 };
 
@@ -318,15 +432,16 @@ app.delete('/api/offers/:id', authMiddleware, requireRole(['master']), getOffer,
 });
 
 
-// --- PAYMENT & WORKFLOW API ---
+// --- PAYMENT & WORKFLOW API (v2.0 Architecture) ---
 
 // 1. Client pays for an accepted order (moves money to escrow)
+// POST /api/payments
 app.post('/api/payments', authMiddleware, requireRole(['client']), async (req: AuthRequest, res: Response) => {
-    const { orderId } = req.body;
+    const { orderId, amount, method } = req.body;
     const client = req.user!;
 
-    if(!orderId) {
-        return res.status(400).json({ message: 'orderId is required.' });
+    if (!orderId || !amount) {
+        return res.status(400).json({ message: 'orderId and amount are required.' });
     }
 
     await db.read();
@@ -335,27 +450,41 @@ app.post('/api/payments', authMiddleware, requireRole(['client']), async (req: A
     if (!order) {
         return res.status(404).json({ message: 'Order not found.' });
     }
-    if (order.clientId !== client.id) {
-        return res.status(403).json({ message: 'You can only pay for your own orders.' });
-    }
-    if (order.status !== 'accepted') {
-        return res.status(403).json({ message: 'You can only pay for an order that has been accepted.' });
+
+    // Use business logic check
+    if (!businessLogic.canCreatePayment(client, order)) {
+        return res.status(403).json({ message: 'Cannot create payment for this order.' });
     }
 
-    // Simulate payment process (e.g., deducting from client balance or using a card)
-    // For now, we just update the status.
+    // Create Payment object
+    const paymentId = `payment-${Date.now()}`;
+    const commission = 0.10; // 10% platform commission
+    const payment: Payment = {
+        id: paymentId,
+        orderId: order.id,
+        amount: amount,
+        status: 'escrowed',
+        commission: commission,
+        createdAt: new Date()
+    };
+
+    // --- Transaction: Update order and create payment ---
     order.status = 'in_progress';
     order.paymentStatus = 'escrowed';
-    order.paymentAmount = order.agreedPrice!;
+    order.paymentAmount = amount;
     order.paymentDate = new Date();
+    order.escrowId = paymentId;
     order.updatedAt = new Date();
 
+    // Add payment to database
+    db.data.payments.push(payment);
     await db.write();
 
-    res.json({ message: 'Payment successful. Order is now in progress.', order });
+    res.json({ message: 'Payment successful. Order is now in progress.', payment, order });
 });
 
 // 2. Client releases payment upon work completion
+// POST /api/payments/:orderId/release
 app.post('/api/payments/:orderId/release', authMiddleware, requireRole(['client']), async (req: AuthRequest, res: Response) => {
     const { orderId } = req.params;
     const client = req.user!;
@@ -366,29 +495,40 @@ app.post('/api/payments/:orderId/release', authMiddleware, requireRole(['client'
     if (!order) {
         return res.status(404).json({ message: 'Order not found.' });
     }
-    if (order.clientId !== client.id) {
-        return res.status(403).json({ message: 'You can only release payments for your own orders.' });
+    
+    // Use business logic check
+    if (!businessLogic.canReleasePayment(client, order)) {
+        return res.status(403).json({ message: 'Cannot release payment for this order.' });
     }
-    if (order.status !== 'in_progress') {
-        return res.status(403).json({ message: 'You can only release payment for an order that is in progress.' });
+
+    // Find payment
+    const payment = db.data.payments.find(p => p.orderId === orderId);
+    if (!payment) {
+        return res.status(404).json({ message: 'Payment not found.' });
+    }
+    if (payment.status !== 'escrowed') {
+        return res.status(403).json({ message: 'Payment is not in escrow status.' });
     }
 
     const master = db.data.users.find(u => u.id === order.masterId);
     if (!master) {
-        // This should not happen in a consistent DB
         return res.status(500).json({ message: 'Master for this order not found.' });
     }
 
-    // --- Critical Transaction ---
-    // 1. Calculate earnings (90% of agreed price)
-    const commission = order.agreedPrice! * 0.10;
-    const earnings = order.agreedPrice! - commission;
+    // --- Critical Transaction: Release payment ---
+    // 1. Calculate earnings (amount * (1 - commission))
+    const earnings = payment.amount * (1 - payment.commission);
+    const platformEarnings = payment.amount * payment.commission;
 
-    // 2. Update master's balance
+    // 2. Update master's balance (payment.amount * (1 - commission))
     master.balance += earnings;
     master.completedOrders = (master.completedOrders || 0) + 1;
 
-    // 3. Update order status
+    // 3. Update payment status
+    payment.status = 'released';
+    payment.releasedAt = new Date();
+
+    // 4. Update order status
     order.status = 'completed';
     order.paymentStatus = 'released';
     order.releaseDate = new Date();
@@ -397,7 +537,11 @@ app.post('/api/payments/:orderId/release', authMiddleware, requireRole(['client'
 
     await db.write();
 
-    res.json({ message: `Payment of ${earnings} released to master successfully.`, order });
+    res.json({ 
+        message: `Payment of ${earnings} released to master successfully. Platform commission: ${platformEarnings}`, 
+        payment,
+        order 
+    });
 });
 
 // 3. Master notifies that work has started
@@ -438,27 +582,26 @@ app.post('/api/orders/:id/finish', authMiddleware, requireRole(['master']), getO
 // 1. Create a new order
 app.post('/api/orders', authMiddleware, requireRole(['client']), async (req: AuthRequest, res: Response) => {
   const { title, description, device, budget, urgency } = req.body;
-  const clientId = req.user!.id;
+  const user = req.user!;
 
   if (!title || !description || !device) {
     return res.status(400).json({ message: 'Title, description, and device are required.' });
   }
 
-  await db.read();
-
-  const clientOrders = db.data.orders.filter(o => o.clientId === clientId && o.status !== 'completed' && o.status !== 'cancelled');
-  if (clientOrders.length >= 10) {
+  // Use business logic check
+  const canCreate = await businessLogic.canCreateOrder(user, db);
+  if (!canCreate) {
     return res.status(403).json({ message: 'You have reached the maximum limit of 10 active orders.' });
   }
 
   const newOrder: Order = {
     id: `order-${Date.now()}`,
-    clientId,
-    clientName: req.user!.name,
+    clientId: user.id,
+    clientName: user.name,
     title,
     description,
     device,
-    city: req.user!.city,
+    city: user.city,
     budget: budget || 0,
     urgency: urgency || 'medium',
     status: 'open',
@@ -472,10 +615,11 @@ app.post('/api/orders', authMiddleware, requireRole(['client']), async (req: Aut
     paymentAmount: 0,
     escrowId: '',
     paymentDate: new Date(),
+    paymentMethod: 'card',
     disputeStatus: 'none'
-
   };
 
+  await db.read();
   db.data.orders.push(newOrder);
   await db.write();
 
@@ -589,7 +733,17 @@ const getUser = async (req: AuthRequest, res: Response, next: NextFunction) => {
     next();
 };
 
-// 1. Get all users
+// Public endpoint for getting users (for any authenticated user)
+app.get('/api/users', authMiddleware, async (req: AuthRequest, res: Response) => {
+    await db.read();
+    const users = db.data.users.map(u => {
+        const { password, ...user } = u;
+        return user;
+    });
+    res.json(users);
+});
+
+// 1. Get all users (admin only)
 app.get('/api/admin/users', authMiddleware, requireRole(['admin', 'superadmin']), async (req: AuthRequest, res: Response) => {
     await db.read();
     const users = db.data.users.map(u => {
@@ -695,11 +849,17 @@ app.post('/api/disputes', authMiddleware, async (req: AuthRequest, res: Response
     }
 
     // --- Critical Transaction ---
-    // 1. Change order status
+    // 1. Find and freeze payment
+    const payment = db.data.payments.find(p => p.orderId === orderId);
+    if (payment && payment.status === 'escrowed') {
+        payment.status = 'frozen';
+    }
+
+    // 2. Change order status
     order.status = 'disputed';
     order.disputeStatus = 'open';
 
-    // 2. Create the dispute record
+    // 3. Create the dispute record
     const newDispute: Dispute = {
         id: `dispute-${Date.now()}`,
         orderId,
@@ -715,17 +875,21 @@ app.post('/api/disputes', authMiddleware, async (req: AuthRequest, res: Response
 
     await db.write();
 
-    res.status(201).json({ message: 'Dispute created successfully. An admin will review your case.', dispute: newDispute });
+    res.status(201).json({ 
+        message: 'Dispute created successfully. Payment frozen. An admin will review your case.', 
+        dispute: newDispute,
+        payment: payment || null
+    });
 });
 
 
-// 2. Admin resolves a dispute
+// 2. Admin resolves a dispute (v2.0 Architecture)
 app.post('/api/disputes/:id/resolve', authMiddleware, requireRole(['admin', 'superadmin']), async (req: AuthRequest, res: Response) => {
     const { id } = req.params;
-    const { resolution } = req.body; // 'client_wins', 'master_wins', 'compromise'
+    const { decision, explanation } = req.body; // decision: 'client_wins', 'master_wins', 'compromise'
 
-    if (!resolution || !['client_wins', 'master_wins', 'compromise'].includes(resolution)) {
-        return res.status(400).json({ message: "Invalid resolution type. Must be 'client_wins', 'master_wins', or 'compromise'." });
+    if (!decision || !['client_wins', 'master_wins', 'compromise'].includes(decision)) {
+        return res.status(400).json({ message: "Invalid decision type. Must be 'client_wins', 'master_wins', or 'compromise'." });
     }
 
     await db.read();
@@ -733,14 +897,26 @@ app.post('/api/disputes/:id/resolve', authMiddleware, requireRole(['admin', 'sup
     if (!dispute) {
         return res.status(404).json({ message: 'Dispute not found.' });
     }
+    if (dispute.status !== 'open') {
+        return res.status(403).json({ message: 'Dispute is not in open status.' });
+    }
 
     const order = db.data.orders.find(o => o.id === dispute.orderId);
     if (!order) {
-        return res.status(500).json({ message: 'Associated order not found. Database inconsistency.' });
+        return res.status(500).json({ message: 'Associated order not found.' });
+    }
+
+    // Find payment
+    const payment = db.data.payments.find(p => p.orderId === order.id);
+    if (!payment) {
+        return res.status(500).json({ message: 'Payment for this order not found.' });
+    }
+    if (payment.status !== 'frozen' && payment.status !== 'escrowed') {
+        return res.status(403).json({ message: 'Payment is not in frozen or escrowed status.' });
     }
 
     const master = db.data.users.find(u => u.id === order.masterId);
-     if (!master) {
+    if (!master) {
         return res.status(500).json({ message: 'Master for this order not found.' });
     }
 
@@ -748,32 +924,51 @@ app.post('/api/disputes/:id/resolve', authMiddleware, requireRole(['admin', 'sup
     dispute.status = 'resolved';
     dispute.resolvedAt = new Date();
     dispute.resolutionBy = req.user!.id;
+    dispute.decision = decision as 'client_wins' | 'master_wins' | 'compromise';
 
-    if (resolution === 'client_wins') {
+    // Handle payment resolution based on decision
+    if (decision === 'client_wins') {
+        // Full refund to client
+        payment.status = 'refunded';
+        payment.refundedAt = new Date();
         order.status = 'cancelled';
         order.paymentStatus = 'refunded';
-        dispute.resolution = "Resolved in favor of the client. Full refund issued.";
-        // In a real system, you would transfer funds back to the client here.
-    } else if (resolution === 'master_wins') {
-        order.status = 'completed';
-        order.paymentStatus = 'released';
-        dispute.resolution = "Resolved in favor of the master. Payment released.";
-
-        // Release payment to master (same logic as normal release)
-        const commission = order.agreedPrice! * 0.10;
-        const earnings = order.agreedPrice! - commission;
+        dispute.resolution = explanation || 'Resolved in favor of the client. Full refund issued.';
+        
+    } else if (decision === 'master_wins') {
+        // Full release to master (same as normal release)
+        const earnings = payment.amount * (1 - payment.commission);
+        const platformEarnings = payment.amount * payment.commission;
+        
         master.balance += earnings;
         master.completedOrders = (master.completedOrders || 0) + 1;
-
+        
+        payment.status = 'released';
+        payment.releasedAt = new Date();
+        order.status = 'completed';
+        order.paymentStatus = 'released';
+        order.completedAt = new Date();
+        dispute.resolution = explanation || 'Resolved in favor of the master. Payment released.';
+        
     } else { // compromise
-        order.status = 'completed'; // Or as decided
-        dispute.resolution = "Resolved with a compromise. Funds handled manually by admin.";
-        // Logic for partial refund/payment would go here
+        // Manual handling - admin decides split
+        // For now, mark as resolved but keep payment frozen for manual processing
+        payment.status = 'frozen'; // Keep frozen for manual handling
+        order.status = 'disputed'; // Keep disputed status
+        dispute.resolution = explanation || 'Resolved with compromise. Manual fund distribution required.';
     }
+
+    order.disputeStatus = 'resolved';
+    order.updatedAt = new Date();
 
     await db.write();
 
-    res.json({ message: `Dispute resolved: ${resolution}`, dispute });
+    res.json({ 
+        message: `Dispute resolved: ${decision}`, 
+        dispute,
+        order,
+        payment
+    });
 });
 
 
@@ -853,7 +1048,7 @@ app.post('/api/withdrawals', authMiddleware, requireRole(['master']), async (req
 
 // --- SIMULATED CRON JOB for Auto-Release ---
 function startAutoReleaseCron() {
-    console.log('Starting simulated cron job for auto-release...');
+    console.log('🔄 Starting cron job for auto-release...');
     setInterval(async () => {
         await db.read();
         const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -866,19 +1061,69 @@ function startAutoReleaseCron() {
         if (ordersToRelease.length > 0) {
             console.log(`[CRON] Found ${ordersToRelease.length} orders to auto-release.`);
             for (const order of ordersToRelease) {
-                // Same logic as manual release
+                // Find payment
+                const payment = db.data.payments.find(p => p.orderId === order.id);
+                if (!payment) continue;
+                
                 const master = db.data.users.find(u => u.id === order.masterId);
-                if (master) {
-                    const commission = order.agreedPrice! * 0.10;
-                    const earnings = order.agreedPrice! - commission;
+                if (master && payment.status === 'escrowed') {
+                    const earnings = payment.amount * (1 - payment.commission);
+                    
                     master.balance += earnings;
                     master.completedOrders = (master.completedOrders || 0) + 1;
-
+                    
+                    payment.status = 'released';
+                    payment.releasedAt = new Date();
+                    
                     order.status = 'completed';
                     order.paymentStatus = 'released';
                     order.releaseDate = new Date();
-                    console.log(`[CRON] Auto-released payment for order ${order.id}.`);
+                    console.log(`[CRON] ✅ Auto-released payment for order ${order.id} (${earnings} UAH to master).`);
                 }
+            }
+            await db.write();
+        }
+    }, 60 * 60 * 1000); // Check every hour
+}
+
+// --- AUTO-DISPUTE TIMEOUT Cron Job ---
+function startAutoDisputeCron() {
+    console.log('⚖️ Starting cron job for auto-dispute timeout...');
+    setInterval(async () => {
+        await db.read();
+        const hours24 = 24 * 60 * 60 * 1000;
+        const now = Date.now();
+        
+        const disputesToResolve = db.data.disputes.filter(d =>
+            d.status === 'open' &&
+            (now - new Date(d.createdAt).getTime()) >= hours24
+        );
+
+        if (disputesToResolve.length > 0) {
+            console.log(`[CRON] Found ${disputesToResolve.length} disputes to auto-resolve (client_wins after 24h timeout).`);
+            
+            for (const dispute of disputesToResolve) {
+                const order = db.data.orders.find(o => o.id === dispute.orderId);
+                if (!order) continue;
+                
+                const payment = db.data.payments.find(p => p.orderId === order.id);
+                if (!payment || payment.status !== 'frozen') continue;
+
+                // Auto-resolve in favor of client (refund)
+                dispute.status = 'resolved';
+                dispute.resolvedAt = new Date();
+                dispute.decision = 'client_wins';
+                dispute.resolution = 'Auto-resolved in favor of client after 24h without master response. Full refund issued.';
+                
+                payment.status = 'refunded';
+                payment.refundedAt = new Date();
+                
+                order.status = 'cancelled';
+                order.paymentStatus = 'refunded';
+                order.disputeStatus = 'resolved';
+                order.updatedAt = new Date();
+                
+                console.log(`[CRON] ⚖️ Auto-resolved dispute ${dispute.id} in favor of client (refund).`);
             }
             await db.write();
         }
@@ -889,9 +1134,10 @@ function startAutoReleaseCron() {
 // --- SERVER INITIALIZATION ---
 initializeDatabase().then(() => {
   app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-    startAutoReleaseCron(); // Start the cron job after server starts
+    console.log(`✅ Server is running on http://localhost:${port}`);
+    startAutoReleaseCron(); // Start auto-release cron
+    startAutoDisputeCron(); // Start auto-dispute timeout cron
   });
 }).catch(error => {
-  console.error("Failed to initialize and start server:", error);
+  console.error("❌ Failed to initialize and start server:", error);
 });

@@ -357,7 +357,7 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <MapPin className="w-4 h-4" />
-                          {order.location.split(',')[0]}
+                          {order.city || order.device}
                         </span>
                         <span className="font-semibold text-foreground">₴{(order.price || 0).toLocaleString()}</span>
                       </div>

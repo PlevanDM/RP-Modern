@@ -29,7 +29,9 @@ export function CreateOrderModal({
     urgency: 'medium' as const,
     location: currentUser.city || '',
     clientPhone: currentUser.phone || '',
-    clientEmail: currentUser.email || ''
+    clientEmail: currentUser.email || '',
+    imei: '',
+    serialNumber: ''
   });
 
   const [availableModels, setAvailableModels] = useState<string[]>([]);
@@ -84,6 +86,10 @@ export function CreateOrderModal({
       urgency: formData.urgency,
       clientId: currentUser.id,
       clientName: currentUser.name || currentUser.fullName || '',
+      imei: formData.imei || undefined,
+      serialNumber: formData.serialNumber || undefined,
+      clientPhone: formData.clientPhone,
+      clientEmail: formData.clientEmail,
       status: 'open',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -189,6 +195,24 @@ export function CreateOrderModal({
           value={formData.description}
           onChange={handleInputChange}
         />
+
+        <div className="grid grid-cols-2 gap-4">
+          <UnifiedInput
+            label="IMEI (за потреби)"
+            name="imei"
+            placeholder="000000000000000"
+            value={formData.imei}
+            onChange={handleInputChange}
+          />
+
+          <UnifiedInput
+            label="Серійний номер (за потреби)"
+            name="serialNumber"
+            placeholder="SNXXXXXXXXXX"
+            value={formData.serialNumber}
+            onChange={handleInputChange}
+          />
+        </div>
 
         <UnifiedModalFooter>
           <UnifiedButton variant="outline" type="button" onClick={onClose}>
