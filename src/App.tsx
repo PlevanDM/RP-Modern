@@ -14,6 +14,8 @@ import { Portfolio } from './components/pages/Portfolio';
 import { Messages } from './components/pages/Messages';
 import { Profile } from './components/pages/Profile';
 import { Settings } from './components/pages/Settings';
+import { Proposals } from './components/pages/Proposals';
+import { ReviewsPage } from './components/pages/ReviewsPage';
 import { MastersList } from './components/features/master/MastersList';
 import { PartsInventory } from './components/features/parts/PartsInventory';
 import { PaymentManagement } from './components/pages/PaymentManagement';
@@ -22,6 +24,7 @@ import { useOrdersStore } from './store/ordersStore';
 import { useNotificationsStore } from './store/notificationsStore';
 import { NotificationCenter } from './components/NotificationCenter';
 import { OnboardingWizard } from './components/OnboardingWizard';
+import LanguageSwitcher from './components/LanguageSwitcher';
 import { Order, User } from './types/models';
 import { Notification } from './types';
 import { ClientProfileStep } from './components/onboarding/ClientProfileStep';
@@ -32,8 +35,10 @@ import { ExperienceStep } from './components/onboarding/ExperienceStep';
 import { ToolsStep } from './components/onboarding/ToolsStep';
 import AnimatedMarquee from './components/AnimatedMarquee';
 import { apiUserService } from './services/apiUserService';
+import { useTranslation } from 'react-i18next';
 
 function App() {
+  const { t } = useTranslation();
   const { currentUser, logout, isOnboardingCompleted, completeOnboarding } = useAuthStore();
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const {
@@ -101,6 +106,13 @@ function App() {
     const fetchUsers = async () => {
       const allUsers = await apiUserService.getUsers();
       setUsers(allUsers);
+      
+      // Initialize test data if needed
+      const orders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
+      if (orders.length === 0) {
+        const { initializeTestData } = require('./utils/testData');
+        initializeTestData();
+      }
     };
 
     if (currentUser) {
@@ -176,8 +188,11 @@ function App() {
     return <OnboardingWizard steps={steps} onComplete={completeOnboarding} />;
   }
 
-  const clientOrders = orders.filter((o) => o.clientId === currentUser.id);
-  const masters = users.filter((u) => u.role === 'master');
+  const safeOrders = Array.isArray(orders) ? orders : [];
+  const safeUsers = Array.isArray(users) ? users : [];
+  
+  const clientOrders = safeOrders.filter((o) => o.clientId === currentUser.id);
+  const masters = safeUsers.filter((u) => u.role === 'master');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -214,12 +229,13 @@ function App() {
                 <AnimatedMarquee notifications={notifications} onNotificationClick={handleNotificationClick} />
               </div>
 
-              <div className="flex items-center gap-3 min-w-fit">
+              <div className="flex items-center gap-2 min-w-fit">
                 <NotificationCenter
                   notifications={notifications}
                   onRead={readNotification}
                   onRemove={removeNotification}
                 />
+                <LanguageSwitcher />
                 <button
                   onClick={() => setActiveItem('profile')}
                   className="p-2 hover:bg-gray-100 rounded-lg transition"
@@ -244,7 +260,7 @@ function App() {
                 <button
                   onClick={logout}
                   className="p-2 hover:bg-gray-100 rounded-lg transition"
-                  title="Вихід"
+                  title={t('common.logout')}
                 >
                   <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -260,15 +276,15 @@ function App() {
                 <ModernMasterDashboard
                   currentUser={currentUser}
                   stats={{
-                    activeOrders: orders.filter((o) => o.status === 'in_progress').length,
-                    completedOrders: orders.filter(
+                    activeOrders: safeOrders.filter((o) => o.status === 'in_progress').length,
+                    completedOrders: safeOrders.filter(
                       (o) => o.status === 'completed' || o.status === 'paid'
                     ).length,
                     totalEarned: 125000,
                     rating: currentUser.rating || 4.9,
                   }}
-                  orders={orders}
-                  tasks={orders.map((o) => ({
+                  orders={safeOrders}
+                  tasks={safeOrders.map((o) => ({
                     id: o.id,
                     title: o.title,
                     client: o.clientName || o.clientId,
@@ -351,7 +367,7 @@ function App() {
             {activeItem === 'myOrders' && (
               <Orders
                 currentUser={currentUser}
-                orders={selectedOrder ? [selectedOrder] : orders}
+                orders={selectedOrder ? [selectedOrder] : safeOrders}
                 onSendToMaster={sendToMaster}
                 onCreateOrder={createOrder}
                 onDeleteOrder={deleteOrder}
@@ -379,6 +395,10 @@ function App() {
               <Portfolio portfolio={[]} currentUser={currentUser} />
             )}
 
+            {activeItem === 'reviews' && (
+              <ReviewsPage />
+            )}
+
             {activeItem === 'priceComparison' && (
               <div className="p-8">
                 <MastersList
@@ -391,7 +411,7 @@ function App() {
             {activeItem === 'payments' && currentUser && (
               <PaymentManagement
                 currentUser={currentUser}
-                orders={orders}
+                orders={safeOrders}
                 onUpdatePayment={updatePayment}
                 onReleasePayment={releasePayment}
                 onRefundPayment={refundPayment}
@@ -401,13 +421,34 @@ function App() {
             )}
 
             {activeItem === 'messages' && (
-              <Messages currentUser={currentUser} masters={masters} orders={orders} />
+              <Messages 
+                currentUser={currentUser} 
+                masters={masters} 
+                orders={safeOrders}
+              />
+            )}
+
+            {activeItem === 'proposals' && (
+              <div className="p-6">
+                <Proposals
+                  proposals={useOrdersStore.getState().proposals.filter(p => 
+                    currentUser.role === 'client' ? p.orderId : p.masterId === currentUser.id
+                  )}
+                  orders={safeOrders}
+                  isMaster={currentUser.role === 'master'}
+                  onSubmitProposal={useOrdersStore.getState().submitProposal}
+                  onUpdateProposal={useOrdersStore.getState().updateProposal}
+                  onAcceptProposal={useOrdersStore.getState().acceptProposal}
+                  onRejectProposal={useOrdersStore.getState().rejectProposal}
+                  onShowToast={(msg) => console.log(msg)}
+                />
+              </div>
             )}
 
             {activeItem === 'profile' && (
               <Profile
                 currentUser={currentUser}
-                orders={orders}
+                orders={safeOrders}
               />
             )}
             {activeItem === 'settings' && <Settings currentUser={currentUser} onLogout={logout} />}

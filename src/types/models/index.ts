@@ -282,7 +282,7 @@ export interface DeviceModel {
   id: string;
   name: string;
   brand: string;
-  category: 'Smartphone' | 'Tablet' | 'Laptop' | 'Smartwatch' | 'Other';
+  category: 'Smartphone' | 'Tablet' | 'Laptop' | 'Smartwatch' | 'Other' | 'Earbuds' | 'Accessories';
   photos: DevicePhoto[];
   colors: string[];
   storageOptions?: string[];
@@ -307,6 +307,17 @@ export interface DeviceModel {
     battery?: string;
     connectivity?: string[];
     ram?: string;
+    // Для наушников
+    batteryLife?: string; // Время работы от аккумулятора
+    chargingCase?: string; // Время работы с футляром
+    weight?: string; // Вес
+    dimensions?: string; // Размеры
+    microphones?: boolean; // Наличие микрофона
+    noiseCancellation?: boolean; // Шумоподавление
+    waterResistance?: string; // Водонепроницаемость
+    // Для часов
+    screenSize?: string; // Размер экрана
+    strapMaterial?: string; // Материал ремешка
   };
 }
 

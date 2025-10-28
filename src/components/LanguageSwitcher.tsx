@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation as useI18n } from 'react-i18next';
 import { Button } from './ui/button';
 import { Globe } from 'lucide-react';
 
@@ -11,13 +11,17 @@ const languages = [
 ];
 
 const LanguageSwitcher: React.FC = () => {
-  const { i18n } = useTranslation();
+  const { i18n } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
+  const changeLanguage = async (lng: string) => {
+    console.log('🌐 Changing language to:', lng);
+    await i18n.changeLanguage(lng);
+    console.log('✅ Language changed to:', i18n.language);
     setIsOpen(false);
+    // Force re-render
+    window.location.reload();
   };
 
   const currentLang = languages.find(lang => lang.code === i18n.language) || languages[0];
@@ -41,15 +45,14 @@ const LanguageSwitcher: React.FC = () => {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <Button
-        variant="outline"
-        size="sm"
+      <button
         onClick={() => setIsOpen(!isOpen)}
-        className="gap-2"
+        className="p-2 hover:bg-gray-100 rounded-lg transition flex items-center gap-1"
+        title="Змінити мову"
       >
-        <Globe className="w-4 h-4" />
-        <span className="hidden sm:inline">{currentLang.flag}</span>
-      </Button>
+        <Globe className="w-5 h-5 text-gray-600" />
+        <span className="hidden sm:inline text-sm text-gray-700">{currentLang.flag}</span>
+      </button>
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-50">

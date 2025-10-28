@@ -1,9 +1,9 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Order, User } from '../types/models';
-import { Modal } from './ui/modal';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
+import { UnifiedModal, UnifiedInput, UnifiedTextarea, UnifiedSelect, UnifiedButton, UnifiedModalFooter } from './common/UnifiedModal';
+import { SUPPORTED_BRANDS, COMMON_ISSUES, DEVICE_TYPES } from '../utils/brands';
+import { searchModels } from '../utils/appleModels';
 
 interface CreateOrderModalProps {
   isOpen: boolean;
@@ -21,7 +21,8 @@ export function CreateOrderModal({
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    deviceType: 'iPhone' as const,
+    brand: '',
+    deviceType: 'smartphone' as const,
     device: '',
     budget: '',
     issue: '',
@@ -30,6 +31,34 @@ export function CreateOrderModal({
     clientPhone: currentUser.phone || '',
     clientEmail: currentUser.email || ''
   });
+
+  const [availableModels, setAvailableModels] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (formData.brand === 'apple' && formData.deviceType) {
+      const categoryMap: Record<string, any> = {
+        'smartphone': 'iPhone',
+        'tablet': 'iPad',
+        'laptop': 'MacBook',
+        'desktop': 'Mac',
+        'watch': 'AppleWatch',
+        'earphones': 'AirPods'
+      };
+      
+      const category = categoryMap[formData.deviceType];
+      if (category) {
+        const models = searchModels('').filter(m => m.category === category);
+        setAvailableModels(models.map(m => m.name));
+      } else {
+        setAvailableModels([]);
+      }
+    } else if (formData.brand) {
+      const brand = SUPPORTED_BRANDS.find(b => b.id === formData.brand);
+      setAvailableModels(brand?.devices || []);
+    } else {
+      setAvailableModels([]);
+    }
+  }, [formData.brand, formData.deviceType]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -43,23 +72,27 @@ export function CreateOrderModal({
     e.preventDefault();
 
     const orderData: Omit<Order, 'id'> = {
-      ...formData,
-      clientId: currentUser.id,
-      clientName: currentUser.name || currentUser.fullName || '',
-      status: 'open',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      title: formData.title,
+      description: formData.description,
+      deviceType: 'iPhone', // За замовчуванням
       device: formData.device,
+      brand: formData.brand,
       city: formData.location || currentUser.city,
       budget: parseInt(formData.budget, 10),
       proposalCount: 0,
       issue: formData.issue,
       urgency: formData.urgency,
+      clientId: currentUser.id,
+      clientName: currentUser.name || currentUser.fullName || '',
+      status: 'open',
+      createdAt: new Date(),
+      updatedAt: new Date(),
       paymentStatus: 'pending',
       paymentAmount: 0,
       paymentMethod: '',
       escrowId: '',
       paymentDate: new Date(),
+      disputeStatus: 'none'
     };
 
     createOrder(orderData);
@@ -67,72 +100,105 @@ export function CreateOrderModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Створити нове замовлення">
+    <UnifiedModal isOpen={isOpen} onClose={onClose} title="Створити нове замовлення" maxWidth="lg">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
+        <UnifiedInput
+          label="Назва замовлення"
           name="title"
-          placeholder="Назва замовлення"
+          placeholder="Наприклад: Ремонт дисплея iPhone"
           required
           value={formData.title}
           onChange={handleInputChange}
         />
-        <select
+
+        <UnifiedSelect
+          label="Тип пристрою"
           name="deviceType"
           required
           value={formData.deviceType}
           onChange={handleInputChange}
-        >
-          <option value="iPhone">iPhone</option>
-          <option value="iPad">iPad</option>
-          <option value="Mac">Mac</option>
-          <option value="Apple Watch">Apple Watch</option>
-          <option value="Other">Інше</option>
-        </select>
-        <Input
-          name="device"
-          placeholder="Модель пристрою"
-          required
-          value={formData.device}
-          onChange={handleInputChange}
+          options={[
+            { value: '', label: 'Оберіть тип' },
+            ...DEVICE_TYPES.map(type => ({ value: type.id, label: type.name }))
+          ]}
         />
-        <Input
+
+        <UnifiedSelect
+          label="Бренд"
+          name="brand"
+          required
+          value={formData.brand}
+          onChange={handleInputChange}
+          options={[
+            { value: '', label: 'Оберіть бренд' },
+            ...SUPPORTED_BRANDS.map(brand => ({ value: brand.id, label: `${brand.logo} ${brand.name}` }))
+          ]}
+        />
+
+        {availableModels.length > 0 ? (
+          <UnifiedSelect
+            label="Модель пристрою"
+            name="device"
+            required
+            value={formData.device}
+            onChange={handleInputChange}
+            options={[
+              { value: '', label: 'Оберіть модель' },
+              ...availableModels.map(model => ({ value: model, label: model }))
+            ]}
+          />
+        ) : (
+          <UnifiedInput
+            label="Модель пристрою"
+            name="device"
+            placeholder="Введіть модель"
+            required
+            value={formData.device}
+            onChange={handleInputChange}
+          />
+        )}
+
+        <UnifiedInput
+          label="Бюджет на ремонт"
           name="budget"
           type="number"
-          placeholder="Бюджет"
+          placeholder="Введіть суму (₴)"
           required
           value={formData.budget}
           onChange={handleInputChange}
         />
-        <select
+
+        <UnifiedSelect
+          label="Тип проблеми"
           name="issue"
           required
           value={formData.issue}
           onChange={handleInputChange}
-        >
-          <option value="">Оберіть проблему</option>
-          <option value="Пошкодження екрану">Пошкодження екрану</option>
-          <option value="Проблема з батареєю">Проблема з батареєю</option>
-          <option value="Пошкодження від рідини">Пошкодження від рідини</option>
-          <option value="Несправність обладнання">Несправність апаратури</option>
-          <option value="Software Issue">Проблема з програмним забезпеченням</option>
-          <option value="Other">Інше</option>
-        </select>
-        <textarea
+          options={[
+            { value: '', label: 'Оберіть проблему' },
+            ...COMMON_ISSUES.map(issue => ({ value: issue.name, label: `${issue.icon} ${issue.name}` }))
+          ]}
+        />
+
+        <UnifiedTextarea
+          label="Опис проблеми"
           name="description"
-          placeholder="Опис проблеми"
+          rows={4}
+          placeholder="Детально опишіть проблему..."
           required
           value={formData.description}
           onChange={handleInputChange}
         />
-        <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" onClick={onClose}>
+
+        <UnifiedModalFooter>
+          <UnifiedButton variant="outline" type="button" onClick={onClose}>
             Скасувати
-          </Button>
-          <Button type="submit">
+          </UnifiedButton>
+          <UnifiedButton variant="primary" type="submit">
             Створити замовлення
-          </Button>
-        </div>
+          </UnifiedButton>
+        </UnifiedModalFooter>
       </form>
-    </Modal>
+    </UnifiedModal>
   );
 }

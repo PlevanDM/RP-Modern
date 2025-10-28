@@ -14,6 +14,7 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
   const [skillLevel, setSkillLevel] = useState<'beginner' | 'intermediate' | 'advanced' | null>(null);
   const [preferredPriority, setPreferredPriority] = useState<string[]>([]);
   const [budgetRange, setBudgetRange] = useState<'low' | 'medium' | 'high' | null>(null);
+  const [workLocation, setWorkLocation] = useState<'service' | 'home' | 'both' | null>(null);
   const [step, setStep] = useState<'info' | 'devices' | 'preferences'>('info');
 
   const handleInfoSubmit = () => {
@@ -29,7 +30,7 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
   };
 
   const handlePreferencesSubmit = () => {
-    if (skillLevel && budgetRange && preferredPriority.length > 0) {
+    if (skillLevel && budgetRange && preferredPriority.length > 0 && workLocation) {
       onComplete?.({
         name,
         city,
@@ -39,6 +40,7 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
         skillLevel,
         preferredPriority,
         budgetRange,
+        workLocation,
       });
     }
   };
@@ -216,25 +218,25 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
           <p className="text-gray-600 text-center">Щоб краще підібрати майстра для вас</p>
 
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Рівень навичок роботи з технікою</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Навички майстра</h3>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { id: 'beginner', label: 'Новачок', icon: '🌱' },
-                { id: 'intermediate', label: 'Середній', icon: '⚙️' },
-                { id: 'advanced', label: 'Досвідчений', icon: '💻' },
+                { id: 'beginner', label: 'Новачок', desc: 'Базові навички' },
+                { id: 'intermediate', label: 'Середній', desc: 'Досвід роботи' },
+                { id: 'advanced', label: 'Досвідчений', desc: 'Професійний рівень' },
               ].map(option => (
                 <button
                   key={option.id}
                   onClick={() => setSkillLevel(option.id as any)}
-                  className={`p-3 rounded-xl border-2 transition-all duration-200 ${
+                  className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                     skillLevel === option.id
                       ? 'border-blue-500 bg-blue-50 shadow-md'
                       : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
                   }`}
                 >
                   <div className="text-center">
-                    <div className="text-2xl mb-1">{option.icon}</div>
-                    <div className="font-medium text-xs text-gray-900">{option.label}</div>
+                    <div className="font-semibold text-sm text-gray-900 mb-1">{option.label}</div>
+                    <div className="text-xs text-gray-500">{option.desc}</div>
                   </div>
                 </button>
               ))}
@@ -245,10 +247,10 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Що для вас найважливіше? (виберіть 1-3)</h3>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { id: 'speed', label: 'Швидкість', icon: '⚡' },
-                { id: 'quality', label: 'Якість', icon: '⭐' },
-                { id: 'price', label: 'Вигідна ціна', icon: '💰' },
-                { id: 'warranty', label: 'Гарантія', icon: '🛡️' },
+                { id: 'speed', label: 'Швидкість виконання' },
+                { id: 'quality', label: 'Якість ремонту' },
+                { id: 'price', label: 'Вигідна ціна' },
+                { id: 'warranty', label: 'Гарантія на роботу' },
               ].map(option => (
                 <button
                   key={option.id}
@@ -265,9 +267,8 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
                       : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
                   }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">{option.icon}</span>
-                    <span className="font-medium text-xs text-gray-900">{option.label}</span>
+                  <div className="flex items-center justify-center">
+                    <span className="font-medium text-sm text-gray-900">{option.label}</span>
                   </div>
                 </button>
               ))}
@@ -278,9 +279,9 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Бюджет на ремонт</h3>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { id: 'low', label: 'Економ', icon: '💵', range: 'до 1000₴' },
-                { id: 'medium', label: 'Середній', icon: '💳', range: '1000-3000₴' },
-                { id: 'high', label: 'Преміум', icon: '💎', range: 'від 3000₴' },
+                { id: 'low', label: 'Економ', range: 'до 1000₴' },
+                { id: 'medium', label: 'Середній', range: '1000-3000₴' },
+                { id: 'high', label: 'Преміум', range: 'від 3000₴' },
               ].map(option => (
                 <button
                   key={option.id}
@@ -292,9 +293,34 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
                   }`}
                 >
                   <div className="text-center">
-                    <div className="text-xl mb-1">{option.icon}</div>
-                    <div className="font-medium text-xs text-gray-900">{option.label}</div>
+                    <div className="font-medium text-sm text-gray-900">{option.label}</div>
                     <div className="text-xs text-gray-500 mt-1">{option.range}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Місце роботи майстра</h3>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { id: 'service', label: 'Сервіс', desc: 'Сервісний центр' },
+                { id: 'home', label: 'Додому', desc: 'Виїздний майстер' },
+                { id: 'both', label: 'Не важливо', desc: 'Будь-яке місце' },
+              ].map(option => (
+                <button
+                  key={option.id}
+                  onClick={() => setWorkLocation(option.id as any)}
+                  className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                    workLocation === option.id
+                      ? 'border-blue-500 bg-blue-50 shadow-md'
+                      : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
+                  }`}
+                >
+                  <div className="text-center">
+                    <div className="font-semibold text-sm text-gray-900 mb-1">{option.label}</div>
+                    <div className="text-xs text-gray-500">{option.desc}</div>
                   </div>
                 </button>
               ))}
@@ -303,7 +329,7 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
 
           <button
             onClick={handlePreferencesSubmit}
-            disabled={!skillLevel || !budgetRange || preferredPriority.length === 0}
+            disabled={!skillLevel || !budgetRange || preferredPriority.length === 0 || !workLocation}
             className="w-full py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Завершити

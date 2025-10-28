@@ -12,8 +12,6 @@ interface AuthState {
   completeOnboarding: () => void;
 }
 
-import { persist } from 'zustand/middleware';
-
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({

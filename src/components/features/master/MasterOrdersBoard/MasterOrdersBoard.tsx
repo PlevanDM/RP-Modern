@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   X, Search, Clock, DollarSign, 
-  User, Phone, MapPin, Star, Eye, TrendingUp, CheckCircle, Trash2, Send, Zap
+  User, Phone, MapPin, Star, Eye, TrendingUp, CheckCircle, Trash2, Send, Zap, Smartphone, Monitor, Laptop
 } from 'lucide-react';
 
 interface Order {
@@ -19,6 +19,8 @@ interface Order {
   location: string;
   proposalCount: number;
   hasMyProposal: boolean;
+  clientMobileOS?: 'android' | 'ios';
+  clientComputerOS?: 'windows' | 'mac' | 'linux';
 }
 
 interface MyProposal {
@@ -394,6 +396,39 @@ export function MasterOrdersBoard() {
                     <p className="text-sm flex items-center gap-2"><Phone className="w-4 h-4" /> {selectedOrder.clientPhone}</p>
                     <p className="text-sm flex items-center gap-2"><MapPin className="w-4 h-4" /> {selectedOrder.location}</p>
                     <p className="text-sm flex items-center gap-2"><Star className="w-4 h-4 text-yellow-500" /> Рейтинг: {selectedOrder.clientRating}/5</p>
+                    
+                    {/* Client Devices */}
+                    {(selectedOrder.clientMobileOS || selectedOrder.clientComputerOS) && (
+                      <div className="flex items-center gap-2 pt-2 mt-2 border-t border-slate-200">
+                        <p className="text-xs text-slate-600 font-medium">Пристрої:</p>
+                        <div className="flex items-center gap-2">
+                          {selectedOrder.clientMobileOS && (
+                            <div className="flex items-center gap-1 px-2 py-1 bg-slate-50 rounded-lg border border-slate-200">
+                              <Smartphone className={`w-4 h-4 ${
+                                selectedOrder.clientMobileOS === 'android' ? 'text-green-600' : 'text-gray-900'
+                              }`} />
+                              <span className="text-xs font-semibold text-slate-700">
+                                {selectedOrder.clientMobileOS === 'android' ? 'Android' : 'iOS'}
+                              </span>
+                            </div>
+                          )}
+                          {selectedOrder.clientComputerOS && (
+                            <div className="flex items-center gap-1 px-2 py-1 bg-slate-50 rounded-lg border border-slate-200">
+                              {selectedOrder.clientComputerOS === 'windows' ? (
+                                <Monitor className="w-4 h-4 text-blue-600" />
+                              ) : selectedOrder.clientComputerOS === 'mac' ? (
+                                <Laptop className="w-4 h-4 text-gray-900" />
+                              ) : (
+                                <Monitor className="w-4 h-4 text-orange-600" />
+                              )}
+                              <span className="text-xs font-semibold text-slate-700 capitalize">
+                                {selectedOrder.clientComputerOS === 'windows' ? 'Windows' : selectedOrder.clientComputerOS === 'mac' ? 'macOS' : 'Linux'}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 

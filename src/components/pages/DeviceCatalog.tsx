@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { DeviceModel, User } from '../../types/models';
-import { DeviceGallery } from '../DeviceGallery';
+import DeviceGallery from '../DeviceGallery';
 import { useIFixitGuides } from '../../hooks/useApi';
 import { CreateOrderModal } from '../CreateOrderModal';
 import { Order } from '../../types/models';

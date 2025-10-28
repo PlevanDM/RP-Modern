@@ -31,6 +31,7 @@ import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { JarvisChat } from "../features/ai/JarvisChat";
 import { User as CurrentUser } from "../../types/models";
+import { useTranslation } from "react-i18next";
 
 interface MenuItem {
   label: string;
@@ -86,8 +87,9 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   onLogout,
   onCreateOrder,
 }) => {
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
-  const [isPinned, setIsPinned] = React.useState(false);
+  const { t } = useTranslation();
+  const [isCollapsed, setIsCollapsed] = React.useState(false); // По умолчанию развернуто
+  const [isPinned, setIsPinned] = React.useState(true); // По умолчанию закреплено
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   // Оптимизация: используем useMemo чтобы не пересчитывать меню на каждый рендер
@@ -97,49 +99,49 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
     if (currentUser?.role === 'admin') {
       // Admin menu - без "Створити Заказ", з повним функціоналом адміна
       baseItems = [
-        { label: "Дашборд", href: "#", icon: LayoutDashboard },
-        { label: "Користувачі", href: "#", icon: User },
-        { label: "Аналітика", href: "#", icon: BarChart3 },
-        { label: "Фінанси", href: "#", icon: CreditCard },
-        { label: "Безпека", href: "#", icon: Shield },
-        { label: "Активність", href: "#", icon: Activity },
-        { label: "База даних", href: "#", icon: Database },
-        { label: "Налаштування", href: "#", icon: Settings }
+        { label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
+        { label: t('navigation.users'), href: "#", icon: User },
+        { label: t('navigation.analytics'), href: "#", icon: BarChart3 },
+        { label: t('navigation.finance'), href: "#", icon: CreditCard },
+        { label: t('navigation.security'), href: "#", icon: Shield },
+        { label: t('navigation.activity'), href: "#", icon: Activity },
+        { label: t('navigation.database'), href: "#", icon: Database },
+        { label: t('navigation.settings'), href: "#", icon: Settings }
       ];
     } else if (currentUser?.role === 'master') {
       // Master menu
       baseItems = [
-        { label: "Дашборд", href: "#", icon: LayoutDashboard },
+        { label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
         {
-          label: "Доска Замовлень",
+          label: t('navigation.ordersBoard'),
           href: "#",
           icon: ShoppingCart,
-          badge: unviewedOrdersCount > 0 ? { text: `${unviewedOrdersCount} нових`, variant: "destructive" } : undefined
+          badge: unviewedOrdersCount > 0 ? { text: `${unviewedOrdersCount}`, variant: "destructive" } : undefined
         },
-        { label: "Рейтинги & Рецензії", href: "#", icon: Star },
-        { label: "Мої Запчастини", href: "#", icon: Wrench },
-        { label: "Склад Запчастин", href: "#", icon: Package },
-        { label: "Мої Пропозиції", href: "#", icon: Tag },
-        { label: "Платежі", href: "#", icon: CreditCard },
-        { label: "Чат", href: "#", icon: MessageSquare },
-        { label: "Портфоліо", href: "#", icon: Briefcase }
+        { label: t('navigation.reports'), href: "#", icon: Star },
+        { label: t('navigation.myParts'), href: "#", icon: Wrench },
+        { label: t('navigation.partsInventory'), href: "#", icon: Package },
+        { label: t('navigation.myProposals'), href: "#", icon: Tag },
+        { label: t('navigation.payments'), href: "#", icon: CreditCard },
+        { label: t('navigation.messages'), href: "#", icon: MessageSquare },
+        { label: t('navigation.portfolio'), href: "#", icon: Briefcase }
       ];
     } else if (currentUser?.role === 'client') {
       // Client menu
       baseItems = [
-        { label: "Дашборд", href: "#", icon: LayoutDashboard },
-        { label: "Створити Заказ", href: "#", icon: Package },
-        { label: "Знайти Майстрів", href: "#", icon: Search },
-        { label: "Мої Замовлення", href: "#", icon: ShoppingCart },
-        { label: "Мої Пристрої", href: "#", icon: Smartphone },
-        { label: "Пропозиції", href: "#", icon: Tag },
-        { label: "Платежі", href: "#", icon: CreditCard },
-        { label: "Чат", href: "#", icon: MessageSquare }
+        { label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
+        { label: t('navigation.createOrder'), href: "#", icon: Package },
+        { label: t('navigation.findMasters'), href: "#", icon: Search },
+        { label: t('navigation.myOrders'), href: "#", icon: ShoppingCart },
+        { label: t('navigation.myDevices'), href: "#", icon: Smartphone },
+        { label: t('navigation.proposals'), href: "#", icon: Tag },
+        { label: t('navigation.payments'), href: "#", icon: CreditCard },
+        { label: t('navigation.messages'), href: "#", icon: MessageSquare }
       ];
     }
 
     return baseItems;
-  }, [currentUser?.role, unviewedOrdersCount]);
+  }, [currentUser?.role, unviewedOrdersCount, t]);
 
   // Оптимизация: функция getRouteKey теперь использует кешированную константу
   const getRouteKey = React.useCallback((label: string): string => {
@@ -160,32 +162,73 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   const Logo = ({ collapsed }: { collapsed: boolean }) => {
     return (
       <div className="flex items-center justify-between gap-3 px-4 py-6">
-        {/* Enhanced Logo with better design */}
+        {/* Enhanced Logo with premium design */}
         <motion.div
           initial={{ opacity: 0, scale: 0.5, y: -20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 15 }}
           className="flex items-center gap-3"
         >
-          {/* Modern logo with gradient and glow */}
+          {/* Premium logo with animated gradient and glow */}
           <motion.div
-            className="relative w-11 h-11 flex items-center justify-center"
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            className="relative w-12 h-12 flex items-center justify-center"
+            whileHover={{ scale: 1.15, rotate: [0, -5, 5, 0] }}
+            transition={{ type: "spring", stiffness: 400, damping: 15 }}
           >
-            {/* Glow effect */}
+            {/* Animated glow effect */}
             <motion.div
-              animate={{ opacity: [0.4, 0.8, 0.4], scale: [1, 1.05, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-blue-600 rounded-xl blur-sm"
+              animate={{ 
+                opacity: [0.3, 0.7, 0.3],
+                scale: [1, 1.2, 1],
+                rotate: [0, 180, 360]
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-60"
             />
 
-            {/* Main icon container with better shadows */}
+            {/* Secondary glow layer */}
+            <motion.div
+              animate={{ 
+                opacity: [0.2, 0.5, 0.2],
+                scale: [1.1, 1.3, 1.1]
+              }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-0 bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-500 rounded-2xl blur-md opacity-50"
+            />
+
+            {/* Main icon container with premium design */}
             <motion.div
               whileHover={{ y: -2 }}
-              className="relative z-10 w-full h-full bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/50"
+              className="relative z-10 w-full h-full bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/60 ring-2 ring-white/20"
             >
-              <Wrench className="h-5 w-5 text-white" />
+              {/* Shine effect on hover */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileHover={{ opacity: 1 }}
+                className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 to-transparent pointer-events-none"
+              />
+              
+              <Wrench className="h-6 w-6 text-white drop-shadow-lg" strokeWidth={2.5} />
+              
+              {/* Animated sparkles */}
+              <motion.div
+                animate={{ 
+                  scale: [0.8, 1.2, 0.8],
+                  opacity: [0, 1, 0],
+                  rotate: [0, 180, 360]
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full blur-sm"
+              />
+              <motion.div
+                animate={{ 
+                  scale: [0.8, 1.2, 0.8],
+                  opacity: [0, 0.8, 0],
+                  rotate: [0, -180, -360]
+                }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                className="absolute -bottom-1 -left-1 w-2 h-2 bg-cyan-400 rounded-full blur-sm"
+              />
             </motion.div>
           </motion.div>
 
@@ -198,18 +241,34 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                 transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
                 className="flex flex-col"
               >
+                {/* Main text with animated gradient */}
                 <motion.span 
-                  className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+                  className="text-2xl font-extrabold tracking-tight"
+                  style={{
+                    background: "linear-gradient(135deg, #3B82F6 0%, #8B5CF6 50%, #06B6D4 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text"
+                  }}
                 >
                   Repair HUB
                 </motion.span>
-                <motion.span 
-                  className="text-xs text-muted-foreground font-semibold"
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  Pro
-                </motion.span>
+                
+                {/* Pro badge with animation */}
+                <motion.div className="flex items-center gap-1.5">
+                  <motion.span 
+                    className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground"
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    Pro
+                  </motion.span>
+                  <motion.div
+                    animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
+                  />
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -222,7 +281,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.2 }}
               onClick={() => setIsPinned(!isPinned)}
-              className="p-1 hover:bg-accent rounded-md transition-colors"
+              className="p-1.5 hover:bg-accent rounded-lg transition-colors hover:scale-110"
               title={isPinned ? "Авто скрывать меню" : "Оставить меню открытым"}
             >
               {isPinned ? (
@@ -373,8 +432,8 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
             animate={isCollapsed ? "closed" : "open"}
             variants={sidebarVariants}
             transition={transitionProps}
-            onMouseEnter={() => setIsCollapsed(false)}
-            onMouseLeave={() => !isPinned && setIsCollapsed(true)}
+            onMouseEnter={() => {/* Menu остается развернутым */}}
+            onMouseLeave={() => {/* Menu остается развернутым */}}
         >
             <Logo collapsed={isCollapsed} />
             <NavigationMenu collapsed={isCollapsed} />

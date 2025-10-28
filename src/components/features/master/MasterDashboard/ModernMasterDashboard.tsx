@@ -34,14 +34,19 @@ interface StatCardProps {
   trend: 'up' | 'down';
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon, trend }) => {
+const StatCard: React.FC<StatCardProps & { onClick?: () => void }> = ({ title, value, change, icon, trend, onClick }) => {
+  const t = useTranslation();
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="relative overflow-hidden">
+      <Card 
+        className={`relative overflow-hidden cursor-pointer transition-all hover:shadow-lg hover:scale-105 ${onClick ? '' : 'cursor-default'}`}
+        onClick={onClick}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -237,7 +242,13 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, index) => (
-            <StatCard key={index} {...stat} />
+            <StatCard 
+              key={index} 
+              {...stat} 
+              onClick={() => {
+                setActiveItem('myOrders');
+              }}
+            />
           ))}
         </div>
 
@@ -258,7 +269,11 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
                       <CardTitle>Активные задачи</CardTitle>
                       <CardDescription>Управление текущими заказами</CardDescription>
                     </div>
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setActiveItem('myOrders')}
+                    >
                       Все задачи
                       <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
@@ -273,6 +288,8 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.1 }}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
                           className="p-4 border border-border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
                           onClick={() => {
                             const order = orders.find((o) => o.id === task.id);
@@ -383,7 +400,19 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
                           initial={{ opacity: 0, x: 10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.3 + index * 0.1 }}
-                          className="p-3 border border-border rounded-lg hover:bg-accent/50 transition-colors"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className="p-3 border border-border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
+                          onClick={() => {
+                            // Navigate based on notification type
+                            if (notification.message.toLowerCase().includes('пропозиція') || notification.message.toLowerCase().includes('предложение')) {
+                              setActiveItem('proposals');
+                            } else if (notification.message.toLowerCase().includes('замовлення') || notification.message.toLowerCase().includes('заказ') || notification.message.toLowerCase().includes('роботі') || notification.message.toLowerCase().includes('работе')) {
+                              setActiveItem('myOrders');
+                            } else {
+                              setActiveItem('myOrders');
+                            }
+                          }}
                         >
                           <div className="flex gap-3">
                             <div
@@ -423,8 +452,13 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <Card>
+              <Card 
+                className="cursor-pointer transition-all hover:shadow-lg"
+                onClick={() => setActiveItem('reports')}
+              >
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Star className="h-5 w-5 text-primary" />
@@ -489,7 +523,10 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.5 + index * 0.1 }}
-                      className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-accent/50 transition-colors"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
+                      onClick={() => setActiveItem('myOrders')}
                     >
                       <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
                         {appointment.time}

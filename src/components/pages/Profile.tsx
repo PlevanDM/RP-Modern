@@ -21,7 +21,9 @@ import {
   Watch,
   Headphones,
   Battery,
-  Zap
+  Zap,
+  Monitor,
+  Laptop
 } from 'lucide-react';
 import { User as UserType } from '../..//models';
 
@@ -40,9 +42,10 @@ interface ProfileData {
 
 interface ProfileProps {
   currentUser: UserType | undefined;
+  orders?: any[];
 }
 
-export function Profile({ currentUser }: ProfileProps) {
+export function Profile({ currentUser, orders = [] }: ProfileProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
     name: currentUser?.name || 'Користувач',
@@ -134,7 +137,7 @@ export function Profile({ currentUser }: ProfileProps) {
     }
   };
 
-  const itemVariants = {
+    const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
   };
@@ -143,6 +146,19 @@ export function Profile({ currentUser }: ProfileProps) {
     hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1, transition: { duration: 0.6 } },
     hover: { scale: 1.05, transition: { duration: 0.3 } }
+  };
+
+  // Calculate statistics from orders
+  const userOrders = orders.filter(o => 
+    currentUser?.role === 'client' ? o.clientId === currentUser.id : o.assignedMasterId === currentUser.id
+  );
+  
+  const stats = {
+    total: userOrders.length,
+    completed: userOrders.filter(o => o.status === 'completed').length,
+    inProgress: userOrders.filter(o => o.status === 'in_progress').length,
+    cancelled: userOrders.filter(o => o.status === 'cancelled').length,
+    averageRating: currentUser?.rating || 0
   };
 
   return (
@@ -525,22 +541,44 @@ export function Profile({ currentUser }: ProfileProps) {
 
                 {/* Devices Section - Only for clients */}
                 {currentUser?.role === 'client' && (currentUser?.clientMobileOS || currentUser?.clientComputerOS) && (
-                  <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition">
-                    <div className="p-2 bg-orange-100 rounded-lg">
-                      <Smartphone className="w-5 h-5 text-orange-600" />
+                  <div className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-gray-50 to-orange-50/30 hover:bg-gradient-to-br hover:from-orange-50 hover:to-orange-100/50 transition-all duration-200 border border-orange-100">
+                    <div className="p-2 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg shadow-sm">
+                      <Smartphone className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs text-gray-500 font-medium">Мої пристрої</p>
-                      <div className="flex items-center gap-3 mt-1">
+                      <p className="text-xs text-gray-600 font-semibold uppercase tracking-wide">Мої пристрої</p>
+                      <div className="flex items-center gap-4 mt-2">
                         {currentUser.clientMobileOS && (
-                          <span className="text-lg">
-                            {currentUser.clientMobileOS === 'android' ? '🤖' : '🍎'}
-                          </span>
+                          <motion.div
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg shadow-sm border border-gray-200"
+                          >
+                            <Smartphone className={`w-5 h-5 ${
+                              currentUser.clientMobileOS === 'android' 
+                                ? 'text-green-600' 
+                                : 'text-gray-900'
+                            }`} />
+                            <span className="text-xs font-semibold text-gray-700">
+                              {currentUser.clientMobileOS === 'android' ? 'Android' : 'iOS'}
+                            </span>
+                          </motion.div>
                         )}
                         {currentUser.clientComputerOS && (
-                          <span className="text-lg">
-                            {currentUser.clientComputerOS === 'windows' ? '🪟' : currentUser.clientComputerOS === 'mac' ? '🍎' : '🐧'}
-                          </span>
+                          <motion.div
+                            whileHover={{ scale: 1.1, rotate: -5 }}
+                            className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg shadow-sm border border-gray-200"
+                          >
+                            {currentUser.clientComputerOS === 'windows' ? (
+                              <Monitor className="w-5 h-5 text-blue-600" />
+                            ) : currentUser.clientComputerOS === 'mac' ? (
+                              <Laptop className="w-5 h-5 text-gray-900" />
+                            ) : (
+                              <Monitor className="w-5 h-5 text-orange-600" />
+                            )}
+                            <span className="text-xs font-semibold text-gray-700 capitalize">
+                              {currentUser.clientComputerOS === 'windows' ? 'Windows' : currentUser.clientComputerOS === 'mac' ? 'macOS' : 'Linux'}
+                            </span>
+                          </motion.div>
                         )}
                       </div>
                     </div>
@@ -588,7 +626,7 @@ export function Profile({ currentUser }: ProfileProps) {
                 )}
               </motion.div>
 
-            {/* Bio Section - Material Design 3 */}
+              {/* Bio Section - Material Design 3 */}
               <motion.div variants={itemVariants} className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Про мене
@@ -610,6 +648,61 @@ export function Profile({ currentUser }: ProfileProps) {
                   </div>
                 )}
               </motion.div>
+
+              {/* Statistics Section */}
+              {!isEditing && stats.total > 0 && (
+                <motion.div variants={itemVariants} className="mb-4">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-3">Статистика</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="p-4 bg-blue-50 rounded-xl border border-blue-100"
+                    >
+                      <p className="text-xs text-blue-600 font-semibold mb-1">Всього замовлень</p>
+                      <p className="text-2xl font-bold text-blue-700">{stats.total}</p>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="p-4 bg-green-50 rounded-xl border border-green-100"
+                    >
+                      <p className="text-xs text-green-600 font-semibold mb-1">Завершено</p>
+                      <p className="text-2xl font-bold text-green-700">{stats.completed}</p>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="p-4 bg-yellow-50 rounded-xl border border-yellow-100"
+                    >
+                      <p className="text-xs text-yellow-600 font-semibold mb-1">В роботі</p>
+                      <p className="text-2xl font-bold text-yellow-700">{stats.inProgress}</p>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="p-4 bg-red-50 rounded-xl border border-red-100"
+                    >
+                      <p className="text-xs text-red-600 font-semibold mb-1">Скасовано</p>
+                      <p className="text-2xl font-bold text-red-700">{stats.cancelled}</p>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Specializations Section - For Masters */}
+              {!isEditing && currentUser?.role === 'master' && currentUser?.skills && currentUser.skills.length > 0 && (
+                <motion.div variants={itemVariants} className="mb-4">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-3">Спеціалізація</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {currentUser.skills.map((skill, idx) => (
+                      <motion.span
+                        key={idx}
+                        whileHover={{ scale: 1.05 }}
+                        className="px-3 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full text-xs font-semibold shadow-sm"
+                      >
+                        {skill}
+                      </motion.span>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
 
               {/* Action Buttons - Material Design */}
               {!isEditing && (
@@ -637,6 +730,63 @@ export function Profile({ currentUser }: ProfileProps) {
                 )}
               </div>
           </motion.div>
+
+          {/* Recent Orders Section */}
+          {!isEditing && userOrders.length > 0 && (
+            <motion.div
+              variants={itemVariants}
+              className="mt-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden"
+            >
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {currentUser?.role === 'master' ? 'Мої Замовлення' : 'Історія Замовлень'}
+                </h3>
+              </div>
+              <div className="divide-y divide-gray-200">
+                {userOrders.slice(0, 5).map((order, idx) => (
+                  <motion.div
+                    key={order.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    whileHover={{ backgroundColor: '#f9fafb' }}
+                    className="px-6 py-4 flex items-center justify-between hover:cursor-pointer transition"
+                  >
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-gray-900">{order.title}</p>
+                      <p className="text-xs text-gray-500 mt-1">{order.description}</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        order.status === 'completed' ? 'bg-green-100 text-green-700' :
+                        order.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                        order.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                        'bg-yellow-100 text-yellow-700'
+                      }`}>
+                        {order.status}
+                      </span>
+                      {order.budget && (
+                        <span className="text-sm font-semibold text-gray-900">
+                          ₴{order.budget.toLocaleString()}
+                        </span>
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+              {userOrders.length > 5 && (
+                <div className="px-6 py-3 border-t border-gray-200 text-center">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="text-sm text-blue-600 hover:text-blue-700 font-semibold"
+                  >
+                    Показати всі замовлення ({userOrders.length})
+                  </motion.button>
+                </div>
+              )}
+            </motion.div>
+          )}
 
           {/* Edit Action Buttons - Material Design */}
           <AnimatePresence>

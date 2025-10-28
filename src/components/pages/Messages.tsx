@@ -5,6 +5,8 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import CheckIcon from '@mui/icons-material/Check';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
+import { QuickActions, ProposalMessage, NegotiateMessage } from '../features/chat/QuickActions';
+import { ProposalModal } from '../features/chat/ProposalModal';
 
 interface Contact {
   id: string;
@@ -22,9 +24,21 @@ interface Message {
   text: string;
   timestamp: string;
   read: boolean;
+  type?: 'text' | 'proposal' | 'negotiate';
+  proposalData?: {
+    proposalId: string;
+    price: number;
+    description: string;
+    status: 'pending' | 'accepted' | 'rejected';
+  };
+  negotiateData?: {
+    currentPrice: number;
+    newPrice: number;
+    message: string;
+  };
 }
 
-import { User } from '../..//models';
+import { User } from '../../types/models';
 
 interface Chat {
   id: string;
@@ -33,126 +47,102 @@ interface Chat {
 }
 
 interface MessagesProps {
+  currentUser?: User;
+  masters?: User[];
+  orders?: any[];
   selectedMaster?: User;
 }
 
-const mockContacts: Contact[] = [
-  {
-    id: 'master1',
-    name: 'Олександр Петренко',
-    avatar: 'https://i.pravatar.cc/96?img=4',
-    status: 'online',
-    lastMessage: 'Можу почати завтра о 10:00',
-    lastMessageTime: '10:30',
-    unreadCount: 0
-  },
-  {
-    id: 'master2',
-    name: 'Марія Коваленко',
-    avatar: 'https://i.pravatar.cc/96?img=5',
-    status: 'online',
-    lastMessage: 'Батарея готова! Можете забирати.',
-    lastMessageTime: '16:12',
-    unreadCount: 0
-  },
-  {
-    id: 'master3',
-    name: 'Ігор Мельник',
-    avatar: 'https://i.pravatar.cc/96?img=6',
-    status: 'online',
-    lastMessage: 'MacBook готовий до видачі',
-    lastMessageTime: '16:11',
-    unreadCount: 0
-  },
-  {
-    id: 'master4',
-    name: 'Тарас Бандера',
-    avatar: 'https://i.pravatar.cc/96?img=7',
-    status: 'offline',
-    lastMessage: 'iPad відремонтований',
-    lastMessageTime: '16:12',
-    unreadCount: 0
-  },
-  {
-    id: 'master5',
-    name: 'Оксана Петренко',
-    avatar: 'https://i.pravatar.cc/96?img=8',
-    status: 'online',
-    lastMessage: 'Добро пожаловать! Чем могу помочь?',
-    lastMessageTime: '15:30',
-    unreadCount: 0
-  },
-  {
-    id: 'master6',
-    name: 'Андрій Павленко',
-    avatar: 'https://i.pravatar.cc/96?img=9',
-    status: 'offline',
-    lastMessage: 'Професійний ремонт - моя спеціалізація',
-    lastMessageTime: '14:45',
-    unreadCount: 0
-  }
-];
+// Мок данные удалены - используем только реальные данные из заказов
 
-const mockChats: Record<string, Chat> = {
-  'master1': {
-    id: 'master1',
-    contactId: 'master1',
-    messages: [
-      { id: '1', senderId: 'user', text: 'Привіт! Можеш сьогодні переглянути мій iPhone?', timestamp: '10:15', read: true },
-      { id: '2', senderId: 'master1', text: 'Привіт! Так, звісно можу', timestamp: '10:20', read: true },
-      { id: '3', senderId: 'master1', text: 'Можу почати завтра о 10:00', timestamp: '10:30', read: true }
-    ]
-  },
-  'master2': {
-    id: 'master2',
-    contactId: 'master2',
-    messages: [
-      { id: '1', senderId: 'user', text: 'Замовляю заміну батареї', timestamp: '09:00', read: true },
-      { id: '2', senderId: 'master2', text: 'Добре! Коли зможете приїхати?', timestamp: '09:15', read: true },
-      { id: '3', senderId: 'master2', text: 'Батарея готова! Можете забирати.', timestamp: '16:12', read: true }
-    ]
-  },
-  'master3': {
-    id: 'master3',
-    contactId: 'master3',
-    messages: [
-      { id: '1', senderId: 'user', text: 'MacBook не включається', timestamp: '12:00', read: true },
-      { id: '2', senderId: 'master3', text: 'Можу подивитися', timestamp: '12:15', read: true },
-      { id: '3', senderId: 'master3', text: 'MacBook готовий до видачі', timestamp: '16:11', read: true }
-    ]
-  },
-  'master4': {
-    id: 'master4',
-    contactId: 'master4',
-    messages: [
-      { id: '1', senderId: 'user', text: 'iPad потрібен ремонт екрану', timestamp: '11:00', read: true },
-      { id: '2', senderId: 'master4', text: 'Приїжджайте до мене', timestamp: '11:30', read: true },
-      { id: '3', senderId: 'master4', text: 'iPad відремонтований', timestamp: '16:12', read: true }
-    ]
-  },
-  'master5': {
-    id: 'master5',
-    contactId: 'master5',
-    messages: [
-      { id: '1', senderId: 'master5', text: 'Добро пожаловать! Чем могу помочь?', timestamp: '15:30', read: true }
-    ]
-  },
-  'master6': {
-    id: 'master6',
-    contactId: 'master6',
-    messages: [
-      { id: '1', senderId: 'master6', text: 'Професійний ремонт - моя спеціалізація', timestamp: '14:45', read: true }
-    ]
-  }
-};
-
-export function Messages({ selectedMaster }: MessagesProps) {
-  const [selectedContactId, setSelectedContactId] = useState(mockContacts[0].id);
+export function Messages({ currentUser, masters = [], orders = [], selectedMaster }: MessagesProps) {
+  const [selectedContactId, setSelectedContactId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [messageText, setMessageText] = useState('');
-  const [chats, setChats] = useState(mockChats);
-  const [contacts, setContacts] = useState(mockContacts);
+  const [chats, setChats] = useState<Record<string, Chat>>({});
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [showProposalModal, setShowProposalModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const isMaster = currentUser?.role === 'master';
+  
+  // Initialize contacts and chats based on orders and masters
+  useEffect(() => {
+    if (!currentUser) return;
+    
+    const generatedContacts: Contact[] = [];
+    const generatedChats: Record<string, Chat> = {};
+    
+    // Generate contacts from orders
+    orders.forEach(order => {
+      if (currentUser.role === 'client' && order.assignedMasterId) {
+        // Client chats with assigned masters
+        const master = masters.find(m => m.id === order.assignedMasterId);
+        if (master) {
+          const contactId = master.id;
+          generatedContacts.push({
+            id: contactId,
+            name: master.name,
+            avatar: master.avatar || `https://i.pravatar.cc/96?img=${contactId}`,
+            status: 'online',
+            lastMessage: `Замовлення: ${order.title}`,
+            lastMessageTime: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }),
+            unreadCount: 0
+          });
+          
+          if (!generatedChats[contactId]) {
+            generatedChats[contactId] = {
+              id: contactId,
+              contactId,
+              messages: [{
+                id: '1',
+                senderId: 'system',
+                text: `Чат по замовленню: ${order.title}`,
+                timestamp: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }),
+                read: true
+              }]
+            };
+          }
+        }
+      } else if (currentUser.role === 'master' && order.assignedMasterId === currentUser.id) {
+        // Master chats with clients who have assigned orders
+        const client = masters.find(m => m.id === order.clientId);
+        if (client) {
+          const contactId = client.id;
+          generatedContacts.push({
+            id: contactId,
+            name: order.clientName || client.name,
+            avatar: `https://i.pravatar.cc/96?img=${contactId}`,
+            status: 'online',
+            lastMessage: `Замовлення: ${order.title}`,
+            lastMessageTime: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }),
+            unreadCount: 0
+          });
+          
+          if (!generatedChats[contactId]) {
+            generatedChats[contactId] = {
+              id: contactId,
+              contactId,
+              messages: [{
+                id: '1',
+                senderId: 'system',
+                text: `Чат по замовленню: ${order.title}`,
+                timestamp: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }),
+                read: true
+              }]
+            };
+          }
+        }
+      }
+    });
+    
+    // Set generated contacts and chats (no fallback to mocks)
+    setContacts(generatedContacts);
+    setChats(generatedChats);
+    if (generatedContacts.length > 0) {
+      setSelectedContactId(generatedContacts[0].id);
+    }
+  }, [currentUser, masters, orders]);
 
   useEffect(() => {
     if (selectedMaster) {
@@ -195,8 +185,15 @@ export function Messages({ selectedMaster }: MessagesProps) {
     );
   }, [searchQuery, contacts]);
 
-  const selectedChat = chats[selectedContactId];
+  const selectedChat = selectedContactId ? chats[selectedContactId] : null;
   const selectedContact = contacts.find(c => c.id === selectedContactId);
+
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (selectedChat) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [selectedChat?.messages, selectedChat]);
 
   const handleSendMessage = () => {
     if (!messageText.trim() || !selectedChat) return;
@@ -206,7 +203,8 @@ export function Messages({ selectedMaster }: MessagesProps) {
       senderId: 'user',
       text: messageText,
       timestamp: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }),
-      read: true
+      read: true,
+      type: 'text'
     };
 
     const updatedChats = {
@@ -233,6 +231,103 @@ export function Messages({ selectedMaster }: MessagesProps) {
     }));
     
     setMessageText('');
+  };
+
+  const handleMakeOffer = () => {
+    setShowProposalModal(true);
+  };
+
+  const handleOfferPart = () => {
+    setShowProposalModal(true);
+  };
+
+  const handleNegotiate = () => {
+    setShowProposalModal(true);
+  };
+
+  const handleSubmitProposal = (data: { price: number; days: number; description: string }) => {
+    if (!selectedChat) return;
+
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      senderId: 'user',
+      text: `Пропозиція: ${data.price}₴ за ${data.days} днів`,
+      timestamp: new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }),
+      read: true,
+      type: 'proposal',
+      proposalData: {
+        proposalId: `prop-${Date.now()}`,
+        price: data.price,
+        description: data.description,
+        status: 'pending'
+      }
+    };
+
+    const updatedChats = {
+      ...chats,
+      [selectedContactId]: {
+        ...chats[selectedContactId],
+        messages: [...chats[selectedContactId].messages, newMessage]
+      }
+    };
+
+    setChats(updatedChats);
+  };
+
+  const handleAcceptProposal = (messageId: string) => {
+    setChats(prev => {
+      const chat = prev[selectedContactId];
+      if (!chat) return prev;
+
+      const updatedMessages = chat.messages.map(msg => {
+        if (msg.id === messageId && msg.proposalData) {
+          return {
+            ...msg,
+            proposalData: {
+              ...msg.proposalData,
+              status: 'accepted' as const
+            }
+          };
+        }
+        return msg;
+      });
+
+      return {
+        ...prev,
+        [selectedContactId]: {
+          ...chat,
+          messages: updatedMessages
+        }
+      };
+    });
+  };
+
+  const handleRejectProposal = (messageId: string) => {
+    setChats(prev => {
+      const chat = prev[selectedContactId];
+      if (!chat) return prev;
+
+      const updatedMessages = chat.messages.map(msg => {
+        if (msg.id === messageId && msg.proposalData) {
+          return {
+            ...msg,
+            proposalData: {
+              ...msg.proposalData,
+              status: 'rejected' as const
+            }
+          };
+        }
+        return msg;
+      });
+
+      return {
+        ...prev,
+        [selectedContactId]: {
+          ...chat,
+          messages: updatedMessages
+        }
+      };
+    });
   };
 
   return (
@@ -298,7 +393,7 @@ export function Messages({ selectedMaster }: MessagesProps) {
       </div>
 
       {/* Chat Area */}
-      {selectedChat && selectedContact && (
+      {selectedChat && selectedContact ? (
         <div className="flex-1 flex flex-col">
           {/* Chat Header */}
           <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
@@ -333,34 +428,78 @@ export function Messages({ selectedMaster }: MessagesProps) {
             </div>
           </div>
 
+          {/* Quick Actions */}
+          <QuickActions
+            isMaster={isMaster}
+            onMakeOffer={handleMakeOffer}
+            onOfferPart={handleOfferPart}
+            onNegotiate={handleNegotiate}
+          />
+
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-            {selectedChat.messages.map(message => (
-              <div
-                key={message.id}
-                className={`flex ${message.senderId === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                  message.senderId === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-900 border border-gray-200'
-                }`}>
-                  <p className="text-sm">{message.text}</p>
-                  <div className="flex items-center justify-end mt-1 space-x-1">
-                    <span className="text-xs opacity-70">{message.timestamp}</span>
-                    {message.senderId === 'user' && (
-                      <div className="flex items-center">
-                        {message.read ? (
-                          <DoneAllIcon sx={{ fontSize: 16, color: '#3B82F6' }} />
-                        ) : (
-                          <CheckIcon sx={{ fontSize: 16, color: '#9CA3AF' }} />
-                        )}
-                      </div>
-                    )}
+            {selectedChat.messages.map(message => {
+              // Handle proposal messages
+              if (message.type === 'proposal' && message.proposalData) {
+                return (
+                  <div key={message.id} className="w-full">
+                    <ProposalMessage
+                      proposalId={message.proposalData.proposalId}
+                      price={message.proposalData.price}
+                      description={message.proposalData.description}
+                      status={message.proposalData.status}
+                      isFromMe={message.senderId === 'user'}
+                      onAccept={() => handleAcceptProposal(message.id)}
+                      onReject={() => handleRejectProposal(message.id)}
+                    />
+                  </div>
+                );
+              }
+
+              // Handle negotiate messages
+              if (message.type === 'negotiate' && message.negotiateData) {
+                return (
+                  <div key={message.id} className="w-full">
+                    <NegotiateMessage
+                      currentPrice={message.negotiateData.currentPrice}
+                      newPrice={message.negotiateData.newPrice}
+                      message={message.negotiateData.message}
+                      isFromMe={message.senderId === 'user'}
+                      onAccept={() => {}}
+                      onCounter={() => {}}
+                    />
+                  </div>
+                );
+              }
+
+              // Default text messages
+              return (
+                <div
+                  key={message.id}
+                  className={`flex ${message.senderId === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                    message.senderId === 'user'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-white text-gray-900 border border-gray-200'
+                  }`}>
+                    <p className="text-sm">{message.text}</p>
+                    <div className="flex items-center justify-end mt-1 space-x-1">
+                      <span className="text-xs opacity-70">{message.timestamp}</span>
+                      {message.senderId === 'user' && (
+                        <div className="flex items-center">
+                          {message.read ? (
+                            <DoneAllIcon sx={{ fontSize: 16, color: '#3B82F6' }} />
+                          ) : (
+                            <CheckIcon sx={{ fontSize: 16, color: '#9CA3AF' }} />
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             <div ref={messagesEndRef} />
           </div>
 
@@ -384,7 +523,28 @@ export function Messages({ selectedMaster }: MessagesProps) {
             </div>
           </div>
         </div>
+      ) : (
+        // Empty state when no chat selected
+        <div className="flex-1 flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="w-24 h-24 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
+              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Оберіть чат</h3>
+            <p className="text-gray-500">Виберіть контакт для початку розмови</p>
+          </div>
+        </div>
       )}
+
+      {/* Proposal Modal */}
+      <ProposalModal
+        isOpen={showProposalModal}
+        onClose={() => setShowProposalModal(false)}
+        onSubmit={handleSubmitProposal}
+        isMaster={isMaster}
+      />
     </div>
   );
 }

@@ -3,10 +3,8 @@ import { motion } from 'framer-motion';
 import { 
   Plus, 
   Search, 
-  Bell, 
   Clock, 
   CheckCircle2, 
-  AlertCircle, 
   TrendingUp,
   Calendar,
   MapPin,
@@ -69,7 +67,7 @@ interface ModernClientDashboardProps {
 const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
   currentUser,
   orders: clientOrders,
-  notifications,
+  notifications: _notifications, // Не використовується - видалено для чистки UI
   setActiveItem,
   createOrder,
   setSelectedOrder,
@@ -196,7 +194,10 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+              <Card 
+                className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
+                onClick={() => setActiveItem('myOrders')}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="p-3 bg-primary/10 rounded-xl">
@@ -231,7 +232,7 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-primary" />
-                Швидкі дії
+                {t('common.quickActions')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -247,8 +248,8 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                         <Plus className="w-6 h-6" />
                       </div>
                       <div className="text-left">
-                        <p className="font-semibold">Створити замовлення</p>
-                        <p className="text-xs opacity-80">Нова заявка на ремонт</p>
+                        <p className="font-semibold">{t('common.createOrder')}</p>
+                        <p className="text-xs opacity-80">{t('common.newRepairRequest')}</p>
                       </div>
                     </div>
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -266,7 +267,7 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                         <Search className="w-6 h-6" />
                       </div>
                       <div className="text-left">
-                        <p className="font-semibold">Знайти майстра</p>
+                        <p className="font-semibold">{t('navigation.findMasters')}</p>
                         <p className="text-xs text-muted-foreground">{t('common.searchSpecialists')}</p>
                       </div>
                     </div>
@@ -308,7 +309,11 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     whileHover={{ scale: 1.01 }}
-                    className="p-4 border border-border rounded-xl bg-background/50 hover:shadow-md transition-all duration-300"
+                    className="p-4 border border-border rounded-xl bg-background/50 hover:shadow-md transition-all duration-300 cursor-pointer"
+                    onClick={() => {
+                      setSelectedOrder(order);
+                      setActiveItem('myOrders');
+                    }}
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
@@ -378,7 +383,7 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-green-500" />
-                  Історія замовлень
+                  {t('common.orderHistory')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -424,79 +429,50 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
 
           {/* Sidebar */}
           <motion.div variants={itemVariants} className="space-y-6">
-            {/* Notifications */}
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bell className="w-5 h-5 text-primary" />
-                  Увідомлення
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {notifications.map((notification, index) => (
-                  <motion.div
-                    key={notification.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className={`p-3 rounded-lg border transition-all duration-300 ${
-                      notification.read 
-                        ? 'bg-background/30 border-border/50' 
-                        : 'bg-primary/5 border-primary/20'
-                    }`}
-                  >
-                    <div className="flex gap-2">
-                      <div className={`p-1 rounded-full h-fit ${
-                        notification.type === 'success' 
-                          ? 'bg-green-500/10' 
-                          : notification.type === 'warning'
-                          ? 'bg-yellow-500/10'
-                          : 'bg-blue-500/10'
-                      }`}>
-                        {notification.type === 'success' ? (
-                          <CheckCircle2 className="w-4 h-4 text-green-500" />
-                        ) : notification.type === 'warning' ? (
-                          <AlertCircle className="w-4 h-4 text-yellow-500" />
-                        ) : (
-                          <Bell className="w-4 h-4 text-blue-500" />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm">{notification.message}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </CardContent>
-            </Card>
-
             {/* Quick Stats */}
             <Card className="border-border/50 bg-gradient-to-br from-primary/10 to-primary/5 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-lg">Ваша активність</CardTitle>
+                <CardTitle className="text-lg">{t('common.yourActivity')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Виконано в цьому місяці</span>
-                    <span className="font-semibold">5 замовлень</span>
+                    <span className="text-muted-foreground">{t('common.completedThisMonth')}</span>
+                    <span className="font-semibold">
+                      {clientOrders.filter(o => o.status === 'completed' || o.status === 'paid').length} {t('common.orders')}
+                    </span>
                   </div>
-                  <Progress value={83} className="h-2" />
+                  <Progress 
+                    value={
+                      clientOrders.length > 0 
+                        ? (clientOrders.filter(o => o.status === 'completed' || o.status === 'paid').length / clientOrders.length * 100)
+                        : 0
+                    } 
+                    className="h-2" 
+                  />
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Середній рейтинг майстрів</span>
+                    <span className="text-muted-foreground">{t('common.averageMasterRating')}</span>
                     <span className="font-semibold">4.8 ⭐</span>
                   </div>
                   <Progress value={96} className="h-2" />
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Економія часу</span>
-                    <span className="font-semibold">12 годин</span>
+                    <span className="text-muted-foreground">{t('common.timeSaved')}</span>
+                    <span className="font-semibold">
+                      {Math.floor(clientOrders.filter(o => o.status === 'completed' || o.status === 'paid').length * 1.5)} {t('common.hours')}
+                    </span>
                   </div>
-                  <Progress value={75} className="h-2" />
+                  <Progress 
+                    value={
+                      clientOrders.length > 0
+                        ? Math.min(100, (clientOrders.filter(o => o.status === 'completed' || o.status === 'paid').length / 10) * 100)
+                        : 0
+                    } 
+                    className="h-2" 
+                  />
                 </div>
               </CardContent>
             </Card>

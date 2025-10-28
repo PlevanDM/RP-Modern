@@ -6,6 +6,37 @@ import { mockProposals } from '../utils/mockData';
 import { useAuthStore } from './authStore';
 import { useUIStore } from './uiStore';
 
+// Role-based permission helpers
+export const canClientPerformAction = (order: Order, userId: string, action: string): boolean => {
+  if (order.clientId !== userId) return false;
+  
+  const clientActions: Record<string, Order['status'][]> = {
+    cancel: ['open', 'proposed', 'accepted'],
+    startDispute: ['accepted', 'in_progress'],
+    acceptProposal: ['proposed'],
+    rejectProposal: ['proposed'],
+  };
+  
+  return clientActions[action]?.includes(order.status) || false;
+};
+
+export const canMasterPerformAction = (order: Order, userId: string, action: string): boolean => {
+  const isAssignedMaster = order.assignedMasterId === userId;
+  
+  if (!isAssignedMaster && !['open', 'searching', 'active_search'].includes(order.status)) {
+    return false;
+  }
+  
+  const masterActions: Record<string, Order['status'][]> = {
+    createProposal: ['open', 'searching', 'active_search'],
+    complete: ['in_progress'],
+    dispute: ['accepted', 'in_progress'],
+    viewOrder: ['open', 'searching', 'active_search', 'proposed', 'accepted', 'in_progress', 'completed'],
+  };
+  
+  return masterActions[action]?.includes(order.status) || false;
+};
+
 interface OrdersState {
   orders: Order[];
   proposals: Proposal[];
@@ -32,8 +63,6 @@ interface OrdersState {
   escalateDispute: (orderId: string) => void;
 }
 
-import { persist } from 'zustand/middleware';
-
 export const useOrdersStore = create<OrdersState>()(
   persist(
     (set, get) => ({
@@ -44,9 +73,21 @@ export const useOrdersStore = create<OrdersState>()(
         set({ orders });
       },
       createOrder: async (order) => {
-        const newOrder = await apiOrderService.createOrder(order);
-        set((state) => ({ orders: [...state.orders, newOrder] }));
-        useUIStore.getState().showNotification('Order created successfully!');
+        try {
+          // Генерируем ID если его нет
+          const orderWithId = {
+            ...order,
+            id: order.id || `order-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+          };
+          
+          const newOrder = await apiOrderService.createOrder(orderWithId as Order);
+          set((state) => ({ orders: [...state.orders, newOrder] }));
+          useUIStore.getState().showNotification('Замовлення успішно створено!');
+          console.log('✅ Замовлення створено:', newOrder);
+        } catch (error) {
+          console.error('❌ Помилка створення замовлення:', error);
+          useUIStore.getState().showNotification('Помилка створення замовлення');
+        }
       },
       deleteOrder: (orderId) => {
         set((state) => ({
@@ -95,6 +136,28 @@ export const useOrdersStore = create<OrdersState>()(
             .showNotification('Only masters can submit proposals.', 'error');
           return;
         }
+        
+        const order = get().orders.find((o) => o.id === orderId);
+        if (!order) {
+          useUIStore.getState().showNotification('Order not found.', 'error');
+          return;
+        }
+        
+        // Check if order is in correct status
+        if (order.status !== 'open' && order.status !== 'searching' && order.status !== 'active_search') {
+          useUIStore.getState().showNotification('Cannot submit proposal for this order status.', 'error');
+          return;
+        }
+        
+        // Check if master already has a proposal for this order
+        const existingProposal = get().proposals.find(
+          (p) => p.orderId === orderId && p.masterId === currentUser.id && p.status !== 'rejected'
+        );
+        if (existingProposal) {
+          useUIStore.getState().showNotification('You have already submitted a proposal for this order.', 'error');
+          return;
+        }
+        
         const newProposal: Proposal = {
           id: Date.now().toString(),
           orderId,
@@ -107,13 +170,40 @@ export const useOrdersStore = create<OrdersState>()(
           createdAt: new Date(),
         };
         set((state) => ({ proposals: [...state.proposals, newProposal] }));
-        get().updateOrderStatus(orderId, 'proposed');
+        
+        // Update order status and proposal count
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId ? { ...o, status: 'proposed', proposalCount: (o.proposalCount || 0) + 1 } : o
+          ),
+        }));
+        
         useUIStore.getState().showNotification('Proposal submitted successfully!');
       },
       updateProposal: (proposalId, updates) => {
+        const currentUser = useAuthStore.getState().currentUser;
+        const proposal = get().proposals.find((p) => p.id === proposalId);
+        
+        if (!proposal || !currentUser) {
+          useUIStore.getState().showNotification('Proposal or user not found.', 'error');
+          return;
+        }
+        
+        // Only the master who created the proposal can update it
+        if (currentUser.role !== 'master' || proposal.masterId !== currentUser.id) {
+          useUIStore.getState().showNotification('You can only update your own proposals.', 'error');
+          return;
+        }
+        
+        // Check if proposal is still pending or in a state that can be updated
+        if (!['pending', 'accepted'].includes(proposal.status)) {
+          useUIStore.getState().showNotification('Cannot update this proposal.', 'error');
+          return;
+        }
+        
         set((state) => ({
           proposals: state.proposals.map((p) =>
-            p.id === proposalId ? { ...p, ...updates } : p
+            p.id === proposalId ? { ...p, ...updates, updatedAt: new Date() } : p
           ),
         }));
         useUIStore.getState().showNotification('Proposal updated successfully!');
@@ -134,16 +224,38 @@ export const useOrdersStore = create<OrdersState>()(
           return;
         }
 
+        // Check if proposal is still pending
+        if (proposal.status !== 'pending') {
+          useUIStore.getState().showNotification('This proposal has already been processed.', 'error');
+          return;
+        }
+
+        // Reject all other proposals for this order
         set((state) => ({
           proposals: state.proposals.map((p) =>
-            p.id === proposalId ? { ...p, status: 'accepted' } : p
+            p.orderId === proposal.orderId && p.id !== proposalId
+              ? { ...p, status: 'rejected' }
+              : p.id === proposalId
+              ? { ...p, status: 'accepted' }
+              : p
           ),
         }));
 
-        if (proposal) {
+        // Update order with master assignment
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === proposal.orderId
+              ? { ...o, status: 'accepted', assignedMasterId: proposal.masterId }
+              : o
+          ),
+        }));
+        
+        // Update order status to in_progress after a short delay
+        setTimeout(() => {
           get().updateOrderStatus(proposal.orderId, 'in_progress');
-        }
-        useUIStore.getState().showNotification('Proposal accepted!');
+        }, 500);
+
+        useUIStore.getState().showNotification('Proposal accepted! Order is now in progress.');
       },
       rejectProposal: (proposalId) => {
         set((state) => ({
@@ -157,79 +269,300 @@ export const useOrdersStore = create<OrdersState>()(
         const currentUser = useAuthStore.getState().currentUser;
         const order = get().orders.find((o) => o.id === orderId);
 
-        if (!order || !currentUser) return;
+        if (!order || !currentUser) {
+          useUIStore.getState().showNotification('Order or user not found.', 'error');
+          return;
+        }
 
         const allowedTransitions: Record<Order['status'], Order['status'][]> = {
           open: ['proposed', 'cancelled', 'deleted'],
           proposed: ['accepted', 'cancelled', 'deleted'],
           accepted: ['in_progress', 'cancelled'],
-          in_progress: ['completed', 'cancelled'],
+          in_progress: ['completed', 'cancelled', 'dispute'],
           completed: [],
           cancelled: [],
           deleted: ['open'],
           searching: ['proposed', 'cancelled'],
           active_search: ['proposed', 'cancelled'],
+          dispute: ['cancelled', 'in_progress', 'completed'],
         };
 
-        const hasPermission =
-          currentUser.role === 'admin' ||
-          (currentUser.role === 'client' && order.clientId === currentUser.id) ||
-          (currentUser.role === 'master' &&
-            order.assignedMasterId === currentUser.id);
+        // Enhanced permission checks based on role and order status
+        let hasPermission = false;
+        
+        if (currentUser.role === 'admin') {
+          hasPermission = true;
+        } else if (currentUser.role === 'client') {
+          // Client can only update their own orders
+          if (order.clientId !== currentUser.id) {
+            hasPermission = false;
+          } else {
+            // Client permissions for different transitions
+            if (status === 'cancelled') {
+              hasPermission = ['open', 'proposed', 'accepted'].includes(order.status);
+            } else if (status === 'in_progress') {
+              hasPermission = order.status === 'accepted';
+            } else if (status === 'completed') {
+              hasPermission = false; // Only master can complete
+            } else if (status === 'dispute') {
+              hasPermission = ['accepted', 'in_progress'].includes(order.status);
+            } else {
+              hasPermission = allowedTransitions[order.status]?.includes(status) || false;
+            }
+          }
+        } else if (currentUser.role === 'master') {
+          // Master permissions
+          if (order.status === 'open' || order.status === 'searching' || order.status === 'active_search') {
+            // Masters can view but not directly change status of open orders
+            hasPermission = false;
+          } else if (status === 'completed') {
+            // Master can only complete orders they are assigned to
+            hasPermission = order.assignedMasterId === currentUser.id && order.status === 'in_progress';
+          } else if (status === 'dispute') {
+            hasPermission = ['accepted', 'in_progress'].includes(order.status) && order.assignedMasterId === currentUser.id;
+          } else {
+            hasPermission = order.assignedMasterId === currentUser.id && allowedTransitions[order.status]?.includes(status) || false;
+          }
+        }
 
         if (!hasPermission) {
           useUIStore
             .getState()
             .showNotification(
-              'You do not have permission to update this order.',
+              'You do not have permission to perform this action.',
               'error'
             );
           return;
         }
 
-        if (allowedTransitions[order.status].includes(status)) {
-          set((state) => ({
-            orders: state.orders.map((o) =>
-              o.id === orderId ? { ...o, status } : o
-            ),
-          }));
-          useUIStore
-            .getState()
-            .showNotification('Order status updated successfully!');
-        } else {
+        if (!allowedTransitions[order.status]?.includes(status)) {
           useUIStore
             .getState()
             .showNotification(
               `Cannot change status from ${order.status} to ${status}.`,
               'error'
             );
+          return;
         }
+
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId ? { ...o, status, updatedAt: new Date() } : o
+          ),
+        }));
+        
+        useUIStore
+          .getState()
+          .showNotification(`Order status updated to ${status}!`);
       },
-      updatePayment: (orderId, _amount) => {
-        get().updateOrderStatus(orderId, 'paid');
-        useUIStore.getState().showNotification('Payment successful!');
+      updatePayment: (orderId, amount) => {
+        const currentUser = useAuthStore.getState().currentUser;
+        const order = get().orders.find((o) => o.id === orderId);
+        
+        if (!order || !currentUser) {
+          useUIStore.getState().showNotification('Order not found', 'error');
+          return;
+        }
+
+        // Only client can initiate payment
+        if (currentUser.role !== 'client' && currentUser.role !== 'admin') {
+          useUIStore.getState().showNotification('Only client can initiate payment', 'error');
+          return;
+        }
+
+        if (order.clientId !== currentUser.id && currentUser.role !== 'admin') {
+          useUIStore.getState().showNotification('This is not your order', 'error');
+          return;
+        }
+
+        // Check if order is in correct status
+        if (order.status !== 'accepted') {
+          useUIStore.getState().showNotification('Order must be accepted before payment', 'error');
+          return;
+        }
+
+        // Update order with payment info and set to in_progress
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId
+              ? {
+                  ...o,
+                  amount,
+                  status: 'in_progress',
+                  updatedAt: new Date().toISOString(),
+                }
+              : o
+          ),
+        }));
+
+        useUIStore.getState().showNotification(`Payment of ₴${amount} successful! Master can now start work.`);
       },
       releasePayment: (orderId) => {
-        get().updateOrderStatus(orderId, 'completed');
-        useUIStore.getState().showNotification('Payment released to master!');
+        const currentUser = useAuthStore.getState().currentUser;
+        const order = get().orders.find((o) => o.id === orderId);
+
+        if (!order || !currentUser) {
+          useUIStore.getState().showNotification('Order not found', 'error');
+          return;
+        }
+
+        // Only client or admin can release payment
+        if (order.clientId !== currentUser.id && currentUser.role !== 'admin') {
+          useUIStore.getState().showNotification('Only order owner can release payment', 'error');
+          return;
+        }
+
+        // Only in_progress orders can have payment released
+        if (order.status !== 'in_progress') {
+          useUIStore.getState().showNotification('Order must be in progress to release payment', 'error');
+          return;
+        }
+
+        // Calculate commission (10%)
+        const commission = order.amount ? order.amount * 0.1 : 0;
+        const masterAmount = order.amount ? order.amount - commission : 0;
+
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId
+              ? {
+                  ...o,
+                  status: 'completed',
+                  updatedAt: new Date().toISOString(),
+                }
+              : o
+          ),
+        }));
+
+        useUIStore.getState().showNotification(
+          `Payment released! Master receives ₴${masterAmount.toFixed(2)} (₴${commission.toFixed(2)} commission deducted)`
+        );
       },
       refundPayment: (orderId) => {
-        get().updateOrderStatus(orderId, 'refunded');
-        useUIStore.getState().showNotification('Payment refunded to client!');
+        const currentUser = useAuthStore.getState().currentUser;
+        const order = get().orders.find((o) => o.id === orderId);
+
+        if (!order || !currentUser) {
+          useUIStore.getState().showNotification('Order not found', 'error');
+          return;
+        }
+
+        // Only admin can refund payments
+        if (currentUser.role !== 'admin') {
+          useUIStore.getState().showNotification('Only admins can process refunds', 'error');
+          return;
+        }
+
+        // Only in_progress orders can be refunded
+        if (order.status !== 'in_progress') {
+          useUIStore.getState().showNotification('Order must be in progress to refund', 'error');
+          return;
+        }
+
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId
+              ? {
+                  ...o,
+                  status: 'cancelled',
+                  updatedAt: new Date().toISOString(),
+                }
+              : o
+          ),
+        }));
+
+        useUIStore.getState().showNotification(`Payment of ₴${order.amount} refunded to client!`);
       },
-      createDispute: (orderId, _reason) => {
-        get().updateOrderStatus(orderId, 'dispute');
-        useUIStore.getState().showNotification('Dispute created!');
+      createDispute: (orderId, reason) => {
+        const currentUser = useAuthStore.getState().currentUser;
+        const order = get().orders.find((o) => o.id === orderId);
+
+        if (!order || !currentUser) {
+          useUIStore.getState().showNotification('Order not found', 'error');
+          return;
+        }
+
+        // Check if user is participant
+        const isParticipant = 
+          (currentUser.role === 'client' && order.clientId === currentUser.id) ||
+          (currentUser.role === 'master' && order.assignedMasterId === currentUser.id);
+
+        if (!isParticipant && currentUser.role !== 'admin') {
+          useUIStore.getState().showNotification('You are not a participant in this order', 'error');
+          return;
+        }
+
+        // Can only create dispute if order is in_progress or completed
+        if (!['in_progress', 'completed'].includes(order.status)) {
+          useUIStore.getState().showNotification('Dispute can only be created for in-progress or completed orders', 'error');
+          return;
+        }
+
+        // Check if dispute already exists
+        const existingDispute = order.status === 'dispute' || order.status === 'disputed';
+        if (existingDispute) {
+          useUIStore.getState().showNotification('Dispute already exists for this order', 'error');
+          return;
+        }
+
+        // Change status to dispute
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId
+              ? {
+                  ...o,
+                  status: 'dispute',
+                  updatedAt: new Date().toISOString(),
+                }
+              : o
+          ),
+        }));
+
+        useUIStore.getState().showNotification(`Dispute created: ${reason}. Admin will investigate.`);
       },
       escalateDispute: (orderId) => {
-        get().updateOrderStatus(orderid, 'escalated_dispute');
-        useUIStore.getState().showNotification('Dispute escalated!');
+        const currentUser = useAuthStore.getState().currentUser;
+        const order = get().orders.find((o) => o.id === orderId);
+
+        if (!order || !currentUser) {
+          useUIStore.getState().showNotification('Order not found', 'error');
+          return;
+        }
+
+        // Only admin can escalate disputes
+        if (currentUser.role !== 'admin') {
+          useUIStore.getState().showNotification('Only admins can escalate disputes', 'error');
+          return;
+        }
+
+        // Check if order is in dispute status
+        if (order.status !== 'dispute' && order.status !== 'disputed') {
+          useUIStore.getState().showNotification('Order must be in dispute status', 'error');
+          return;
+        }
+
+        set((state) => ({
+          orders: state.orders.map((o) =>
+            o.id === orderId
+              ? {
+                  ...o,
+                  status: 'escalated_dispute',
+                  updatedAt: new Date().toISOString(),
+                }
+              : o
+          ),
+        }));
+
+        useUIStore.getState().showNotification('Dispute escalated! Requires additional investigation.');
       },
     }),
     {
       name: 'orders-storage',
       onRehydrateStorage: (state) => {
         if (state) {
+          if (!state.orders) {
+            state.orders = [];
+          }
           state.fetchOrders();
         }
       },

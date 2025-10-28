@@ -19,8 +19,16 @@ interface JarvisChatProps {
 
 export const JarvisChat: React.FC<JarvisChatProps> = ({ onCreateOrder, onSearchMasters: _, currentUser }) => {
   const [isOpen, setIsOpen] = useState(false);
+  
+  const getWelcomeMessage = () => {
+    if (currentUser?.role === 'master') {
+      return '🔧 Привіт, Майстер! Я Джарвіс - твій AI помічник! 🛠️\n\nМожу:\n🎯 Допомогти з пропозиціями\n🔍 Знайти замовлення\n💰 Підказувати ціни\n📊 Аналізувати ринок\n\nЯк можу допомогти?';
+    }
+    return '🔧 Привіт! Я Джарвіс - твій AI помічник з ремонту пристроїв! 🛠️\n\nМожу:\n🎯 Аналізувати проблему\n🔍 Шукати майстрів\n📝 Створювати замовлення\n💰 Підказувати ціни\n\nОпишіть проблему з пристроєм!';
+  };
+  
   const [messages, setMessages] = useState<Message[]>([
-    { sender: 'jarvis', text: '🔧 Привіт! Я Джарвіс - твій AI помічник з ремонту пристроїв! 🛠️\n\nМожу:\n🎯 Аналізувати проблему\n🔍 Шукати майстрів\n📝 Створювати замовлення\n💰 Підказувати ціни\n\nОпишіть проблему з пристроєм!', timestamp: new Date() }
+    { sender: 'jarvis', text: getWelcomeMessage(), timestamp: new Date() }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -451,6 +459,16 @@ export const JarvisChat: React.FC<JarvisChatProps> = ({ onCreateOrder, onSearchM
   };
 
   const handleCreateOrder = () => {
+    // Тільки клієнти можуть створювати замовлення
+    if (currentUser?.role !== 'client') {
+      setMessages(prev => [...prev, { 
+        sender: 'jarvis', 
+        text: '❌ Вибачте, але майстри не можуть створювати замовлення. Ви можете тільки подавати пропозиції до існуючих замовлень.',
+        timestamp: new Date()
+      }]);
+      return;
+    }
+    
     if (suggestedOrder && onCreateOrder && currentUser) {
       const orderData = {
         title: suggestedOrder.title,
@@ -557,8 +575,8 @@ export const JarvisChat: React.FC<JarvisChatProps> = ({ onCreateOrder, onSearchM
           ))}
         </AnimatePresence>
         
-        {/* Кнопка створення замовлення якщо є запропоноване */}
-        {suggestedOrder && (
+        {/* Кнопка створення замовлення якщо є запропоноване - ТІЛЬКИ ДЛЯ КЛІЄНТІВ */}
+        {suggestedOrder && currentUser?.role === 'client' && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { DeviceModel, User } from '../types/models';
-import { DeviceGallery } from './DeviceGallery';
+import DeviceGallery from './DeviceGallery';
 import { useIFixitGuides } from '../hooks/useApi';
 
 import { AnimatedCreateOrderModal } from './AnimatedCreateOrderModal';
@@ -287,49 +287,97 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
                   ) : (
                     // ===== ПОЛНЫЙ ВАРИАНТ ДЛЯ КЛИЕНТА =====
                     <div className="space-y-6">
-                      {/* Выбор цвета */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-3">
-                          🎨 Виберіть колір:
-                        </label>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                          {selectedDevice.colors.map(color => (
-                            <button
-                              key={color}
-                              onClick={() => setSelectedColor(color)}
-                              className={`px-4 py-2 border-2 rounded-lg text-sm font-medium transition-all ${
-                                selectedColor === color
-                                  ? 'border-purple-600 bg-purple-50 text-purple-900'
-                                  : 'border-gray-300 text-gray-700 hover:border-purple-500 hover:bg-purple-50'
-                              }`}
-                            >
-                              {color}
-                            </button>
-                          ))}
+                      {/* Показываем характеристики устройств */}
+                      {selectedDevice.specifications && (
+                        <div className="bg-gradient-to-br from-purple-50 to-blue-50 p-4 rounded-xl border border-purple-200">
+                          <h3 className="text-lg font-semibold mb-3 text-gray-900">Основні характеристики:</h3>
+                          <div className="grid grid-cols-2 gap-3 text-sm">
+                            {selectedDevice.specifications.batteryLife && (
+                              <div>
+                                <span className="font-medium text-gray-700">🔋 Аккумулятор:</span>
+                                <span className="ml-2 text-gray-600">{selectedDevice.specifications.batteryLife}</span>
+                              </div>
+                            )}
+                            {selectedDevice.specifications.weight && (
+                              <div>
+                                <span className="font-medium text-gray-700">⚖️ Вага:</span>
+                                <span className="ml-2 text-gray-600">{selectedDevice.specifications.weight}</span>
+                              </div>
+                            )}
+                            {selectedDevice.specifications.noiseCancellation && (
+                              <div className="col-span-2">
+                                <span className="font-medium text-gray-700">🔇 Шумоподавление:</span>
+                                <span className="ml-2 text-green-600">✓ Active Noise Cancellation</span>
+                              </div>
+                            )}
+                            {selectedDevice.specifications.waterResistance && (
+                              <div>
+                                <span className="font-medium text-gray-700">💧 Защита:</span>
+                                <span className="ml-2 text-gray-600">{selectedDevice.specifications.waterResistance}</span>
+                              </div>
+                            )}
+                            {selectedDevice.specifications.microphones !== undefined && (
+                              <div>
+                                <span className="font-medium text-gray-700">🎤 Мікрофони:</span>
+                                <span className="ml-2 text-green-600">{selectedDevice.specifications.microphones ? '✓ Є' : '✗ Немає'}</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
+                      )}
+                      
+                      {/* Для наушников - НЕ показываем выбор цвета и памяти */}
+                      {selectedDevice.category !== 'Earbuds' && selectedDevice.category !== 'Accessories' && (
+                        <>
+                          {/* Выбор цвета - только для устройств с памятью */}
+                          {selectedDevice.colors && selectedDevice.colors.length > 0 && (
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-3">
+                                🎨 Виберіть колір:
+                              </label>
+                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                {selectedDevice.colors.map(color => (
+                                  <button
+                                    key={color}
+                                    onClick={() => setSelectedColor(color)}
+                                    className={`px-4 py-2 border-2 rounded-lg text-sm font-medium transition-all ${
+                                      selectedColor === color
+                                        ? 'border-purple-600 bg-purple-50 text-purple-900'
+                                        : 'border-gray-300 text-gray-700 hover:border-purple-500 hover:bg-purple-50'
+                                    }`}
+                                  >
+                                    {color}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
 
-                      {/* Выбор памяти */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-3">
-                          💾 Виберіть пам'ять:
-                        </label>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                          {selectedDevice.storageOptions.map(storage => (
-                            <button
-                              key={storage}
-                              onClick={() => setSelectedStorage(storage)}
-                              className={`px-4 py-2 border-2 rounded-lg text-sm font-medium transition-all ${
-                                selectedStorage === storage
-                                  ? 'border-purple-600 bg-purple-50 text-purple-900'
-                                  : 'border-gray-300 text-gray-700 hover:border-purple-500 hover:bg-purple-50'
-                              }`}
-                            >
-                              {storage}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
+                          {/* Выбор памяти - только если есть память */}
+                          {selectedDevice.storageOptions && selectedDevice.storageOptions.length > 0 && (
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-3">
+                                💾 Виберіть пам'ять:
+                              </label>
+                              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                {selectedDevice.storageOptions.map(storage => (
+                                  <button
+                                    key={storage}
+                                    onClick={() => setSelectedStorage(storage)}
+                                    className={`px-4 py-2 border-2 rounded-lg text-sm font-medium transition-all ${
+                                      selectedStorage === storage
+                                        ? 'border-purple-600 bg-purple-50 text-purple-900'
+                                        : 'border-gray-300 text-gray-700 hover:border-purple-500 hover:bg-purple-50'
+                                    }`}
+                                  >
+                                    {storage}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      )}
 
                       {/* iFixit гайды - только для мастеров */}
                       {currentUser?.role === 'master' && (

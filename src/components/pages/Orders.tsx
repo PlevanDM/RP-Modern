@@ -8,6 +8,7 @@ import { ProposalModal } from '../ProposalModal';
 import { OrderEditModal } from '../features/admin/OrderEditModal';
 import { ConfirmationDialog } from '../features/admin/ConfirmationDialog';
 import OrderDetails from './OrderDetails';
+import { useTranslation } from 'react-i18next';
 
 interface OrdersProps {
   currentUser: CurrentUser;
@@ -49,6 +50,7 @@ export function Orders({
   rejectProposal,
   setActiveItem,
 }: OrdersProps) {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -74,7 +76,12 @@ export function Orders({
       if (currentUser?.role === 'admin') {
         return true;
       }
-      // Если мастер, показываем все заказы
+      // Если мастер, показываем только доступные заказы (открытые или назначенные ему)
+      if (currentUser?.role === 'master') {
+        return order.status === 'open' || 
+               order.status === 'proposed' || 
+               (order.assignedMasterId === currentUser?.id);
+      }
       return true;
     });
 
@@ -205,37 +212,39 @@ export function Orders({
   };
 
   const statuses = [
-    { value: 'all', label: 'Усі замовлення' },
-    { value: 'open', label: 'Відкрито' },
-    { value: 'proposed', label: 'З пропозиціями' },
-    { value: 'in_progress', label: 'В роботі' },
-    { value: 'completed', label: 'Завершено' },
-    { value: 'deleted', label: 'Видалені' }
+    { value: 'all', label: t('orders.allOrders') },
+    { value: 'open', label: t('status.open') },
+    { value: 'proposed', label: t('status.proposed') },
+    { value: 'in_progress', label: t('status.in_progress') },
+    { value: 'completed', label: t('status.completed') },
+    { value: 'deleted', label: t('orders.deleted') }
   ];
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Замовлення</h1>
+        <h1 className="text-3xl font-bold text-gray-900">{t('navigation.orders')}</h1>
         <div className="flex items-center gap-4">
           <div className="flex-1 max-w-xs relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Пошук замовлень..."
+              placeholder={t('common.searchOrders')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
             />
           </div>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-          >
-            <AddIcon sx={{ fontSize: 20 }} />
-            Створити замовлення
-          </button>
+          {currentUser.role === 'client' && (
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            >
+              <AddIcon sx={{ fontSize: 20 }} />
+              {t('common.createOrder')}
+            </button>
+          )}
         </div>
       </div>
 
@@ -265,15 +274,15 @@ export function Orders({
             onChange={(e) => setSortBy(e.target.value as 'date' | 'price')}
             className="px-3 py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
           >
-            <option value="date">За датою (новіші)</option>
-            <option value="price">За ціною (більші)</option>
+            <option value="date">{t('orders.sortByDate')}</option>
+            <option value="price">{t('orders.sortByPrice')}</option>
           </select>
         </div>
 
         {/* Counter */}
         <div className="ml-auto">
           <p className="text-sm text-gray-600">
-            Знайдено: <span className="font-bold text-indigo-600">{filteredOrders.length}</span>
+            {t('orders.found')}: <span className="font-bold text-indigo-600">{filteredOrders.length}</span>
           </p>
         </div>
       </div>
@@ -282,8 +291,8 @@ export function Orders({
       {filteredOrders.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-100">
           <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500 text-lg font-medium">Замовлень не знайдено</p>
-          <p className="text-gray-400 text-sm mt-1">Спробуйте змінити фільтри пошуку</p>
+          <p className="text-gray-500 text-lg font-medium">{t('orders.notFound')}</p>
+          <p className="text-gray-400 text-sm mt-1">{t('orders.tryFilters')}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -309,7 +318,7 @@ export function Orders({
                     </p>
                     {isDeleted && order.deletedAt && (
                       <p className="text-xs text-red-500 mt-1">
-                        Видалено: {new Date(order.deletedAt).toLocaleDateString('uk-UA')}
+                        {t('status.deletedAt')}: {new Date(order.deletedAt).toLocaleDateString('uk-UA')}
                       </p>
                     )}
                   </div>
@@ -319,12 +328,12 @@ export function Orders({
                     className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ml-4 border-0 outline-none cursor-pointer ${getStatusColor(order.status)}`}
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <option value="open">🟡 Відкрито</option>
-                    <option value="active_search">🔍 Активний пошук майстра</option>
-                    <option value="accepted">✅ Прийнято</option>
-                    <option value="in_progress">🔧 В роботі</option>
-                    <option value="completed">✔️ Завершено</option>
-                    <option value="deleted">🗑️ Видалено</option>
+                    <option value="open">🟡 {t('status.open')}</option>
+                    <option value="active_search">🔍 {t('status.active_search')}</option>
+                    <option value="accepted">✅ {t('status.accepted')}</option>
+                    <option value="in_progress">🔧 {t('status.in_progress')}</option>
+                    <option value="completed">✔️ {t('status.completed')}</option>
+                    <option value="deleted">🗑️ {t('status.deleted')}</option>
                   </select>
                 </div>
 
@@ -332,7 +341,7 @@ export function Orders({
                 {order.assignedMasterId && (
                   <div className="flex items-center gap-2 text-gray-600">
                     <User className="w-4 h-4 text-gray-400" />
-                    <span>Призначен майстер</span>
+                    <span>{t('orders.assignedMaster')}</span>
                   </div>
                 )}
 
@@ -357,7 +366,7 @@ export function Orders({
               {order.status === 'proposed' && (
                 <div className="mt-4 flex items-center gap-2 p-2 bg-purple-50 rounded-lg text-purple-700 text-sm">
                   <MessageCircle className="w-4 h-4 flex-shrink-0" />
-                  <p>Є пропозиції від майстрів</p>
+                  <p>{t('orders.hasProposals')}</p>
                 </div>
               )}
             </div>
@@ -448,7 +457,11 @@ export function Orders({
       <CreateOrderModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
-        onSubmit={handleCreateOrder}
+        createOrder={(orderData) => {
+          if (onCreateOrder) {
+            onCreateOrder(orderData as Partial<Order>);
+          }
+        }}
         currentUser={currentUser}
       />
 
