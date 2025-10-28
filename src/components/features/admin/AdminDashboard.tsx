@@ -61,10 +61,6 @@ export function AdminDashboard({ users: propUsers = [], orders: propOrders = [],
     setUsers(users.map((u) => (u.id === userId ? updatedUser : u)));
   };
 
-  if (currentUser?.role === 'superadmin') {
-    return <SuperadminDashboard />;
-  }
-
   return (
     <div className="container mx-auto p-4 space-y-6">
       <motion.div

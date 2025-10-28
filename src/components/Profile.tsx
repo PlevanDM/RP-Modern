@@ -18,6 +18,8 @@ import {
   Share2
 } from 'lucide-react';
 import { User as UserType } from '../types/models';
+import { useAuthStore } from '../store/authStore';
+import { apiUserService } from '../services/apiUserService';
 
 interface ProfileData {
   name: string;
@@ -53,21 +55,21 @@ export function Profile({ currentUser }: ProfileProps) {
 
   const [formData, setFormData] = useState(profile);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const { updateCurrentUser } = useAuthStore();
 
-  const handleSave = () => {
-    setProfile(formData);
-    setIsEditing(false);
-    const currentUserData = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const updatedUser = {
-      ...currentUserData,
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      city: formData.city,
-      avatar: formData.avatar,
-      bio: formData.bio
-    };
-    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+  const handleSave = async () => {
+    if (!currentUser) return;
+
+    try {
+      const updatedUser = await apiUserService.updateUserProfile(currentUser.id, formData);
+      setProfile(formData);
+      updateCurrentUser(updatedUser);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      // Optionally, show an error message to the user
+      alert('Не вдалося оновити профіль. Спробуйте ще раз.');
+    }
   };
 
   const handleCancel = () => {

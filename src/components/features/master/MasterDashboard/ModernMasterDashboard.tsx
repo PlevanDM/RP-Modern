@@ -25,6 +25,7 @@ import { Input } from '../../../ui/input';
 import { ScrollArea } from '../../../ui/scroll-area';
 import { User } from '../../../../types';
 import { useTranslation } from '../../../../hooks/useTranslation';
+import { PortfolioManager } from '../portfolio/PortfolioManager';
 
 interface StatCardProps {
   title: string;
@@ -119,6 +120,7 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   const filteredTasks = tasks
     .filter((task) => statusFilter === 'all' || task.status === statusFilter)
@@ -157,13 +159,6 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
       change: -3,
       icon: <CheckCircle2 className="h-4 w-4" />,
       trend: 'down' as const,
-    },
-    {
-      title: t('navigation.portfolio'),
-      value: 'View',
-      change: 0,
-      icon: <Star className="h-4 w-4" />,
-      trend: 'up' as const,
     },
   ];
 
@@ -248,22 +243,29 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {stats.map((stat, index) => (
-            <StatCard 
-              key={index} 
-              {...stat} 
-              onClick={() => {
-                if (stat.title === t('navigation.portfolio')) {
-                  setActiveItem('portfolio');
-                } else {
-                  setActiveItem('myOrders');
-                }
-              }}
-            />
-          ))}
+            {stats.map((stat, index) => (
+                <StatCard
+                    key={index}
+                    {...stat}
+                    onClick={() => {
+                        setActiveItem('myOrders');
+                    }}
+                />
+            ))}
+        </div>
+
+        {/* Tabs */}
+        <div className="flex space-x-1">
+            <Button variant={activeTab === 'dashboard' ? 'default' : 'outline'} onClick={() => setActiveTab('dashboard')}>
+                Dashboard
+            </Button>
+            <Button variant={activeTab === 'portfolio' ? 'default' : 'outline'} onClick={() => setActiveTab('portfolio')}>
+                Portfolio
+            </Button>
         </div>
 
         {/* Main Content */}
+        {activeTab === 'dashboard' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Tasks and Calendar */}
           <div className="lg:col-span-2 space-y-6">
@@ -555,6 +557,10 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
             </motion.div>
           </div>
         </div>
+        )}
+        {activeTab === 'portfolio' && (
+            <PortfolioManager />
+        )}
       </div>
     </div>
   );

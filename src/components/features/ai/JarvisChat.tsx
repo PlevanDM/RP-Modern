@@ -376,9 +376,9 @@ export const JarvisChat: React.FC<JarvisChatProps> = ({ onCreateOrder, onSearchM
     const lowKeywords = ['не терміново', 'може зачекати', 'not urgent', 'не екстренно', 'не екстренно'];
 
     if (urgentKeywords.some(kw => normalized.includes(kw))) {
-      analysis.urgency = 'high' as 'high';
+      analysis.urgency = 'high' as const;
     } else if (lowKeywords.some(kw => normalized.includes(kw))) {
-      analysis.urgency = 'low' as 'low';
+      analysis.urgency = 'low' as const;
     }
 
       return analysis;

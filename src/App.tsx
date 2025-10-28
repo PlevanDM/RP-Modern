@@ -6,6 +6,7 @@ import ModernClientDashboard from './components/features/client/ClientDashboard/
 import { MyDevices } from './components/features/client/MyDevices';
 import { DeviceCatalog } from './components/features/client/DeviceCatalog';
 import { AdminDashboard } from './components/features/admin/AdminDashboard';
+import SuperadminDashboard from './components/features/superadmin/SuperadminDashboard';
 import { SettingsConfiguration } from './components/features/admin/SettingsConfiguration';
 import { ModernUsersPanel } from './components/features/admin/ModernUsersPanel';
 import { ModernFinancialPanel } from './components/features/admin/ModernFinancialPanel';
@@ -316,8 +317,10 @@ function App() {
                   createOrder={createOrder}
                   setSelectedOrder={setSelectedOrder}
                 />
-              ) : (currentUser.role === 'admin' || currentUser.role === 'superadmin') ? (
+              ) : currentUser.role === 'admin' ? (
                 <AdminDashboard />
+              ) : currentUser.role === 'superadmin' ? (
+                <SuperadminDashboard />
               ) : (
                 <div className="text-center p-8">
                   <h1 className="text-2xl font-bold mb-4">Ласкаво просимо до RepairHub Pro!</h1>
