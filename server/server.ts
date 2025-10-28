@@ -862,6 +862,33 @@ app.post('/api/admin/escrow/:orderId/refund', authMiddleware, requireRole(['admi
 });
 
 
+// --- SUPERADMIN API ---
+
+// Update a user's role (superadmin only)
+app.patch('/api/superadmin/users/:id/role', authMiddleware, requireRole(['superadmin']), getUser, async (req: AuthRequest, res: Response) => {
+    const userToUpdate = (req as any).targetUser as User;
+    const { role } = req.body;
+
+    const allowedRoles: Array<User['role']> = ['client', 'master', 'admin'];
+
+    if (!role || !allowedRoles.includes(role)) {
+        return res.status(400).json({ message: `Invalid role. Must be one of: ${allowedRoles.join(', ')}.` });
+    }
+
+    // Prevent changing the role of another superadmin
+    if (userToUpdate.role === 'superadmin') {
+        return res.status(403).json({ message: 'Cannot change the role of a superadmin.' });
+    }
+
+    userToUpdate.role = role;
+
+    await db.write();
+
+    const { password, ...updatedUser } = userToUpdate;
+    res.json(updatedUser);
+});
+
+
 // --- DISPUTE MANAGEMENT API ---
 
 // 1. Create a dispute for an order

@@ -105,6 +105,8 @@ export interface User {
   languages?: string[]; // Мови для спілкування
   certifications?: string[]; // Сертифікати та освіта
   partsInventory?: Part[]; // Інвентар запчастин майстра
+  registrationDate?: Date; // Дата реєстрації
+  lastLogin?: Date; // Останній вхід
 }
 
 // Part (запчастина)

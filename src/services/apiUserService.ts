@@ -40,6 +40,16 @@ class ApiUserService {
     const response = await axios.post(`${API_URL}/users/${userId}/unblock`);
     return response.data;
   }
+
+  public async updateUserRole(userId: string, role: string): Promise<User> {
+    const token = localStorage.getItem('authToken');
+    const response = await axios.patch(
+      `${API_URL}/superadmin/users/${userId}/role`,
+      { role },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response.data;
+  }
 }
 
 export const apiUserService = ApiUserService.getInstance();
