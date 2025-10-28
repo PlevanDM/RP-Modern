@@ -88,6 +88,7 @@ export interface User {
   bio?: string;
   tools?: string[]; // Инструменты мастера
   devices?: Device[]; // Устройства клиента
+  portfolio?: PortfolioItem[]; // Портфолио майстра
   
   // Нові поля для клієнта
   clientMobileOS?: 'android' | 'ios'; // Операційна система мобільного пристрою
@@ -103,6 +104,18 @@ export interface User {
   workingRadius?: number; // Радіус роботи (км)
   languages?: string[]; // Мови для спілкування
   certifications?: string[]; // Сертифікати та освіта
+  partsInventory?: Part[]; // Інвентар запчастин майстра
+}
+
+// Part (запчастина)
+export interface Part {
+  id: string;
+  masterId: string;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  image?: string;
 }
 
 // Order (размещено клієнтом)
@@ -177,6 +190,24 @@ export interface Notification {
   createdAt: Date;
 }
 
+export interface PortfolioItem {
+  id: string;
+  masterId: string;
+  title: string;
+  description: string;
+  photos: string[];
+  images: string[];
+  rating: number;
+  completedDate?: Date;
+  beforeImage?: string;
+  afterImage?: string;
+  price?: number;
+  completedAt?: Date;
+  clientReview?: string;
+  deviceType?: string;
+  issue?: string;
+}
+
 export interface UserAction {
   id: string;
   userId: string;
@@ -232,25 +263,6 @@ export interface ProgressUpdate {
   message?: string;
   timestamp?: Date;
   images?: string[];
-}
-
-// Portfolio Item (портфоліо майстра)
-export interface PortfolioItem {
-  id: string;
-  masterId: string;
-  title: string;
-  description: string;
-  photos: string[];
-  images: string[];
-  rating: number;
-  completedDate?: Date;
-  beforeImage?: string;
-  afterImage?: string;
-  price?: number;
-  completedAt?: Date;
-  clientReview?: string;
-  deviceType?: string;
-  issue?: string;
 }
 
 // Freelance Proposal (фриланс пропозиція від сервісу до майстра)

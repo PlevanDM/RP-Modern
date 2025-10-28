@@ -158,6 +158,13 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
       icon: <CheckCircle2 className="h-4 w-4" />,
       trend: 'down' as const,
     },
+    {
+      title: t('navigation.portfolio'),
+      value: 'View',
+      change: 0,
+      icon: <Star className="h-4 w-4" />,
+      trend: 'up' as const,
+    },
   ];
 
   const getStatusBadge = (status: Task['status']) => {
@@ -246,7 +253,11 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
               key={index} 
               {...stat} 
               onClick={() => {
-                setActiveItem('myOrders');
+                if (stat.title === t('navigation.portfolio')) {
+                  setActiveItem('portfolio');
+                } else {
+                  setActiveItem('myOrders');
+                }
               }}
             />
           ))}

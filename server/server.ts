@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-import { User, Order, Offer, Dispute, Review, Payment } from '../src/types/models';
+import { User, Order, Offer, Dispute, Review, Payment, Notification, PortfolioItem, Part } from '../src/types/models';
 import { allDevicesDatabase } from './data/deviceDatabase.js';
 import * as businessLogic from './businessLogic.js';
 
@@ -19,19 +19,20 @@ interface DbData {
   payments: Payment[];
   disputes: Dispute[];
   reviews: Review[];
+  notifications: Notification[];
 }
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const file = path.join(__dirname, 'db.json');
 const adapter = new JSONFile<DbData>(file);
-const defaultData: DbData = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [] };
+const defaultData: DbData = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [] };
 const db = new Low<DbData>(adapter, defaultData);
 
 async function initializeDatabase() {
   await db.read();
   if (!db.data) {
-    db.data = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [] };
+    db.data = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [] };
     await db.write();
   }
   
@@ -117,6 +118,21 @@ async function initializeDatabase() {
   }
   
   console.log('✅ Database initialized.');
+}
+
+// --- NOTIFICATION HELPER ---
+async function createNotification(userId: string, message: string, type: 'order' | 'message' | 'status' | 'rating' = 'order') {
+    const newNotification: Notification = {
+        id: `notif-${Date.now()}`,
+        userId,
+        message,
+        type,
+        read: false,
+        createdAt: new Date(),
+    };
+    db.data.notifications.push(newNotification);
+    await db.write();
+    return newNotification;
 }
 
 // --- EXPRESS APP SETUP ---
@@ -402,6 +418,9 @@ app.post('/api/offers/:id/accept', authMiddleware, requireRole(['client']), getO
 
     await db.write();
 
+    // Notify the master
+    await createNotification(offerToAccept.masterId, `Your offer for "${order.title}" has been accepted.`, 'order');
+
     res.json({ message: 'Offer accepted successfully.', order });
 });
 
@@ -480,6 +499,11 @@ app.post('/api/payments', authMiddleware, requireRole(['client']), async (req: A
     db.data.payments.push(payment);
     await db.write();
 
+    // Notify the master
+    if (order.masterId) {
+        await createNotification(order.masterId, `Payment for "${order.title}" has been received.`, 'status');
+    }
+
     res.json({ message: 'Payment successful. Order is now in progress.', payment, order });
 });
 
@@ -542,6 +566,11 @@ app.post('/api/payments/:orderId/release', authMiddleware, requireRole(['client'
         payment,
         order 
     });
+
+    // Notify the master
+    if (order.masterId) {
+        await createNotification(order.masterId, `Payment for "${order.title}" has been released to your account.`, 'status');
+    }
 });
 
 // 3. Master notifies that work has started
@@ -572,6 +601,9 @@ app.post('/api/orders/:id/finish', authMiddleware, requireRole(['master']), getO
     // We could add a new field like `workFinishedAt` if needed.
 
     await db.write();
+
+    // Notify the client
+    await createNotification(order.clientId, `The master has finished working on your order: "${order.title}".`, 'status');
 
     res.json({ message: 'Client has been notified that work is finished. Awaiting payment release.' });
 });
@@ -622,6 +654,12 @@ app.post('/api/orders', authMiddleware, requireRole(['client']), async (req: Aut
   await db.read();
   db.data.orders.push(newOrder);
   await db.write();
+
+  // Notify all masters about the new order
+  const masters = db.data.users.filter(u => u.role === 'master');
+  for (const master of masters) {
+    await createNotification(master.id, `New order available: "${newOrder.title}"`, 'order');
+  }
 
   res.status(201).json(newOrder);
 });
@@ -1043,6 +1081,244 @@ app.post('/api/withdrawals', authMiddleware, requireRole(['master']), async (req
 
     // In a real app, this would trigger a payout process.
     res.json({ message: 'Withdrawal request successful.', newBalance: freshMaster.balance });
+});
+
+
+// --- PORTFOLIO API ---
+
+// 1. Get a master's portfolio (public)
+app.get('/api/portfolio/:masterId', async (req, res) => {
+    const { masterId } = req.params;
+    await db.read();
+    const master = db.data.users.find(u => u.id === masterId && u.role === 'master');
+
+    if (!master) {
+        return res.status(404).json({ message: 'Master not found.' });
+    }
+
+    // Ensure portfolio is an array
+    const portfolio = master.portfolio || [];
+    res.json(portfolio);
+});
+
+// 2. Add a new portfolio item (master only)
+app.post('/api/portfolio', authMiddleware, requireRole(['master']), async (req: AuthRequest, res: Response) => {
+    const master = req.user!;
+    const { title, description, photos, images, rating, completedDate, beforeImage, afterImage, price, clientReview, deviceType, issue } = req.body;
+
+    if (!title || !description) {
+        return res.status(400).json({ message: 'Title and description are required.' });
+    }
+
+    const newItem = {
+        id: `portfolio-${Date.now()}`,
+        masterId: master.id,
+        title,
+        description,
+        photos: photos || [],
+        images: images || [],
+        rating: rating || 0,
+        completedDate,
+        beforeImage,
+        afterImage,
+        price,
+        clientReview,
+        deviceType,
+        issue,
+    };
+
+    if (!master.portfolio) {
+        master.portfolio = [];
+    }
+    master.portfolio.push(newItem);
+
+    await db.write();
+    res.status(201).json(newItem);
+});
+
+// 3. Update a portfolio item (master only)
+app.put('/api/portfolio/:itemId', authMiddleware, requireRole(['master']), async (req: AuthRequest, res: Response) => {
+    const master = req.user!;
+    const { itemId } = req.params;
+    const { title, description, photos, images, rating, completedDate, beforeImage, afterImage, price, clientReview, deviceType, issue } = req.body;
+
+    if (!master.portfolio) {
+        return res.status(404).json({ message: 'Portfolio not found.' });
+    }
+
+    const itemIndex = master.portfolio.findIndex(item => item.id === itemId);
+
+    if (itemIndex === -1) {
+        return res.status(404).json({ message: 'Portfolio item not found.' });
+    }
+
+    const updatedItem = {
+        ...master.portfolio[itemIndex],
+        title: title || master.portfolio[itemIndex].title,
+        description: description || master.portfolio[itemIndex].description,
+        photos: photos || master.portfolio[itemIndex].photos,
+        images: images || master.portfolio[itemIndex].images,
+        rating: rating || master.portfolio[itemIndex].rating,
+        completedDate: completedDate || master.portfolio[itemIndex].completedDate,
+        beforeImage: beforeImage || master.portfolio[itemIndex].beforeImage,
+        afterImage: afterImage || master.portfolio[itemIndex].afterImage,
+        price: price || master.portfolio[itemIndex].price,
+        clientReview: clientReview || master.portfolio[itemIndex].clientReview,
+        deviceType: deviceType || master.portfolio[itemIndex].deviceType,
+        issue: issue || master.portfolio[itemIndex].issue,
+    };
+
+    master.portfolio[itemIndex] = updatedItem;
+
+    await db.write();
+    res.json(updatedItem);
+});
+
+// 4. Delete a portfolio item (master only)
+app.delete('/api/portfolio/:itemId', authMiddleware, requireRole(['master']), async (req: AuthRequest, res: Response) => {
+    const master = req.user!;
+    const { itemId } = req.params;
+
+    if (!master.portfolio) {
+        return res.status(404).json({ message: 'Portfolio not found.' });
+    }
+
+    const initialLength = master.portfolio.length;
+    master.portfolio = master.portfolio.filter(item => item.id !== itemId);
+
+    if (master.portfolio.length === initialLength) {
+        return res.status(404).json({ message: 'Portfolio item not found.' });
+    }
+
+    await db.write();
+    res.status(204).send();
+});
+
+// --- NOTIFICATIONS API ---
+
+// 1. Get user's notifications
+app.get('/api/notifications', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    await db.read();
+    const notifications = db.data.notifications.filter(n => n.userId === user.id);
+    res.json(notifications);
+});
+
+// 2. Mark a notification as read
+app.post('/api/notifications/:id/read', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { id } = req.params;
+
+    await db.read();
+    const notification = db.data.notifications.find(n => n.id === id);
+
+    if (!notification) {
+        return res.status(404).json({ message: 'Notification not found.' });
+    }
+
+    if (notification.userId !== user.id) {
+        return res.status(403).json({ message: 'You can only mark your own notifications as read.' });
+    }
+
+    notification.read = true;
+    await db.write();
+
+    res.json(notification);
+});
+
+// --- PARTS INVENTORY API ---
+
+// 1. Get a master's parts inventory (public)
+app.get('/api/inventory/:masterId', async (req, res) => {
+    const { masterId } = req.params;
+    await db.read();
+    const master = db.data.users.find(u => u.id === masterId && u.role === 'master');
+
+    if (!master) {
+        return res.status(404).json({ message: 'Master not found.' });
+    }
+
+    const inventory = master.partsInventory || [];
+    res.json(inventory);
+});
+
+// 2. Add a new part to inventory (master only)
+app.post('/api/inventory', authMiddleware, requireRole(['master']), async (req: AuthRequest, res: Response) => {
+    const master = req.user!;
+    const { name, description, price, quantity, image } = req.body;
+
+    if (!name || !description || !price || !quantity) {
+        return res.status(400).json({ message: 'Name, description, price, and quantity are required.' });
+    }
+
+    const newPart: Part = {
+        id: `part-${Date.now()}`,
+        masterId: master.id,
+        name,
+        description,
+        price,
+        quantity,
+        image,
+    };
+
+    if (!master.partsInventory) {
+        master.partsInventory = [];
+    }
+    master.partsInventory.push(newPart);
+
+    await db.write();
+    res.status(201).json(newPart);
+});
+
+// 3. Update a part in inventory (master only)
+app.put('/api/inventory/:partId', authMiddleware, requireRole(['master']), async (req: AuthRequest, res: Response) => {
+    const master = req.user!;
+    const { partId } = req.params;
+    const { name, description, price, quantity, image } = req.body;
+
+    if (!master.partsInventory) {
+        return res.status(404).json({ message: 'Inventory not found.' });
+    }
+
+    const partIndex = master.partsInventory.findIndex(part => part.id === partId);
+
+    if (partIndex === -1) {
+        return res.status(404).json({ message: 'Part not found in inventory.' });
+    }
+
+    const updatedPart = {
+        ...master.partsInventory[partIndex],
+        name: name || master.partsInventory[partIndex].name,
+        description: description || master.partsInventory[partIndex].description,
+        price: price || master.partsInventory[partIndex].price,
+        quantity: quantity || master.partsInventory[partIndex].quantity,
+        image: image || master.partsInventory[partIndex].image,
+    };
+
+    master.partsInventory[partIndex] = updatedPart;
+
+    await db.write();
+    res.json(updatedPart);
+});
+
+// 4. Delete a part from inventory (master only)
+app.delete('/api/inventory/:partId', authMiddleware, requireRole(['master']), async (req: AuthRequest, res: Response) => {
+    const master = req.user!;
+    const { partId } = req.params;
+
+    if (!master.partsInventory) {
+        return res.status(404).json({ message: 'Inventory not found.' });
+    }
+
+    const initialLength = master.partsInventory.length;
+    master.partsInventory = master.partsInventory.filter(part => part.id !== partId);
+
+    if (master.partsInventory.length === initialLength) {
+        return res.status(404).json({ message: 'Part not found in inventory.' });
+    }
+
+    await db.write();
+    res.status(204).send();
 });
 
 

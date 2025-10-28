@@ -19,6 +19,7 @@ import { ReviewsPage } from './components/pages/ReviewsPage';
 import { MastersList } from './components/features/master/MastersList';
 import { PartsInventory } from './components/features/parts/PartsInventory';
 import { PaymentManagement } from './components/pages/PaymentManagement';
+import PortfolioPage from './components/features/master/portfolio/PortfolioPage';
 import { useAuthStore } from './store/authStore';
 import { useOrdersStore } from './store/ordersStore';
 import { useNotificationsStore } from './store/notificationsStore';
@@ -102,7 +103,12 @@ function App() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [users, setUsers] = useState<User[]>([]);
 
+  const { fetchNotifications } = useNotificationsStore();
+
   useEffect(() => {
+    if (currentUser) {
+      fetchNotifications();
+    }
     const fetchUsers = async () => {
       const allUsers = await apiUserService.getUsers();
       setUsers(allUsers);
@@ -230,11 +236,7 @@ function App() {
               </div>
 
               <div className="flex items-center gap-2 min-w-fit">
-                <NotificationCenter
-                  notifications={notifications}
-                  onRead={readNotification}
-                  onRemove={removeNotification}
-                />
+                <NotificationCenter />
                 <LanguageSwitcher />
                 <button
                   onClick={() => setActiveItem('profile')}
@@ -391,9 +393,7 @@ function App() {
               </div>
             )}
 
-            {activeItem === 'portfolio' && (
-              <Portfolio portfolio={[]} currentUser={currentUser} />
-            )}
+            {activeItem === 'portfolio' && <PortfolioPage />}
 
             {activeItem === 'reviews' && (
               <ReviewsPage />
