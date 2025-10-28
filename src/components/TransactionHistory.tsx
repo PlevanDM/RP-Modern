@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Download } from 'lucide-react';
 import { User, Transaction } from '../types';
+import { safeLocaleCurrency, safeLocaleDate } from '../utils/localeUtils';
 
 type TransactionType = 'income' | 'expense' | 'refund' | 'payout';
 
@@ -62,7 +63,7 @@ export function TransactionHistory({
               <h3 className="text-gray-600 font-semibold">Загальний дохід</h3>
               <span className="text-2xl">💰</span>
             </div>
-            <p className="text-3xl font-bold text-green-600">{totalIncome.toLocaleString('uk-UA')} грн</p>
+            <p className="text-3xl font-bold text-green-600">{safeLocaleCurrency(totalIncome)} грн</p>
           </div>
 
           <div className="bg-white rounded-xl shadow-lg p-6">
@@ -70,7 +71,7 @@ export function TransactionHistory({
               <h3 className="text-gray-600 font-semibold">Загальні витрати</h3>
               <span className="text-2xl">💸</span>
             </div>
-            <p className="text-3xl font-bold text-red-600">{totalExpense.toLocaleString('uk-UA')} грн</p>
+            <p className="text-3xl font-bold text-red-600">{safeLocaleCurrency(totalExpense)} грн</p>
           </div>
 
           <div className="bg-white rounded-xl shadow-lg p-6">
@@ -78,7 +79,7 @@ export function TransactionHistory({
               <h3 className="text-gray-600 font-semibold">Баланс</h3>
               <span className="text-2xl">💰</span>
             </div>
-            <p className="text-3xl font-bold text-blue-600">{(totalIncome - totalExpense).toLocaleString('uk-UA')} грн</p>
+            <p className="text-3xl font-bold text-blue-600">{safeLocaleCurrency(totalIncome - totalExpense)} грн</p>
           </div>
         </div>
 
@@ -159,7 +160,7 @@ export function TransactionHistory({
                       <div>
                         <p className="font-semibold text-gray-900">{transaction.description}</p>
                         <p className="text-sm text-gray-600">
-                          {new Date(transaction.createdAt).toLocaleDateString('uk-UA')}
+                          {safeLocaleDate(transaction.createdAt)}
                         </p>
                       </div>
                     </div>
@@ -171,7 +172,7 @@ export function TransactionHistory({
                             ? 'text-green-600' 
                             : 'text-red-600'
                         }`}>
-                          {transaction.type === ('income' as TransactionType) ? '+' : '-'}{transaction.amount.toLocaleString('uk-UA')} грн
+                          {transaction.type === ('income' as TransactionType) ? '+' : '-'}{safeLocaleCurrency(transaction.amount)} грн
                         </p>
                         <p className="text-sm text-gray-600">{transaction.category}</p>
                       </div>

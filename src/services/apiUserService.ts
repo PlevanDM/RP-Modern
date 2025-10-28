@@ -50,6 +50,22 @@ class ApiUserService {
     );
     return response.data;
   }
+
+  public async updateUserProfile(profileData: Partial<User>): Promise<User> {
+    const authData = JSON.parse(localStorage.getItem('auth-storage') || '{}');
+    const token = authData.state?.token;
+
+    if (!token) {
+      throw new Error('No authentication token found.');
+    }
+
+    const response = await axios.patch(
+      `${API_URL}/users/profile`,
+      profileData,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return response.data;
+  }
 }
 
 export const apiUserService = ApiUserService.getInstance();

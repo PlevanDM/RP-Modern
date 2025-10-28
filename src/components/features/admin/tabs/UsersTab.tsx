@@ -1,5 +1,6 @@
 import React from 'react';
 import { User } from '../../../../types';
+import { safeLocaleDate } from '../../../../utils/localeUtils';
 
 interface UsersTabProps {
   users: User[];
@@ -106,10 +107,10 @@ export const UsersTab: React.FC<UsersTabProps> = ({
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {user.registrationDate ? new Date(user.registrationDate).toLocaleDateString() : 'N/A'}
+                  {user.registrationDate ? safeLocaleDate(user.registrationDate) : 'N/A'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'N/A'}
+                  {user.lastLogin ? safeLocaleDate(user.lastLogin) : 'N/A'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {orders.filter((o) => o.clientId === user.id).length}

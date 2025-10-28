@@ -3,6 +3,7 @@ import { EscrowPayment, EscrowStatus } from '../types';
 import { escrowService } from '../services/api/escrowService';
 import { AlertCircle, Clock, Loader } from 'lucide-react';
 import { ActionButton } from './ActionButton';
+import { safeLocaleCurrency, safeLocaleDate } from '../utils/localeUtils';
 
 interface EscrowPaymentManagerProps {
   orderId: string;
@@ -100,7 +101,7 @@ export function EscrowPaymentManager({
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
         <h3 className="text-lg font-bold text-gray-900 mb-4">💰 Escrow Платеж</h3>
         <p className="text-gray-700 mb-4">
-          Сума: <span className="font-bold">{amount.toLocaleString('uk-UA')} грн</span>
+          Сума: <span className="font-bold">{safeLocaleCurrency(amount)} грн</span>
         </p>
         {userRole === 'client' && (
           <button
@@ -133,11 +134,11 @@ export function EscrowPaymentManager({
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div>
           <p className="text-sm text-gray-600">Сума платежу</p>
-          <p className="text-lg font-bold text-gray-900">{payment.amount.toLocaleString('uk-UA')} грн</p>
+          <p className="text-lg font-bold text-gray-900">{safeLocaleCurrency(payment.amount)} грн</p>
         </div>
         <div>
           <p className="text-sm text-gray-600">Мастер отримає</p>
-          <p className="text-lg font-bold text-green-600">{payment.masterReceiveAmount.toLocaleString('uk-UA')} грн</p>
+          <p className="text-lg font-bold text-green-600">{safeLocaleCurrency(payment.masterReceiveAmount)} грн</p>
         </div>
         <div>
           <p className="text-sm text-gray-600">Клієнт підтвердив</p>
@@ -235,7 +236,7 @@ export function EscrowPaymentManager({
         <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex items-start gap-3">
           <Clock size={18} className="text-yellow-600 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold text-yellow-900">Час дії: {new Date(payment.expiresAt).toLocaleString('uk-UA')}</p>
+            <p className="text-sm font-semibold text-yellow-900">Час дії: {safeLocaleDate(payment.expiresAt)}</p>
             <p className="text-xs text-yellow-700">Якщо не буде підтверджено, платеж буде автоматично повернено</p>
           </div>
         </div>

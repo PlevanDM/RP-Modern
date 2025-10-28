@@ -21,6 +21,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { CreateOrderModal } from '../../../CreateOrderModal';
 import { User } from '../../../../types/models';
 import { useTranslation } from '../../../../hooks/useTranslation';
+import { safeLocaleCurrency, safeLocaleDate } from '../../../../utils/localeUtils';
 
 interface Order {
   id: string;
@@ -100,10 +101,9 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
     },
     {
       title: t('common.spent'),
-      value: `₴${(clientOrders
+      value: `₴${safeLocaleCurrency(clientOrders
         .filter((o) => o.status === 'completed')
-        .reduce((acc, o) => acc + (o.price || 0), 0))
-        .toLocaleString()}`,
+        .reduce((acc, o) => acc + (o.price || 0), 0))}`,
       change: '+18%',
       icon: <DollarSign className="w-5 h-5" />,
       trend: 'up',
@@ -321,9 +321,9 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                         <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
                           <Calendar className="w-4 h-4" />
                           {order.date 
-                            ? new Date(order.date).toLocaleDateString('uk-UA')
+                            ? safeLocaleDate(order.date)
                             : order.createdAt 
-                              ? new Date(order.createdAt).toLocaleDateString('uk-UA')
+                              ? safeLocaleDate(order.createdAt)
                               : 'Без дати'}
                         </div>
                       </div>
@@ -359,7 +359,7 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                           <MapPin className="w-4 h-4" />
                           {order.city || order.device}
                         </span>
-                        <span className="font-semibold text-foreground">₴{(order.price || 0).toLocaleString()}</span>
+                        <span className="font-semibold text-foreground">₴{safeLocaleCurrency(order.price || 0)}</span>
                       </div>
                       <Button
                         variant="ghost"
@@ -411,13 +411,13 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold">₴{(order.price || 0).toLocaleString()}</p>
+                        <p className="font-semibold">₴{safeLocaleCurrency(order.price || 0)}</p>
                         <p className="text-xs text-muted-foreground">
                           {(order.date 
-                            ? new Date(order.date)
+                            ? safeLocaleDate(order.date)
                             : order.createdAt 
-                              ? new Date(order.createdAt)
-                              : null)?.toLocaleDateString('uk-UA') || 'Без дати'}
+                              ? safeLocaleDate(order.createdAt)
+                              : null) || 'Без дати'}
                         </p>
                       </div>
                     </div>

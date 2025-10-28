@@ -2,6 +2,7 @@ import { Button } from '../ui/button';
 import { Wrench, Shield, Globe, Calendar, Clock, Youtube, Instagram, Send, Mail, Phone, Smartphone, Laptop, Tablet, MapPin, Circle, CreditCard, Star, Lock, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '../../hooks/useTranslation';
+import { safeLocaleCurrency, safeLocaleDate, safeLocaleDateTime } from '../../utils/localeUtils';
 import { LoginModal } from '../auth/LoginModal';
 import { RegisterModal } from '../auth/RegisterModal';
 import { useState, useEffect, useRef } from 'react';
@@ -276,7 +277,7 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
                         <span className="font-medium">{order.city}</span>
                       </div>
                       <div className="font-bold text-sm text-gray-900">
-                        ₴{order.amount.toLocaleString('uk-UA')}
+                        ₴{safeLocaleCurrency(order.amount)}
                       </div>
                     </div>
                   </div>
@@ -323,13 +324,13 @@ const ModernLandingPage: React.FC<LandingPageProps> = () => {
           >
             <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
             <span className="font-mono hidden sm:inline">
-              {currentTime.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
+              {safeLocaleDateTime(currentTime)}
             </span>
           </motion.div>
           <div className="flex items-center gap-1 sm:gap-2 text-foreground/70">
             <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
             <span className="font-mono text-xs sm:text-sm">
-              {currentTime.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' })}
+              {safeLocaleDate(currentTime)}
             </span>
           </div>
         </div>

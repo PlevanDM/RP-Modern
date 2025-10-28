@@ -751,6 +751,32 @@ app.get('/api/profile/me', authMiddleware, (req: AuthRequest, res: Response) => 
     res.json(userProfile);
 });
 
+// Update user's own profile
+app.patch('/api/users/profile', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { name, email, phone, city, bio, avatar } = req.body;
+
+    await db.read();
+    const userToUpdate = db.data.users.find(u => u.id === user.id);
+
+    if (!userToUpdate) {
+        return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Update fields if they are provided in the body
+    if (name) userToUpdate.name = name;
+    if (email) userToUpdate.email = email;
+    if (phone) userToUpdate.phone = phone;
+    if (city) userToUpdate.city = city;
+    if (bio) userToUpdate.bio = bio;
+    if (avatar) userToUpdate.avatar = avatar;
+
+    await db.write();
+
+    const { password, ...updatedUser } = userToUpdate;
+    res.json(updatedUser);
+});
+
 // Get all devices (public route)
 app.get('/api/devices', (req, res) => {
   res.json(allDevicesDatabase);

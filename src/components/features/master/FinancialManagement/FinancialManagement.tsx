@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { DollarSign, TrendingUp, Receipt, Calculator, Download } from 'lucide-react';
+import { safeLocaleCurrency } from '../../../../utils/localeUtils';
 
 export function FinancialManagement() {
   const [selectedPeriod, setSelectedPeriod] = useState('month');
@@ -94,7 +95,7 @@ export function FinancialManagement() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-green-900">Загальний дохід</h3>
-                    <p className="text-3xl font-bold text-green-600">₴{financialData.totalIncome.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-green-600">₴{safeLocaleCurrency(financialData.totalIncome)}</p>
                   </div>
                   <TrendingUp className="w-8 h-8 text-green-500" />
                 </div>
@@ -104,7 +105,7 @@ export function FinancialManagement() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-red-900">Витрати</h3>
-                    <p className="text-3xl font-bold text-red-600">₴{financialData.totalExpenses.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-red-600">₴{safeLocaleCurrency(financialData.totalExpenses)}</p>
                   </div>
                   <Receipt className="w-8 h-8 text-red-500" />
                 </div>
@@ -114,7 +115,7 @@ export function FinancialManagement() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-semibold text-blue-900">Чистий прибуток</h3>
-                    <p className="text-3xl font-bold text-blue-600">₴{financialData.netIncome.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-blue-600">₴{safeLocaleCurrency(financialData.netIncome)}</p>
                   </div>
                   <DollarSign className="w-8 h-8 text-blue-500" />
                 </div>
@@ -145,7 +146,7 @@ export function FinancialManagement() {
                             style={{ width: `${item.percentage}%` }}
                           ></div>
                         </div>
-                        <span className="text-sm font-medium text-gray-900">₴{item.amount.toLocaleString()}</span>
+                        <span className="text-sm font-medium text-gray-900">₴{safeLocaleCurrency(item.amount)}</span>
                       </div>
                     </div>
                   ))}
@@ -164,7 +165,7 @@ export function FinancialManagement() {
                             Податкове
                           </span>
                         )}
-                        <span className="text-sm font-medium text-gray-900">₴{expense.amount.toLocaleString()}</span>
+                        <span className="text-sm font-medium text-gray-900">₴{safeLocaleCurrency(expense.amount)}</span>
                       </div>
                     </div>
                   ))}
@@ -193,7 +194,7 @@ export function FinancialManagement() {
                     {incomeByCategory.map((item, index) => (
                       <tr key={index} className="border-b">
                         <td className="py-2">{item.category}</td>
-                        <td className="py-2 font-medium">₴{item.amount.toLocaleString()}</td>
+                        <td className="py-2 font-medium">₴{safeLocaleCurrency(item.amount)}</td>
                         <td className="py-2">{item.percentage}%</td>
                         <td className="py-2">{Math.floor(item.amount / 1000)}</td>
                       </tr>
@@ -215,7 +216,7 @@ export function FinancialManagement() {
                   <div key={index} className="flex items-center justify-between p-4 bg-white rounded-lg border">
                     <div>
                       <h4 className="font-medium text-gray-900">{expense.category}</h4>
-                      <p className="text-sm text-gray-600">₴{expense.amount.toLocaleString()}</p>
+                      <p className="text-sm text-gray-600">₴{safeLocaleCurrency(expense.amount)}</p>
                     </div>
                     <div className="flex items-center space-x-2">
                       {expense.taxDeductible && (
@@ -271,7 +272,7 @@ export function FinancialManagement() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-green-50 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold text-green-900">Податкові відрахування</h3>
-                <p className="text-3xl font-bold text-green-600">₴{taxAnalysis.totalDeductible.toLocaleString()}</p>
+                <p className="text-3xl font-bold text-green-600">₴{safeLocaleCurrency(taxAnalysis.totalDeductible)}</p>
               </div>
               <div className="bg-blue-50 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold text-blue-900">Ефективна ставка</h3>
@@ -279,7 +280,7 @@ export function FinancialManagement() {
               </div>
               <div className="bg-red-50 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold text-red-900">Очікуваний податок</h3>
-                <p className="text-3xl font-bold text-red-600">₴{taxAnalysis.estimatedTax.toLocaleString()}</p>
+                <p className="text-3xl font-bold text-red-600">₴{safeLocaleCurrency(taxAnalysis.estimatedTax)}</p>
               </div>
             </div>
 

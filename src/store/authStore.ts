@@ -10,6 +10,7 @@ interface AuthState {
   register: (user: User) => Promise<void>;
   logout: () => void;
   completeOnboarding: () => void;
+  updateCurrentUser: (user: User) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -38,6 +39,7 @@ export const useAuthStore = create<AuthState>()(
         set({ currentUser: null, isOnboardingCompleted: false });
       },
       completeOnboarding: () => set({ isOnboardingCompleted: true }),
+      updateCurrentUser: (user: User) => set({ currentUser: user }),
     }),
     {
       name: 'auth-storage',

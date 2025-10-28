@@ -25,7 +25,9 @@ import {
   Monitor,
   Laptop
 } from 'lucide-react';
-import { User as UserType } from '../..//models';
+import { User as UserType } from '../../types/models';
+import { useAuthStore } from '../../store/authStore';
+import { apiUserService } from '../../services/apiUserService';
 
 interface ProfileData {
   name: string;
@@ -46,6 +48,7 @@ interface ProfileProps {
 }
 
 export function Profile({ currentUser, orders = [] }: ProfileProps) {
+  const { updateCurrentUser } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
     name: currentUser?.name || 'Користувач',
@@ -81,20 +84,17 @@ export function Profile({ currentUser, orders = [] }: ProfileProps) {
     }
   }, [currentUser]);
 
-  const handleSave = () => {
-    setProfile(formData);
-    setIsEditing(false);
-    const currentUserData = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const updatedUser = {
-      ...currentUserData,
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      city: formData.city,
-      avatar: formData.avatar,
-      bio: formData.bio
-    };
-    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+  const handleSave = async () => {
+    try {
+      const updatedUser = await apiUserService.updateUserProfile(formData);
+      updateCurrentUser(updatedUser);
+      setProfile(formData);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      // Optionally, show an error message to the user
+      alert('Не вдалося оновити профіль. Спробуйте ще раз.');
+    }
   };
 
   const handleCancel = () => {

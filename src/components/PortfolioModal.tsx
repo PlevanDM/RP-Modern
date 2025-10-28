@@ -2,6 +2,7 @@ import React from 'react';
 import { Award, Star, MapPin, X } from 'lucide-react';
 
 import { User } from '../types/models';
+import { safeLocaleCurrency, safeLocaleDate } from '../utils/localeUtils';
 import { Button } from './ui/button';
 import { portfolioItems } from '../utils/mock';
 
@@ -113,10 +114,10 @@ export const PortfolioModal: React.FC<PortfolioModalProps> = ({
                   </div>
                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
                     <div className="text-sm text-gray-500">
-                      {new Date(item.completedAt).toLocaleDateString('uk-UA')}
+                      {safeLocaleDate(item.completedAt)}
                     </div>
                     <div className="font-semibold text-primary">
-                      ₴{item.price.toLocaleString()}
+                      ₴{safeLocaleCurrency(item.price)}
                     </div>
                   </div>
                 </div>

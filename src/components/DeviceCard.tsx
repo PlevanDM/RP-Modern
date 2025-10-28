@@ -1,4 +1,5 @@
 import { DeviceModel } from '../types/models';
+import { safeLocaleCurrency } from '../utils/localeUtils';
 
 interface DeviceCardProps {
   device: DeviceModel;
@@ -138,15 +139,15 @@ export function DeviceCard({ device, onSelect, isMaster = false, className = '' 
                   <div className="text-right">
                     {device.price.min === device.price.max ? (
                       <span className="font-semibold text-gray-900">
-                        ₴{device.price.min.toLocaleString()}
+                        ₴{safeLocaleCurrency(device.price.min)}
                       </span>
                     ) : (
                       <div>
                         <span className="text-sm text-gray-500 line-through">
-                          от ₴{device.price.min.toLocaleString()}
+                          от ₴{safeLocaleCurrency(device.price.min)}
                         </span>
                         <span className="font-semibold text-gray-900 block">
-                          до ₴{device.price.max.toLocaleString()}
+                          до ₴{safeLocaleCurrency(device.price.max)}
                         </span>
                       </div>
                     )}

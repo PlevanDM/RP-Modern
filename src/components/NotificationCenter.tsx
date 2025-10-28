@@ -42,7 +42,13 @@ export const NotificationCenter: React.FC = () => {
                     {notification.message}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {new Date(notification.createdAt).toLocaleString()}
+                    {(() => {
+                      try {
+                        return new Date(notification.createdAt).toLocaleString('uk-UA');
+                      } catch (e) {
+                        return new Date(notification.createdAt).toISOString();
+                      }
+                    })()}
                   </p>
                 </div>
                 {!notification.read && (
