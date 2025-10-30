@@ -95,14 +95,17 @@ export function DisputeCenter() {
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                {dispute.status === 'open' && (
-                  <button onClick={() => updateDisputeStatus(dispute.id, 'investigating')} className="text-indigo-600 hover:text-indigo-900">Розслідувати</button>
+                {(dispute.status === 'open' || dispute.status === 'investigating') && (
+                  <button onClick={() => handleResolveClick(dispute)} className="px-3 py-1 bg第三种-600 text-white rounded hover:bg-indigo-700">
+                    Вирішити
+                  </button>
                 )}
-                {dispute.status === 'investigating' && (
-                  <>
-                    <button onClick={() => updateDisputeStatus(dispute.id, 'resolved')} className="text-green-600 hover:text-green-900">Вирішити</button>
-                    <button onClick={() => updateDisputeStatus(dispute.id, 'escalated')} className="text-red-600 hover:text-red-900 ml-4">Ескалація</button>
-                  </>
+                {dispute.status === 'resolved' && dispute.decision && (
+                  <span className="text-sm text-gray-600">
+                    {dispute.decision === 'client_wins' ? 'На користь клієнта' :
+                     dispute.decision === 'master_wins' ? 'На користь майстра' :
+                     'Компроміс'}
+                  </span>
                 )}
               </td>
             </tr>
