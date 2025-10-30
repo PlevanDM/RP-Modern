@@ -139,7 +139,7 @@ export interface Order {
   budget: number;
   proposalCount: number;
   issue: string; // Проблема
-  status: 'open' | 'accepted' | 'in_progress' | 'completed' | 'cancelled' | 'disputed';
+  status: 'open' | 'proposed' | 'accepted' | 'in_progress' | 'completed' | 'cancelled' | 'disputed';
   proposedPrice?: number;
   agreedPrice?: number;
   deadline?: Date;
