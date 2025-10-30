@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface Props {
   children: ReactNode;
@@ -10,28 +10,24 @@ interface State {
   error?: Error;
 }
 
-const ErrorFallback: React.FC<{ onReload: () => void }> = ({ onReload }) => {
-  const { t } = useTranslation();
-  
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="text-center p-8">
-        <h1 className="text-2xl font-bold text-red-600 mb-4">
-          ⚠️ {t('errors.loadingError', 'Помилка завантаження')}
-        </h1>
-        <p className="text-gray-600 mb-4">
-          {t('errors.somethingWrong', 'Щось пішло не так. Спробуйте оновити сторінку.')}
-        </p>
-        <button
-          onClick={onReload}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          {t('common.refresh', 'Оновити сторінку')}
-        </button>
-      </div>
+const ErrorFallback: React.FC<{ onReload: () => void; t: (key: string) => string }> = ({ onReload, t }) => (
+  <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="text-center p-8">
+      <h1 className="text-2xl font-bold text-red-600 mb-4">
+        ⚠️ {t('errors.loadingError')}
+      </h1>
+      <p className="text-gray-600 mb-4">
+        {t('errors.somethingWrong')}
+      </p>
+      <button
+        onClick={onReload}
+        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        {t('common.refresh')}
+      </button>
     </div>
-  );
-};
+  </div>
+);
 
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
@@ -77,12 +73,17 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      const handleReload = () => {
-        this.setState({ hasError: false, error: undefined });
-        window.location.reload();
+      // Використовуємо HOC для передачі хука перекладів
+      const ErrorWithTranslation = () => {
+        const t = useTranslation();
+        const handleReload = () => {
+          this.setState({ hasError: false, error: undefined });
+          window.location.reload();
+        };
+        return <ErrorFallback onReload={handleReload} t={t} />;
       };
 
-      return <ErrorFallback onReload={handleReload} />;
+      return <ErrorWithTranslation />;
     }
 
     return this.props.children;
