@@ -7,10 +7,13 @@ import { CreateOrderModal } from '../CreateOrderModal';
 import { ProposalModal } from '../ProposalModal';
 import { OrderEditModal } from '../features/admin/OrderEditModal';
 import { ConfirmationDialog } from '../features/admin/ConfirmationDialog';
+import { DisputeModal } from '../modals/DisputeModal';
 import OrderDetails from './OrderDetails';
 import { useTranslation } from 'react-i18next';
 import { getClientAvailableActions } from '../../utils/orderPermissions';
 import { FiltersBar } from '../common/FiltersBar';
+import { useOrdersStore } from '../../store/ordersStore';
+import { useUIStore } from '../../store/uiStore';
 
 interface OrdersProps {
   currentUser: CurrentUser;
@@ -66,6 +69,10 @@ export function Orders({
   const [_showEditModal, setShowEditModal] = useState(false);
   const [orderToEdit, setOrderToEdit] = useState<Order | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showDisputeModal, setShowDisputeModal] = useState(false);
+  const [orderForDispute, setOrderForDispute] = useState<Order | null>(null);
+  
+  const { releasePayment, createDispute } = useOrdersStore();
 
   const filteredOrders = useMemo(() => {
     // Фільтруємо заказы: если клиент, то только его заказы; если мастер, то все
@@ -181,35 +188,38 @@ export function Orders({
   const handleClientAction = (order: Order, actionId: string) => {
     switch (actionId) {
       case 'cancel':
-        // TODO: Implement cancel order
-        console.log('Cancel order:', order.id);
         if (onUpdateOrderStatus) {
           onUpdateOrderStatus(order.id, 'cancelled');
+          useUIStore.getState().showNotification('Замовлення скасовано');
         }
         break;
       case 'edit':
-        // TODO: Implement edit order
         setOrderToEdit(order);
         setShowEditModal(true);
         break;
       case 'create_payment':
-        // TODO: Navigate to payment page
         setActiveItem?.('payments');
         break;
       case 'release_payment':
-        // TODO: Release payment from escrow
-        console.log('Release payment for order:', order.id);
+        if (releasePayment) {
+          releasePayment(order.id);
+        }
         break;
       case 'create_dispute':
-        // TODO: Open dispute modal
-        console.log('Create dispute for order:', order.id);
+        setOrderForDispute(order);
+        setShowDisputeModal(true);
         break;
       case 'create_review':
-        // TODO: Navigate to review page
-        console.log('Create review for order:', order.id);
+        setActiveItem?.('reviews');
         break;
       default:
         console.log('Unknown action:', actionId);
+    }
+  };
+
+  const handleDisputeSubmit = (reason: string, description: string) => {
+    if (orderForDispute && createDispute) {
+      createDispute(orderForDispute.id, reason, description);
     }
   };
 
@@ -570,6 +580,17 @@ export function Orders({
         onConfirm={confirmDeleteOrder}
         title={t('orders.deleteOrder')}
         description={orderToDelete ? t('orders.deleteConfirm', { title: orderToDelete.title }) : ''}
+      />
+
+      {/* Модальне вікно створення спору */}
+      <DisputeModal
+        isOpen={showDisputeModal}
+        onClose={() => {
+          setShowDisputeModal(false);
+          setOrderForDispute(null);
+        }}
+        onSubmit={handleDisputeSubmit}
+        orderTitle={orderForDispute?.title}
       />
     </div>
   );

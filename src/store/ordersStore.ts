@@ -59,7 +59,7 @@ interface OrdersState {
   updatePayment: (orderId: string, amount: number) => void;
   releasePayment: (orderId: string) => void;
   refundPayment: (orderId: string) => void;
-  createDispute: (orderId: string, reason: string) => void;
+  createDispute: (orderId: string, reason: string, description?: string) => void;
   escalateDispute: (orderId: string) => void;
 }
 
@@ -464,9 +464,10 @@ export const useOrdersStore = create<OrdersState>()(
           return;
         }
 
-        // Calculate commission (10%)
-        const commission = order.amount ? order.amount * 0.1 : 0;
-        const masterAmount = order.amount ? order.amount - commission : 0;
+        // Calculate commission (5% according to architecture)
+        const paymentAmount = order.paymentAmount || order.agreedPrice || order.amount || 0;
+        const commission = paymentAmount * 0.05;
+        const masterAmount = paymentAmount - commission;
 
         set((state) => ({
           orders: state.orders.map((o) =>
@@ -474,14 +475,32 @@ export const useOrdersStore = create<OrdersState>()(
               ? {
                   ...o,
                   status: 'completed',
+                  paymentStatus: 'released',
+                  completedAt: new Date().toISOString(),
                   updatedAt: new Date().toISOString(),
                 }
               : o
           ),
         }));
 
+        // Update master balance
+        const masterId = order.assignedMasterId;
+        if (masterId) {
+          try {
+            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
+            const updatedUsers = users.map((u: any) =>
+              u.id === masterId
+                ? { ...u, balance: (u.balance || 0) + masterAmount }
+                : u
+            );
+            localStorage.setItem('repair_master_users', JSON.stringify(updatedUsers));
+          } catch (e) {
+            console.warn('Не вдалося оновити баланс майстра:', e);
+          }
+        }
+
         useUIStore.getState().showNotification(
-          `Payment released! Master receives ₴${masterAmount.toFixed(2)} (₴${commission.toFixed(2)} commission deducted)`
+          `Оплату виплачено! Майстер отримає ₴${masterAmount.toFixed(2)} (комісія платформи: ₴${commission.toFixed(2)})`
         );
       },
       refundPayment: (orderId) => {
@@ -519,7 +538,7 @@ export const useOrdersStore = create<OrdersState>()(
 
         useUIStore.getState().showNotification(`Payment of ₴${order.amount} refunded to client!`);
       },
-      createDispute: (orderId, reason) => {
+      createDispute: (orderId, reason, description?) => {
         const currentUser = useAuthStore.getState().currentUser;
         const order = get().orders.find((o) => o.id === orderId);
 
@@ -539,32 +558,56 @@ export const useOrdersStore = create<OrdersState>()(
         }
 
         // Can only create dispute if order is in_progress or completed
-        if (!['in_progress', 'completed'].includes(order.status)) {
+        if (!['in_progress', 'completed', 'accepted'].includes(order.status)) {
           useUIStore.getState().showNotification('Dispute can only be created for in-progress or completed orders', 'error');
           return;
         }
 
         // Check if dispute already exists
-        const existingDispute = order.status === 'dispute' || order.status === 'disputed';
+        const existingDispute = order.status === 'dispute' || order.disputeStatus === 'open';
         if (existingDispute) {
           useUIStore.getState().showNotification('Dispute already exists for this order', 'error');
           return;
         }
 
-        // Change status to dispute
+        // Change status to dispute and freeze payment
         set((state) => ({
           orders: state.orders.map((o) =>
             o.id === orderId
               ? {
                   ...o,
-                  status: 'dispute',
+                  status: 'dispute' as Order['status'],
+                  disputeStatus: 'open' as Order['disputeStatus'],
+                  disputeReason: reason,
+                  disputeDescription: description || '',
+                  disputeCreatedAt: new Date().toISOString(),
+                  paymentStatus: o.paymentStatus === 'escrowed' ? 'frozen' as Order['paymentStatus'] : o.paymentStatus,
                   updatedAt: new Date().toISOString(),
                 }
               : o
           ),
         }));
 
-        useUIStore.getState().showNotification(`Dispute created: ${reason}. Admin will investigate.`);
+        // Save dispute to localStorage
+        try {
+          const disputes = JSON.parse(localStorage.getItem('disputes') || '[]');
+          const newDispute = {
+            id: `dispute-${Date.now()}`,
+            orderId,
+            clientId: order.clientId,
+            masterId: order.assignedMasterId || '',
+            reason,
+            description: description || '',
+            status: 'open',
+            createdAt: new Date().toISOString(),
+          };
+          disputes.push(newDispute);
+          localStorage.setItem('disputes', JSON.stringify(disputes));
+        } catch (e) {
+          console.warn('Не вдалося зберегти спір:', e);
+        }
+
+        useUIStore.getState().showNotification(`Спір відкрито: ${reason}. Адміністратор розгляне протягом 24 годин.`);
       },
       escalateDispute: (orderId) => {
         const currentUser = useAuthStore.getState().currentUser;
