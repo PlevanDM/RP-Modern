@@ -3,7 +3,22 @@ import axios from 'axios';
 import { User } from '../types';
 import { initializeTestUsers } from '../utils/testLoginUsers';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// Auto-detect API URL based on current host
+const getApiUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  // If accessing via IP, use IP for API too
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host !== 'localhost' && host !== '127.0.0.1') {
+      return `http://${host}:3001/api`;
+    }
+  }
+  return 'http://localhost:3001/api';
+};
+
+const API_URL = getApiUrl();
 
 // Debug: log API URL on initialization
 if (import.meta.env.DEV) {

@@ -2,7 +2,19 @@
 import axios from 'axios';
 import { Order } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// Auto-detect API URL based on current host
+const getApiUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  const host = window.location.hostname;
+  if (host !== 'localhost' && host !== '127.0.0.1') {
+    return `http://${host}:3001/api`;
+  }
+  return 'http://localhost:3001/api';
+};
+
+const API_URL = getApiUrl();
 
 // Create axios instance with auth interceptor
 const apiClient = axios.create({

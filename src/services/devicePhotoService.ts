@@ -74,7 +74,18 @@ export class DevicePhotoService {
    */
   private async loadDeviceModels(): Promise<void> {
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+      // Auto-detect API URL based on current host
+      const getApiUrl = () => {
+        if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+        if (typeof window !== 'undefined') {
+          const host = window.location.hostname;
+          if (host !== 'localhost' && host !== '127.0.0.1') {
+            return `http://${host}:3001/api`;
+          }
+        }
+        return 'http://localhost:3001/api';
+      };
+      const API_URL = getApiUrl();
       const response = await fetch(`${API_URL}/devices`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
