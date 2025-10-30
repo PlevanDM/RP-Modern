@@ -529,7 +529,7 @@ app.post('/api/payments', authMiddleware, requireRole(['client']), async (req: A
 
     // Create Payment object
     const paymentId = `payment-${Date.now()}`;
-    const commission = 0.10; // 10% platform commission
+    const commission = 0.05; // 5% platform commission (as per ARCHITECTURE.md)
     const payment: Payment = {
         id: paymentId,
         orderId: order.id,
