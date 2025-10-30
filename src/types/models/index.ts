@@ -157,7 +157,7 @@ export interface Order {
   serialNumber?: string; // Серійний номер пристрою
   isActiveSearch?: boolean; // Активный поиск мастеров
   deletedAt?: Date; // Дата удаления
-  paymentStatus: 'pending' | 'escrowed' | 'released' | 'refunded'; // Статус платежа
+  paymentStatus: 'pending' | 'escrowed' | 'released' | 'refunded' | 'frozen'; // Статус платежа
   paymentAmount: number; // Сумма платежа
   paymentMethod: string; // Способ оплаты
   escrowId: string; // ID эскроу-счета
