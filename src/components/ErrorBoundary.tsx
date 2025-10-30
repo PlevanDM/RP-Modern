@@ -73,17 +73,12 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      // Використовуємо HOC для передачі хука перекладів
-      const ErrorWithTranslation = () => {
-        const t = useTranslation();
-        const handleReload = () => {
-          this.setState({ hasError: false, error: undefined });
-          window.location.reload();
-        };
-        return <ErrorFallback onReload={handleReload} t={t} />;
+      const handleReload = () => {
+        this.setState({ hasError: false, error: undefined });
+        window.location.reload();
       };
 
-      return <ErrorWithTranslation />;
+      return <ErrorFallback onReload={handleReload} />;
     }
 
     return this.props.children;
