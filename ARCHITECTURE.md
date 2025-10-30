@@ -405,7 +405,7 @@ interface MasterSupportSession {
 - `saveMasterSchedule(schedule)` - Збереження графіку
 - `createMasterSession(session)` - Створення сесії техпідтримки
 - `createSupportTicket(ticket)` - Створення тікета
-- `getMasterStats(masterId)` - Статистика май jersey
+- `getMasterStats(masterId)` - Статистика майстра
 
 ### Premium Subscription Service (`premiumSubscriptionService.ts`)
 - `getUserSubscription(userId)` - Отримання підписки
