@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
+import i18n from '../i18n/config';
 
 interface Props {
   children: ReactNode;
@@ -10,24 +10,32 @@ interface State {
   error?: Error;
 }
 
-// Functional component wrapper for error fallback with translation
-const ErrorFallbackWrapper: React.FC<{ onReload: () => void }> = ({ onReload }) => {
-  const { t } = useTranslation();
+// Error fallback with i18n support using i18n directly (not hook, since ErrorBoundary is outside I18nextProvider)
+const ErrorFallback: React.FC<{ onReload: () => void }> = ({ onReload }) => {
+  // Use i18n directly instead of hook (since we're outside I18nextProvider)
+  const getTranslation = (key: string, defaultValue: string) => {
+    try {
+      const translated = i18n.t(key);
+      return translated && translated !== key ? translated : defaultValue;
+    } catch (error) {
+      return defaultValue;
+    }
+  };
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center p-8">
         <h1 className="text-2xl font-bold text-red-600 mb-4">
-          ⚠️ {t('errors.loadingError') || 'Помилка завантаження'}
+          ⚠️ {getTranslation('errors.loadingError', 'Помилка завантаження')}
         </h1>
         <p className="text-gray-600 mb-4">
-          {t('errors.somethingWrong') || 'Щось пішло не так. Спробуйте оновити сторінку.'}
+          {getTranslation('errors.somethingWrong', 'Щось пішло не так. Спробуйте оновити сторінку.')}
         </p>
         <button
           onClick={onReload}
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
-          {t('common.refresh') || 'Оновити сторінку'}
+          {getTranslation('common.refresh', 'Оновити сторінку')}
         </button>
       </div>
     </div>
