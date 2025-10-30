@@ -239,9 +239,12 @@ src/
 
 ## 📚 Документация
 
-- `ADMIN_PANEL_REPORT.md` - детальное описание админ-панели
-- `FINAL_REPAIR_REPORT.md` - финальный отчет о функциях
-- `admin_login.html` - страница входа для админов
+- [`ARCHITECTURE.md`](./ARCHITECTURE.md) - детальна схема архітектури та взаємодій
+- [`ARCHITECTURE_COMPLIANCE_REPORT.md`](./ARCHITECTURE_COMPLIANCE_REPORT.md) - звіт про відповідність архітектурі
+- [`PROJECT_STATUS.md`](./PROJECT_STATUS.md) - поточний стан проєкту
+- [`PERFORMANCE_OPTIMIZATION.md`](./PERFORMANCE_OPTIMIZATION.md) - рекомендації по оптимізації
+- [`API_ENDPOINTS_V2.md`](./API_ENDPOINTS_V2.md) - документація API
+- [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) - система дизайну
 
 ---
 
