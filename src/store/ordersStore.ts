@@ -895,7 +895,7 @@ export const useOrdersStore = create<OrdersState>()(
                     updatedAt: new Date().toISOString(),
                   }
                 : o
-            Treatment),
+            ),
           }));
           
           // Update master balance
