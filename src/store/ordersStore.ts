@@ -381,14 +381,13 @@ export const useOrdersStore = create<OrdersState>()(
         }));
         
         // Automatically create conversation between client and master (as per ARCHITECTURE.md)
-        try {
-          const { getOrCreateConversation } = await import('../services/chatService');
+        import('../services/chatService').then((chatService) => {
           if (order.clientId && proposal.masterId) {
-            getOrCreateConversation(order.clientId, proposal.masterId, proposal.orderId);
+            chatService.getOrCreateConversation(order.clientId, proposal.masterId, proposal.orderId);
           }
-        } catch (error) {
+        }).catch((error) => {
           console.warn('Не вдалося автоматично створити розмову:', error);
-        }
+        });
         
         // Note: Order status remains 'accepted' until payment is made
         // Status changes to 'in_progress' only after payment (as per ARCHITECTURE.md)
@@ -549,20 +548,24 @@ export const useOrdersStore = create<OrdersState>()(
           return;
         }
 
-        //жный if order is in correct status
+        // Check if order is in correct status
         if (order.status !== 'accepted') {
           useUIStore.getState().showNotification('Order must be accepted before payment', 'error');
           return;
         }
 
-        // Update order with payment info and set to in_progress
+        // Update order with payment info and set to in_progress (as per ARCHITECTURE.md)
+        // After payment is escrowed, order status changes to in_progress so master can start work
         set((state) => ({
           orders: state.orders.map((o) =>
             o.id === orderId
               ? {
                   ...o,
                   amount,
-                  status: 'in_progress',
+                  paymentAmount: amount,
+                  paymentStatus: 'escrowed',
+                  escrowId: `escrow-${Date.now()}`,
+                  status: 'in_progress', // Master can now start work (as per ARCHITECTURE.md)
                   updatedAt: new Date().toISOString(),
                 }
               : o
