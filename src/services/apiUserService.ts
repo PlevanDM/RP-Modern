@@ -1,9 +1,7 @@
 // src/services/apiUserService.ts
 import axios from 'axios';
 import { User } from '../types';
-import { getApiUrl } from './apiUrlHelper';
-
-const API_URL = getApiUrl();
+import { getApiUrl, getAuthHeaders } from './apiUrlHelper';
 
 class ApiUserService {
   private static instance: ApiUserService;
@@ -19,20 +17,14 @@ class ApiUserService {
 
   public async getUsers(): Promise<User[]> {
     try {
-      const token = this.getAuthToken();
-      const headers: any = { 'Content-Type': 'application/json' };
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-      
-      const response = await axios.get(`${API_URL}/users`, { headers });
+      const response = await axios.get(`${getApiUrl()}/users`, { headers: getAuthHeaders(), withCredentials: true });
       return response.data;
     } catch (error: any) {
       // Якщо помилка авторизації, спробуємо без токену (для тестування)
       if (error.response?.status === 401) {
         console.warn('Auth error getting users, trying without token');
         try {
-          const response = await axios.get(`${API_URL}/users`);
+          const response = await axios.get(`${getApiUrl()}/users`);
           return response.data;
         } catch (e) {
           // Якщо все одно не працює, повертаємо пустий масив
@@ -64,8 +56,8 @@ class ApiUserService {
         headers['Authorization'] = `Bearer ${token}`;
       }
       
-      const response = await axios.get(`${API_URL}/users/${userId}`, { 
-        headers,
+      const response = await axios.get(`${getApiUrl()}/users/${userId}`, { 
+        headers: { ...headers, ...getAuthHeaders() },
         withCredentials: true 
       });
       return response.data;
@@ -73,7 +65,7 @@ class ApiUserService {
       if (error.response?.status === 401) {
         console.warn('Auth error getting user, trying without token');
         try {
-          const response = await axios.get(`${API_URL}/users/${userId}`);
+          const response = await axios.get(`${getApiUrl()}/users/${userId}`);
           return response.data;
         } catch (e) {
           console.error('Failed to get user:', e);
@@ -85,26 +77,26 @@ class ApiUserService {
   }
 
   public async createUser(user: User): Promise<User> {
-    const response = await axios.post(`${API_URL}/users`, user);
+    const response = await axios.post(`${getApiUrl()}/users`, user, { headers: getAuthHeaders(), withCredentials: true });
     return response.data;
   }
 
   public async blockUser(userId: string): Promise<User> {
-    const response = await axios.post(`${API_URL}/users/${userId}/block`);
+    const response = await axios.post(`${getApiUrl()}/users/${userId}/block`, undefined, { headers: getAuthHeaders(), withCredentials: true });
     return response.data;
   }
 
   public async unblockUser(userId: string): Promise<User> {
-    const response = await axios.post(`${API_URL}/users/${userId}/unblock`);
+    const response = await axios.post(`${getApiUrl()}/users/${userId}/unblock`, undefined, { headers: getAuthHeaders(), withCredentials: true });
     return response.data;
   }
 
   public async updateUserRole(userId: string, role: string): Promise<User> {
     const token = localStorage.getItem('authToken');
     const response = await axios.patch(
-      `${API_URL}/superadmin/users/${userId}/role`,
+      `${getApiUrl()}/superadmin/users/${userId}/role`,
       { role },
-      { headers: { Authorization: `Bearer ${token}` } }
+      { headers: { Authorization: `Bearer ${token}`, ...getAuthHeaders() } }
     );
     return response.data;
   }
@@ -152,10 +144,10 @@ class ApiUserService {
     try {
       // Спробуємо через правильний endpoint
       const response = await axios.patch(
-        `${API_URL}/users/${userId}`,
+        `${getApiUrl()}/users/${userId}`,
         profileData,
         { 
-          headers,
+          headers: { ...headers, ...getAuthHeaders() },
           withCredentials: true 
         }
       );
@@ -164,9 +156,9 @@ class ApiUserService {
       // Якщо endpoint не працює, спробуємо інший
       if (error.response?.status === 404 || error.response?.status === 405) {
         const response = await axios.put(
-          `${API_URL}/users/${userId}`,
+          `${getApiUrl()}/users/${userId}`,
           profileData,
-          { headers }
+          { headers: { ...headers, ...getAuthHeaders() } }
         );
         return response.data;
       }

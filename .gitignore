@@ -109,6 +109,18 @@ CHAT_TESTING_REPORT.md
 *-TESTING*.md
 *-REPORT*.md
 
+# Temporary verification and scratch files
+jules-scratch/
+*.py
+
+# Temporary documentation files
+FIX_TRANSLATIONS_SUMMARY.md
+GITHUB_CLEANUP_SUMMARY.md
+GITHUB_SETUP.md
+TESTING_TASKS.md
+TRANSLATION_FIXES_PROGRESS.md
+TRANSLATION_FIXES_SUMMARY.md
+
 # Old deployment scripts (except our production scripts)
 *-OLD.sh
 *-old.ps1

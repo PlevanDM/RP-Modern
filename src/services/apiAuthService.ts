@@ -2,13 +2,11 @@
 import axios from 'axios';
 import { User } from '../types';
 import { initializeTestUsers } from '../utils/testLoginUsers';
-import { getApiUrl } from './apiUrlHelper';
-
-const API_URL = getApiUrl();
+import { getApiUrl, getAuthHeaders } from './apiUrlHelper';
 
 // Debug: log API URL on initialization
 if (import.meta.env.DEV) {
-  console.log('🔗 API URL:', API_URL);
+  console.log('🔗 API URL:', getApiUrl());
 }
 
 class ApiAuthService {
@@ -70,8 +68,9 @@ class ApiAuthService {
     // Якщо не знайдено в localStorage, пробуємо API
     try {
       const requestData = password ? { email, password } : { email };
-      const response = await axios.post(`${API_URL}/auth/login`, requestData, {
+      const response = await axios.post(`${getApiUrl()}/auth/login`, requestData, {
         withCredentials: true,
+        headers: getAuthHeaders(),
       });
       
       const { token, user } = response.data;
@@ -89,8 +88,9 @@ class ApiAuthService {
 
   public async register(user: User): Promise<User> {
     try {
-      const response = await axios.post(`${API_URL}/auth/register`, user, {
+      const response = await axios.post(`${getApiUrl()}/auth/register`, user, {
         withCredentials: true,
+        headers: getAuthHeaders(),
       });
       // In a real scenario, the backend would return a token which we would store.
       // const { token, newUser } = response.data;
@@ -105,6 +105,31 @@ class ApiAuthService {
       // No token is set here, but we'll manually set the currentUser in the store,
       // which is sufficient for the test to proceed.
       return user;
+    }
+  }
+
+  public async me(): Promise<User | null> {
+    try {
+      const response = await axios.get(`${getApiUrl()}/auth/me`, {
+        withCredentials: true,
+        headers: getAuthHeaders(),
+      });
+      return response.data?.user || null;
+    } catch {
+      return null;
+    }
+  }
+
+  public async logout(): Promise<void> {
+    try {
+      await axios.post(`${getApiUrl()}/auth/logout`, undefined, {
+        withCredentials: true,
+        headers: getAuthHeaders(),
+      });
+    } catch {
+      // ignore
+    } finally {
+      localStorage.removeItem('jwt-token');
     }
   }
 }

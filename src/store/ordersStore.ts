@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Order, Proposal } from '../types';
 import { apiOrderService } from '../services/apiOrderService';
-import { mockProposals } from '../utils/mockData';
 import { useAuthStore } from './authStore';
 import { useUIStore } from './uiStore';
 import { findMatchingMasters } from '../services/masterMatchingService';
@@ -72,7 +71,7 @@ export const useOrdersStore = create<OrdersState>()(
   persist(
     (set, get) => ({
       orders: [],
-      proposals: mockProposals,
+      proposals: [],
       currentPage: 1,
       totalPages: 1,
       totalOrders: 0,

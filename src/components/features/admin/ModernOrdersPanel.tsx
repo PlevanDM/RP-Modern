@@ -1,5 +1,5 @@
 // Modern Orders Management Panel
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { 
   Package, Search, Plus, Eye, Edit,
   Clock, CheckCircle, XCircle, AlertTriangle, MapPin,
@@ -17,101 +17,36 @@ import {
   Badge,
   EmptyState
 } from './AdminDesignSystem';
+import { apiOrderService } from '../../../services/apiOrderService';
+import { Order } from '../../../types';
 
 export const ModernOrdersPanel = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterPriority, setFilterPriority] = useState('all');
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const orders = [
-    {
-      id: 1,
-      orderNumber: '#RH-2024-001',
-      client: 'Анна Коваленко',
-      master: 'Олександр Петренко',
-      service: 'Заміна екрану iPhone 15',
-      status: 'in_progress',
-      priority: 'high',
-      price: 4500,
-      createdAt: '2024-01-15',
-      dueDate: '2024-01-20',
-      location: 'Київ, вул. Хрещатик, 10',
-      phone: '+380501234567',
-      rating: 4.8,
-      progress: 65
-    },
-    {
-      id: 2,
-      orderNumber: '#RH-2024-002',
-      client: 'Марія Сидоренко',
-      master: 'Максим Іванов',
-      service: 'Ремонт MacBook Pro',
-      status: 'completed',
-      priority: 'medium',
-      price: 8500,
-      createdAt: '2024-01-10',
-      dueDate: '2024-01-18',
-      location: 'Львів, пр. Свободи, 25',
-      phone: '+380671234567',
-      rating: 4.9,
-      progress: 100
-    },
-    {
-      id: 3,
-      orderNumber: '#RH-2024-003',
-      client: 'Ігор Мельник',
-      master: 'Олександр Петренко',
-      service: 'Заміна батареї Samsung Galaxy',
-      status: 'pending',
-      priority: 'low',
-      price: 2200,
-      createdAt: '2024-01-12',
-      dueDate: '2024-01-25',
-      location: 'Харків, вул. Сумська, 5',
-      phone: '+380931234567',
-      rating: 0,
-      progress: 0
-    },
-    {
-      id: 4,
-      orderNumber: '#RH-2024-004',
-      client: 'Ольга Петренко',
-      master: 'Максим Іванов',
-      service: 'Чистка від вологи iPhone 14',
-      status: 'cancelled',
-      priority: 'high',
-      price: 3200,
-      createdAt: '2024-01-08',
-      dueDate: '2024-01-15',
-      location: 'Одеса, вул. Дерибасівська, 15',
-      phone: '+380441234567',
-      rating: 0,
-      progress: 0
-    },
-    {
-      id: 5,
-      orderNumber: '#RH-2024-005',
-      client: 'Дмитро Коваль',
-      master: 'Олександр Петренко',
-      service: 'Ремонт iPad Air',
-      status: 'in_progress',
-      priority: 'medium',
-      price: 6800,
-      createdAt: '2024-01-14',
-      dueDate: '2024-01-22',
-      location: 'Дніпро, пр. Дмитра Яворницького, 88',
-      phone: '+380631234567',
-      rating: 4.7,
-      progress: 40
-    }
-  ];
+  useEffect(() => {
+    (async () => {
+      try {
+        const { orders } = await apiOrderService.getOrders(1, 50);
+        setOrders(orders || []);
+      } catch (e) {
+        setError('Не вдалося завантажити замовлення');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   const filteredOrders = orders.filter(order => {
-    const matchesSearch = order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         order.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         order.service.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || order.status === filterStatus;
-    const matchesPriority = filterPriority === 'all' || order.priority === filterPriority;
+    const matchesSearch = `${order.id}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (order.clientName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (order.title || '').toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = filterStatus === 'all' || order.status === (filterStatus as any);
+    const matchesPriority = filterPriority === 'all' || ((order as any).priority) === filterPriority;
     
     return matchesSearch && matchesStatus && matchesPriority;
   });
@@ -152,12 +87,14 @@ export const ModernOrdersPanel = () => {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('uk-UA');
+  const formatDate = (dateValue: any) => {
+    const d = typeof dateValue === 'string' || typeof dateValue === 'number' ? new Date(dateValue) : (dateValue ? new Date(dateValue) : null);
+    return d ? d.toLocaleDateString('uk-UA') : '-';
   };
 
-  const formatPrice = (price: number) => {
-    return `₴${price.toLocaleString()}`;
+  const formatPrice = (price?: number) => {
+    const p = typeof price === 'number' ? price : 0;
+    return `₴${p.toLocaleString()}`;
   };
 
   return (
@@ -239,7 +176,11 @@ export const ModernOrdersPanel = () => {
 
         {/* Orders Table */}
         <AdminCard className="overflow-hidden">
-          {filteredOrders.length === 0 ? (
+          {loading ? (
+            <div className="p-8 text-center text-gray-500">Завантаження...</div>
+          ) : error ? (
+            <EmptyState icon={Package} title="Помилка" description={error} />
+          ) : filteredOrders.length === 0 ? (
             <EmptyState
               icon={Package}
               title="Замовлення не знайдені"
@@ -251,17 +192,11 @@ export const ModernOrdersPanel = () => {
                 <TableRow key={order.id}>
                   <TableCell>
                     <div>
-                      <p className="font-medium text-gray-900 dark:text-white">{order.orderNumber}</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{order.id}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <Calendar className="w-3 h-3 text-gray-400" />
                         <span className="text-xs text-gray-500 dark:text-gray-400">
-                          Створено: {formatDate(order.createdAt)}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Clock className="w-3 h-3 text-gray-400" />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          До: {formatDate(order.dueDate)}
+                          Створено: {formatDate(order.createdAt as any)}
                         </span>
                       </div>
                     </div>
@@ -269,14 +204,14 @@ export const ModernOrdersPanel = () => {
                   
                   <TableCell>
                     <div>
-                      <p className="font-medium text-gray-900 dark:text-white">{order.client}</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{order.clientName || '-'}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <Phone className="w-3 h-3 text-gray-400" />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">{order.phone}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">{order.clientPhone || '-'}</span>
                       </div>
                       <div className="flex items-center gap-2 mt-1">
                         <MapPin className="w-3 h-3 text-gray-400" />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">{order.location}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">{(order as any).location || order.city || '-'}</span>
                       </div>
                     </div>
                   </TableCell>
@@ -285,15 +220,15 @@ export const ModernOrdersPanel = () => {
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center">
                         <span className="text-white font-semibold text-xs">
-                          {order.master.split(' ').map(n => n[0]).join('')}
+                          {(order as any).assignedMasterName ? (order as any).assignedMasterName.split(' ').map((n: string) => n[0]).join('') : '—'}
                         </span>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">{order.master}</p>
-                        {order.rating > 0 && (
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">{(order as any).assignedMasterName || '—'}</p>
+                        {(order as any).rating && (order as any).rating > 0 && (
                           <div className="flex items-center gap-1">
                             <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                            <span className="text-xs text-gray-500 dark:text-gray-400">{order.rating}</span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">{(order as any).rating}</span>
                           </div>
                         )}
                       </div>
@@ -301,7 +236,7 @@ export const ModernOrdersPanel = () => {
                   </TableCell>
                   
                   <TableCell>
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">{order.service}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{order.title || '-'}</p>
                   </TableCell>
                   
                   <TableCell>
@@ -316,16 +251,16 @@ export const ModernOrdersPanel = () => {
                   </TableCell>
                   
                   <TableCell>
-                    <Badge variant={getPriorityColor(order.priority)} size="sm">
-                      {order.priority === 'high' ? 'Високий' :
-                       order.priority === 'medium' ? 'Середній' : 'Низький'}
+                    <Badge variant={getPriorityColor(((order as any).priority) || 'medium')} size="sm">
+                      {((order as any).priority) === 'high' ? 'Високий' :
+                       ((order as any).priority) === 'low' ? 'Низький' : 'Середній'}
                     </Badge>
                   </TableCell>
                   
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <DollarSign className="w-4 h-4 text-green-600" />
-                      <span className="font-medium text-gray-900 dark:text-white">{formatPrice(order.price)}</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{formatPrice(order.paymentAmount || (order as any).agreedPrice || 0)}</span>
                     </div>
                   </TableCell>
                   
@@ -333,10 +268,10 @@ export const ModernOrdersPanel = () => {
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                       <div 
                         className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${order.progress}%` }}
+                        style={{ width: `${order.status === 'completed' ? 100 : order.status === 'in_progress' ? 60 : order.status === 'accepted' ? 30 : 10}%` }}
                       />
                     </div>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">{order.progress}%</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">{order.status === 'completed' ? 100 : order.status === 'in_progress' ? 60 : order.status === 'accepted' ? 30 : 10}%</span>
                   </TableCell>
                   
                   <TableCell>

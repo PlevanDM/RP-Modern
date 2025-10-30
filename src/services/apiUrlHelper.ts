@@ -2,6 +2,23 @@
 // This ensures API calls work correctly when accessing via IP address
 
 export const getApiUrl = (): string => {
+  // Prefer configured backend URL from settings store when available
+  try {
+    // Lazy import to avoid circular deps in SSR/build
+    const settingsStore = (window as any)?.useSettingsStore || undefined;
+    if (!settingsStore && typeof window !== 'undefined') {
+      // Attempt dynamic import only in browser
+      // Note: this is best-effort; failures fall through to env/auto-detect
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      // dynamic import avoided here to keep this helper synchronous
+    }
+    // If zustand store is attached globally by app bootstrap
+    const settings = settingsStore?.getState?.().settings;
+    if (settings?.backendUrl) {
+      return settings.backendUrl;
+    }
+  } catch {}
   // Auto-detect based on current hostname (priority)
   if (typeof window !== 'undefined') {
     const host = window.location.hostname;
@@ -21,4 +38,32 @@ export const getApiUrl = (): string => {
   
   // Default to localhost for development
   return 'http://localhost:3001/api';
+};
+
+export const getAuthHeaders = (): Record<string, string> => {
+  try {
+    // Try to get settings from localStorage directly to avoid circular deps
+    if (typeof window !== 'undefined') {
+      const settingsStorage = localStorage.getItem('app-settings');
+      if (settingsStorage) {
+        const parsed = JSON.parse(settingsStorage);
+        if (parsed?.state?.settings) {
+          const settings = parsed.state.settings;
+          const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+          if (settings.apiKey) headers['x-api-key'] = settings.apiKey;
+          if (settings.secretKey) headers['x-api-secret'] = settings.secretKey;
+          return headers;
+        }
+      }
+    }
+    // Fallback: try window.store approach
+    const settingsStore = (window as any)?.useSettingsStore;
+    const settings = settingsStore?.getState?.().settings;
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (settings?.apiKey) headers['x-api-key'] = settings.apiKey;
+    if (settings?.secretKey) headers['x-api-secret'] = settings.secretKey;
+    return headers;
+  } catch {
+    return { 'Content-Type': 'application/json' };
+  }
 };

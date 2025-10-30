@@ -1,6 +1,6 @@
 import { User, Review, UserAction } from '../types';
-import { mockUsers } from '../utils/mockData';
-import { getApiUrl } from './apiUrlHelper';
+import { getApiUrl, getAuthHeaders } from './apiUrlHelper';
+import { apiUserService } from './apiUserService';
 
 // Mock data for reviews
 const mockReviews: Review[] = [
@@ -24,39 +24,31 @@ class AdminService {
       const API_URL = getApiUrl();
       const response = await fetch(`${API_URL}/users`, {
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
       });
       if (response.ok) {
         const users = await response.json();
-        return Array.isArray(users) ? users : mockUsers;
+        return Array.isArray(users) ? users : [];
       }
-      return mockUsers;
+      return [];
     } catch (error) {
-      console.error('Failed to fetch users from API, using mock data:', error);
-      return mockUsers;
+      console.error('Failed to fetch users from API:', error);
+      return [];
     }
   }
 
   async blockUser(userId: string): Promise<User> {
     console.log(`AdminService: Blocking user ${userId}...`);
-    // In a real app, this would be a POST/PUT request
-    // await fetch(`/api/users/${userId}/block`, { method: 'POST' });
-    const user = mockUsers.find(u => u.id === userId);
-    if (!user) throw new Error('User not found');
-    user.blocked = true;
-    return Promise.resolve(user);
+    // Delegate to central user API service
+    const updated = await apiUserService.blockUser(userId);
+    return updated;
   }
 
   async unblockUser(userId: string): Promise<User> {
     console.log(`AdminService: Unblocking user ${userId}...`);
-    // In a real app, this would be a POST/PUT request
-    // await fetch(`/api/users/${userId}/unblock`, { method: 'POST' });
-    const user = mockUsers.find(u => u.id === userId);
-    if (!user) throw new Error('User not found');
-    user.blocked = false;
-    return Promise.resolve(user);
+    // Delegate to central user API service
+    const updated = await apiUserService.unblockUser(userId);
+    return updated;
   }
 
   async getReviews(): Promise<Review[]> {
@@ -83,9 +75,7 @@ class AdminService {
       // Use error logs as user actions if available
       const response = await fetch(`${API_URL}/admin/errors`, {
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: getAuthHeaders(),
       });
       if (response.ok) {
         const errorLogs = await response.json();

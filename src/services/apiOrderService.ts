@@ -2,13 +2,11 @@
 import axios from 'axios';
 import { Order } from '../types';
 
-import { getApiUrl } from './apiUrlHelper';
-
-const API_URL = getApiUrl();
+import { getApiUrl, getAuthHeaders } from './apiUrlHelper';
 
 // Create axios instance with auth interceptor
 const apiClient = axios.create({
-  baseURL: API_URL,
+  // baseURL will be assigned dynamically in the interceptor to reflect latest settings
   headers: {
     'Content-Type': 'application/json',
   },
@@ -17,6 +15,10 @@ const apiClient = axios.create({
 
 // Add auth token to all requests
 apiClient.interceptors.request.use((config) => {
+  // Always set current baseURL from settings/env on each request
+  config.baseURL = getApiUrl();
+  // Merge auth headers from settings
+  config.headers = { ...(config.headers || {}), ...getAuthHeaders() } as any;
   const authStorage = localStorage.getItem('auth-storage');
   if (authStorage) {
     try {
