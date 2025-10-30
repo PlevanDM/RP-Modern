@@ -41,7 +41,7 @@ export function UserActionHistory() {
             <tr key={action.id}>
               <td className="px-6 py-4 whitespace-nowrap">{action.userId}</td>
               <td className="px-6 py-4 whitespace-nowrap">{action.action}</td>
-              <td className="px-6 py-4 whitespace-nowrap">{action.timestamp.toLocaleString('uk-UA')}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{new Date(action.timestamp).toLocaleString('uk-UA')}</td>
             </tr>
           ))}
         </tbody>

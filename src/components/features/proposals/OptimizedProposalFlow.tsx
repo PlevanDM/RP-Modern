@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Clock, DollarSign, Star, MessageSquare } from 'lucide-react';
 
 interface Proposal {
@@ -47,7 +48,7 @@ export function OptimizedProposalFlow() {
     setProposals(proposals.map(p => 
       p.id === id ? { ...p, status: 'accepted' } : { ...p, status: 'rejected' }
     ));
-    alert('✅ Пропозиція прийнята! Майстер розпочне роботу.');
+    alert(`✅ ${t('proposals.accepted')}`);
   };
 
   const rejectProposal = (id: string) => {
@@ -57,14 +58,14 @@ export function OptimizedProposalFlow() {
 
   const handleConfirmReject = () => {
     if (!rejectReason.trim()) {
-      alert('⚠️ Вкажіть причину відхилення');
+      alert(`⚠️ ${t('proposals.enterRejectReason')}`);
       return;
     }
     
     setProposals(proposals.map(p => 
       p.id === selectedProposalId ? { ...p, status: 'rejected' } : p
     ));
-    alert(`❌ Пропозиція відхилена. Причина: ${rejectReason}`);
+    alert(`❌ ${t('proposals.rejected')}: ${rejectReason}`);
     setShowRejectModal(false);
     setRejectReason('');
     setSelectedProposalId('');
@@ -249,7 +250,7 @@ export function OptimizedProposalFlow() {
               <textarea
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
-                placeholder="Вкажіть причину відхилення пропозиції..."
+                placeholder={t('proposals.rejectReasonPlaceholder')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
                 rows={4}
               />
@@ -260,13 +261,13 @@ export function OptimizedProposalFlow() {
                 onClick={() => setShowRejectModal(false)}
                 className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
               >
-                Скасувати
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleConfirmReject}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center gap-2"
               >
-                ✗ Підтвердити відхилення
+                ✗ {t('proposals.confirmReject')}
               </button>
             </div>
           </div>

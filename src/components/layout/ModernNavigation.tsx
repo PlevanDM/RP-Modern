@@ -25,6 +25,7 @@ import {
   Shield,
   Activity,
   Database,
+  HelpCircle,
 } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -32,8 +33,10 @@ import { ScrollArea } from "../ui/scroll-area";
 import { JarvisChat } from "../features/ai/JarvisChat";
 import { User as CurrentUser, Order } from "../../types/models";
 import { useTranslation } from "react-i18next";
+import { MobileMenu, MobileMenuButton } from "./MobileMenu";
 
 interface MenuItem {
+  key: string; // Ключ для навігації (navigation.dashboard, navigation.reports тощо)
   label: string;
   href: string;
   icon: React.ElementType;
@@ -52,31 +55,33 @@ interface ModernNavigationProps {
   onCreateOrder?: (orderData: Omit<Order, 'id'>) => void;
 }
 
-// Оптимизированная карта маршрутов - дефинируется один раз вне компонента
+// Мапінг ключів навігації на activeItem
 const ROUTE_MAP: Record<string, string> = {
-  'Дашборд': 'dashboard',
-  'Створити Заказ': 'catalog',
-  'Знайти Майстрів': 'priceComparison',
-  'Мої Замовлення': 'myOrders',
-  'Мої Пристрої': 'myDevices',
-  'Пропозиції': 'proposals',
-  'Платежі': 'payments',
-  'Чат': 'messages',
-  'Профіль': 'profile',
-  'Доска Замовлень': 'myOrders',
-  'Рейтинги & Рецензії': 'reports',
-  'Мої Запчастини': 'inventory',
-  'Склад Запчастин': 'partsInventory',
-  'Мої Пропозиції': 'proposals',
-  'Портфоліо': 'portfolio',
-  'Користувачі': 'users',
-  'Замовлення': 'orders',
-  'Фінанси': 'finance',
-  'Налаштування': 'settings',
-  'Аналітика': 'analytics',
-  'Безпека': 'security',
-  'Активність': 'activity',
-  'База даних': 'database'
+  'navigation.dashboard': 'dashboard',
+  'navigation.createOrder': 'catalog',
+  'navigation.findMasters': 'priceComparison',
+  'navigation.myOrders': 'myOrders',
+  'navigation.ordersBoard': 'myOrders',
+  'navigation.myDevices': 'myDevices',
+  'navigation.proposals': 'proposals',
+  'navigation.myProposals': 'proposals',
+  'navigation.payments': 'payments',
+  'navigation.messages': 'messages',
+  'navigation.profile': 'profile',
+  'navigation.reports': 'reviews', // Виправлено: reports -> reviews
+  'navigation.portfolio': 'portfolio',
+  'navigation.inventory': 'inventory',
+  'navigation.myParts': 'inventory',
+  'navigation.partsInventory': 'partsInventory',
+  'navigation.users': 'users',
+  'navigation.orders': 'orders',
+  'navigation.finance': 'finance',
+  'navigation.settings': 'settings',
+  'navigation.analytics': 'analytics',
+  'navigation.security': 'security',
+  'navigation.activity': 'activity',
+  'navigation.support': 'masterSupport',
+  'navigation.database': 'database'
 };
 
 const ModernNavigation: React.FC<ModernNavigationProps> = ({
@@ -95,56 +100,73 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   const menuItems = React.useMemo(() => {
     let baseItems: MenuItem[] = [];
 
-    if (currentUser?.role === 'admin') {
-      // Admin menu - без "Створити Заказ", з повним функціоналом адміна
+    if (currentUser?.role === 'admin' || currentUser?.role === 'superadmin') {
+      // Admin/SuperAdmin menu - без "Створити Заказ", з повним функціоналом адміна
       baseItems = [
-        { label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
-        { label: t('navigation.users'), href: "#", icon: User },
-        { label: t('navigation.analytics'), href: "#", icon: BarChart3 },
-        { label: t('navigation.finance'), href: "#", icon: CreditCard },
-        { label: t('navigation.security'), href: "#", icon: Shield },
-        { label: t('navigation.activity'), href: "#", icon: Activity },
-        { label: t('navigation.database'), href: "#", icon: Database },
-        { label: t('navigation.settings'), href: "#", icon: Settings }
+        { key: 'navigation.dashboard', label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
+        { key: 'navigation.users', label: t('navigation.users'), href: "#", icon: User },
+        { key: 'navigation.analytics', label: t('navigation.analytics'), href: "#", icon: BarChart3 },
+        { key: 'navigation.finance', label: t('navigation.finance'), href: "#", icon: CreditCard },
+        { key: 'navigation.security', label: t('navigation.security'), href: "#", icon: Shield },
+        { key: 'navigation.activity', label: t('navigation.activity'), href: "#", icon: Activity },
+        { key: 'navigation.database', label: t('navigation.database'), href: "#", icon: Database },
+        { key: 'navigation.settings', label: t('navigation.settings'), href: "#", icon: Settings }
       ];
     } else if (currentUser?.role === 'master') {
       // Master menu
       baseItems = [
-        { label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
+        { key: 'navigation.dashboard', label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
         {
+          key: 'navigation.ordersBoard',
           label: t('navigation.ordersBoard'),
           href: "#",
           icon: ShoppingCart,
           badge: unviewedOrdersCount > 0 ? { text: `${unviewedOrdersCount}`, variant: "destructive" } : undefined
         },
-        { label: t('navigation.reports'), href: "#", icon: Star },
-        { label: t('navigation.myParts'), href: "#", icon: Wrench },
-        { label: t('navigation.partsInventory'), href: "#", icon: Package },
-        { label: t('navigation.myProposals'), href: "#", icon: Tag },
-        { label: t('navigation.payments'), href: "#", icon: CreditCard },
-        { label: t('navigation.messages'), href: "#", icon: MessageSquare },
-        { label: t('navigation.portfolio'), href: "#", icon: Briefcase }
+        { key: 'navigation.reports', label: t('navigation.reports'), href: "#", icon: Star },
+        { key: 'navigation.myParts', label: t('navigation.myParts'), href: "#", icon: Wrench },
+        { key: 'navigation.partsInventory', label: t('navigation.partsInventory'), href: "#", icon: Package },
+        { key: 'navigation.myProposals', label: t('navigation.myProposals'), href: "#", icon: Tag },
+        { key: 'navigation.payments', label: t('navigation.payments'), href: "#", icon: CreditCard },
+        { key: 'navigation.messages', label: t('navigation.messages'), href: "#", icon: MessageSquare },
+        { key: 'navigation.portfolio', label: t('navigation.portfolio'), href: "#", icon: Briefcase },
+        { key: 'navigation.support', label: 'Техпідтримка', href: "#", icon: HelpCircle }
       ];
     } else if (currentUser?.role === 'client') {
       // Client menu
       baseItems = [
-        { label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
-        { label: t('navigation.createOrder'), href: "#", icon: Package },
-        { label: t('navigation.findMasters'), href: "#", icon: Search },
-        { label: t('navigation.myOrders'), href: "#", icon: ShoppingCart },
-        { label: t('navigation.myDevices'), href: "#", icon: Smartphone },
-        { label: t('navigation.proposals'), href: "#", icon: Tag },
-        { label: t('navigation.payments'), href: "#", icon: CreditCard },
-        { label: t('navigation.messages'), href: "#", icon: MessageSquare }
+        { key: 'navigation.dashboard', label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
+        { key: 'navigation.createOrder', label: t('navigation.createOrder'), href: "#", icon: Package },
+        { key: 'navigation.findMasters', label: t('navigation.findMasters'), href: "#", icon: Search },
+        { key: 'navigation.myOrders', label: t('navigation.myOrders'), href: "#", icon: ShoppingCart },
+        { key: 'navigation.myDevices', label: t('navigation.myDevices'), href: "#", icon: Smartphone },
+        { key: 'navigation.proposals', label: t('navigation.proposals'), href: "#", icon: Tag },
+        { key: 'navigation.payments', label: t('navigation.payments'), href: "#", icon: CreditCard },
+        { key: 'navigation.messages', label: t('navigation.messages'), href: "#", icon: MessageSquare }
       ];
     }
 
     return baseItems;
   }, [currentUser?.role, unviewedOrdersCount, t]);
 
-  // Оптимизация: функция getRouteKey теперь использует кешированную константу
-  const getRouteKey = React.useCallback((label: string): string => {
-    return ROUTE_MAP[label] || label.toLowerCase();
+  // Обробка зміни мови без перезавантаження
+  React.useEffect(() => {
+    const handleLanguageChange = () => {
+      // Примусити перерендер для оновлення тексту меню
+      window.dispatchEvent(new Event('forceRerender'));
+    };
+    window.addEventListener('languageChanged', handleLanguageChange);
+    return () => window.removeEventListener('languageChanged', handleLanguageChange);
+  }, []);
+
+  // Функція отримання ключа маршруту з ключа навігації
+  const getRouteKey = React.useCallback((navKey: string): string => {
+    const route = ROUTE_MAP[navKey];
+    if (route) {
+      return route;
+    }
+    // Якщо немає в мапінгу, прибираємо 'navigation.' префікс
+    return navKey.replace('navigation.', '');
   }, []);
 
   const sidebarVariants = {
@@ -160,7 +182,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
 
   const Logo = ({ collapsed }: { collapsed: boolean }) => {
     return (
-      <div className="flex items-center justify-between gap-3 px-4 py-6">
+      <div className="flex items-center justify-between gap-2 sm:gap-3 px-2 sm:px-4 py-3 sm:py-6">
         {/* Enhanced Logo with premium design */}
         <motion.div
           initial={{ opacity: 0, scale: 0.5, y: -20 }}
@@ -281,7 +303,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
               transition={{ duration: 0.2 }}
               onClick={() => setIsPinned(!isPinned)}
               className="p-1.5 hover:bg-accent rounded-lg transition-colors hover:scale-110"
-              title={isPinned ? "Авто скрывать меню" : "Оставить меню открытым"}
+              title={isPinned ? t('navigation.autoHideMenu') : t('navigation.keepMenuOpen')}
             >
               {isPinned ? (
                 <Pin className="h-4 w-4 text-muted-foreground" />
@@ -298,11 +320,11 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   const NavigationMenu = ({ collapsed }: { collapsed: boolean }) => {
     return (
       <>
-        <ScrollArea className="flex-1 px-2">
-          <nav className="space-y-0.5 py-2">
+        <ScrollArea className="flex-1 px-3 sm:px-2">
+          <nav className="space-y-1 sm:space-y-0.5 py-2">
             {menuItems.map((item) => {
               const Icon = item.icon;
-            const isActive = activeItem === getRouteKey(item.label);
+            const isActive = activeItem === getRouteKey(item.key);
 
             // Анимированная иконка для сворачиваемого состояния
             const AnimatedIcon = () => (
@@ -336,16 +358,18 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
 
             return (
               <motion.button
-                key={item.label}
+                key={item.key}
                 onClick={() => {
-                    setActiveItem(getRouteKey(item.label));
+                    const routeKey = getRouteKey(item.key);
+                    console.log('Navigation click:', { navKey: item.key, routeKey });
+                    setActiveItem(routeKey);
                     setIsMobileMenuOpen(false);
                 }}
                 className={cn(
-                  "group relative flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-all w-full text-left",
+                  "group relative flex items-center gap-3 rounded-lg px-3 sm:px-4 py-3 sm:py-3.5 text-base sm:text-sm font-medium transition-all w-full text-left min-h-[56px]",
                   isActive
                     ? "bg-primary text-primary-foreground shadow-sm font-semibold"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                    : "text-muted-foreground hover:bg-accent hover:text-accent informational",
                   collapsed && "justify-center px-1 py-2"
                 )}
                 whileHover={{ scale: 1.02 }}
@@ -354,7 +378,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                 {collapsed ? (
                   <AnimatedIcon />
                 ) : (
-                  <Icon className={cn("h-5 w-5 flex-shrink-0", isActive && "text-primary-foreground")} />
+                  <Icon className={cn("h-6 w-6 sm:h-5 sm:w-5 flex-shrink-0", isActive && "text-primary-foreground")} />
                 )}
                 <AnimatePresence mode="wait">
                   {!collapsed && (
@@ -363,7 +387,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -10 }}
                       transition={{ duration: 0.2 }}
-                      className="flex-1"
+                      className="flex-1 text-base sm:text-sm"
                     >
                       {item.label}
                     </motion.span>
@@ -372,13 +396,13 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                 {item.badge && !collapsed && (
                   <Badge
                     variant={item.badge.variant || "default"}
-                    className="ml-auto h-5 px-1.5 text-xs"
+                    className="ml-auto h-6 sm:h-5 px-2 sm:px-1.5 text-xs font-semibold"
                   >
                     {item.badge.text}
                   </Badge>
                 )}
                 {item.badge && collapsed && (
-                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 sm:h-4 sm:w-4 items-center justify-center rounded-full bg-destructive text-[11px] sm:text-[10px] font-bold text-destructive-foreground">
                     {item.badge.text}
                   </span>
                 )}
@@ -394,35 +418,114 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
     );
   };
 
-  return (
-    <>
-        {/* Mobile menu button */}
-        <div className="md:hidden fixed top-4 left-4 z-50">
-            <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Open menu"
-            >
-            {isMobileMenuOpen ? <X /> : <Menu />}
-            </Button>
+  // Мобільний компонент меню з оптимізованим дизайном
+  const MobileNavigationMenu = () => {
+    return (
+      <div className="space-y-3 pt-4">
+        {/* Logo секція */}
+        <div className="pb-6 border-b border-gray-200 mb-2">
+          <div className="flex items-center gap-4">
+            <div className="relative w-20 h-20 flex items-center justify-center shrink-0">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 rounded-2xl flex items-center justify-center shadow-xl">
+                <Wrench className="h-10 w-10 text-white" />
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
+                Repair HUB
+              </span>
+              <span className="text-sm text-gray-500 uppercase tracking-wider mt-0.5">Pro</span>
+            </div>
+          </div>
         </div>
 
-        {/* Mobile menu */}
-        <AnimatePresence>
-            {isMobileMenuOpen && (
-                <motion.div
-                    initial={{ x: "-100%" }}
-                    animate={{ x: 0 }}
-                    exit={{ x: "-100%" }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    className="fixed inset-0 bg-background z-40 flex flex-col md:hidden"
-                >
-                    <Logo collapsed={false} />
-                    <NavigationMenu collapsed={false} />
-                </motion.div>
-            )}
-        </AnimatePresence>
+        {/* Навігаційні елементи */}
+        <nav className="space-y-3">
+          {menuItems.map((item, index) => {
+            const Icon = item.icon;
+            const isActive = activeItem === getRouteKey(item.key);
+            
+            return (
+              <motion.button
+                key={item.label}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
+                onClick={() => {
+                  const routeKey = getRouteKey(item.key);
+                  console.log('Mobile Navigation click:', { navKey: item.key, routeKey });
+                  setActiveItem(routeKey);
+                  setIsMobileMenuOpen(false);
+                }}
+                className={cn(
+                  "w-full flex items-center gap-4 rounded-2xl px-6 py-5 text-left transition-all",
+                  "min-h-[72px] text-xl font-semibold",
+                  isActive
+                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/30"
+                    : "bg-white text-gray-800 hover:bg-gray-50 border-2 border-gray-200 shadow-md active:bg-gray-100"
+                )}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className={cn(
+                  "p-3 rounded-xl shrink-0",
+                  isActive ? "bg-white/20" : "bg-gray-100"
+                )}>
+                  <Icon className={cn(
+                    "h-7 w-7",
+                    isActive ? "text-white" : "text-gray-700"
+                  )} />
+                </div>
+                <span className="flex-1 leading-tight">{item.label}</span>
+                {item.badge && (
+                  <Badge
+                    variant={isActive ? "secondary" : "default"}
+                    className={cn(
+                      "h-8 px-4 text-base font-bold shrink-0",
+                      isActive && "bg-white/20 text-white border-white/30"
+                    )}
+                  >
+                    {item.badge.text}
+                  </Badge>
+                )}
+              </motion.button>
+            );
+          })}
+        </nav>
+      </div>
+    );
+  };
+
+  // Експортуємо стан через ref/глобальний доступ для header
+  React.useEffect(() => {
+    const updateGlobalState = () => {
+      (window as any).__mobileMenuState = {
+        isOpen: isMobileMenuOpen,
+        setIsOpen: setIsMobileMenuOpen,
+        toggle: () => setIsMobileMenuOpen(!isMobileMenuOpen)
+      };
+      window.dispatchEvent(new Event('mobileMenuStateChange'));
+    };
+    updateGlobalState();
+  }, [isMobileMenuOpen]);
+
+  return (
+    <>
+        {/* Mobile menu button - приховано, тепер в header */}
+        <div className="hidden">
+          <MobileMenuButton
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            isOpen={isMobileMenuOpen}
+          />
+        </div>
+
+        {/* Mobile menu - новий компонент */}
+        <MobileMenu
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+          headerHeight={80}
+        >
+          <MobileNavigationMenu />
+        </MobileMenu>
 
         {/* Desktop sidebar */}
         <motion.div

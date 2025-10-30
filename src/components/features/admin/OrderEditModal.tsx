@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Order } from '../../../types/models';
 import { AdminButton, AdminInput, AdminSelect } from './AdminDesignSystem';
 import { X } from 'lucide-react';
@@ -11,6 +12,7 @@ interface OrderEditModalProps {
 }
 
 export const OrderEditModal: React.FC<OrderEditModalProps> = ({ order, onClose, onSave, loading }) => {
+  const { t } = useTranslation();
   const [editedOrder, setEditedOrder] = useState(order);
 
   const handleChange = (field: string, value: string | number) => {
@@ -26,7 +28,7 @@ export const OrderEditModal: React.FC<OrderEditModalProps> = ({ order, onClose, 
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-lg">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Редагувати замовлення</h2>
+          <h2 className="text-xl font-bold">{t('common.editOrder')}</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
             <X className="w-6 h-6" />
           </button>
@@ -52,27 +54,27 @@ export const OrderEditModal: React.FC<OrderEditModalProps> = ({ order, onClose, 
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Статус</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('common.status')}</label>
                 <AdminSelect
                   options={[
-                    { value: 'open', label: 'Відкрито' },
-                    { value: 'proposed', label: 'Є пропозиції' },
-                    { value: 'accepted', label: 'Прийнято' },
-                    { value: 'in_progress', label: 'В роботі' },
-                    { value: 'completed', label: 'Завершено' },
-                    { value: 'cancelled', label: 'Скасовано' },
+                    { value: 'open', label: t('status.open') },
+                    { value: 'proposed', label: t('status.proposed') },
+                    { value: 'accepted', label: t('status.accepted') },
+                    { value: 'in_progress', label: t('status.in_progress') },
+                    { value: 'completed', label: t('status.completed') },
+                    { value: 'cancelled', label: t('status.cancelled') },
                   ]}
                   value={editedOrder.status}
                   onChange={(value) => handleChange('status', value)}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Терміновість</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('orderDetails.urgency')}</label>
                 <AdminSelect
                   options={[
-                    { value: 'low', label: 'Низька' },
-                    { value: 'medium', label: 'Середня' },
-                    { value: 'high', label: 'Висока' },
+                    { value: 'low', label: t('priority.low') },
+                    { value: 'medium', label: t('priority.medium') },
+                    { value: 'high', label: t('priority.high') },
                   ]}
                   value={editedOrder.urgency}
                   onChange={(value) => handleChange('urgency', value)}
@@ -81,9 +83,9 @@ export const OrderEditModal: React.FC<OrderEditModalProps> = ({ order, onClose, 
             </div>
           </div>
           <div className="mt-6 flex justify-end gap-4">
-            <AdminButton type="button" variant="ghost" onClick={onClose}>Скасувати</AdminButton>
+            <AdminButton type="button" variant="ghost" onClick={onClose}>{t('common.cancel')}</AdminButton>
             <AdminButton type="submit" variant="primary" disabled={loading}>
-              {loading ? 'Збереження...' : 'Зберегти'}
+              {loading ? t('common.saving') : t('common.save')}
             </AdminButton>
           </div>
         </form>

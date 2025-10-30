@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { Order } from '../types';
 
-const API_URL = 'http://localhost:3001/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 // Create axios instance with auth interceptor
 const apiClient = axios.create({
@@ -10,6 +10,7 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Enable credentials for CORS
 });
 
 // Add auth token to all requests

@@ -1,5 +1,6 @@
 // Modern Settings Panel with unified design
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   Settings, Save, RefreshCw, Shield, Key, Globe, 
   CreditCard, Users, Bell, Database, Server, 
@@ -16,6 +17,7 @@ import {
 } from './AdminDesignSystem';
 
 export const ModernSettingsPanel = () => {
+  const { t } = useTranslation();
   const [settings, setSettings] = useState({
     // System Settings
     maintenanceMode: false,
@@ -84,10 +86,10 @@ export const ModernSettingsPanel = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            ⚙️ Налаштування системи
+            ⚙️ {t('admin.systemSettings')}
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Керування ключовими параметрами платформи RepairHub Pro
+            {t('admin.systemSettingsDescription')}
           </p>
         </div>
 
@@ -104,21 +106,21 @@ export const ModernSettingsPanel = () => {
                   <Info className="w-5 h-5 text-gray-400" />
                 )}
                 <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {isSaving ? 'Збереження...' : 
-                   lastSaved ? `Останнє збереження: ${lastSaved.toLocaleTimeString()}` : 
-                   'Зміни не збережені'}
+                  {isSaving ? t('common.saving') : 
+                   lastSaved ? `${t('admin.lastSaved')}: ${lastSaved.toLocaleTimeString()}` : 
+                   t('admin.unsavedChanges')}
                 </span>
               </div>
               <AdminButton onClick={handleSave} disabled={isSaving}>
                 {isSaving ? (
                   <>
                     <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                    Збереження...
+                    {t('common.saving')}
                   </>
                 ) : (
                   <>
                     <Save className="w-4 h-4 mr-2" />
-                    Зберегти зміни
+                    {t('common.saveChanges')}
                   </>
                 )}
               </AdminButton>
@@ -155,7 +157,7 @@ export const ModernSettingsPanel = () => {
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Комісія платформи (%)
+                      {t('admin.platformCommission')}
                     </label>
                     <AdminInput
                       type="number"
@@ -221,11 +223,11 @@ export const ModernSettingsPanel = () => {
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      API ключ
+                      {t('admin.apiKey')}
                     </label>
                     <AdminInput
                       type="password"
-                      placeholder="Введіть API ключ"
+                      placeholder={t('admin.apiKeyPlaceholder')}
                       value={settings.currencyApiKey}
                       onChange={(value) => setSettings(prev => ({ ...prev, currencyApiKey: value }))}
                     />
@@ -250,8 +252,8 @@ export const ModernSettingsPanel = () => {
             {/* Security Settings */}
             <AdminCard className="p-6">
               <SectionHeader 
-                title="Безпека" 
-                subtitle="Налаштування безпеки системи"
+                title={t('admin.security')} 
+                subtitle={t('admin.securitySettingsDescription')}
                 icon={Shield}
               />
               

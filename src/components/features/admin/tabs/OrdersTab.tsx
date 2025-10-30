@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Order, User } from '../../../../types';
 
 interface OrdersTabProps {
@@ -14,9 +15,27 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
   orderStatusFilter,
   orderSortBy,
 }) => {
+  const { t } = useTranslation();
+  
+  const getStatusText = (status: string) => {
+    // Map statuses to translation keys
+    const statusMap: Record<string, string> = {
+      'open': 'orders.status.open',
+      'in_progress': 'common.inProgress',
+      'completed': 'common.completed',
+      'cancelled': 'orders.status.cancelled',
+      'disputed': 'orders.status.disputed',
+      'dispute': 'orders.status.disputed',
+      'accepted': 'orders.status.accepted',
+      'pending': 'common.pending',
+    };
+    const key = statusMap[status] || `orders.status.${status}`;
+    return t(key) || status;
+  };
+  
   return (
     <div className="bg-white shadow rounded-lg p-4">
-      <h2 className="text-xl font-semibold mb-4">Управління Замовленнями</h2>
+      <h2 className="text-xl font-semibold mb-4">{t('adminDashboard.orderManagement') || 'Order Management'}</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -58,10 +77,12 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       order.status === 'completed' ? 'bg-green-100 text-green-800' :
                       order.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
-                      order.status === 'dispute' ? 'bg-red-100 text-red-800' :
+                      order.status === 'disputed' || order.status === 'dispute' ? 'bg-red-100 text-red-800' :
+                      order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                      order.status === 'open' ? 'bg-blue-100 text-blue-800' :
                       'bg-gray-100 text-gray-800'
                     }`}>
-                      {order.status}
+                      {getStatusText(order.status)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -79,7 +100,7 @@ export const OrdersTab: React.FC<OrdersTabProps> = ({
                       onClick={() => console.log('View order:', order.id)}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
-                      View
+                      {t('common.view') || 'View'}
                     </button>
                   </td>
                 </tr>

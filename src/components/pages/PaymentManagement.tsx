@@ -144,16 +144,28 @@ export function PaymentManagement({
     }
   };
 
-  // Add mock payment data for testing
-  const ordersWithMockPayments = orders.map(order => ({
-    ...order,
-    paymentAmount: order.paymentAmount || (order.proposedPrice || 5000),
-    paymentStatus: order.paymentStatus || 'escrowed',
-    paymentMethod: order.paymentMethod || 'Visa **** 1234',
-    escrowId: order.escrowId || `escrow_${order.id}`,
-    paymentDate: order.paymentDate || new Date(),
-    disputeStatus: order.disputeStatus || 'none'
-  }));
+  // Додаємо реальні дані про платежі, використовуючи наявні поля
+  const ordersWithMockPayments = orders.map(order => {
+    // Визначаємо реальну суму платежу з різних полів
+    const realAmount = order.paymentAmount || 
+                       order.agreedPrice || 
+                       order.proposedPrice || 
+                       order.price || 
+                       order.budget || 
+                       0;
+    
+    return {
+      ...order,
+      paymentAmount: realAmount > 0 ? realAmount : (order.status === 'completed' ? order.budget || 0 : 0),
+      paymentStatus: order.paymentStatus || 
+                     (order.status === 'completed' || order.status === 'paid' ? 'released' : 
+                      order.status === 'in_progress' ? 'escrowed' : 'pending'),
+      paymentMethod: order.paymentMethod || 'Card',
+      escrowId: order.escrowId || (order.paymentStatus !== 'pending' ? `escrow_${order.id}` : undefined),
+      paymentDate: order.paymentDate || order.updatedAt || order.createdAt || new Date(),
+      disputeStatus: order.disputeStatus || 'none'
+    };
+  });
 
   const ordersWithPayments = ordersWithMockPayments.filter(order => 
     order.clientId === currentUser.id

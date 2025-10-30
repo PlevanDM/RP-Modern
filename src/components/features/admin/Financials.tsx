@@ -11,24 +11,48 @@ export function Financials() {
 
   useEffect(() => {
     const fetchData = async () => {
+      try {
         const orders: Order[] = await adminService.getOrders();
-        const transactions: EscrowTransaction[] = await adminService.getTransactions();
+        const transactions: any[] = await adminService.getTransactions();
 
-        const revenue = transactions
+        // Convert payments to transactions format
+        const escrowTransactions: EscrowTransaction[] = transactions.map((payment: any) => ({
+          id: payment.id,
+          type: payment.status === 'released' ? 'income' : 'pending',
+          amount: payment.amount || 0,
+          status: payment.status === 'released' ? 'completed' : payment.status || 'pending',
+          createdAt: payment.createdAt || new Date(),
+        }));
+
+        const revenue = escrowTransactions
             .filter((t: EscrowTransaction) => t.type === 'income' && t.status === 'completed')
             .reduce((sum: number, t: EscrowTransaction) => sum + (t.amount || 0), 0);
 
-        const completedTransactions = transactions.filter((t: EscrowTransaction) => t.status === 'completed');
+        const completedTransactions = escrowTransactions.filter((t: EscrowTransaction) => t.status === 'completed');
 
+        // Виправляємо розрахунок - використовуємо реальні ціни з замовлень
         const totalOrderValue = orders
-            .filter((o: Order) => o.status === 'completed')
-            .reduce((sum: number, o: Order) => sum + (o.agreedPrice || o.proposedPrice || 0), 0);
+            .filter((o: Order) => o.status === 'completed' || o.status === 'paid')
+            .reduce((sum: number, o: Order) => {
+              // Спробуємо різні поля для ціни
+              const price = o.agreedPrice || o.proposedPrice || o.price || o.budget || 0;
+              return sum + (typeof price === 'number' ? price : parseFloat(String(price)) || 0);
+            }, 0);
 
-        const completedOrders = orders.filter((o: Order) => o.status === 'completed').length;
+        const completedOrders = orders.filter((o: Order) => 
+          o.status === 'completed' || o.status === 'paid'
+        ).length;
 
         setTotalRevenue(revenue || 0);
         setTotalTransactions(completedTransactions.length);
         setAvgOrderValue(completedOrders > 0 ? Math.round(totalOrderValue / completedOrders) : 0);
+      } catch (error) {
+        console.error('Error fetching financial data:', error);
+        // Set defaults on error
+        setTotalRevenue(0);
+        setTotalTransactions(0);
+        setAvgOrderValue(0);
+      }
     };
 
     fetchData();

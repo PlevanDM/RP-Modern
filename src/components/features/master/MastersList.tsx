@@ -66,14 +66,20 @@ export const MastersList: React.FC<MastersListProps> = ({
 
       const matchesCity = selectedCity === '' || master.city === selectedCity;
 
-      // Фильтр по типу устройства (проверяем навыки мастера)
+      // Фільтр по типу пристрою (перевіряємо repairBrands та skills)
       const matchesDeviceType = selectedDeviceType === '' || 
+        (master.repairBrands?.some(brand => 
+          brand.toLowerCase().includes(selectedDeviceType.toLowerCase())
+        )) ||
         master.skills?.some(skill => 
           skill.toLowerCase().includes(selectedDeviceType.toLowerCase())
         );
 
-      // Фильтр по типу услуги (проверяем специализацию)
+      // Фільтр по типу послуги (перевіряємо repairTypes, specialization та skills)
       const matchesServiceType = selectedServiceType === '' ||
+        (master.repairTypes?.some(type => 
+          type.toLowerCase().includes(selectedServiceType.toLowerCase())
+        )) ||
         master.specialization?.toLowerCase().includes(selectedServiceType.toLowerCase()) ||
         master.skills?.some(skill => 
           skill.toLowerCase().includes(selectedServiceType.toLowerCase())

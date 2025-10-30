@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   X, Search, Clock, DollarSign, 
   User, Phone, MapPin, Star, Eye, TrendingUp, CheckCircle, Trash2, Send, Zap, Smartphone, Monitor, Laptop
@@ -139,9 +140,10 @@ export function MasterOrdersBoard() {
     (filterPriority === 'all' || order.priority === filterPriority)
   );
 
+  const { t } = useTranslation();
   const submitProposal = () => {
     if (!selectedOrder || !proposalPrice || !proposalDays || !proposalDesc) {
-      alert('Заповніть усі поля');
+      alert(t('common.fillAllFields'));
       return;
     }
 
@@ -171,7 +173,7 @@ export function MasterOrdersBoard() {
 
   const deleteProposal = (proposalId: string) => {
     const proposal = myProposals.find(p => p.id === proposalId);
-    if (proposal && window.confirm('Видалити пропозицію?')) {
+    if (proposal && window.confirm(t('proposals.deleteConfirm'))) {
       setMyProposals(myProposals.filter(p => p.id !== proposalId));
       const order = availableOrders.find(o => o.id === proposal.orderId);
       if (order) {
@@ -185,18 +187,18 @@ export function MasterOrdersBoard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 animate-fade-in">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">📋 Мої Замовлення</h1>
-              <p className="text-slate-300">Перегляд доступних замовлень та управління пропозиціями</p>
+              <h1 className="text-4xl font-bold text-slate-800 mb-2">📋 {t('masterOrders.myOrders')}</h1>
+              <p className="text-slate-600">{t('masterOrders.description')}</p>
             </div>
             <div className="text-right">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 rounded-lg">
-                <p className="text-white text-sm">📊 Активні пропозиції</p>
+              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-3 rounded-lg shadow-lg">
+                <p className="text-white text-sm">📊 {t('masterOrders.activeProposals')}</p>
                 <p className="text-2xl font-bold text-white">{myProposals.filter(p => p.status === 'pending').length}</p>
               </div>
             </div>
@@ -206,10 +208,10 @@ export function MasterOrdersBoard() {
         <div className="grid grid-cols-12 gap-6">
           {/* Available Orders - Left Side */}
           <div className="col-span-12 lg:col-span-7">
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
               <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                  <Eye className="w-5 h-5" /> Доступні Замовлення ({filteredOrders.length})
+                  <Eye className="w-5 h-5" /> {t('masterOrders.availableOrders')} ({filteredOrders.length})
                 </h2>
               </div>
 
@@ -219,7 +221,7 @@ export function MasterOrdersBoard() {
                   <Search className="absolute left-3 top-3 w-5 h-5 text-slate-400" />
                   <input
                     type="text"
-                    placeholder="Пошук по ID, клієнту, пристрою..."
+                    placeholder={t('masterOrders.searchPlaceholder')}
                     value={filterSearch}
                     onChange={(e) => setFilterSearch(e.target.value)}
                     className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
@@ -324,8 +326,8 @@ export function MasterOrdersBoard() {
               <div className="p-6 space-y-4 max-h-96 overflow-y-auto">
                 {myProposals.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-slate-500 text-lg">📝 Немає пропозицій</p>
-                    <p className="text-slate-400 text-sm">Виберіть замовлення та надішліть пропозицію</p>
+                    <p className="text-slate-500 text-lg">📝 {t('masterOrders.noProposals')}</p>
+                    <p className="text-slate-400 text-sm">{t('masterOrders.selectOrderAndSubmit')}</p>
                   </div>
                 ) : (
                   myProposals.map(proposal => (
@@ -360,7 +362,7 @@ export function MasterOrdersBoard() {
                           onClick={() => deleteProposal(proposal.id)}
                           className="w-full px-3 py-2 bg-red-100 text-red-600 rounded hover:bg-red-200 transition font-semibold text-sm flex items-center justify-center gap-2"
                         >
-                          <Trash2 className="w-4 h-4" /> Видалити
+                          <Trash2 className="w-4 h-4" /> {t('common.delete')}
                         </button>
                       )}
                     </div>
@@ -458,40 +460,40 @@ export function MasterOrdersBoard() {
                   onClick={() => setShowProposalForm(true)}
                   className="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-bold hover:shadow-lg transition-all transform hover:scale-105 flex items-center justify-center gap-2"
                 >
-                  <Send className="w-5 h-5" /> Надіслати пропозицію
+                  <Send className="w-5 h-5" /> {t('masterOrders.sendProposal')}
                 </button>
               ) : (
                 <div className="space-y-4 p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
-                  <p className="font-bold text-slate-900">Заповніть деталі пропозиції:</p>
+                  <p className="font-bold text-slate-900">{t('masterOrders.fillProposalDetails')}</p>
                   
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">Ваша вартість (₴)</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">{t('masterOrders.yourPrice')}</label>
                     <input
                       type="number"
                       value={proposalPrice}
                       onChange={(e) => setProposalPrice(e.target.value)}
-                      placeholder="Наприклад: 2200"
+                      placeholder={t('masterOrders.priceExample')}
                       className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">Час виконання (дні)</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">{t('masterOrders.estimatedDays')}</label>
                     <input
                       type="number"
                       value={proposalDays}
                       onChange={(e) => setProposalDays(e.target.value)}
-                      placeholder="Наприклад: 1"
+                      placeholder={t('masterOrders.daysExample')}
                       className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">Опис роботи</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">{t('masterOrders.workDescription')}</label>
                     <textarea
                       value={proposalDesc}
                       onChange={(e) => setProposalDesc(e.target.value)}
-                      placeholder="Опишіть що ви будете робити..."
+                      placeholder={t('masterOrders.descriptionPlaceholder')}
                       className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none h-24"
                     />
                   </div>
@@ -501,13 +503,13 @@ export function MasterOrdersBoard() {
                       onClick={submitProposal}
                       className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold"
                     >
-                      Надіслати
+                      {t('masterOrders.sendProposal')}
                     </button>
                     <button
                       onClick={() => setShowProposalForm(false)}
                       className="flex-1 px-4 py-2 bg-slate-300 text-slate-900 rounded-lg hover:bg-slate-400 transition font-semibold"
                     >
-                      Скасувати
+                      {t('common.cancel')}
                     </button>
                   </div>
                 </div>

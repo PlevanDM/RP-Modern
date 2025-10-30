@@ -1,6 +1,7 @@
 // src/components/features/master/MasterDashboard/MasterDashboard.tsx
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Briefcase, CreditCard, Star, ClipboardList } from 'lucide-react';
 import { MasterChart } from './MasterChart';
 import { OrderFeed } from './OrderFeed';
@@ -29,29 +30,30 @@ const StatCard: React.FC<{ icon: React.ReactNode; title: string; value: string |
 );
 
 export const MasterDashboard: React.FC<MasterDashboardProps> = ({ currentUser, stats }) => {
+  const { t } = useTranslation();
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       <header className="mb-10">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Добро пожаловать, {currentUser.name}!</h1>
-        <p className="text-lg text-gray-600">Ваша панель управления RepairHub</p>
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('masterDashboard.welcome', { name: currentUser.name }) || `Welcome, ${currentUser.name}!`}</h1>
+        <p className="text-lg text-gray-600">{t('masterDashboard.subtitle') || 'Your RepairHub Control Panel'}</p>
       </header>
 
       {/* Статистика */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <StatCard icon={<Briefcase />} title="Активные Заказы" value={stats.activeOrders} color="blue" />
-        <StatCard icon={<ClipboardList />} title="Выполненные Заказы" value={stats.completedOrders} color="green" />
-        <StatCard icon={<CreditCard />} title="Заработано (UAH)" value={`${stats.totalEarned.toLocaleString()}`} color="purple" />
-        <StatCard icon={<Star />} title="Рейтинг" value={stats.rating.toFixed(1)} color="yellow" />
+        <StatCard icon={<Briefcase />} title={t('masterDashboard.activeOrders') || 'Active Orders'} value={stats.activeOrders} color="blue" />
+        <StatCard icon={<ClipboardList />} title={t('masterDashboard.completedOrders') || 'Completed Orders'} value={stats.completedOrders} color="green" />
+        <StatCard icon={<CreditCard />} title={t('masterDashboard.earned') || 'Earned (UAH)'} value={`${stats.totalEarned.toLocaleString()}`} color="purple" />
+        <StatCard icon={<Star />} title={t('common.rating') || 'Rating'} value={stats.rating.toFixed(1)} color="yellow" />
       </div>
 
       {/* Основной контент */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Статистика по Заказам</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('masterDashboard.orderStatistics') || 'Order Statistics'}</h2>
           <MasterChart />
         </div>
         <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Лента Активности</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('masterDashboard.activityFeed') || 'Activity Feed'}</h2>
           <OrderFeed />
         </div>
       </div>

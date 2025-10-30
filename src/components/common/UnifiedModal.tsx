@@ -177,18 +177,20 @@ export const UnifiedButton: React.FC<
     variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   }
 > = ({ children, variant = 'primary', className = '', ...props }) => {
+  // Уніфіковані кольори та стилі
   const variantClasses = {
-    primary: 'bg-purple-600 hover:bg-purple-700 text-white',
-    secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-900',
-    outline: 'border border-gray-300 hover:bg-gray-50 text-gray-700 bg-white',
-    ghost: 'hover:bg-gray-100 text-gray-700'
+    primary: 'bg-[#1976d2] hover:bg-[#1565c0] text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 focus:ring-2 focus:ring-[#1976d2] focus:ring-offset-2',
+    secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-900 shadow-sm hover:shadow-md focus:ring-2 focus:ring-gray-400 focus:ring-offset-2',
+    outline: 'border-2 border-gray-300 hover:bg-gray-50 text-gray-700 bg-white shadow-sm focus:ring-2 focus:ring-[#1976d2] focus:ring-offset-2',
+    ghost: 'hover:bg-gray-100 text-gray-700 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2'
   };
 
   return (
     <button
-      className={`px-4 py-2.5 rounded-lg font-medium transition-all duration-200
-        focus:ring-2 focus:ring-purple-500 focus:outline-none
+      className={`px-4 py-2.5 rounded-xl font-medium transition-all duration-200
+        focus:outline-none
         disabled:opacity-50 disabled:cursor-not-allowed
+        active:scale-[0.97]
         ${variantClasses[variant]} ${className}`}
       {...props}
     >

@@ -117,12 +117,13 @@ export const Button: React.FC<{
   icon: Icon,
   iconPosition = 'left'
 }) => {
+  // Уніфіковані стилі кнопок
   const variants = {
-    primary: 'bg-[#1976d2] text-white hover:bg-[#1565c0] shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30',
-    secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 shadow-sm hover:shadow-md',
-    danger: 'bg-[#d32f2f] text-white hover:bg-[#c62828] shadow-lg shadow-red-500/20 hover:shadow-xl hover:shadow-red-500/30',
-    ghost: 'text-gray-700 hover:bg-gray-100/80 hover:text-gray-900',
-    outline: 'border-2 border-gray-300 text-gray-700 hover:bg-gray-50/80 hover:border-gray-400 shadow-sm'
+    primary: 'bg-[#1976d2] text-white hover:bg-[#1565c0] shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 focus:ring-2 focus:ring-[#1976d2] focus:ring-offset-2',
+    secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 shadow-sm hover:shadow-md focus:ring-2 focus:ring-gray-400 focus:ring-offset-2',
+    danger: 'bg-[#d32f2f] text-white hover:bg-[#c62828] shadow-lg shadow-red-500/20 hover:shadow-xl hover:shadow-red-500/30 focus:ring-2 focus:ring-[#d32f2f] focus:ring-offset-2',
+    ghost: 'text-gray-700 hover:bg-gray-100/80 hover:text-gray-900 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2',
+    outline: 'border-2 border-gray-300 text-gray-700 hover:bg-gray-50/80 hover:border-gray-400 shadow-sm focus:ring-2 focus:ring-[#1976d2] focus:ring-offset-2'
   };
 
   const sizes = {

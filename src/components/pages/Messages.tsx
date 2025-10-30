@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import SendIcon from '@mui/icons-material/Send';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -58,6 +59,7 @@ interface MessagesProps {
 // Мок данные удалены - используем только реальные данные из заказов
 
 export function Messages({ currentUser, masters = [], orders = [], selectedMaster }: MessagesProps) {
+  const { t } = useTranslation();
   const [selectedContactId, setSelectedContactId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [messageText, setMessageText] = useState('');
@@ -333,22 +335,22 @@ export function Messages({ currentUser, masters = [], orders = [], selectedMaste
   };
 
   return (
-    <div className="w-full h-screen flex bg-gray-50">
-      {/* Sidebar - Контакти */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col overflow-hidden">
+    <div className="w-full h-screen flex flex-col sm:flex-row bg-gray-50">
+      {/* Sidebar - Contacts */}
+      <div className={`${selectedContactId ? 'hidden sm:flex' : 'flex'} w-full sm:w-80 bg-white border-r border-gray-200 flex-col overflow-hidden`}>
         {/* Header */}
-        <div className="p-4 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Повідомлення</h2>
+        <div className="p-3 sm:p-4 border-b border-gray-200">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">{t('navigation.messages')}</h2>
           <div className="relative">
             <input
               type="text"
-              placeholder="Пошук..."
+              placeholder={t('common.search')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full pl-9 sm:pl-10 pr-4 py-2.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[44px]"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
@@ -361,31 +363,31 @@ export function Messages({ currentUser, masters = [], orders = [], selectedMaste
             <div
               key={contact.id}
               onClick={() => setSelectedContactId(contact.id)}
-              className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
+              className={`p-3 sm:p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 active:bg-gray-100 transition-colors min-h-[64px] sm:min-h-auto ${
                 selectedContactId === contact.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
               }`}
             >
-              <div className="flex items-center space-x-3">
-                <div className="relative">
+              <div className="flex items-center gap-2 sm:space-x-3">
+                <div className="relative shrink-0">
                   <img
                     src={contact.avatar}
                     alt={contact.name}
-                    className="w-12 h-12 rounded-full object-cover"
+                    className="w-12 h-12 sm:w-12 sm:h-12 rounded-full object-cover"
                   />
-                  <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
+                  <div className={`absolute -bottom-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 border-white ${
                     contact.status === 'online' ? 'bg-green-500' : 'bg-gray-400'
                   }`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="font-medium text-gray-900 truncate">{contact.name}</p>
-                    <p className="text-xs text-gray-500 ml-2">{contact.lastMessageTime}</p>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-medium text-sm sm:text-base text-gray-900 truncate">{contact.name}</p>
+                    <p className="text-[10px] sm:text-xs text-gray-500 shrink-0">{contact.lastMessageTime}</p>
                   </div>
-                  <p className="text-sm text-gray-600 truncate">{contact.lastMessage}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 truncate mt-0.5">{contact.lastMessage}</p>
                 </div>
                 {contact.unreadCount > 0 && (
-                  <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center font-bold">
-                    {contact.unreadCount}
+                  <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white text-[11px] sm:text-xs rounded-full flex items-center justify-center font-bold">
+                    {contact.unreadCount > 99 ? '99+' : contact.unreadCount}
                   </div>
                 )}
               </div>
@@ -396,36 +398,44 @@ export function Messages({ currentUser, masters = [], orders = [], selectedMaste
 
       {/* Chat Area */}
       {selectedChat && selectedContact ? (
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col w-full">
           {/* Chat Header */}
-          <div className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="relative">
+          <div className="bg-white border-b border-gray-200 p-3 sm:p-4 flex items-center justify-between">
+            <div className="flex items-center gap-2 sm:space-x-3 flex-1 min-w-0">
+              <button
+                onClick={() => setSelectedContactId('')}
+                className="sm:hidden p-2 -ml-2 hover:bg-gray-100 rounded-lg transition shrink-0"
+              >
+                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div className="relative shrink-0">
                 <img
                   src={selectedContact.avatar}
                   alt={selectedContact.name}
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-10 h-10 sm:w-10 sm:h-10 rounded-full object-cover"
                 />
                 <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white ${
                   selectedContact.status === 'online' ? 'bg-green-500' : 'bg-gray-400'
                 }`} />
               </div>
-              <div>
-                <p className="font-semibold text-gray-900">{selectedContact.name}</p>
-                <p className="text-xs text-gray-500">
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold text-sm sm:text-base text-gray-900 truncate">{selectedContact.name}</p>
+                <p className="text-[10px] sm:text-xs text-gray-500">
                   {selectedContact.status === 'online' ? 'Онлайн' : 'Офлайн'}
                 </p>
               </div>
             </div>
-            <div className="flex gap-2">
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition">
-                <PhoneIcon className="text-gray-600" sx={{ fontSize: 22 }} />
+            <div className="flex gap-1 sm:gap-2 shrink-0">
+              <button className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition min-w-[40px] min-h-[40px] flex items-center justify-center">
+                <PhoneIcon className="text-gray-600" sx={{ fontSize: 20 }} />
               </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition">
-                <VideocamIcon className="text-gray-600" sx={{ fontSize: 22 }} />
+              <button className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition min-w-[40px] min-h-[40px] flex items-center justify-center hidden sm:flex">
+                <VideocamIcon className="text-gray-600" sx={{ fontSize: 20 }} />
               </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition">
-                <MoreVertIcon className="text-gray-600" sx={{ fontSize: 22 }} />
+              <button className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition min-w-[40px] min-h-[40px] flex items-center justify-center">
+                <MoreVertIcon className="text-gray-600" sx={{ fontSize: 20 }} />
               </button>
             </div>
           </div>
@@ -439,7 +449,7 @@ export function Messages({ currentUser, masters = [], orders = [], selectedMaste
           />
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50">
             {selectedChat.messages.map(message => {
               // Handle proposal messages
               if (message.type === 'proposal' && message.proposalData) {
@@ -480,12 +490,12 @@ export function Messages({ currentUser, masters = [], orders = [], selectedMaste
                   key={message.id}
                   className={`flex ${message.senderId === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                  <div className={`max-w-[85%] sm:max-w-xs lg:max-w-md px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg ${
                     message.senderId === 'user'
                       ? 'bg-blue-600 text-white'
                       : 'bg-white text-gray-900 border border-gray-200'
                   }`}>
-                    <p className="text-sm">{message.text}</p>
+                    <p className="text-sm sm:text-sm leading-relaxed break-words">{message.text}</p>
                     <div className="flex items-center justify-end mt-1 space-x-1">
                       <span className="text-xs opacity-70">{message.timestamp}</span>
                       {message.senderId === 'user' && (
@@ -506,36 +516,36 @@ export function Messages({ currentUser, masters = [], orders = [], selectedMaste
           </div>
 
           {/* Message Input */}
-          <div className="bg-white border-t border-gray-200 p-4">
-            <div className="flex items-center space-x-2">
+          <div className="bg-white border-t border-gray-200 p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:space-x-2">
               <input
                 type="text"
-                placeholder="Напишіть повідомлення..."
+                placeholder={t('messages.typeMessage')}
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                className="flex-1 px-3 sm:px-4 py-2.5 sm:py-2 text-sm sm:text-base rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600 min-h-[44px] sm:min-h-auto"
               />
               <button
                 onClick={handleSendMessage}
-                className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition flex items-center justify-center"
+                className="p-2.5 sm:p-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg transition flex items-center justify-center min-w-[48px] min-h-[48px] sm:min-w-[40px] sm:min-h-[40px]"
               >
-                <SendIcon sx={{ fontSize: 22 }} />
+                <SendIcon sx={{ fontSize: 20 }} />
               </button>
             </div>
           </div>
         </div>
       ) : (
         // Empty state when no chat selected
-        <div className="flex-1 flex items-center justify-center bg-gray-50">
-          <div className="text-center">
-            <div className="w-24 h-24 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
-              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex-1 flex items-center justify-center bg-gray-50 hidden sm:flex">
+          <div className="text-center px-4">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
+              <svg className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Оберіть чат</h3>
-            <p className="text-gray-500">Виберіть контакт для початку розмови</p>
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">{t('messages.selectChat')}</h3>
+            <p className="text-sm sm:text-base text-gray-500">{t('messages.selectContact')}</p>
           </div>
         </div>
       )}

@@ -38,6 +38,14 @@ coverage/
 *.swo
 *~
 
+# Temporary scripts (except production)
+test-tunnel.ps1
+start-cloudflare.ps1
+start-public.bat
+start-public.ps1
+start-backend.bat
+restart-all.ps1
+
 # IDE
 .vscode/
 .idea/
@@ -97,6 +105,9 @@ CHECK-*
 TEST-*
 test-*
 *-test.*
+CHAT_TESTING_REPORT.md
+*-TESTING*.md
+*-REPORT*.md
 
 # Old deployment scripts (except our production scripts)
 *-OLD.sh

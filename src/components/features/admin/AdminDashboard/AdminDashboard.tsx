@@ -1,6 +1,7 @@
 // src/components/features/admin/AdminDashboard/AdminDashboard.tsx
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Users,
   Lock, Ban, Search,
@@ -18,6 +19,7 @@ interface ClientMaster {
 }
 
 export const AdminDashboard: React.FC = () => {
+  const { t } = useTranslation();
   const [clientsMasters, setClientsMasters] = useState<ClientMaster[]>([
     { id: '1', name: 'Анна Коваленко', email: 'anna@example.com', role: 'client', status: 'active', joinDate: '2024-01-15', rating: 4.9 },
     { id: '2', name: 'Олександр Петренко', email: 'master@example.com', role: 'master', status: 'active', joinDate: '2024-01-10', rating: 4.8 },
@@ -57,8 +59,8 @@ export const AdminDashboard: React.FC = () => {
         <div className="mb-8 animate-fade-in">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">⚡ Admin Control Center</h1>
-              <p className="text-slate-300">Управління платформою RepairHub Pro</p>
+              <h1 className="text-4xl font-bold text-white mb-2">⚡ {t('adminDashboard.controlCenter') || 'Admin Control Center'}</h1>
+              <p className="text-slate-300">{t('adminDashboard.platformManagement') || 'RepairHub Pro Platform Management'}</p>
             </div>
             <div className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full">
               <span className="text-white text-sm font-semibold">🔴 Online</span>
@@ -93,11 +95,11 @@ export const AdminDashboard: React.FC = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-slate-200">
-                        <th className="text-left py-3 px-4 font-semibold text-slate-700">Ім'я</th>
-                        <th className="text-left py-3 px-4 font-semibold text-slate-700">Email</th>
-                        <th className="text-center py-3 px-4 font-semibold text-slate-700">Роль</th>
-                        <th className="text-center py-3 px-4 font-semibold text-slate-700">Статус</th>
-                        <th className="text-center py-3 px-4 font-semibold text-slate-700">Дії</th>
+                        <th className="text-left py-3 px-4 font-semibold text-slate-700">{t('admin.name')}</th>
+                        <th className="text-left py-3 px-4 font-semibold text-slate-700">{t('common.email')}</th>
+                        <th className="text-center py-3 px-4 font-semibold text-slate-700">{t('admin.role') || 'Роль'}</th>
+                        <th className="text-center py-3 px-4 font-semibold text-slate-700">{t('common.status') || 'Статус'}</th>
+                        <th className="text-center py-3 px-4 font-semibold text-slate-700">{t('common.actions') || 'Дії'}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -157,7 +159,7 @@ export const AdminDashboard: React.FC = () => {
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
             <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md animate-scale-in">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-slate-900">Редагувати користувача</h3>
+                <h3 className="text-2xl font-bold text-slate-900">{t('admin.editUser')}</h3>
                 <button onClick={() => setEditingUser(null)} className="p-2 hover:bg-slate-100 rounded-lg transition-all">
                   <X className="w-5 h-5 text-slate-600" />
                 </button>
@@ -165,7 +167,7 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Ім'я</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">{t('admin.name')}</label>
                   <input
                     type="text"
                     value={editingUser.name}
@@ -175,7 +177,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Email</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">{t('common.email')}</label>
                   <input
                     type="email"
                     value={editingUser.email}
@@ -185,21 +187,21 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Статус</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">{t('common.status') || 'Статус'}</label>
                   <select
                     value={editingUser.status}
                     onChange={(e) => setEditingUser({ ...editingUser, status: e.target.value as 'active' | 'blocked' | 'pending' })}
                     className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   >
-                    <option value="active">Активний</option>
-                    <option value="blocked">Заблокований</option>
-                    <option value="pending">Очікує підтвердження</option>
+                    <option value="active">{t('common.active')}</option>
+                    <option value="blocked">{t('common.blocked')}</option>
+                    <option value="pending">{t('common.pending')}</option>
                   </select>
                 </div>
 
                 {editingUser.rating && (
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">Рейтинг: {editingUser.rating}</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">{t('common.rating')}: {editingUser.rating}</label>
                     <input
                       type="range"
                       min="1"
@@ -217,13 +219,13 @@ export const AdminDashboard: React.FC = () => {
                     onClick={() => updateUser(editingUser)}
                     className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all transform hover:scale-105 font-semibold"
                   >
-                    Зберегти
+                    {t('common.save')}
                   </button>
                   <button
                     onClick={() => setEditingUser(null)}
                     className="flex-1 px-4 py-3 bg-slate-200 text-slate-900 rounded-lg hover:bg-slate-300 transition-all font-semibold"
                   >
-                    Скасувати
+                    {t('common.cancel')}
                   </button>
                 </div>
               </div>

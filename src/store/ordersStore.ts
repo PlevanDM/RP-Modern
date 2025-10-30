@@ -69,19 +69,65 @@ export const useOrdersStore = create<OrdersState>()(
       orders: [],
       proposals: mockProposals,
       fetchOrders: async () => {
-        const orders = await apiOrderService.getOrders();
-        set({ orders });
+        try {
+          // Пробуємо завантажити з API
+          const apiOrders = await apiOrderService.getOrders();
+          set({ orders: apiOrders });
+          
+          // Синхронізуємо з localStorage
+          try {
+            localStorage.setItem('repair_master_orders', JSON.stringify(apiOrders));
+          } catch (e) {
+            console.warn('Не вдалося синхронізувати з localStorage');
+          }
+        } catch (error) {
+          // Якщо API не працює, завантажуємо з localStorage
+          console.warn('API недоступний, завантажуємо з localStorage:', error);
+          try {
+            const localOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
+            set({ orders: localOrders });
+          } catch (e) {
+            console.error('Помилка завантаження з localStorage:', e);
+            set({ orders: [] });
+          }
+        }
       },
       createOrder: async (order) => {
         try {
           // Генерируем ID если его нет
           const orderWithId = {
             ...order,
-            id: order.id || `order-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+            id: order.id || `order-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            createdAt: order.createdAt || new Date().toISOString(),
+            updatedAt: order.updatedAt || new Date().toISOString(),
           };
           
-          const newOrder = await apiOrderService.createOrder(orderWithId as Order);
-          set((state) => ({ orders: [...state.orders, newOrder] }));
+          let newOrder: Order;
+          try {
+            // Пробуємо створити через API
+            newOrder = await apiOrderService.createOrder(orderWithId as Order);
+          } catch (apiError) {
+            // Якщо API не працює, створюємо локально
+            console.warn('API недоступний, створюємо локально:', apiError);
+            newOrder = orderWithId as Order;
+          }
+          
+          // Оновлюємо store
+          set((state) => {
+            const updatedOrders = [...state.orders, newOrder];
+            return { orders: updatedOrders };
+          });
+          
+          // Синхронізуємо з localStorage
+          try {
+            const existingOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
+            const updatedOrders = [newOrder, ...existingOrders.filter((o: Order) => o.id !== newOrder.id)];
+            localStorage.setItem('repair_master_orders', JSON.stringify(updatedOrders));
+            window.dispatchEvent(new CustomEvent('ordersUpdated'));
+          } catch (storageError) {
+            console.warn('Не вдалося синхронізувати з localStorage:', storageError);
+          }
+          
           useUIStore.getState().showNotification('Замовлення успішно створено!');
           console.log('✅ Замовлення створено:', newOrder);
         } catch (error) {

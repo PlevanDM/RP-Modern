@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface OnboardingWizardProps {
   steps: React.ReactNode[];
@@ -7,6 +8,7 @@ interface OnboardingWizardProps {
 }
 
 export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ steps, onComplete }) => {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(0);
 
   const nextStep = () => {
@@ -52,22 +54,25 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ steps, onCom
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation */}
-        <div className="flex justify-between pt-4">
-          <button
-            onClick={prevStep}
-            disabled={currentStep === 0}
-            className="px-6 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
-          >
-            Назад
-          </button>
-          <button
-            onClick={nextStep}
-            className="px-6 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
-          >
-            {currentStep === steps.length - 1 ? 'Завершить' : 'Далее'}
-          </button>
-        </div>
+        {/* Navigation - тільки якщо поточний крок не має власної навігації */}
+        {!(React.isValidElement(steps[currentStep]) && 
+            steps[currentStep]?.props?.hasInternalNavigation) && (
+          <div className="flex justify-between pt-4">
+            <button
+              onClick={prevStep}
+              disabled={currentStep === 0}
+              className="px-6 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+            >
+              Назад
+            </button>
+            <button
+              onClick={nextStep}
+              className="px-6 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+            >
+              {currentStep === steps.length - 1 ? t('common.finish', 'Завершити') : t('common.next', 'Далі')}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

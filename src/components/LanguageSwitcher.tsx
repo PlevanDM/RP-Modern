@@ -1,27 +1,55 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useTranslation as useI18n } from 'react-i18next';
+import { useTranslation as useI18n, useTranslation } from 'react-i18next';
 import { Button } from './ui/button';
 import { Globe } from 'lucide-react';
 
-const languages = [
-  { code: 'uk', name: 'Українська', flag: '🇺🇦' },
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'pl', name: 'Polski', flag: '🇵🇱' },
-  { code: 'ro', name: 'Română', flag: '🇷🇴' },
-];
-
 const LanguageSwitcher: React.FC = () => {
   const { i18n } = useI18n();
+  const { t } = useTranslation();
+  
+  // Names of languages in their own language
+  const getLanguageName = (code: string): string => {
+    const names: Record<string, Record<string, string>> = {
+      uk: { uk: 'Українська', en: 'Ukrainian', ru: 'Украинский', pl: 'Ukraiński', ro: 'Ucraineană' },
+      en: { uk: 'Англійська', en: 'English', ru: 'Английский', pl: 'Angielski', ro: 'Engleză' },
+      ru: { uk: 'Російська', en: 'Russian', ru: 'Русский', pl: 'Rosyjski', ro: 'Rusă' },
+      pl: { uk: 'Польська', en: 'Polish', ru: 'Польский', pl: 'Polski', ro: 'Poloneză' },
+      ro: { uk: 'Румунська', en: 'Romanian', ru: 'Румынский', pl: 'Rumuński', ro: 'Română' },
+    };
+    return names[code]?.[i18n.language] || code;
+  };
+
+  const languages = [
+    { code: 'uk', name: getLanguageName('uk'), flag: '🇺🇦' },
+    { code: 'en', name: getLanguageName('en'), flag: '🇬🇧' },
+    { code: 'ru', name: getLanguageName('ru'), flag: '🇷🇺' },
+    { code: 'pl', name: getLanguageName('pl'), flag: '🇵🇱' },
+    { code: 'ro', name: getLanguageName('ro'), flag: '🇷🇴' },
+  ];
+
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const changeLanguage = async (lng: string) => {
     console.log('🌐 Changing language to:', lng);
-    await i18n.changeLanguage(lng);
-    console.log('✅ Language changed to:', i18n.language);
-    setIsOpen(false);
-    // Force re-render
-    window.location.reload();
+    
+    // Плавна анімація зміни без перезавантаження
+    try {
+      await i18n.changeLanguage(lng);
+      console.log('✅ Language changed to:', i18n.language);
+      setIsOpen(false);
+      
+      // Trigger custom event to force re-render without page reload
+      window.dispatchEvent(new Event('languageChanged'));
+      
+      // Небольшой delay для плавной анимации
+      setTimeout(() => {
+        // Force re-render всех компонентов, использующих переводы
+        document.dispatchEvent(new CustomEvent('language-updated', { detail: { language: lng } }));
+      }, 100);
+    } catch (error) {
+      console.error('Error changing language:', error);
+    }
   };
 
   const currentLang = languages.find(lang => lang.code === i18n.language) || languages[0];
@@ -47,25 +75,25 @@ const LanguageSwitcher: React.FC = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 hover:bg-gray-100 rounded-lg transition flex items-center gap-1"
-        title="Змінити мову"
+        className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition flex items-center gap-1 min-h-[40px] min-w-[40px] sm:min-h-[36px] sm:min-w-[36px] justify-center shrink-0"
+        title={t('common.changeLanguage') || 'Змінити мову'}
       >
-        <Globe className="w-5 h-5 text-gray-600" />
-        <span className="hidden sm:inline text-sm text-gray-700">{currentLang.flag}</span>
+        <Globe className="w-5 h-5 sm:w-4 sm:h-4 text-gray-600" />
+        <span className="hidden md:inline text-sm text-gray-700">{currentLang.flag}</span>
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-50">
+        <div className="absolute right-0 mt-2 w-48 sm:w-56 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-50">
           {languages.map((lang) => (
             <button
               key={lang.code}
               onClick={() => changeLanguage(lang.code)}
-              className={`w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-2 ${
+              className={`w-full text-left px-3 sm:px-4 py-2.5 sm:py-2 hover:bg-slate-100 dark:hover:bg-slate-700 active:bg-slate-200 flex items-center gap-2 text-sm sm:text-base min-h-[44px] sm:min-h-auto ${
                 i18n.language === lang.code ? 'bg-primary/10 text-primary' : ''
               }`}
             >
-              <span>{lang.flag}</span>
-              <span>{lang.name}</span>
+              <span className="text-lg">{lang.flag}</span>
+              <span className="font-medium">{lang.name}</span>
             </button>
           ))}
         </div>

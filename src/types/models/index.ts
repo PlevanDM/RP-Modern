@@ -98,15 +98,21 @@ export interface User {
   budgetRange?: 'low' | 'medium' | 'high'; // Бюджет на ремонт
   
   // Нові поля для майстра
-  workLocation?: 'service' | 'home'; // Працює в сервісі або вдома
+  workLocation?: 'service' | 'home' | 'mobile'; // Працює в сервісі, вдома або виїздний
   equipment?: Array<{ id: string; model: string }>; // Обладнання майстра з моделями
   workExperience?: number; // Досвід роботи (роки)
   workingRadius?: number; // Радіус роботи (км)
+  repairBrands?: string[]; // Бренди, які ремонтує майстер
+  repairTypes?: string[]; // Типи ремонтів, які виконує майстер
+  isMobile?: boolean; // Чи є виїздним майстром
   languages?: string[]; // Мови для спілкування
   certifications?: string[]; // Сертифікати та освіта
   partsInventory?: Part[]; // Інвентар запчастин майстра
   registrationDate?: Date; // Дата реєстрації
   lastLogin?: Date; // Останній вхід
+  
+  // Преміум підписка для клієнтів
+  premiumSubscription?: PremiumSubscription;
 }
 
 // Part (запчастина)
@@ -236,21 +242,85 @@ export interface Offer {
   masterAvatar: string;
 }
 
-// Message (повідомлення між клієнтом і майстром)
+// Message (повідомлення між користувачами)
 export interface Message {
   id: string;
-  orderId?: string;
+  conversationId: string; // ID розмови (комбінація ID учасників)
+  orderId?: string; // ID замовлення, якщо пов'язане
   senderId: string;
   senderName?: string;
-  senderRole?: 'client' | 'master';
-  recipientId: string;
-  content?: string;
-  photos?: string[];
-  createdAt?: Date;
-  timestamp?: Date;
-  read?: boolean;
-  receiverId?: string;
-  text?: string;
+  senderRole?: 'client' | 'master' | 'admin' | 'superadmin';
+  recipientId: string; // ID отримувача
+  content?: string; // Текст повідомлення
+  text?: string; // Альтернативне поле для тексту (для сумісності)
+  photos?: string[]; // URLs або base64 зображень
+  attachments?: MessageAttachment[]; // Файли
+  messageType: 'text' | 'image' | 'file' | 'system' | 'proposal' | 'negotiate';
+  read: boolean; // Чи прочитано
+  readAt?: Date; // Коли прочитано
+  delivered: boolean; // Чи доставлено
+  deliveredAt?: Date; // Коли доставлено
+  edited?: boolean; // Чи було відредаговано
+  editedAt?: Date; // Коли відредаговано
+  deleted?: boolean; // Чи видалено
+  deletedAt?: Date; // Коли видалено
+  replyToId?: string; // ID повідомлення, на яке відповідають
+  reactions?: MessageReaction[]; // Реакції (👍, ❤️, 😂 тощо)
+  metadata?: Record<string, any>; // Додаткові дані
+  createdAt: Date;
+  timestamp?: Date; // Альтернативне поле для сумісності
+  updatedAt?: Date;
+  receiverId?: string; // Альтернативне поле для сумісності
+}
+
+// Вкладення до повідомлення
+export interface MessageAttachment {
+  id: string;
+  type: 'image' | 'document' | 'video' | 'audio' | 'other';
+  name: string;
+  url: string; // URL або base64
+  size: number; // Розмір в байтах
+  mimeType?: string;
+  thumbnailUrl?: string; // Мініатюра для фото/відео
+}
+
+// Реакція на повідомлення
+export interface MessageReaction {
+  userId: string;
+  userName: string;
+  emoji: string; // 👍, ❤️, 😂, 😮, 😢, 🙏
+  createdAt: Date;
+}
+
+// Розмова (чат між користувачами)
+export interface Conversation {
+  id: string; // Унікальний ID розмови
+  participants: string[]; // Масив ID учасників
+  participantNames?: Record<string, string>; // Імена учасників
+  participantRoles?: Record<string, 'client' | 'master' | 'admin' | 'superadmin'>; // Ролі
+  orderId?: string; // ID замовлення, якщо пов'язане
+  lastMessage?: Message; // Останнє повідомлення
+  lastMessageAt?: Date;
+  unreadCount: Record<string, number>; // Кількість непрочитаних для кожного користувача
+  pinned?: boolean; // Чи закріплена розмова
+  muted?: Record<string, boolean>; // Чи приглушена для користувача
+  archived?: Record<string, boolean>; // Чи архівована для користувача
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Лог чату (для адміністраторів)
+export interface ChatLog {
+  id: string;
+  conversationId: string;
+  messageId: string;
+  action: 'sent' | 'read' | 'deleted' | 'edited' | 'reaction_added' | 'reaction_removed';
+  userId: string;
+  userName: string;
+  details?: Record<string, any>;
+  timestamp: Date;
+  ipAddress?: string; // IP адреса (якщо потрібно)
+  userAgent?: string; // User agent браузера
 }
 
 // Progress Update (фото прогресу роботи від майстра)
@@ -372,6 +442,207 @@ export interface Transaction {
   paymentMethod: PaymentMethod;
   createdAt: Date;
   updatedAt: Date;
-  category?: 'order_payment' | 'service_fee' | 'withdrawal' | 'refund';
+  category?: 'order_payment' | 'service_fee' | 'withdrawal' | 'refund' | 'premium_subscription';
   relatedUserId?: string;
+}
+
+// Преміум підписка для клієнтів
+export interface PremiumSubscription {
+  id: string;
+  userId: string;
+  status: 'active' | 'expired' | 'cancelled' | 'pending';
+  plan: 'premium';
+  price: number; // 4.99 EUR
+  currency: 'EUR';
+  startDate: Date;
+  endDate?: Date; // Дата закінчення (якщо одноразова оплата)
+  renewalDate?: Date; // Дата автоматичного продовження (якщо підписка)
+  paymentMethod?: PaymentMethod;
+  autoRenew: boolean; // Автоматичне продовження
+  benefits: PremiumBenefits;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface PremiumBenefits {
+  warrantySupport: boolean; // Сутровід по гарантійним випадкам
+  receiptStorage: boolean; // Зберігання чеків
+  warrantyCaseLimit?: number; // Ліміт активних гарантійних випадків (якщо є)
+  receiptStorageLimit?: number; // Ліміт збережених чеків (якщо є)
+  prioritySupport: boolean; // Пріоритетна підтримка
+}
+
+// Чек для зберігання
+export interface Receipt {
+  id: string;
+  userId: string;
+  deviceId?: string; // ID пристрою з Device
+  deviceBrand?: string;
+  deviceModel?: string;
+  purchaseDate: Date; // Дата покупки
+  storeName?: string; // Назва магазину
+  storeAddress?: string; // Адреса магазину
+  amount: number;
+  currency: 'UAH' | 'USD' | 'EUR';
+  warrantyPeriod?: number; // Період гарантії в місяцях
+  warrantyEndDate?: Date; // Дата закінчення гарантії
+  receiptImage: string; // URL або base64 зображення чека
+  receiptPdf?: string; // URL PDF чека
+  description?: string; // Додаткові примітки
+  tags?: string[]; // Теги для пошуку
+  createdAt: Date;
+  updatedAt: Date;
+  isWarrantyActive: boolean; // Чи дійсна гарантія
+}
+
+// Гарантійний випадок
+export interface WarrantyCase {
+  id: string;
+  userId: string;
+  receiptId: string; // Посилання на чек
+  deviceId?: string;
+  deviceBrand: string;
+  deviceModel: string;
+  issue: string; // Опис проблеми
+  issueType: 'defect' | 'repair' | 'replacement' | 'refund' | 'other'; // Тип проблеми
+  status: 'pending' | 'submitted' | 'in_progress' | 'resolved' | 'rejected' | 'escalated';
+  priority: 'low' | 'medium' | 'high';
+  
+  // Інформація про магазин/виробника
+  merchantName: string;
+  merchantContact?: string;
+  merchantEmail?: string;
+  
+  // Документи та докази
+  evidencePhotos?: string[]; // Фото проблеми/пошкодження
+  documents?: string[]; // Додаткові документи
+  
+  // Дії платформи
+  platformActions?: WarrantyAction[]; // Дії від імені клієнта
+  submittedAt?: Date; // Дата подачі скарги
+  resolvedAt?: Date; // Дата вирішення
+  resolution?: string; // Рішення
+  resolutionType?: 'accepted' | 'rejected' | 'compromise'; // Тип рішення
+  
+  // Коментарі та комунікація
+  notes?: string[]; // Внутрішні нотатки платформи
+  clientNotes?: string; // Нотатки клієнта
+  
+  createdAt: Date;
+  updatedAt: Date;
+  assignedTo?: string; // ID співробітника платформи
+}
+
+export interface WarrantyAction {
+  id: string;
+  warrantyCaseId: string;
+  type: 'email_sent' | 'phone_call' | 'letter_sent' | 'consumer_rights_claim' | 'escalation' | 'document_prepared';
+  description: string;
+  performedBy: string; // ID співробітника платформи
+  performedAt: Date;
+  result?: string; // Результат дії
+  documents?: string[]; // Прикріплені документи
+}
+
+// ============================================================
+// СИСТЕМА ТЕХПІДТРИМКИ ДЛЯ МАЙСТРІВ
+// ============================================================
+
+// Графік роботи майстра в техпідтримці
+export interface MasterSupportSchedule {
+  id: string;
+  masterId: string;
+  dayOfWeek: 0 | 1 | 2 | 3 | 4 | 5 | 6; // 0 = Неділя, 1 = Понеділок, ...
+  startTime: string; // Формат "HH:mm" (наприклад "09:00")
+  endTime: string; // Формат "HH:mm" (наприклад "18:00")
+  isActive: boolean; // Чи активний цей слот
+  timezone?: string; // Часовий пояс (за замовчуванням UTC+2 для України)
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Сесія роботи майстра в техпідтримці (конкретний заповнений слот)
+export interface MasterSupportSession {
+  id: string;
+  masterId: string;
+  scheduledAt: Date; // Дата та час сесії
+  duration: number; // Тривалість в хвилинах (наприклад 60, 120)
+  status: 'available' | 'busy' | 'completed' | 'cancelled';
+  assignedTicketId?: string; // ID тікета, якщо призначено
+  actualStartTime?: Date;
+  actualEndTime?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Тікет техпідтримки
+export interface SupportTicket {
+  id: string;
+  clientId: string; // ID клієнта, який створив запит
+  clientName?: string;
+  masterId?: string; // ID майстра, який взяв тікет (опціонально)
+  masterName?: string;
+  sessionId?: string; // ID сесії майстра, якщо призначено
+  category: 'technical' | 'order' | 'payment' | 'warranty' | 'account' | 'other';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  status: 'open' | 'assigned' | 'in_progress' | 'waiting_client' | 'resolved' | 'closed' | 'cancelled';
+  subject: string;
+  description: string;
+  attachments?: string[]; // URLs або base64 зображень/файлів
+  messages?: SupportMessage[]; // Історія листування
+  resolution?: string; // Рішення/відповідь після закриття
+  rating?: number; // Оцінка від клієнта (1-5)
+  feedback?: string; // Відгук клієнта
+  createdAt: Date;
+  updatedAt: Date;
+  assignedAt?: Date;
+  resolvedAt?: Date;
+  closedAt?: Date;
+  estimatedResolutionTime?: Date; // Очікуваний час вирішення
+}
+
+// Повідомлення в тікеті
+export interface SupportMessage {
+  id: string;
+  ticketId: string;
+  senderId: string; // ID відправника (клієнт або майстер)
+  senderName: string;
+  senderRole: 'client' | 'master' | 'admin';
+  content: string;
+  attachments?: string[];
+  isInternal?: boolean; // Чи це внутрішнє повідомлення (не видно клієнту)
+  createdAt: Date;
+}
+
+// Статистика майстра в техпідтримці
+export interface MasterSupportStats {
+  masterId: string;
+  totalTicketsHandled: number;
+  totalHoursWorked: number;
+  averageResponseTime: number; // Середній час відповіді в хвилинах
+  averageResolutionTime: number; // Середній час вирішення в хвилинах
+  averageRating: number; // Середня оцінка від клієнтів
+  totalEarnings: number; // Загальний заробіток за техпідтримку
+  commissionRate: number; // Процент від суми (наприклад 0.15 = 15%)
+  periodStart: Date; // Початок періоду для статистики
+  periodEnd: Date;
+  ticketsThisMonth: number; // Тікетів оброблено цього місяця
+  earningsThisMonth: number; // Заробіток за цей місяць
+}
+
+// Налаштування техпідтримки для майстра
+export interface MasterSupportSettings {
+  masterId: string;
+  isSupportEnabled: boolean; // Чи хоче майстер працювати в техпідтримці
+  defaultCommissionRate: number; // Процент за замовчуванням (0.10 = 10%)
+  preferredCategories?: SupportTicket['category'][]; // Обрані категорії
+  maxTicketsPerDay?: number; // Максимум тікетів на день
+  autoAcceptTickets?: boolean; // Автоматично приймати нові тікети
+  notificationSettings: {
+    email: boolean;
+    push: boolean;
+    sms: boolean;
+  };
+  createdAt: Date;
+  updatedAt: Date;
 }

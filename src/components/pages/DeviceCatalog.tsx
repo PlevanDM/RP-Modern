@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DeviceModel, User } from '../../types/models';
 import DeviceGallery from '../DeviceGallery';
 import { useIFixitGuides } from '../../hooks/useApi';
@@ -10,6 +11,7 @@ interface DeviceCatalogProps {
 }
 
 export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
+  const { t } = useTranslation();
   const [selectedDevice, setSelectedDevice] = useState<DeviceModel | null>(
     null
   );
@@ -63,7 +65,7 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
 
   const handleCreateOrder = () => {
     if (!selectedDevice || !selectedColor || !selectedStorage) {
-      alert('Будь ласка, виберіть колір та пам\'ять');
+      alert(t('deviceCatalog.selectColorAndStorage'));
       return;
     }
 
@@ -75,12 +77,12 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
     const newOrder = {
       id: orderId,
       title: `${selectedDevice.brand} ${selectedDevice.name}`,
-      description: `Пристрій: ${selectedDevice.name}\nКолір: ${selectedColor}\nПам'ять: ${selectedStorage}`,
+      description: `${t('orderDetails.device')}: ${selectedDevice.name}\n${t('deviceCatalog.selectColor')}: ${selectedColor}\n${t('deviceCatalog.selectStorage')}: ${selectedStorage}`,
       deviceType: selectedDevice.category,
       device: selectedDevice.name,
-      issue: 'Потребує ремонту',
+      issue: t('deviceCatalog.needsRepair'),
       budget: selectedDevice.price?.min || 5000,
-      city: 'Київ', // По умолчанию
+      city: t('deviceCatalog.defaultCity'),
       status: 'open' as const,
       urgency: 'medium' as const,
       createdAt: now,
@@ -285,7 +287,7 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
                       {/* Выбор цвета */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-3">
-                          🎨 Виберіть колір:
+                          🎨 {t('deviceCatalog.selectColor')}:
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {selectedDevice.colors.map(color => (
@@ -307,7 +309,7 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
                       {/* Выбор памяти */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-3">
-                          💾 Виберіть пам'ять:
+                          💾 {t('deviceCatalog.selectStorage')}:
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {selectedDevice.storageOptions.map(storage => (
@@ -377,14 +379,14 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
                           onClick={handleCloseModal}
                           className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors"
                         >
-                          Скасувати
+                          {t('common.cancel')}
                         </button>
                         <button
                           onClick={handleCreateOrder}
                           className="flex-1 px-4 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           disabled={!selectedColor || !selectedStorage}
                         >
-                          ➕ Створити заявку
+                          ➕ {t('deviceCatalog.createRequest')}
                         </button>
                       </div>
                     </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import {
   Settings as SettingsIcon,
   Bell,
@@ -12,16 +13,19 @@ import {
   Save,
   Package,
   Mail,
-  Smartphone
+  Smartphone,
+  Crown
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
+import { PremiumSubscriptionTab } from '../features/client/PremiumSubscriptionTab';
 
 interface SettingsProps {
   onLogout?: () => void;
 }
 
 export function Settings({ onLogout }: SettingsProps) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('general');
   const [settings, setSettings] = useState({
     // General Settings
@@ -65,7 +69,7 @@ export function Settings({ onLogout }: SettingsProps) {
 
   const handleSave = () => {
     localStorage.setItem('userSettings', JSON.stringify(settings));
-    alert('✅ Налаштування збережені!');
+    alert(`✅ ${t('settings.saved')}`);
   };
 
   const containerVariants = {
@@ -83,10 +87,11 @@ export function Settings({ onLogout }: SettingsProps) {
   };
 
   const tabs = [
-    { id: 'general', label: 'Загальні', icon: SettingsIcon },
-    { id: 'notifications', label: 'Сповіщення', icon: Bell },
-    { id: 'privacy', label: 'Приватність', icon: Lock },
-    { id: 'display', label: 'Дисплей', icon: Palette }
+    { id: 'general', label: t('settings.general'), icon: SettingsIcon },
+    { id: 'notifications', label: t('settings.notifications'), icon: Bell },
+    { id: 'privacy', label: t('settings.privacy'), icon: Lock },
+    { id: 'display', label: t('settings.display'), icon: Palette },
+    { id: 'premium', label: 'Преміум', icon: Crown }
   ];
 
   return (
@@ -98,8 +103,8 @@ export function Settings({ onLogout }: SettingsProps) {
     >
       {/* Header */}
       <motion.div variants={itemVariants} className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Налаштування</h1>
-        <p className="text-gray-600">Керуйте своїми налаштуваннями профілю та системи</p>
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('navigation.settings')}</h1>
+        <p className="text-gray-600">{t('settings.description')}</p>
       </motion.div>
 
       {/* Tabs */}
@@ -130,13 +135,13 @@ export function Settings({ onLogout }: SettingsProps) {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Globe className="w-5 h-5 text-primary" />
-                Мова та регіон
+                {t('settings.languageAndRegion')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-700 block mb-2">Мова</label>
+                  <label className="text-sm font-medium text-gray-700 block mb-2">{t('settings.language')}</label>
                   <select
                     value={settings.language}
                     onChange={(e) => handleChange('language', e.target.value)}
@@ -149,15 +154,15 @@ export function Settings({ onLogout }: SettingsProps) {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700 block mb-2">Тема</label>
+                  <label className="text-sm font-medium text-gray-700 block mb-2">{t('settings.theme')}</label>
                   <select
                     value={settings.theme}
                     onChange={(e) => handleChange('theme', e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="light">Світла</option>
-                    <option value="dark">Темна</option>
-                    <option value="auto">Автоматична</option>
+                    <option value="light">{t('settings.themeLight')}</option>
+                    <option value="dark">{t('settings.themeDark')}</option>
+                    <option value="auto">{t('settings.themeAuto')}</option>
                   </select>
                 </div>
               </div>
@@ -219,9 +224,9 @@ export function Settings({ onLogout }: SettingsProps) {
                 <div className="flex-1">
                   <p className="font-medium text-gray-900 flex items-center gap-2">
                     <Mail className="w-4 h-4" />
-                    Email сповіщення
+                    {t('settings.emailNotifications')}
                   </p>
-                  <p className="text-sm text-gray-600">Отримувати оновлення на email</p>
+                  <p className="text-sm text-gray-600">{t('settings.emailNotificationsDescription')}</p>
                 </div>
               </label>
 
@@ -235,9 +240,9 @@ export function Settings({ onLogout }: SettingsProps) {
                 <div className="flex-1">
                   <p className="font-medium text-gray-900 flex items-center gap-2">
                     <Smartphone className="w-4 h-4" />
-                    Push-сповіщення
+                    {t('settings.pushNotifications')}
                   </p>
-                  <p className="text-sm text-gray-600">Миттєві сповіщення на пристрій</p>
+                  <p className="text-sm text-gray-600">{t('settings.pushNotificationsDescription')}</p>
                 </div>
               </label>
 
@@ -249,8 +254,8 @@ export function Settings({ onLogout }: SettingsProps) {
                   className="w-4 h-4 rounded accent-blue-600"
                 />
                 <div className="flex-1">
-                  <p className="font-medium text-gray-900">SMS-сповіщення</p>
-                  <p className="text-sm text-gray-600">Критичні оновлення через SMS</p>
+                  <p className="font-medium text-gray-900">{t('settings.smsNotifications')}</p>
+                  <p className="text-sm text-gray-600">{t('settings.smsNotificationsDescription')}</p>
                 </div>
               </label>
             </CardContent>
@@ -298,7 +303,7 @@ export function Settings({ onLogout }: SettingsProps) {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Lock className="w-5 h-5 text-primary" />
-                Безпека
+                {t('settings.security')}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -327,19 +332,19 @@ export function Settings({ onLogout }: SettingsProps) {
 
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle>Приватність профілю</CardTitle>
+              <CardTitle>{t('settings.profilePrivacy')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-gray-700 block mb-2">Видимість профілю</label>
+                <label className="text-sm font-medium text-gray-700 block mb-2">{t('settings.profileVisibility')}</label>
                 <select
                   value={settings.profileVisibility}
                   onChange={(e) => handleChange('profileVisibility', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="public">Публічно</option>
-                  <option value="friends">Тільки друзі</option>
-                  <option value="private">Приватно</option>
+                  <option value="public">{t('settings.visibilityPublic')}</option>
+                  <option value="friends">{t('settings.visibilityFriends')}</option>
+                  <option value="private">{t('settings.visibilityPrivate')}</option>
                 </select>
               </div>
 
@@ -351,8 +356,8 @@ export function Settings({ onLogout }: SettingsProps) {
                   className="w-4 h-4 rounded accent-blue-600"
                 />
                 <div>
-                  <p className="font-medium text-gray-900">Показати email</p>
-                  <p className="text-sm text-gray-600">Дозволити іншим користувачам бачити ваш email</p>
+                  <p className="font-medium text-gray-900">{t('settings.showEmail')}</p>
+                  <p className="text-sm text-gray-600">{t('settings.showEmailDescription')}</p>
                 </div>
               </label>
 
@@ -394,9 +399,9 @@ export function Settings({ onLogout }: SettingsProps) {
                 <div>
                   <p className="font-medium text-gray-900 flex items-center gap-2">
                     <Volume2 className="w-4 h-4" />
-                    Звукові ефекти
+                    {t('settings.soundEffects')}
                   </p>
-                  <p className="text-sm text-gray-600">Включити звукові сповіщення</p>
+                  <p className="text-sm text-gray-600">{t('settings.enableSoundNotifications')}</p>
                 </div>
               </label>
 
@@ -410,26 +415,33 @@ export function Settings({ onLogout }: SettingsProps) {
                 <div>
                   <p className="font-medium text-gray-900 flex items-center gap-2">
                     <Package className="w-4 h-4" />
-                    Автовідтворення відео
+                    {t('settings.autoPlayVideos')}
                   </p>
-                  <p className="text-sm text-gray-600">Автоматично відтворювати відеозаписи</p>
+                  <p className="text-sm text-gray-600">{t('settings.autoPlayVideosDescription')}</p>
                 </div>
               </label>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 block mb-2">Розмір шрифту</label>
+                <label className="text-sm font-medium text-gray-700 block mb-2">{t('settings.fontSize')}</label>
                 <select
                   value={settings.fontSize}
                   onChange={(e) => handleChange('fontSize', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="small">Малий</option>
-                  <option value="normal">Нормальний</option>
-                  <option value="large">Великий</option>
+                  <option value="small">{t('settings.fontSizeSmall')}</option>
+                  <option value="normal">{t('settings.fontSizeNormal')}</option>
+                  <option value="large">{t('settings.fontSizeLarge')}</option>
                 </select>
               </div>
             </CardContent>
           </Card>
+        </motion.div>
+      )}
+
+      {/* Premium Subscription */}
+      {activeTab === 'premium' && (
+        <motion.div variants={itemVariants}>
+          <PremiumSubscriptionTab />
         </motion.div>
       )}
 
@@ -441,14 +453,14 @@ export function Settings({ onLogout }: SettingsProps) {
           className="gap-2"
         >
           <LogOut className="w-4 h-4" />
-          Вихід
+          {t('common.logout')}
         </Button>
         <Button
           onClick={handleSave}
           className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white"
         >
           <Save className="w-4 h-4" />
-          Зберегти налаштування
+          {t('common.saveSettings')}
         </Button>
       </motion.div>
     </motion.div>

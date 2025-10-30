@@ -19,9 +19,23 @@ const mockUserActions: UserAction[] = [
 class AdminService {
   async getUsers(): Promise<User[]> {
     console.log('AdminService: Fetching users...');
-    // In a real app, this would be an API call
-    // await fetch('/api/users');
-    return Promise.resolve(mockUsers);
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+      const response = await fetch(`${API_URL}/users`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        const users = await response.json();
+        return Array.isArray(users) ? users : mockUsers;
+      }
+      return mockUsers;
+    } catch (error) {
+      console.error('Failed to fetch users from API, using mock data:', error);
+      return mockUsers;
+    }
   }
 
   async blockUser(userId: string): Promise<User> {
@@ -63,9 +77,71 @@ class AdminService {
 
   async getUserActions(): Promise<UserAction[]> {
     console.log('AdminService: Fetching user actions...');
-    // In a real app, this would be an API call
-    // await fetch('/api/useractions');
-    return Promise.resolve(mockUserActions);
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+      // Use error logs as user actions if available
+      const response = await fetch(`${API_URL}/admin/errors`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        const errorLogs = await response.json();
+        if (Array.isArray(errorLogs) && errorLogs.length > 0) {
+          return errorLogs.map((log: any, index: number) => ({
+            id: `action-${index}`,
+            userId: log.userId || 'unknown',
+            action: log.userMessage || log.message || 'User action',
+            timestamp: new Date(log.timestamp || log.serverTimestamp || Date.now()),
+          }));
+        }
+      }
+      return mockUserActions;
+    } catch (error) {
+      console.error('Failed to fetch user actions from API, using mock data:', error);
+      return mockUserActions;
+    }
+  }
+
+  async getOrders(): Promise<any[]> {
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+      const response = await fetch(`${API_URL}/orders`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        const orders = await response.json();
+        return Array.isArray(orders) ? orders : [];
+      }
+      return [];
+    } catch (error) {
+      console.error('Failed to fetch orders:', error);
+      return [];
+    }
+  }
+
+  async getTransactions(): Promise<any[]> {
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+      const response = await fetch(`${API_URL}/payments`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        const payments = await response.json();
+        return Array.isArray(payments) ? payments : [];
+      }
+      return [];
+    } catch (error) {
+      console.error('Failed to fetch transactions:', error);
+      return [];
+    }
   }
 }
 

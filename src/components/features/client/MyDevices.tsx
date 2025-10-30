@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   Plus,
@@ -13,7 +13,8 @@ import {
   History,
   AlertCircle,
   Search,
-  User
+  User,
+  X
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
 import { Button } from '../../ui/button';
@@ -89,13 +90,37 @@ export function MyDevices() {
     }
   ]);
 
-  const [, setShowAddDevice] = useState(false);
+  const [showAddDevice, setShowAddDevice] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [newDevice, setNewDevice] = useState<Partial<Device>>({
+    brand: '',
+    model: '',
+    serialNumber: '',
+    color: '',
+    purchaseDate: '',
+    notes: ''
+  });
 
-  const filteredDevices = devices.filter(device =>
-    device.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    device.model.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Видаляємо дублікати пристроїв
+  const uniqueDevices = useMemo(() => {
+    const seen = new Set<string>();
+    return devices.filter(device => {
+      const key = `${device.brand}-${device.model}-${device.serialNumber}`;
+      if (seen.has(key)) {
+        console.warn(`Duplicate device detected: ${key}`);
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+  }, [devices]);
+
+  const filteredDevices = useMemo(() => {
+    return uniqueDevices.filter(device =>
+      device.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      device.model.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [uniqueDevices, searchQuery]);
 
   const getDeviceIcon = (brand: string) => {
     if (brand.toLowerCase() === 'apple') return <Apple className="w-6 h-6 text-black" />;
@@ -386,6 +411,142 @@ export function MyDevices() {
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Add Device Modal */}
+      {showAddDevice && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto"
+          >
+            <CardHeader className="border-b">
+              <CardTitle className="flex items-center justify-between">
+                <span>Додати пристрій</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setShowAddDevice(false);
+                    setNewDevice({
+                      brand: '',
+                      model: '',
+                      serialNumber: '',
+                      color: '',
+                      purchaseDate: '',
+                      notes: ''
+                    });
+                  }}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </CardTitle>
+              <CardDescription>Заповніть інформацію про пристрій</CardDescription>
+            </CardHeader>
+            <CardContent className="p-6 space-y-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">Бренд *</label>
+                <Input
+                  value={newDevice.brand}
+                  onChange={(e) => setNewDevice({ ...newDevice, brand: e.target.value })}
+                  placeholder="Наприклад: Apple, Samsung"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">Модель *</label>
+                <Input
+                  value={newDevice.model}
+                  onChange={(e) => setNewDevice({ ...newDevice, model: e.target.value })}
+                  placeholder="Наприклад: iPhone 14 Pro"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">Серійний номер</label>
+                <Input
+                  value={newDevice.serialNumber || ''}
+                  onChange={(e) => setNewDevice({ ...newDevice, serialNumber: e.target.value })}
+                  placeholder="ABC123DEF"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">Колір</label>
+                <Input
+                  value={newDevice.color || ''}
+                  onChange={(e) => setNewDevice({ ...newDevice, color: e.target.value })}
+                  placeholder="Наприклад: Space Black"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">Дата покупки</label>
+                <Input
+                  type="date"
+                  value={newDevice.purchaseDate || ''}
+                  onChange={(e) => setNewDevice({ ...newDevice, purchaseDate: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">Примітки</label>
+                <textarea
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent min-h-[100px]"
+                  value={newDevice.notes || ''}
+                  onChange={(e) => setNewDevice({ ...newDevice, notes: e.target.value })}
+                  placeholder="Додаткові примітки про пристрій"
+                />
+              </div>
+            </CardContent>
+            <div className="flex gap-3 p-6 border-t bg-gray-50">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setShowAddDevice(false);
+                  setNewDevice({
+                    brand: '',
+                    model: '',
+                    serialNumber: '',
+                    color: '',
+                    purchaseDate: '',
+                    notes: ''
+                  });
+                }}
+              >
+                Скасувати
+              </Button>
+              <Button
+                className="flex-1"
+                onClick={() => {
+                  if (newDevice.brand && newDevice.model) {
+                    const device: Device = {
+                      id: `device-${Date.now()}`,
+                      brand: newDevice.brand,
+                      model: newDevice.model,
+                      serialNumber: newDevice.serialNumber,
+                      color: newDevice.color,
+                      purchaseDate: newDevice.purchaseDate,
+                      notes: newDevice.notes
+                    };
+                    setDevices([...devices, device]);
+                    setShowAddDevice(false);
+                    setNewDevice({
+                      brand: '',
+                      model: '',
+                      serialNumber: '',
+                      color: '',
+                      purchaseDate: '',
+                      notes: ''
+                    });
+                  }
+                }}
+                disabled={!newDevice.brand || !newDevice.model}
+              >
+                Додати
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </motion.div>
   );
 }

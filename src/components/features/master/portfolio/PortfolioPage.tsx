@@ -3,10 +3,11 @@ import { PortfolioItem } from '../../../../types/models';
 import PortfolioList from './PortfolioList';
 import PortfolioForm from './PortfolioForm';
 import { Button } from '../../../ui/button';
-import { useAuth } from '../../../../hooks/useAuth'; // Assuming you have a custom hook for auth
+import { useAuthStore } from '../../../../store/authStore';
+import { apiPortfolioService } from '../../../../services/apiPortfolioService';
 
 const PortfolioPage: React.FC = () => {
-  const { user } = useAuth();
+  const { currentUser } = useAuthStore();
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -14,50 +15,40 @@ const PortfolioPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchPortfolio = useCallback(async () => {
-    if (!user) return;
+    if (!currentUser) return;
     setIsLoading(true);
+    setError(null);
     try {
-      const response = await fetch(`/api/portfolio/${user.id}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch portfolio');
-      }
-      const data = await response.json();
+      const data = await apiPortfolioService.getPortfolioItems(currentUser.id);
       setPortfolio(data);
-    } catch (err) {
-      setError(err.message);
+    } catch (err: any) {
+      setError(err?.message || 'Failed to fetch portfolio');
+      console.error('Portfolio fetch error:', err);
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [currentUser]);
 
   useEffect(() => {
     fetchPortfolio();
   }, [fetchPortfolio]);
 
   const handleFormSubmit = async (item: Partial<PortfolioItem>) => {
-    const method = item.id ? 'PUT' : 'POST';
-    const url = item.id ? `/api/portfolio/${item.id}` : '/api/portfolio';
-
+    if (!currentUser) return;
+    
     try {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          // Assuming token-based auth
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify(item),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to ${item.id ? 'update' : 'create'} portfolio item`);
+      if (item.id) {
+        await apiPortfolioService.updatePortfolioItem(currentUser.id, item.id, item);
+      } else {
+        await apiPortfolioService.addPortfolioItem(currentUser.id, item as Omit<PortfolioItem, 'id'>);
       }
 
       await fetchPortfolio(); // Re-fetch to get the latest data
       setIsFormOpen(false);
       setEditingItem(null);
-    } catch (err) {
-      setError(err.message);
+    } catch (err: any) {
+      setError(err?.message || `Failed to ${item.id ? 'update' : 'create'} portfolio item`);
+      console.error('Portfolio submit error:', err);
     }
   };
 
@@ -67,28 +58,44 @@ const PortfolioPage: React.FC = () => {
   };
 
   const handleDelete = async (itemId: string) => {
+    if (!currentUser) return;
+    
     if (window.confirm('Are you sure you want to delete this item?')) {
       try {
-        const response = await fetch(`/api/portfolio/${itemId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to delete portfolio item');
-        }
-
+        await apiPortfolioService.deletePortfolioItem(currentUser.id, itemId);
         await fetchPortfolio(); // Re-fetch
-      } catch (err) {
-        setError(err.message);
+      } catch (err: any) {
+        setError(err?.message || 'Failed to delete portfolio item');
+        console.error('Portfolio delete error:', err);
       }
     }
   };
 
-  if (isLoading) return <p>Loading portfolio...</p>;
-  if (error) return <p className="text-red-500">Error: {error}</p>;
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-4">
+        <div className="flex items-center justify-center h-64">
+          <p className="text-gray-600">Завантаження портфоліо...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="container mx-auto p-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-red-700">Помилка: {error}</p>
+          <button 
+            onClick={fetchPortfolio}
+            className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Спробувати ще раз
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4">

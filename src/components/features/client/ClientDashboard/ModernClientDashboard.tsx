@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, cloneElement, isValidElement } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Plus, 
@@ -179,12 +179,12 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
   };
 
   return (
-    <div data-testid="client-dashboard" className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-2 md:p-4 flex flex-col items-center w-full">
+    <div data-testid="client-dashboard" className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 p-3 sm:p-4 md:p-6 flex flex-col items-center w-full">
       <motion.div
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="max-w-6xl mx-auto space-y-4 w-full"
+        className="max-w-6xl mx-auto space-y-3 sm:space-y-4 w-full"
       >
         {/* Stats Grid */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -198,18 +198,18 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                 className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300 cursor-pointer"
                 onClick={() => setActiveItem('myOrders')}
               >
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center justify-between">
-                    <div className="p-3 bg-primary/10 rounded-xl">
-                      {stat.icon}
+                    <div className="p-2.5 sm:p-3 bg-primary/10 rounded-xl">
+                      {isValidElement(stat.icon) ? cloneElement(stat.icon as React.ReactElement<any>, { className: "w-5 h-5 sm:w-6 sm:h-6" }) : stat.icon}
                     </div>
-                    <Badge variant="secondary" className={stat.trend === 'up' ? 'text-green-500' : 'text-red-500'}>
+                    <Badge variant="secondary" className={`text-xs sm:text-sm ${stat.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
                       {stat.change}
                     </Badge>
                   </div>
-                  <div className="mt-4">
-                    <p className="text-sm text-muted-foreground">{stat.title}</p>
-                    <p className="text-2xl font-bold mt-1">{stat.value}</p>
+                  <div className="mt-3 sm:mt-4">
+                    <p className="text-xs sm:text-sm text-muted-foreground">{stat.title}</p>
+                    <p className="text-xl sm:text-2xl font-bold mt-1">{stat.value}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -230,8 +230,8 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
         <motion.div variants={itemVariants}>
           <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-primary" />
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 {t('common.quickActions')}
               </CardTitle>
             </CardHeader>
@@ -239,39 +239,39 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button
-                    className="w-full h-auto py-6 flex items-center justify-between group"
+                    className="w-full h-auto py-4 sm:py-6 flex items-center justify-between group min-h-[56px] sm:min-h-auto"
                     size="lg"
                     onClick={() => setCreateOrderModalOpen(true)}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-white/20 rounded-lg">
-                        <Plus className="w-6 h-6" />
+                      <div className="p-2 sm:p-2.5 bg-white/20 rounded-lg">
+                        <Plus className="w-5 h-5 sm:w-6 sm:h-6" />
                       </div>
                       <div className="text-left">
-                        <p className="font-semibold">{t('common.createOrder')}</p>
-                        <p className="text-xs opacity-80">{t('common.newRepairRequest')}</p>
+                        <p className="font-semibold text-sm sm:text-base">{t('common.createOrder')}</p>
+                        <p className="text-[10px] sm:text-xs opacity-80">{t('common.newRepairRequest')}</p>
                       </div>
                     </div>
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-5 h-5 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform shrink-0" />
                   </Button>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button
                     variant="outline"
-                    className="w-full h-auto py-6 flex items-center justify-between group"
+                    className="w-full h-auto py-4 sm:py-6 flex items-center justify-between group min-h-[56px] sm:min-h-auto"
                     size="lg"
                     onClick={() => setActiveItem('priceComparison')}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg">
-                        <Search className="w-6 h-6" />
+                      <div className="p-2 sm:p-2.5 bg-primary/10 rounded-lg">
+                        <Search className="w-5 h-5 sm:w-6 sm:h-6" />
                       </div>
                       <div className="text-left">
-                        <p className="font-semibold">{t('navigation.findMasters')}</p>
-                        <p className="text-xs text-muted-foreground">{t('common.searchSpecialists')}</p>
+                        <p className="font-semibold text-sm sm:text-base">{t('navigation.findMasters')}</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">{t('common.searchSpecialists')}</p>
                       </div>
                     </div>
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-5 h-5 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform shrink-0" />
                   </Button>
                 </motion.div>
               </div>
@@ -286,14 +286,14 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
             <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-primary" />
+                  <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                    <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                     {t('common.currentOrders')}
                   </CardTitle>
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="p-2 border border-gray-300 rounded-md"
+                    className="p-2 sm:p-2.5 text-xs sm:text-sm border border-gray-300 rounded-md bg-background min-h-[40px] sm:min-h-auto"
                   >
                     <option value="all">{t('common.allStatuses')}</option>
                     <option value="pending">{t('status.pending')}</option>
@@ -309,38 +309,38 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     whileHover={{ scale: 1.01 }}
-                    className="p-4 border border-border rounded-xl bg-background/50 hover:shadow-md transition-all duration-300 cursor-pointer"
+                    className="p-3 sm:p-4 border border-border rounded-xl bg-background/50 hover:shadow-md transition-all duration-300 cursor-pointer"
                     onClick={() => {
                       setSelectedOrder(order);
                       setActiveItem('myOrders');
                     }}
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{order.title}</h3>
-                        <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
-                          <Calendar className="w-4 h-4" />
-                          {order.date 
+                    <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-base sm:text-lg leading-tight">{order.title}</h3>
+                        <div className="flex items-center gap-1.5 sm:gap-2 mt-1 text-xs sm:text-sm text-muted-foreground">
+                          <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                          <span className="truncate">{order.date 
                             ? safeLocaleDate(order.date)
                             : order.createdAt 
                               ? safeLocaleDate(order.createdAt)
-                              : 'Без дати'}
+                              : 'Без дати'}</span>
                         </div>
                       </div>
-                      <Badge className={getStatusColor(order.status)}>
+                      <Badge className={`${getStatusColor(order.status)} text-[10px] sm:text-xs shrink-0`}>
                         {getStatusText(order.status)}
                       </Badge>
                     </div>
 
                     {order.master && (
-                      <div className="flex items-center gap-3 mb-3 p-2 bg-muted/30 rounded-lg">
-                        <Avatar className="w-8 h-8">
+                      <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 p-2 sm:p-2.5 bg-muted/30 rounded-lg">
+                        <Avatar className="w-8 h-8 sm:w-9 sm:h-9 shrink-0">
                           <AvatarImage src={order.master.avatar} />
-                          <AvatarFallback>{order.master.name[0]}</AvatarFallback>
+                          <AvatarFallback className="text-xs sm:text-sm">{order.master.name[0]}</AvatarFallback>
                         </Avatar>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">{order.master.name}</p>
-                          <p className="text-xs text-muted-foreground">⭐ {order.master.rating}</p>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs sm:text-sm font-medium truncate">{order.master.name}</p>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">⭐ {order.master.rating}</p>
                         </div>
                       </div>
                     )}
@@ -353,24 +353,26 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                       <Progress value={order.progress} className="h-2" />
                     </div>
 
-                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mt-3 pt-3 border-t border-border">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground w-full sm:w-auto">
                         <span className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          {order.city || order.device}
+                          <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                          <span className="truncate">{order.city || order.device}</span>
                         </span>
                         <span className="font-semibold text-foreground">₴{safeLocaleCurrency(order.price || 0)}</span>
                       </div>
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => {
+                        className="w-full sm:w-auto text-xs sm:text-sm min-h-[36px] sm:min-h-auto"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setSelectedOrder(order);
                           setActiveItem('myOrders');
                         }}
                       >
                         Деталі
-                        <ChevronRight className="w-4 h-4 ml-1" />
+                        <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1" />
                       </Button>
                     </div>
                   </motion.div>
@@ -381,8 +383,8 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
             {/* Order History */}
             <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-green-500" />
                   {t('common.orderHistory')}
                 </CardTitle>
               </CardHeader>
@@ -394,7 +396,7 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
                     whileHover={{ scale: 1.01 }}
-                    className="p-4 border border-border rounded-lg bg-background/50 hover:shadow-md transition-all duration-300 cursor-pointer"
+                    className="p-3 sm:p-4 border border-border rounded-lg bg-background/50 hover:shadow-md transition-all duration-300 cursor-pointer"
                     onClick={() => {
                       setSelectedOrder(order);
                       setActiveItem('myOrders');

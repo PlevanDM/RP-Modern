@@ -1,9 +1,10 @@
 {
   "users": [
     {
-      "id": "test-client-1",
-      "name": "Test Client",
-      "email": "client@test.com",
+      "id": "client-1761768133089-1",
+      "name": "Олена Петренко",
+      "email": "elena.petrenko@email.com",
+      "password": "$2b$10$UX6ritzAZ4DYTTRP4jgQZeXa/eyjAEM6CQPNYggJfqrrwEgQXIEAW",
       "role": "client",
       "city": "Київ",
       "phone": "+380501234567",
@@ -13,66 +14,1518 @@
       "specialization": "Client",
       "verified": true,
       "blocked": false,
-      "completedOrders": 0,
+      "completedOrders": 3,
       "rating": 0,
-      "password": "$2b$10$LeSOTyZZzQuG6cGUuBnmSeNZ/.t4nsVh3CmZX6SBk.U4vpROXyySS"
+      "clientMobileOS": "ios",
+      "clientComputerOS": "mac",
+      "skillLevel": "beginner",
+      "preferredPriority": [
+        "якість",
+        "гарантія"
+      ],
+      "budgetRange": "high",
+      "devices": [
+        {
+          "id": "dev1",
+          "brand": "Apple",
+          "model": "iPhone 14 Pro",
+          "issue": "Розбитий екран"
+        },
+        {
+          "id": "dev2",
+          "brand": "Apple",
+          "model": "MacBook Pro",
+          "issue": "Проблеми з клавіатурою"
+        }
+      ]
     },
     {
-      "id": "test-master-1",
-      "name": "Test Master",
-      "email": "master@test.com",
-      "role": "master",
-      "city": "Київ",
-      "phone": "+380509876543",
+      "id": "client-1761768133089-2",
+      "name": "Михайло Коваленко",
+      "email": "mikhail.kovalenko@email.com",
+      "password": "$2b$10$YXP8UTQ2YKYhJAcQQVyqCeQJcoafm1dP7lFu5d/kuI.UILFMLZvVq",
+      "role": "client",
+      "city": "Львів",
+      "phone": "+380502345678",
       "avatar": "",
       "balance": 0,
+      "skills": [],
+      "specialization": "Client",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 1,
+      "rating": 0,
+      "clientMobileOS": "android",
+      "clientComputerOS": "windows",
+      "skillLevel": "intermediate",
+      "preferredPriority": [
+        "швидкість",
+        "ціна"
+      ],
+      "budgetRange": "medium",
+      "devices": [
+        {
+          "id": "dev3",
+          "brand": "Samsung",
+          "model": "Galaxy S21",
+          "issue": "Не працює батарея"
+        }
+      ]
+    },
+    {
+      "id": "client-1761768133089-3",
+      "name": "Анна Шевченко",
+      "email": "anna.shevchenko@email.com",
+      "password": "$2b$10$XpuLYDwDYnS1BEbSpsZGIet8j9tsVNnFfURtw28fa1ZPdN0um2CEq",
+      "role": "client",
+      "city": "Харків",
+      "phone": "+380503456789",
+      "avatar": "",
+      "balance": 0,
+      "skills": [],
+      "specialization": "Client",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 5,
+      "rating": 0,
+      "clientMobileOS": "ios",
+      "clientComputerOS": "windows",
+      "skillLevel": "advanced",
+      "preferredPriority": [
+        "якість",
+        "швидкість"
+      ],
+      "budgetRange": "medium",
+      "devices": [
+        {
+          "id": "dev4",
+          "brand": "Apple",
+          "model": "iPhone 13",
+          "issue": "Розряжається швидко"
+        },
+        {
+          "id": "dev5",
+          "brand": "Xiaomi",
+          "model": "Redmi Note 10",
+          "issue": "Проблеми з камерою"
+        }
+      ]
+    },
+    {
+      "id": "client-1761768133089-4",
+      "name": "Дмитро Морозенко",
+      "email": "dmytro.morozenko@email.com",
+      "password": "$2b$10$br4xzZ6JhhMReaRwm2mB8uqqJmMl7L0sfuDwUfQtGorgoi3pe3ZNW",
+      "role": "client",
+      "city": "Одеса",
+      "phone": "+380504567890",
+      "avatar": "",
+      "balance": 0,
+      "skills": [],
+      "specialization": "Client",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 2,
+      "rating": 0,
+      "clientMobileOS": "android",
+      "clientComputerOS": "linux",
+      "skillLevel": "intermediate",
+      "preferredPriority": [
+        "ціна",
+        "гарантія"
+      ],
+      "budgetRange": "low",
+      "devices": [
+        {
+          "id": "dev6",
+          "brand": "Xiaomi",
+          "model": "Mi 11",
+          "issue": "Потрібна заміна дисплея"
+        }
+      ]
+    },
+    {
+      "id": "client-1761768133089-5",
+      "name": "Софія Іваненко",
+      "email": "sofia.ivanenko@email.com",
+      "password": "$2b$10$pdc.XgibsRdtT8teDflNX.vA6Hb7quMtx.r5XkYVnIGZuJ9cLhcIq",
+      "role": "client",
+      "city": "Дніпро",
+      "phone": "+380505678901",
+      "avatar": "",
+      "balance": 0,
+      "skills": [],
+      "specialization": "Client",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 0,
+      "rating": 0,
+      "clientMobileOS": "ios",
+      "clientComputerOS": "mac",
+      "skillLevel": "beginner",
+      "preferredPriority": [
+        "якість"
+      ],
+      "budgetRange": "high",
+      "devices": [
+        {
+          "id": "dev7",
+          "brand": "Apple",
+          "model": "iPad Air",
+          "issue": "Тріщина на екрані"
+        }
+      ]
+    },
+    {
+      "id": "master-1761768133089-1",
+      "name": "Олександр Ремонтов",
+      "email": "aleksandr.remontov@email.com",
+      "password": "$2b$10$UmaYa6/IdNSZPDCXCm0hSOde0fs1ufFZqImqhZ8qFBHUdkrB5M5BW",
+      "role": "master",
+      "city": "Київ",
+      "phone": "+380506789012",
+      "avatar": "",
+      "balance": 12500,
       "skills": [
         "iPhone Repair",
-        "Screen Replacement"
+        "Screen Replacement",
+        "Battery Replacement",
+        "Water Damage"
       ],
       "specialization": "iPhone Specialist",
       "verified": true,
       "blocked": false,
-      "completedOrders": 0,
+      "completedOrders": 47,
+      "rating": 4.9,
+      "bio": "Досвідчений майстер з ремонту iPhone. Працюю більше 8 років. Спеціалізуюсь на заміні дисплеїв, батарей та ремонті після попадання води.",
+      "workLocation": "service",
+      "workExperience": 8,
+      "workingRadius": 10,
+      "languages": [
+        "українська",
+        "російська",
+        "англійська"
+      ],
+      "certifications": [
+        "Apple Certified Technician",
+        "iFixit Pro"
+      ],
+      "equipment": [
+        {
+          "id": "eq1",
+          "model": "Heat Gun Pro 3000"
+        },
+        {
+          "id": "eq2",
+          "model": "Precision Tool Set"
+        }
+      ],
+      "tools": [
+        "Hot Air Station",
+        "Precision Screwdrivers",
+        "Suction Cups",
+        "Opening Tools"
+      ],
+      "portfolio": [],
+      "partsInventory": [
+        {
+          "id": "part1",
+          "masterId": "master-1761768133089-1",
+          "name": "iPhone 14 Pro Display",
+          "description": "Оригінальний дисплей",
+          "price": 8500,
+          "quantity": 3
+        },
+        {
+          "id": "part2",
+          "masterId": "master-1761768133089-1",
+          "name": "iPhone 13 Battery",
+          "description": "Оригінальна батарея",
+          "price": 1200,
+          "quantity": 5
+        }
+      ],
+      "repairBrands": [
+        "Apple"
+      ],
+      "repairTypes": [
+        "display",
+        "battery",
+        "water-damage"
+      ],
+      "isMobile": false,
+      "experience": "expert",
+      "maxDistance": 10
+    },
+    {
+      "id": "master-1761768133089-2",
+      "name": "Віталій Сервісний",
+      "email": "vitaliy.service@email.com",
+      "password": "$2b$10$Ogk5AhfOhP0Pxpsv93WDC.os.N1R2Je5k3Weutg9mPR2DZNk/GvGu",
+      "role": "master",
+      "city": "Львів",
+      "phone": "+380507890123",
+      "avatar": "",
+      "balance": 8900,
+      "skills": [
+        "Android Repair",
+        "Samsung Repair",
+        "Xiaomi Repair",
+        "Screen Replacement"
+      ],
+      "specialization": "Android & Samsung Specialist",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 32,
+      "rating": 4.7,
+      "bio": "Спеціалізуюсь на ремонті Android пристроїв, особливо Samsung та Xiaomi. Працюю в сервісному центрі. Швидкий і якісний ремонт.",
+      "workLocation": "service",
+      "workExperience": 5,
+      "workingRadius": 15,
+      "languages": [
+        "українська",
+        "російська"
+      ],
+      "certifications": [
+        "Samsung Certified",
+        "Android Repair Certificate"
+      ],
+      "equipment": [
+        {
+          "id": "eq3",
+          "model": "Samsung Service Tools"
+        },
+        {
+          "id": "eq4",
+          "model": "Xiaomi Diagnostic Kit"
+        }
+      ],
+      "tools": [
+        "Hot Plate",
+        "Precision Tools",
+        "Microscopes"
+      ],
+      "portfolio": [],
+      "partsInventory": [
+        {
+          "id": "part3",
+          "masterId": "master-1761768133089-2",
+          "name": "Samsung Galaxy S21 Screen",
+          "description": "Оригінальний дисплей",
+          "price": 4500,
+          "quantity": 2
+        },
+        {
+          "id": "part4",
+          "masterId": "master-1761768133089-2",
+          "name": "Xiaomi Battery",
+          "description": "Оригінальна батарея",
+          "price": 800,
+          "quantity": 8
+        }
+      ],
+      "repairBrands": [
+        "Samsung",
+        "Xiaomi",
+        "Huawei"
+      ],
+      "repairTypes": [
+        "display",
+        "battery",
+        "charging-port"
+      ],
+      "isMobile": false,
+      "experience": "advanced",
+      "maxDistance": 15
+    },
+    {
+      "id": "master-1761768133089-3",
+      "name": "Ігор Виїзний",
+      "email": "igor.vyizdniy@email.com",
+      "password": "$2b$10$IVERoqM997R/tS7BNJHoyeN36QpSvqc4hUHnFnFy2621K6VT8wM1i",
+      "role": "master",
+      "city": "Київ",
+      "phone": "+380508901234",
+      "avatar": "",
+      "balance": 5600,
+      "skills": [
+        "Mobile Repair",
+        "iPhone Repair",
+        "Android Repair",
+        "Quick Fix"
+      ],
+      "specialization": "Mobile Repair Specialist (Виїзний)",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 28,
       "rating": 4.8,
-      "password": "$2b$10$AEjhDrzGUqxVFsNrnBeeCuKu7FXv16gxejqH9x2USQBS8aAbH58Jy"
+      "bio": "Виїзний майстер. Приїжджаю до вас додому або в офіс. Швидкий ремонт на місці. Спеціалізуюсь на базових ремонтах: екрани, батареї, камери.",
+      "workLocation": "home",
+      "workExperience": 6,
+      "workingRadius": 25,
+      "languages": [
+        "українська",
+        "російська"
+      ],
+      "certifications": [
+        "Mobile Repair Certificate"
+      ],
+      "equipment": [
+        {
+          "id": "eq5",
+          "model": "Portable Repair Kit"
+        }
+      ],
+      "tools": [
+        "Portable Tools",
+        "Battery Tester",
+        "Screen Testers"
+      ],
+      "portfolio": [],
+      "partsInventory": [
+        {
+          "id": "part5",
+          "masterId": "master-1761768133089-3",
+          "name": "Universal iPhone Screen",
+          "description": "Якісна заміна",
+          "price": 3200,
+          "quantity": 4
+        }
+      ],
+      "repairBrands": [
+        "Apple",
+        "Samsung",
+        "Xiaomi"
+      ],
+      "repairTypes": [
+        "display",
+        "battery",
+        "camera"
+      ],
+      "isMobile": true,
+      "experience": "advanced",
+      "maxDistance": 25
     },
     {
-      "id": "test-admin-1",
-      "name": "Admin",
-      "email": "admin@test.com",
-      "role": "admin",
+      "id": "master-1761768133089-4",
+      "name": "Наталія Комплексна",
+      "email": "natalia.complex@email.com",
+      "password": "$2b$10$rJAZ.iOYkVRXQRjWRj24JeP8Ejc2Fe/Jw0kqMgjfWNwS6jhwhcxSC",
+      "role": "master",
+      "city": "Харків",
+      "phone": "+380509012345",
+      "avatar": "",
+      "balance": 15200,
+      "skills": [
+        "iPhone Repair",
+        "iPad Repair",
+        "Mac Repair",
+        "Complex Repairs"
+      ],
+      "specialization": "Apple Device Specialist",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 65,
+      "rating": 5,
+      "bio": "Експерт з ремонту всіх Apple пристроїв. Працюю 12 років. Виконую складні ремонти: материнські плати, логічні плати, відновлення даних.",
+      "workLocation": "service",
+      "workExperience": 12,
+      "workingRadius": 20,
+      "languages": [
+        "українська",
+        "російська",
+        "англійська",
+        "німецька"
+      ],
+      "certifications": [
+        "Apple Certified Mac Technician",
+        "Data Recovery Specialist",
+        "Logic Board Repair"
+      ],
+      "equipment": [
+        {
+          "id": "eq6",
+          "model": "Advanced Diagnostic Station"
+        },
+        {
+          "id": "eq7",
+          "model": "Microscope System"
+        },
+        {
+          "id": "eq8",
+          "model": "Logic Board Tools"
+        }
+      ],
+      "tools": [
+        "Advanced Diagnostic Tools",
+        "Microscopes",
+        "Soldering Equipment",
+        "Data Recovery Tools"
+      ],
+      "portfolio": [],
+      "partsInventory": [
+        {
+          "id": "part6",
+          "masterId": "master-1761768133089-4",
+          "name": "MacBook Pro Keyboard",
+          "description": "Оригінальна клавіатура",
+          "price": 3200,
+          "quantity": 2
+        },
+        {
+          "id": "part7",
+          "masterId": "master-1761768133089-4",
+          "name": "iPad Display Assembly",
+          "description": "Оригінальний екран",
+          "price": 5500,
+          "quantity": 1
+        }
+      ],
+      "repairBrands": [
+        "Apple"
+      ],
+      "repairTypes": [
+        "display",
+        "battery",
+        "logic-board",
+        "data-recovery"
+      ],
+      "isMobile": false,
+      "experience": "expert",
+      "maxDistance": 20
+    },
+    {
+      "id": "master-1761768133089-5",
+      "name": "Богдан Універсальний",
+      "email": "bogdan.universal@email.com",
+      "password": "$2b$10$z7Jml43Spq2I2cG60JDNduG24BzaMThMbsMmULyU0QBhuRoVB0WnO",
+      "role": "master",
+      "city": "Одеса",
+      "phone": "+380501023456",
+      "avatar": "",
+      "balance": 7200,
+      "skills": [
+        "Android Repair",
+        "iPhone Repair",
+        "Tablet Repair",
+        "Laptop Repair"
+      ],
+      "specialization": "Universal Repair Specialist",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 41,
+      "rating": 4.6,
+      "bio": "Універсальний майстер з ремонту різних пристроїв. Працюю в сервісному центрі. Можу відремонтувати майже будь-який пристрій.",
+      "workLocation": "service",
+      "workExperience": 7,
+      "workingRadius": 12,
+      "languages": [
+        "українська",
+        "російська"
+      ],
+      "certifications": [
+        "Universal Repair Certificate"
+      ],
+      "equipment": [
+        {
+          "id": "eq9",
+          "model": "Universal Repair Station"
+        }
+      ],
+      "tools": [
+        "Universal Tools",
+        "Heat Guns",
+        "Screwdriver Sets"
+      ],
+      "portfolio": [],
+      "partsInventory": [
+        {
+          "id": "part8",
+          "masterId": "master-1761768133089-5",
+          "name": "Universal Phone Battery",
+          "description": "Якісна заміна",
+          "price": 600,
+          "quantity": 10
+        }
+      ],
+      "repairBrands": [
+        "Samsung",
+        "Xiaomi",
+        "Huawei",
+        "Apple",
+        "OnePlus"
+      ],
+      "repairTypes": [
+        "display",
+        "battery",
+        "charging-port",
+        "camera"
+      ],
+      "isMobile": false,
+      "experience": "intermediate",
+      "maxDistance": 12
+    },
+    {
+      "id": "client-1761768167615-1",
+      "name": "Олена Петренко",
+      "email": "elena.petrenko@email.com",
+      "password": "$2b$10$s734hkcJxMV9VzsrT2CNxeAMG4UOd5fEB/1sIqjicyqx4s/C0GIby",
+      "role": "client",
       "city": "Київ",
-      "phone": "+380500000000",
+      "phone": "+380501234567",
       "avatar": "",
       "balance": 0,
       "skills": [],
-      "specialization": "Administrator",
+      "specialization": "Client",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 3,
+      "rating": 0,
+      "clientMobileOS": "ios",
+      "clientComputerOS": "mac",
+      "skillLevel": "beginner",
+      "preferredPriority": [
+        "якість",
+        "гарантія"
+      ],
+      "budgetRange": "high",
+      "devices": [
+        {
+          "id": "dev1",
+          "brand": "Apple",
+          "model": "iPhone 14 Pro",
+          "issue": "Розбитий екран"
+        },
+        {
+          "id": "dev2",
+          "brand": "Apple",
+          "model": "MacBook Pro",
+          "issue": "Проблеми з клавіатурою"
+        }
+      ]
+    },
+    {
+      "id": "client-1761768167615-2",
+      "name": "Михайло Коваленко",
+      "email": "mikhail.kovalenko@email.com",
+      "password": "$2b$10$P9WXD7axrfFJQr72315hj.aaJnOOmDKcaR9jfRlBgjh6PkBfHU4wy",
+      "role": "client",
+      "city": "Львів",
+      "phone": "+380502345678",
+      "avatar": "",
+      "balance": 0,
+      "skills": [],
+      "specialization": "Client",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 1,
+      "rating": 0,
+      "clientMobileOS": "android",
+      "clientComputerOS": "windows",
+      "skillLevel": "intermediate",
+      "preferredPriority": [
+        "швидкість",
+        "ціна"
+      ],
+      "budgetRange": "medium",
+      "devices": [
+        {
+          "id": "dev3",
+          "brand": "Samsung",
+          "model": "Galaxy S21",
+          "issue": "Не працює батарея"
+        }
+      ]
+    },
+    {
+      "id": "client-1761768167615-3",
+      "name": "Анна Шевченко",
+      "email": "anna.shevchenko@email.com",
+      "password": "$2b$10$aXyA/B7nEYu6LNeRRpHapetH2TOKNwIo81UxPpipy1ym5MJATHan6",
+      "role": "client",
+      "city": "Харків",
+      "phone": "+380503456789",
+      "avatar": "",
+      "balance": 0,
+      "skills": [],
+      "specialization": "Client",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 5,
+      "rating": 0,
+      "clientMobileOS": "ios",
+      "clientComputerOS": "windows",
+      "skillLevel": "advanced",
+      "preferredPriority": [
+        "якість",
+        "швидкість"
+      ],
+      "budgetRange": "medium",
+      "devices": [
+        {
+          "id": "dev4",
+          "brand": "Apple",
+          "model": "iPhone 13",
+          "issue": "Розряжається швидко"
+        },
+        {
+          "id": "dev5",
+          "brand": "Xiaomi",
+          "model": "Redmi Note 10",
+          "issue": "Проблеми з камерою"
+        }
+      ]
+    },
+    {
+      "id": "client-1761768167615-4",
+      "name": "Дмитро Морозенко",
+      "email": "dmytro.morozenko@email.com",
+      "password": "$2b$10$nqYaygNZPGkNbu/f1o/kket7Ww.Mx6xOCwaYjb1fu0Wyg/5YshUKu",
+      "role": "client",
+      "city": "Одеса",
+      "phone": "+380504567890",
+      "avatar": "",
+      "balance": 0,
+      "skills": [],
+      "specialization": "Client",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 2,
+      "rating": 0,
+      "clientMobileOS": "android",
+      "clientComputerOS": "linux",
+      "skillLevel": "intermediate",
+      "preferredPriority": [
+        "ціна",
+        "гарантія"
+      ],
+      "budgetRange": "low",
+      "devices": [
+        {
+          "id": "dev6",
+          "brand": "Xiaomi",
+          "model": "Mi 11",
+          "issue": "Потрібна заміна дисплея"
+        }
+      ]
+    },
+    {
+      "id": "client-1761768167615-5",
+      "name": "Софія Іваненко",
+      "email": "sofia.ivanenko@email.com",
+      "password": "$2b$10$uyijmPYzM1eVgHQzC4mPP.lrBCD95ufpsmidyyFUOdUu88BvSQ0Sa",
+      "role": "client",
+      "city": "Дніпро",
+      "phone": "+380505678901",
+      "avatar": "",
+      "balance": 0,
+      "skills": [],
+      "specialization": "Client",
       "verified": true,
       "blocked": false,
       "completedOrders": 0,
       "rating": 0,
-      "password": "$2b$10$27b6nq4aF7dHYXwtAAahkexbQSqSg5UtnztT.SjxpX.1o52rz13k2"
+      "clientMobileOS": "ios",
+      "clientComputerOS": "mac",
+      "skillLevel": "beginner",
+      "preferredPriority": [
+        "якість"
+      ],
+      "budgetRange": "high",
+      "devices": [
+        {
+          "id": "dev7",
+          "brand": "Apple",
+          "model": "iPad Air",
+          "issue": "Тріщина на екрані"
+        }
+      ]
     },
     {
-      "id": "test-superadmin-1",
-      "name": "Super Admin",
-      "email": "superadmin@test.com",
-      "role": "superadmin",
+      "id": "master-1761768167615-1",
+      "name": "Олександр Ремонтов",
+      "email": "aleksandr.remontov@email.com",
+      "password": "$2b$10$PiCn9GFqq64M/UjdVXOsZ.kOAn42jrjhRR10ewof24BzAy0Gx2vv6",
+      "role": "master",
       "city": "Київ",
-      "phone": "+380500000001",
+      "phone": "+380506789012",
       "avatar": "",
-      "balance": 0,
-      "skills": [],
-      "specialization": "Super Administrator",
+      "balance": 12500,
+      "skills": [
+        "iPhone Repair",
+        "Screen Replacement",
+        "Battery Replacement",
+        "Water Damage"
+      ],
+      "specialization": "iPhone Specialist",
       "verified": true,
       "blocked": false,
-      "completedOrders": 0,
-      "rating": 0,
-      "password": "$2b$10$JGxdStIRA79M6O/G.d8iCecTY3R5ByHGhb0A178FqDfE8zLjkiAga"
+      "completedOrders": 47,
+      "rating": 4.9,
+      "bio": "Досвідчений майстер з ремонту iPhone. Працюю більше 8 років. Спеціалізуюсь на заміні дисплеїв, батарей та ремонті після попадання води.",
+      "workLocation": "service",
+      "workExperience": 8,
+      "workingRadius": 10,
+      "languages": [
+        "українська",
+        "російська",
+        "англійська"
+      ],
+      "certifications": [
+        "Apple Certified Technician",
+        "iFixit Pro"
+      ],
+      "equipment": [
+        {
+          "id": "eq1",
+          "model": "Heat Gun Pro 3000"
+        },
+        {
+          "id": "eq2",
+          "model": "Precision Tool Set"
+        }
+      ],
+      "tools": [
+        "Hot Air Station",
+        "Precision Screwdrivers",
+        "Suction Cups",
+        "Opening Tools"
+      ],
+      "portfolio": [],
+      "partsInventory": [
+        {
+          "id": "part1",
+          "masterId": "master-1761768167615-1",
+          "name": "iPhone 14 Pro Display",
+          "description": "Оригінальний дисплей",
+          "price": 8500,
+          "quantity": 3
+        },
+        {
+          "id": "part2",
+          "masterId": "master-1761768167615-1",
+          "name": "iPhone 13 Battery",
+          "description": "Оригінальна батарея",
+          "price": 1200,
+          "quantity": 5
+        }
+      ],
+      "repairBrands": [
+        "Apple"
+      ],
+      "repairTypes": [
+        "display",
+        "battery",
+        "water-damage"
+      ],
+      "isMobile": false,
+      "experience": "expert",
+      "maxDistance": 10
+    },
+    {
+      "id": "master-1761768167615-2",
+      "name": "Віталій Сервісний",
+      "email": "vitaliy.service@email.com",
+      "password": "$2b$10$SQu.fnLqVp.jS20A50DXyuerBoGqDl43vgzJjFHZgPf41SEmbrDBO",
+      "role": "master",
+      "city": "Львів",
+      "phone": "+380507890123",
+      "avatar": "",
+      "balance": 8900,
+      "skills": [
+        "Android Repair",
+        "Samsung Repair",
+        "Xiaomi Repair",
+        "Screen Replacement"
+      ],
+      "specialization": "Android & Samsung Specialist",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 32,
+      "rating": 4.7,
+      "bio": "Спеціалізуюсь на ремонті Android пристроїв, особливо Samsung та Xiaomi. Працюю в сервісному центрі. Швидкий і якісний ремонт.",
+      "workLocation": "service",
+      "workExperience": 5,
+      "workingRadius": 15,
+      "languages": [
+        "українська",
+        "російська"
+      ],
+      "certifications": [
+        "Samsung Certified",
+        "Android Repair Certificate"
+      ],
+      "equipment": [
+        {
+          "id": "eq3",
+          "model": "Samsung Service Tools"
+        },
+        {
+          "id": "eq4",
+          "model": "Xiaomi Diagnostic Kit"
+        }
+      ],
+      "tools": [
+        "Hot Plate",
+        "Precision Tools",
+        "Microscopes"
+      ],
+      "portfolio": [],
+      "partsInventory": [
+        {
+          "id": "part3",
+          "masterId": "master-1761768167615-2",
+          "name": "Samsung Galaxy S21 Screen",
+          "description": "Оригінальний дисплей",
+          "price": 4500,
+          "quantity": 2
+        },
+        {
+          "id": "part4",
+          "masterId": "master-1761768167615-2",
+          "name": "Xiaomi Battery",
+          "description": "Оригінальна батарея",
+          "price": 800,
+          "quantity": 8
+        }
+      ],
+      "repairBrands": [
+        "Samsung",
+        "Xiaomi",
+        "Huawei"
+      ],
+      "repairTypes": [
+        "display",
+        "battery",
+        "charging-port"
+      ],
+      "isMobile": false,
+      "experience": "advanced",
+      "maxDistance": 15
+    },
+    {
+      "id": "master-1761768167615-3",
+      "name": "Ігор Виїзний",
+      "email": "igor.vyizdniy@email.com",
+      "password": "$2b$10$1P8ReiaYWfVFy1N2Wd.rVOdo0Yd4Xz4qRbRTy8Pc22nvEbG3oJHzO",
+      "role": "master",
+      "city": "Київ",
+      "phone": "+380508901234",
+      "avatar": "",
+      "balance": 5600,
+      "skills": [
+        "Mobile Repair",
+        "iPhone Repair",
+        "Android Repair",
+        "Quick Fix"
+      ],
+      "specialization": "Mobile Repair Specialist (Виїзний)",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 28,
+      "rating": 4.8,
+      "bio": "Виїзний майстер. Приїжджаю до вас додому або в офіс. Швидкий ремонт на місці. Спеціалізуюсь на базових ремонтах: екрани, батареї, камери.",
+      "workLocation": "home",
+      "workExperience": 6,
+      "workingRadius": 25,
+      "languages": [
+        "українська",
+        "російська"
+      ],
+      "certifications": [
+        "Mobile Repair Certificate"
+      ],
+      "equipment": [
+        {
+          "id": "eq5",
+          "model": "Portable Repair Kit"
+        }
+      ],
+      "tools": [
+        "Portable Tools",
+        "Battery Tester",
+        "Screen Testers"
+      ],
+      "portfolio": [],
+      "partsInventory": [
+        {
+          "id": "part5",
+          "masterId": "master-1761768167615-3",
+          "name": "Universal iPhone Screen",
+          "description": "Якісна заміна",
+          "price": 3200,
+          "quantity": 4
+        }
+      ],
+      "repairBrands": [
+        "Apple",
+        "Samsung",
+        "Xiaomi"
+      ],
+      "repairTypes": [
+        "display",
+        "battery",
+        "camera"
+      ],
+      "isMobile": true,
+      "experience": "advanced",
+      "maxDistance": 25
+    },
+    {
+      "id": "master-1761768167615-4",
+      "name": "Наталія Комплексна",
+      "email": "natalia.complex@email.com",
+      "password": "$2b$10$K9guQNKNjLaU/w3FJn/fVeYeSWCvM2XhcctLy100/TwE0ctZsHDde",
+      "role": "master",
+      "city": "Харків",
+      "phone": "+380509012345",
+      "avatar": "",
+      "balance": 15200,
+      "skills": [
+        "iPhone Repair",
+        "iPad Repair",
+        "Mac Repair",
+        "Complex Repairs"
+      ],
+      "specialization": "Apple Device Specialist",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 65,
+      "rating": 5,
+      "bio": "Експерт з ремонту всіх Apple пристроїв. Працюю 12 років. Виконую складні ремонти: материнські плати, логічні плати, відновлення даних.",
+      "workLocation": "service",
+      "workExperience": 12,
+      "workingRadius": 20,
+      "languages": [
+        "українська",
+        "російська",
+        "англійська",
+        "німецька"
+      ],
+      "certifications": [
+        "Apple Certified Mac Technician",
+        "Data Recovery Specialist",
+        "Logic Board Repair"
+      ],
+      "equipment": [
+        {
+          "id": "eq6",
+          "model": "Advanced Diagnostic Station"
+        },
+        {
+          "id": "eq7",
+          "model": "Microscope System"
+        },
+        {
+          "id": "eq8",
+          "model": "Logic Board Tools"
+        }
+      ],
+      "tools": [
+        "Advanced Diagnostic Tools",
+        "Microscopes",
+        "Soldering Equipment",
+        "Data Recovery Tools"
+      ],
+      "portfolio": [],
+      "partsInventory": [
+        {
+          "id": "part6",
+          "masterId": "master-1761768167615-4",
+          "name": "MacBook Pro Keyboard",
+          "description": "Оригінальна клавіатура",
+          "price": 3200,
+          "quantity": 2
+        },
+        {
+          "id": "part7",
+          "masterId": "master-1761768167615-4",
+          "name": "iPad Display Assembly",
+          "description": "Оригінальний екран",
+          "price": 5500,
+          "quantity": 1
+        }
+      ],
+      "repairBrands": [
+        "Apple"
+      ],
+      "repairTypes": [
+        "display",
+        "battery",
+        "logic-board",
+        "data-recovery"
+      ],
+      "isMobile": false,
+      "experience": "expert",
+      "maxDistance": 20
+    },
+    {
+      "id": "master-1761768167615-5",
+      "name": "Богдан Універсальний",
+      "email": "bogdan.universal@email.com",
+      "password": "$2b$10$vNQWzqa3XBHtPbKZS.RbgergrPDV4/OyE/yVB2RZbwCa/t.q16b3m",
+      "role": "master",
+      "city": "Одеса",
+      "phone": "+380501023456",
+      "avatar": "",
+      "balance": 7200,
+      "skills": [
+        "Android Repair",
+        "iPhone Repair",
+        "Tablet Repair",
+        "Laptop Repair"
+      ],
+      "specialization": "Universal Repair Specialist",
+      "verified": true,
+      "blocked": false,
+      "completedOrders": 41,
+      "rating": 4.6,
+      "bio": "Універсальний майстер з ремонту різних пристроїв. Працюю в сервісному центрі. Можу відремонтувати майже будь-який пристрій.",
+      "workLocation": "service",
+      "workExperience": 7,
+      "workingRadius": 12,
+      "languages": [
+        "українська",
+        "російська"
+      ],
+      "certifications": [
+        "Universal Repair Certificate"
+      ],
+      "equipment": [
+        {
+          "id": "eq9",
+          "model": "Universal Repair Station"
+        }
+      ],
+      "tools": [
+        "Universal Tools",
+        "Heat Guns",
+        "Screwdriver Sets"
+      ],
+      "portfolio": [],
+      "partsInventory": [
+        {
+          "id": "part8",
+          "masterId": "master-1761768167615-5",
+          "name": "Universal Phone Battery",
+          "description": "Якісна заміна",
+          "price": 600,
+          "quantity": 10
+        }
+      ],
+      "repairBrands": [
+        "Samsung",
+        "Xiaomi",
+        "Huawei",
+        "Apple",
+        "OnePlus"
+      ],
+      "repairTypes": [
+        "display",
+        "battery",
+        "charging-port",
+        "camera"
+      ],
+      "isMobile": false,
+      "experience": "intermediate",
+      "maxDistance": 12
     }
   ],
-  "orders": [],
+  "orders": [
+    {
+      "id": "order-1761768133089-1",
+      "clientId": "client-1761768133089-1",
+      "clientName": "Олена Петренко",
+      "title": "Заміна дисплея iPhone 14 Pro",
+      "description": "Екран розбитий після падіння. Потрібна заміна оригінального дисплея.",
+      "device": "iPhone 14 Pro",
+      "deviceType": "iPhone",
+      "brand": "Apple",
+      "city": "Київ",
+      "budget": 9000,
+      "urgency": "high",
+      "status": "accepted",
+      "createdAt": "2025-10-27T20:02:13.589Z",
+      "updatedAt": "2025-10-28T20:02:13.590Z",
+      "proposalCount": 3,
+      "issue": "Розбитий roof",
+      "paymentStatus": "escrowed",
+      "paymentAmount": 8500,
+      "paymentMethod": "card",
+      "escrowId": "escrow-1761768133089-1",
+      "paymentDate": "2025-10-28T20:02:13.590Z",
+      "disputeStatus": "none",
+      "masterId": "master-1761768133089-1",
+      "assignedMasterId": "master-1761768133089-1",
+      "agreedPrice": 8500
+    },
+    {
+      "id": "order-1761768133089-2",
+      "clientId": "client-1761768133089-2",
+      "clientName": "Михайло Коваленко",
+      "title": "Заміна батареї Samsung Galaxy S21",
+      "description": "Батарея розряжається дуже швидко. Потрібна заміна.",
+      "device": "Samsung Galaxy S21",
+      "deviceType": "Other",
+      "brand": "Samsung",
+      "city": "Львів",
+      "budget": 1500,
+      "urgency": "medium",
+      "status": "in_progress",
+      "createdAt": "2025-10-24T20:02:13.590Z",
+      "updatedAt": "2025-10-28T20:02:13.590Z",
+      "proposalCount": 2,
+      "issue": "Швидко розряжається",
+      "paymentStatus": "escrowed",
+      "paymentAmount": 1200,
+      "paymentMethod": "card",
+      "escrowId": "escrow-1761768133089-2",
+      "paymentDate": "2025-10-25T20:02:13.590Z",
+      "disputeStatus": "none",
+      "masterId": "master-1761768133089-2",
+      "assignedMasterId": "master-1761768133089-2",
+      "agreedPrice": 1200
+    },
+    {
+      "id": "order-1761768133089-3",
+      "clientId": "client-1761768133089-3",
+      "clientName": "Анна Шевченко",
+      "title": "Ремонт камери iPhone 13",
+      "description": "Камера не фокусує. Потрібна діагностика та ремонт.",
+      "device": "iPhone 13",
+      "deviceType": "iPhone",
+      "brand": "Apple",
+      "city": "Харків",
+      "budget": 3000,
+      "urgency": "low",
+      "status": "open",
+      "createdAt": "2025-10-29T18:02:13.590Z",
+      "updatedAt": "2025-10-29T18:02:13.590Z",
+      "proposalCount": 1,
+      "issue": "Камера не працює",
+      "paymentStatus": "pending",
+      "paymentAmount": 0,
+      "paymentMethod": "card",
+      "escrowId": "",
+      "paymentDate": "2025-10-29T20:02:13.590Z",
+      "disputeStatus": "none"
+    },
+    {
+      "id": "order-1761768133089-4",
+      "clientId": "client-1761768133089-4",
+      "clientName": "Дмитро Морозенко",
+      "title": "Заміна екрана Xiaomi Mi 11",
+      "description": "Екран трісканутий. Потрібна заміна.",
+      "device": "Xiaomi Mi 11",
+      "deviceType": "Other",
+      "brand": "Xiaomi",
+      "city": "Одеса",
+      "budget": 4000,
+      "urgency": "medium",
+      "status": "open",
+      "createdAt": "2025-10-29T15:02:13.590Z",
+      "updatedAt": "2025-10-29T15:02:13.590Z",
+      "proposalCount": 0,
+      "issue": "Тріщина на екрані",
+      "paymentStatus": "pending",
+      "paymentAmount": 0,
+      "paymentMethod": "card",
+      "escrowId": "",
+      "paymentDate": "2025-10-29T20:02:13.590Z",
+      "disputeStatus": "none"
+    },
+    {
+      "id": "order-1761768133089-5",
+      "clientId": "client-1761768133089-5",
+      "clientName": "Софія Іваненко",
+      "title": "Ремонт iPad Air екран",
+      "description": "Тріщина на екрані після падіння. Потрібна заміна.",
+      "device": "iPad Air",
+      "deviceType": "iPad",
+      "brand": "Apple",
+      "city": "Дніпро",
+      "budget": 6000,
+      "urgency": "high",
+      "status": "completed",
+      "createdAt": "2025-10-19T20:02:13.590Z",
+      "updatedAt": "2025-10-21T20:02:13.590Z",
+      "completedAt": "2025-10-21T20:02:13.590Z",
+      "proposalCount": 4,
+      "issue": "Тріщина на екрані",
+      "paymentStatus": "released",
+      "paymentAmount": 5500,
+      "paymentMethod": "card",
+      "escrowId": "escrow-1761768133089-5",
+      "paymentDate": "2025-10-20T20:02:13.590Z",
+      "releaseDate": "2025-10-21T20:02:13.590Z",
+      "disputeStatus": "none",
+      "masterId": "master-1761768133089-1",
+      "assignedMasterId": "master-1761768133089-1",
+      "agreedPrice": 5500
+    },
+    {
+      "id": "order-1761768167615-1",
+      "clientId": "client-1761768167615-1",
+      "clientName": "Олена Петренко",
+      "title": "Заміна дисплея iPhone 14 Pro",
+      "description": "Екран розбитий після падіння. Потрібна заміна оригінального дисплея.",
+      "device": "iPhone 14 Pro",
+      "deviceType": "iPhone",
+      "brand": "Apple",
+      "city": "Київ",
+      "budget": 9000,
+      "urgency": "high",
+      "status": "accepted",
+      "createdAt": "2025-10-27T20:02:48.119Z",
+      "updatedAt": "2025-10-28T20:02:48.119Z",
+      "proposalCount": 3,
+      "issue": "Розбитий roof",
+      "paymentStatus": "escrowed",
+      "paymentAmount": 8500,
+      "paymentMethod": "card",
+      "escrowId": "escrow-1761768167615-1",
+      "paymentDate": "2025-10-28T20:02:48.119Z",
+      "disputeStatus": "none",
+      "masterId": "master-1761768167615-1",
+      "assignedMasterId": "master-1761768167615-1",
+      "agreedPrice": 8500
+    },
+    {
+      "id": "order-1761768167615-2",
+      "clientId": "client-1761768167615-2",
+      "clientName": "Михайло Коваленко",
+      "title": "Заміна батареї Samsung Galaxy S21",
+      "description": "Батарея розряжається дуже швидко. Потрібна заміна.",
+      "device": "Samsung Galaxy S21",
+      "deviceType": "Other",
+      "brand": "Samsung",
+      "city": "Львів",
+      "budget": 1500,
+      "urgency": "medium",
+      "status": "in_progress",
+      "createdAt": "2025-10-24T20:02:48.119Z",
+      "updatedAt": "2025-10-28T20:02:48.119Z",
+      "proposalCount": 2,
+      "issue": "Швидко розряжається",
+      "paymentStatus": "escrowed",
+      "paymentAmount": 1200,
+      "paymentMethod": "card",
+      "escrowId": "escrow-1761768167615-2",
+      "paymentDate": "2025-10-25T20:02:48.119Z",
+      "disputeStatus": "none",
+      "masterId": "master-1761768167615-2",
+      "assignedMasterId": "master-1761768167615-2",
+      "agreedPrice": 1200
+    },
+    {
+      "id": "order-1761768167615-3",
+      "clientId": "client-1761768167615-3",
+      "clientName": "Анна Шевченко",
+      "title": "Ремонт камери iPhone 13",
+      "description": "Камера не фокусує. Потрібна діагностика та ремонт.",
+      "device": "iPhone 13",
+      "deviceType": "iPhone",
+      "brand": "Apple",
+      "city": "Харків",
+      "budget": 3000,
+      "urgency": "low",
+      "status": "open",
+      "createdAt": "2025-10-29T18:02:48.119Z",
+      "updatedAt": "2025-10-29T18:02:48.119Z",
+      "proposalCount": 1,
+      "issue": "Камера не працює",
+      "paymentStatus": "pending",
+      "paymentAmount": 0,
+      "paymentMethod": "card",
+      "escrowId": "",
+      "paymentDate": "2025-10-29T20:02:48.119Z",
+      "disputeStatus": "none"
+    },
+    {
+      "id": "order-1761768167615-4",
+      "clientId": "client-1761768167615-4",
+      "clientName": "Дмитро Морозенко",
+      "title": "Заміна екрана Xiaomi Mi 11",
+      "description": "Екран трісканутий. Потрібна заміна.",
+      "device": "Xiaomi Mi 11",
+      "deviceType": "Other",
+      "brand": "Xiaomi",
+      "city": "Одеса",
+      "budget": 4000,
+      "urgency": "medium",
+      "status": "open",
+      "createdAt": "2025-10-29T15:02:48.119Z",
+      "updatedAt": "2025-10-29T15:02:48.119Z",
+      "proposalCount": 0,
+      "issue": "Тріщина на екрані",
+      "paymentStatus": "pending",
+      "paymentAmount": 0,
+      "paymentMethod": "card",
+      "escrowId": "",
+      "paymentDate": "2025-10-29T20:02:48.119Z",
+      "disputeStatus": "none"
+    },
+    {
+      "id": "order-1761768167615-5",
+      "clientId": "client-1761768167615-5",
+      "clientName": "Софія Іваненко",
+      "title": "Ремонт iPad Air екран",
+      "description": "Тріщина на екрані після падіння. Потрібна заміна.",
+      "device": "iPad Air",
+      "deviceType": "iPad",
+      "brand": "Apple",
+      "city": "Дніпро",
+      "budget": 6000,
+      "urgency": "high",
+      "status": "completed",
+      "createdAt": "2025-10-19T20:02:48.119Z",
+      "updatedAt": "2025-10-21T20:02:48.119Z",
+      "completedAt": "2025-10-21T20:02:48.119Z",
+      "proposalCount": 4,
+      "issue": "Тріщина на екрані",
+      "paymentStatus": "released",
+      "paymentAmount": 5500,
+      "paymentMethod": "card",
+      "escrowId": "escrow-1761768167615-5",
+      "paymentDate": "2025-10-20T20:02:48.119Z",
+      "releaseDate": "2025-10-21T20:02:48.119Z",
+      "disputeStatus": "none",
+      "masterId": "master-1761768167615-1",
+      "assignedMasterId": "master-1761768167615-1",
+      "agreedPrice": 5500
+    },
+    {
+      "id": "order-1761768200712-1",
+      "clientId": "client-1761768200712-1",
+      "clientName": "Олена Петренко",
+      "title": "Заміна дисплея iPhone 14 Pro",
+      "description": "Екран розбитий після падіння. Потрібна заміна оригінального дисплея.",
+      "device": "iPhone 14 Pro",
+      "deviceType": "iPhone",
+      "brand": "Apple",
+      "city": "Київ",
+      "budget": 9000,
+      "urgency": "high",
+      "status": "accepted",
+      "createdAt": "2025-10-27T20:03:21.214Z",
+      "updatedAt": "2025-10-28T20:03:21.215Z",
+      "proposalCount": 3,
+      "issue": "Розбитий roof",
+      "paymentStatus": "escrowed",
+      "paymentAmount": 8500,
+      "paymentMethod": "card",
+      "escrowId": "escrow-1761768200712-1",
+      "paymentDate": "2025-10-28T20:03:21.215Z",
+      "disputeStatus": "none",
+      "masterId": "master-1761768200712-1",
+      "assignedMasterId": "master-1761768200712-1",
+      "agreedPrice": 8500
+    },
+    {
+      "id": "order-1761768200712-2",
+      "clientId": "client-1761768200712-2",
+      "clientName": "Михайло Коваленко",
+      "title": "Заміна батареї Samsung Galaxy S21",
+      "description": "Батарея розряжається дуже швидко. Потрібна заміна.",
+      "device": "Samsung Galaxy S21",
+      "deviceType": "Other",
+      "brand": "Samsung",
+      "city": "Львів",
+      "budget": 1500,
+      "urgency": "medium",
+      "status": "in_progress",
+      "createdAt": "2025-10-24T20:03:21.215Z",
+      "updatedAt": "2025-10-28T20:03:21.215Z",
+      "proposalCount": 2,
+      "issue": "Швидко розряжається",
+      "paymentStatus": "escrowed",
+      "paymentAmount": 1200,
+      "paymentMethod": "card",
+      "escrowId": "escrow-1761768200712-2",
+      "paymentDate": "2025-10-25T20:03:21.215Z",
+      "disputeStatus": "none",
+      "masterId": "master-1761768200712-2",
+      "assignedMasterId": "master-1761768200712-2",
+      "agreedPrice": 1200
+    },
+    {
+      "id": "order-1761768200712-3",
+      "clientId": "client-1761768200712-3",
+      "clientName": "Анна Шевченко",
+      "title": "Ремонт камери iPhone 13",
+      "description": "Камера не фокусує. Потрібна діагностика та ремонт.",
+      "device": "iPhone 13",
+      "deviceType": "iPhone",
+      "brand": "Apple",
+      "city": "Харків",
+      "budget": 3000,
+      "urgency": "low",
+      "status": "open",
+      "createdAt": "2025-10-29T18:03:21.215Z",
+      "updatedAt": "2025-10-29T18:03:21.215Z",
+      "proposalCount": 1,
+      "issue": "Камера не працює",
+      "paymentStatus": "pending",
+      "paymentAmount": 0,
+      "paymentMethod": "card",
+      "escrowId": "",
+      "paymentDate": "2025-10-29T20:03:21.215Z",
+      "disputeStatus": "none"
+    },
+    {
+      "id": "order-1761768200712-4",
+      "clientId": "client-1761768200712-4",
+      "clientName": "Дмитро Морозенко",
+      "title": "Заміна екрана Xiaomi Mi 11",
+      "description": "Екран трісканутий. Потрібна заміна.",
+      "device": "Xiaomi Mi 11",
+      "deviceType": "Other",
+      "brand": "Xiaomi",
+      "city": "Одеса",
+      "budget": 4000,
+      "urgency": "medium",
+      "status": "open",
+      "createdAt": "2025-10-29T15:03:21.215Z",
+      "updatedAt": "2025-10-29T15:03:21.215Z",
+      "proposalCount": 0,
+      "issue": "Тріщина на екрані",
+      "paymentStatus": "pending",
+      "paymentAmount": 0,
+      "paymentMethod": "card",
+      "escrowId": "",
+      "paymentDate": "2025-10-29T20:03:21.215Z",
+      "disputeStatus": "none"
+    },
+    {
+      "id": "order-1761768200712-5",
+      "clientId": "client-1761768200712-5",
+      "clientName": "Софія Іваненко",
+      "title": "Ремонт iPad Air екран",
+      "description": "Тріщина на екрані після падіння. Потрібна заміна.",
+      "device": "iPad Air",
+      "deviceType": "iPad",
+      "brand": "Apple",
+      "city": "Дніпро",
+      "budget": 6000,
+      "urgency": "high",
+      "status": "completed",
+      "createdAt": "2025-10-19T20:03:21.215Z",
+      "updatedAt": "2025-10-21T20:03:21.215Z",
+      "completedAt": "2025-10-21T20:03:21.215Z",
+      "proposalCount": 4,
+      "issue": "Тріщина на екрані",
+      "paymentStatus": "released",
+      "paymentAmount": 5500,
+      "paymentMethod": "card",
+      "escrowId": "escrow-1761768200712-5",
+      "paymentDate": "2025-10-20T20:03:21.215Z",
+      "releaseDate": "2025-10-21T20:03:21.215Z",
+      "disputeStatus": "none",
+      "masterId": "master-1761768200712-1",
+      "assignedMasterId": "master-1761768200712-1",
+      "agreedPrice": 5500
+    }
+  ],
   "offers": [],
   "payments": [],
   "disputes": [],

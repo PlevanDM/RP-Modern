@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { User } from '../../../types';
 import { adminService } from '../../../services/adminService';
@@ -23,6 +24,7 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ users: propUsers = [], orders: propOrders = [], transactions: propTransactions = [] }: AdminDashboardProps) {
+  const { t } = useTranslation();
   const { orders: storeOrders } = useOrdersStore();
   const { currentUser } = useAuthStore();
   const [users, setUsers] = useState<User[]>(propUsers);
@@ -70,12 +72,12 @@ export function AdminDashboard({ users: propUsers = [], orders: propOrders = [],
         className="flex items-center justify-between mb-6"
       >
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600">Управление платформой</p>
+          <h1 className="text-3xl font-bold text-gray-900">{t('adminDashboard.title') || 'Admin Dashboard'}</h1>
+          <p className="text-gray-600">{t('adminDashboard.subtitle') || 'Platform Management'}</p>
         </div>
         {currentUser && (
           <div className="text-sm text-gray-500">
-            Welcome, <span className="font-semibold text-blue-600">{currentUser.name}</span>
+            {t('adminDashboard.welcome', { name: currentUser.name }) || `Welcome, ${currentUser.name}`}
           </div>
         )}
       </motion.div>
@@ -84,20 +86,20 @@ export function AdminDashboard({ users: propUsers = [], orders: propOrders = [],
 
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="orders">Orders</TabsTrigger>
-          <TabsTrigger value="financials">Financials</TabsTrigger>
-          <TabsTrigger value="reviews">Reviews</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="disputes">Disputes</TabsTrigger>
-          <TabsTrigger value="history">History</TabsTrigger>
+          <TabsTrigger value="overview">{t('adminDashboard.tabs.overview') || 'Overview'}</TabsTrigger>
+          <TabsTrigger value="users">{t('adminDashboard.tabs.users') || 'Users'}</TabsTrigger>
+          <TabsTrigger value="orders">{t('adminDashboard.tabs.orders') || 'Orders'}</TabsTrigger>
+          <TabsTrigger value="financials">{t('adminDashboard.tabs.financials') || 'Financials'}</TabsTrigger>
+          <TabsTrigger value="reviews">{t('adminDashboard.tabs.reviews') || 'Reviews'}</TabsTrigger>
+          <TabsTrigger value="analytics">{t('adminDashboard.tabs.analytics') || 'Analytics'}</TabsTrigger>
+          <TabsTrigger value="disputes">{t('adminDashboard.tabs.disputes') || 'Disputes'}</TabsTrigger>
+          <TabsTrigger value="history">{t('adminDashboard.tabs.history') || 'History'}</TabsTrigger>
         </TabsList>
         <TabsContent value="users">
           <div className="flex items-center mb-4">
             <input
               type="text"
-              placeholder="Search by name or email"
+              placeholder={t('adminDashboard.searchPlaceholder') || 'Search by name or email'}
               className="p-2 border border-gray-300 rounded-md"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -107,19 +109,19 @@ export function AdminDashboard({ users: propUsers = [], orders: propOrders = [],
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
             >
-              <option value="all">All Roles</option>
-              <option value="client">Client</option>
-              <option value="master">Master</option>
-              <option value="admin">Admin</option>
+              <option value="all">{t('adminDashboard.filters.allRoles') || 'All Roles'}</option>
+              <option value="client">{t('auth.roleClient') || 'Client'}</option>
+              <option value="master">{t('auth.roleMaster') || 'Master'}</option>
+              <option value="admin">{t('auth.roleAdmin') || 'Admin'}</option>
             </select>
             <select
               className="p-2 border border-gray-300 rounded-md ml-4"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
-              <option value="all">All Statuses</option>
-              <option value="active">Active</option>
-              <option value="blocked">Blocked</option>
+              <option value="all">{t('common.allStatuses') || 'All Statuses'}</option>
+              <option value="active">{t('common.active') || 'Active'}</option>
+              <option value="blocked">{t('common.blocked') || 'Blocked'}</option>
             </select>
           </div>
           <UsersTab
@@ -138,22 +140,22 @@ export function AdminDashboard({ users: propUsers = [], orders: propOrders = [],
                 value={orderStatusFilter}
                 onChange={(e) => setOrderStatusFilter(e.target.value)}
               >
-                <option value="all">All Statuses</option>
-                <option value="open">Open</option>
-                <option value="in_progress">In Progress</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-                <option value="disputed">Disputed</option>
+                <option value="all">{t('common.allStatuses') || 'All Statuses'}</option>
+                <option value="open">{t('orders.status.open') || 'Open'}</option>
+                <option value="in_progress">{t('common.inProgress') || 'In Progress'}</option>
+                <option value="completed">{t('common.completed') || 'Completed'}</option>
+                <option value="cancelled">{t('orders.status.cancelled') || 'Cancelled'}</option>
+                <option value="disputed">{t('orders.status.disputed') || 'Disputed'}</option>
               </select>
               <select
                 className="p-2 border border-gray-300 rounded-md ml-4"
                 value={orderSortBy}
                 onChange={(e) => setOrderSortBy(e.target.value)}
               >
-                <option value="createdAt_desc">Newest First</option>
-                <option value="createdAt_asc">Oldest First</option>
-                <option value="amount_desc">Price: High to Low</option>
-                <option value="amount_asc">Price: Low to High</option>
+                <option value="createdAt_desc">{t('adminDashboard.sort.newestFirst') || 'Newest First'}</option>
+                <option value="createdAt_asc">{t('adminDashboard.sort.oldestFirst') || 'Oldest First'}</option>
+                <option value="amount_desc">{t('adminDashboard.sort.priceHighToLow') || 'Price: High to Low'}</option>
+                <option value="amount_asc">{t('adminDashboard.sort.priceLowToHigh') || 'Price: Low to High'}</option>
               </select>
             </div>
           <OrdersTab

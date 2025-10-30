@@ -1,9 +1,8 @@
-// src/components/features/superadmin/SuperadminDashboard.tsx
 import React, { useState, useEffect } from 'react';
 import { apiUserService } from '../../../services/apiUserService';
 import { User } from '../../../types';
 
-const SuperadminDashboard: React.FC = () => {
+export const UserRoleManager: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +35,7 @@ const SuperadminDashboard: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Superadmin Dashboard</h1>
+      <h2 className="text-2xl font-bold mb-4">User Role Management</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white">
           <thead>
@@ -73,5 +72,3 @@ const SuperadminDashboard: React.FC = () => {
     </div>
   );
 };
-
-export default SuperadminDashboard;

@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { Smartphone, Monitor, Laptop } from 'lucide-react';
+import { AndroidIcon, IOSIcon, WindowsIcon, MacIcon, LinuxIcon } from '../common/PlatformIcons';
+import { motion } from 'framer-motion';
 
 interface ClientProfileStepProps {
   onComplete?: (data: Record<string, unknown>) => void;
+  hasInternalNavigation?: boolean;
 }
 
 export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
@@ -26,6 +29,14 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
   const handleDeviceSubmit = () => {
     if (clientMobileOS && clientComputerOS) {
       setStep('preferences');
+    }
+  };
+
+  const handleBack = () => {
+    if (step === 'devices') {
+      setStep('info');
+    } else if (step === 'preferences') {
+      setStep('devices');
     }
   };
 
@@ -74,7 +85,9 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Номер телефону</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Номер телефону <span className="text-red-500">*</span>
+              </label>
               <input
                 type="tel"
                 value={phone}
@@ -83,13 +96,22 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            <button
-              onClick={handleInfoSubmit}
-              disabled={!name || !city || !phone}
-              className="w-full py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Далі
-            </button>
+            <div className="flex gap-3 mt-4">
+              <button
+                onClick={handleBack}
+                disabled={step === 'info'}
+                className="px-6 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                Назад
+              </button>
+              <button
+                onClick={handleInfoSubmit}
+                disabled={!name || !city || !phone}
+                className="flex-1 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Далі
+              </button>
+            </div>
           </div>
         </>
       )}
@@ -105,40 +127,58 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
               Ваш мобільний пристрій
             </h3>
             <div className="grid grid-cols-2 gap-3 mt-2">
-              <button
+              <motion.button
                 onClick={() => setClientMobileOS('android')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                   clientMobileOS === 'android'
-                    ? 'border-blue-500 bg-blue-50 shadow-md'
-                    : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
+                    ? 'border-green-500 bg-green-50 shadow-md'
+                    : 'border-gray-200 hover:border-green-300 hover:shadow-sm'
                 }`}
               >
                 <div className="flex flex-col items-center">
-                  <div className={`mb-2 rounded-lg p-3 ${
-                    clientMobileOS === 'android' ? 'bg-blue-100' : 'bg-gray-100'
-                  }`}>
-                    <Smartphone className="w-8 h-8 text-gray-700" />
-                  </div>
+                  <motion.div 
+                    className={`mb-2 rounded-lg p-3 ${
+                      clientMobileOS === 'android' ? 'bg-green-100' : 'bg-gray-100'
+                    }`}
+                    animate={clientMobileOS === 'android' ? {
+                      rotate: [0, 5, -5, 0],
+                      scale: [1, 1.1, 1]
+                    } : {}}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <AndroidIcon isSelected={clientMobileOS === 'android'} />
+                  </motion.div>
                   <div className="font-medium text-sm text-gray-900">Android</div>
                 </div>
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 onClick={() => setClientMobileOS('ios')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                   clientMobileOS === 'ios'
-                    ? 'border-blue-500 bg-blue-50 shadow-md'
-                    : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
+                    ? 'border-gray-800 bg-gray-50 shadow-md'
+                    : 'border-gray-200 hover:border-gray-400 hover:shadow-sm'
                 }`}
               >
                 <div className="flex flex-col items-center">
-                  <div className={`mb-2 rounded-lg p-3 ${
-                    clientMobileOS === 'ios' ? 'bg-blue-100' : 'bg-gray-100'
-                  }`}>
-                    <Smartphone className="w-8 h-8 text-gray-700" />
-                  </div>
+                  <motion.div 
+                    className={`mb-2 rounded-lg p-3 ${
+                      clientMobileOS === 'ios' ? 'bg-gray-100' : 'bg-gray-50'
+                    }`}
+                    animate={clientMobileOS === 'ios' ? {
+                      rotate: [0, -5, 5, 0],
+                      scale: [1, 1.1, 1]
+                    } : {}}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <IOSIcon isSelected={clientMobileOS === 'ios'} />
+                  </motion.div>
                   <div className="font-medium text-sm text-gray-900">iPhone/iOS</div>
                 </div>
-              </button>
+              </motion.button>
             </div>
           </div>
 
@@ -148,8 +188,10 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
               Ваш комп'ютер
             </h3>
             <div className="grid grid-cols-3 gap-2 mt-2">
-              <button
+              <motion.button
                 onClick={() => setClientComputerOS('windows')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 className={`p-3 rounded-xl border-2 transition-all duration-200 ${
                   clientComputerOS === 'windows'
                     ? 'border-blue-500 bg-blue-50 shadow-md'
@@ -157,58 +199,90 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
                 }`}
               >
                 <div className="flex flex-col items-center">
-                  <div className={`mb-1 rounded-lg p-2 ${
-                    clientComputerOS === 'windows' ? 'bg-blue-100' : 'bg-gray-100'
-                  }`}>
-                    <Monitor className="w-6 h-6 text-gray-700" />
-                  </div>
+                  <motion.div 
+                    className={`mb-1 rounded-lg p-2 ${
+                      clientComputerOS === 'windows' ? 'bg-blue-100' : 'bg-gray-100'
+                    }`}
+                    animate={clientComputerOS === 'windows' ? {
+                      scale: [1, 1.15, 1]
+                    } : {}}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <WindowsIcon isSelected={clientComputerOS === 'windows'} />
+                  </motion.div>
                   <div className="font-medium text-xs text-gray-900">Windows</div>
                 </div>
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 onClick={() => setClientComputerOS('mac')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 className={`p-3 rounded-xl border-2 transition-all duration-200 ${
                   clientComputerOS === 'mac'
-                    ? 'border-blue-500 bg-blue-50 shadow-md'
-                    : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
+                    ? 'border-gray-800 bg-gray-50 shadow-md'
+                    : 'border-gray-200 hover:border-gray-400 hover:shadow-sm'
                 }`}
               >
                 <div className="flex flex-col items-center">
-                  <div className={`mb-1 rounded-lg p-2 ${
-                    clientComputerOS === 'mac' ? 'bg-blue-100' : 'bg-gray-100'
-                  }`}>
-                    <Laptop className="w-6 h-6 text-gray-700" />
-                  </div>
+                  <motion.div 
+                    className={`mb-1 rounded-lg p-2 ${
+                      clientComputerOS === 'mac' ? 'bg-gray-100' : 'bg-gray-50'
+                    }`}
+                    animate={clientComputerOS === 'mac' ? {
+                      rotate: [0, -2, 2, 0],
+                      scale: [1, 1.15, 1]
+                    } : {}}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <MacIcon isSelected={clientComputerOS === 'mac'} />
+                  </motion.div>
                   <div className="font-medium text-xs text-gray-900">Mac</div>
                 </div>
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 onClick={() => setClientComputerOS('linux')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 className={`p-3 rounded-xl border-2 transition-all duration-200 ${
                   clientComputerOS === 'linux'
-                    ? 'border-blue-500 bg-blue-50 shadow-md'
-                    : 'border-gray-200 hover:border-blue-300 hover:shadow-sm'
+                    ? 'border-yellow-500 bg-yellow-50 shadow-md'
+                    : 'border-gray-200 hover:border-yellow-300 hover:shadow-sm'
                 }`}
               >
                 <div className="flex flex-col items-center">
-                  <div className={`mb-1 rounded-lg p-2 ${
-                    clientComputerOS === 'linux' ? 'bg-blue-100' : 'bg-gray-100'
-                  }`}>
-                    <Laptop className="w-6 h-6 text-gray-700" />
-                  </div>
+                  <motion.div 
+                    className={`mb-1 rounded-lg p-2 ${
+                      clientComputerOS === 'linux' ? 'bg-yellow-100' : 'bg-gray-100'
+                    }`}
+                    animate={clientComputerOS === 'linux' ? {
+                      rotate: [0, 360],
+                      scale: [1, 1.15, 1]
+                    } : {}}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  >
+                    <LinuxIcon isSelected={clientComputerOS === 'linux'} />
+                  </motion.div>
                   <div className="font-medium text-xs text-gray-900">Linux</div>
                 </div>
-              </button>
+              </motion.button>
             </div>
           </div>
 
-          <button
-            onClick={handleDeviceSubmit}
-            disabled={!clientMobileOS || !clientComputerOS}
-            className="w-full py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Далі
-          </button>
+          <div className="flex gap-3 mt-4">
+            <button
+              onClick={handleBack}
+              className="px-6 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-all"
+            >
+              Назад
+            </button>
+            <button
+              onClick={handleDeviceSubmit}
+              disabled={!clientMobileOS || !clientComputerOS}
+              className="flex-1 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Далі
+            </button>
+          </div>
         </>
       )}
 
@@ -327,13 +401,21 @@ export const ClientProfileStep = ({ onComplete }: ClientProfileStepProps) => {
             </div>
           </div>
 
-          <button
-            onClick={handlePreferencesSubmit}
-            disabled={!skillLevel || !budgetRange || preferredPriority.length === 0 || !workLocation}
-            className="w-full py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Завершити
-          </button>
+          <div className="flex gap-3 mt-4">
+            <button
+              onClick={handleBack}
+              className="px-6 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-all"
+            >
+              Назад
+            </button>
+            <button
+              onClick={handlePreferencesSubmit}
+              disabled={!skillLevel || !budgetRange || preferredPriority.length === 0 || !workLocation}
+              className="flex-1 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Завершити
+            </button>
+          </div>
         </>
       )}
     </div>

@@ -1,5 +1,6 @@
 // Modern Users Management Panel
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { 
   Users, Search, Plus, Edit,
   Mail, MapPin, Calendar, Star, MoreVertical,
@@ -20,6 +21,7 @@ import { apiUserService } from '../../../services/apiUserService';
 import { User } from '../../../types';
 
 export const ModernUsersPanel = () => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRole, setFilterRole] = useState('all');
@@ -141,7 +143,7 @@ export const ModernUsersPanel = () => {
               
               <AdminButton>
                 <Plus className="w-4 h-4 mr-2" />
-                Додати користувача
+                {t('admin.addUser')}
               </AdminButton>
             </div>
           </div>

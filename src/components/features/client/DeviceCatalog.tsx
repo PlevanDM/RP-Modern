@@ -379,7 +379,7 @@ export function DeviceCatalog({ onCreateOrder }: { onCreateOrder?: (data: Create
       {/* Header */}
       <motion.div variants={itemVariants} className="text-center mb-8">
         <h1 className="text-4xl font-bold text-gray-900 mb-2">Каталог Пристроїв</h1>
-        <p className="text-gray-600">Знайдіть свое пристрій и створіть заявку на ремонт</p>
+        <p className="text-gray-600">Знайдіть свій пристрій та створіть заявку на ремонт</p>
       </motion.div>
 
       {/* Search */}

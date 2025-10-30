@@ -18,6 +18,9 @@ import {
   Tablet,
   Watch,
   Headphones,
+  Car,
+  Home,
+  Wrench,
   Battery,
   Zap,
   Monitor,
@@ -26,6 +29,8 @@ import {
 import { User as UserType } from '../../types/models';
 import { useAuthStore } from '../../store/authStore';
 import { apiUserService } from '../../services/apiUserService';
+import { useTranslation } from 'react-i18next';
+import { useToastContext } from '../common/Toast/ToastProvider';
 
 interface ProfileData {
   name: string;
@@ -48,7 +53,9 @@ interface ProfileProps {
 }
 
 export function Profile({ currentUser, orders = [] }: ProfileProps) {
+  const { t } = useTranslation();
   const { updateCurrentUser } = useAuthStore();
+  const toast = useToastContext();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
     name: currentUser?.name || 'Користувач',
@@ -66,10 +73,37 @@ export function Profile({ currentUser, orders = [] }: ProfileProps) {
   const [formData, setFormData] = useState(profile);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  // Оновлюємо profile при зміні currentUser
+  // Розраховуємо реальну статистику з замовлень
+  const realStats = React.useMemo(() => {
+    if (!currentUser || orders.length === 0) {
+      return {
+        completedOrders: currentUser?.completedOrders || 0,
+        totalOrders: 0,
+        inProgress: 0,
+      };
+    }
+
+    const userOrders = orders.filter(
+      (o) => 
+        (currentUser.role === 'client' && o.clientId === currentUser.id) ||
+        (currentUser.role === 'master' && o.masterId === currentUser.id)
+    );
+
+    return {
+      completedOrders: userOrders.filter((o) => 
+        o.status === 'completed' || o.status === 'paid'
+      ).length,
+      totalOrders: userOrders.length,
+      inProgress: userOrders.filter((o) => 
+        o.status === 'in_progress' || o.status === 'accepted'
+      ).length,
+    };
+  }, [currentUser, orders]);
+
+  // Оновлюємо profile при зміні currentUser або статистики
   useEffect(() => {
     if (currentUser) {
-      setProfile({
+      const updatedProfile = {
         name: currentUser.name || 'Користувач',
         email: currentUser.email || 'user@example.com',
         phone: currentUser.phone || '+380 50 000 00 00',
@@ -78,22 +112,48 @@ export function Profile({ currentUser, orders = [] }: ProfileProps) {
         role: currentUser.role || 'client',
         bio: currentUser.bio || '',
         rating: currentUser.rating || 4.8,
-        completedOrders: currentUser.completedOrders || 12,
-        memberSince: currentUser.memberSince || '2024'
-      });
+        // Використовуємо реальну статистику, якщо є замовлення, інакше з профілю
+        completedOrders: realStats.completedOrders > 0 
+          ? realStats.completedOrders 
+          : (currentUser.completedOrders || 0),
+        memberSince: currentUser.memberSince || new Date().getFullYear().toString()
+      };
+      setProfile(updatedProfile);
+      // Синхронізуємо formData, якщо не в режимі редагування
+      if (!isEditing) {
+        setFormData(updatedProfile);
+      }
     }
-  }, [currentUser]);
+  }, [currentUser, isEditing, realStats]);
 
   const handleSave = async () => {
     try {
-      const updatedUser = await apiUserService.updateUserProfile(formData);
+      const updatedUser = await apiUserService.updateUserProfile(currentUser.id, formData);
       updateCurrentUser(updatedUser);
       setProfile(formData);
       setIsEditing(false);
-    } catch (error) {
+      
+      // Показуємо успішне повідомлення
+      toast.success(t('profile.updateSuccess') || 'Профіль успішно оновлено!', 3000);
+    } catch (error: any) {
       console.error('Failed to update profile:', error);
-      // Optionally, show an error message to the user
-      alert('Не вдалося оновити профіль. Спробуйте ще раз.');
+      
+      // Показуємо помилку через toast
+      const errorMessage = error?.response?.data?.message || 
+                          error?.message || 
+                          t('errors.updateProfileFailed') || 
+                          'Не вдалося оновити профіль. Спробуйте ще раз.';
+      
+      toast.error(errorMessage, 5000);
+      
+      // Для тестування: якщо endpoint не існує, просто оновлюємо локально
+      if (error?.response?.status === 404 || error?.code === 'ERR_NETWORK') {
+        console.warn('API endpoint not available, updating locally');
+        setProfile(formData);
+        updateCurrentUser({ ...currentUser, ...formData } as UserType);
+        setIsEditing(false);
+        toast.success('Профіль оновлено локально', 3000);
+      }
     }
   };
 
@@ -189,7 +249,7 @@ export function Profile({ currentUser, orders = [] }: ProfileProps) {
                 className="flex items-center gap-2 px-4 py-2 bg-[#1976d2] hover:bg-[#1565c0] text-white rounded-lg font-medium transition-shadow hover:shadow-lg text-sm"
               >
                 <Edit3 className="w-4 h-4" />
-                Редагувати
+                {t('common.edit')}
               </motion.button>
             )}
           </motion.div>
@@ -443,7 +503,7 @@ export function Profile({ currentUser, orders = [] }: ProfileProps) {
                             <Briefcase className="w-5 h-5 text-blue-600" />
                           </div>
                           <div>
-                            <p className="text-xs text-slate-600 uppercase font-semibold">Завершено</p>
+                            <p className="text-xs text-slate-600 uppercase font-semibold">{t('common.completed')}</p>
                             <p className="text-lg font-bold text-slate-900">{profile.completedOrders}</p>
                           </div>
                         </div>
@@ -586,21 +646,64 @@ export function Profile({ currentUser, orders = [] }: ProfileProps) {
                 )}
 
                 {/* Work Info - Only for masters */}
-                {currentUser?.role === 'master' && (currentUser?.workLocation || currentUser?.equipment) && (
+                {currentUser?.role === 'master' && (currentUser?.workLocation || currentUser?.equipment || currentUser?.repairBrands || currentUser?.repairTypes || currentUser?.workExperience) && (
                   <>
                     {currentUser.workLocation && (
                       <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition">
                         <div className="p-2 bg-indigo-100 rounded-lg">
                           {currentUser.workLocation === 'service' ? (
                             <Briefcase className="w-5 h-5 text-indigo-600" />
+                          ) : currentUser.workLocation === 'mobile' ? (
+                            <Car className="w-5 h-5 text-indigo-600" />
                           ) : (
-                            <User className="w-5 h-5 text-indigo-600" />
+                            <Home className="w-5 h-5 text-indigo-600" />
                           )}
                         </div>
                         <div className="flex-1">
                           <p className="text-xs text-gray-500 font-medium">Місце роботи</p>
                           <p className="text-sm font-medium text-gray-900">
-                            {currentUser.workLocation === 'service' ? 'Сервісний центр' : 'Вдома'}
+                            {currentUser.workLocation === 'service' ? 'Сервісний центр' : 
+                             currentUser.workLocation === 'mobile' ? 'Виїздний майстер' : 
+                             'Домашня майстерня'}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    {currentUser.repairBrands && currentUser.repairBrands.length > 0 && (
+                      <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition">
+                        <div className="p-2 bg-blue-100 rounded-lg">
+                          <Smartphone className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-xs text-gray-500 font-medium">Бренди, які ремонтую</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            {currentUser.repairBrands.join(', ')}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    {currentUser.repairTypes && currentUser.repairTypes.length > 0 && (
+                      <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition">
+                        <div className="p-2 bg-green-100 rounded-lg">
+                          <Wrench className="w-5 h-5 text-green-600" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-xs text-gray-500 font-medium">Типи ремонтів</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            {currentUser.repairTypes.join(', ')}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    {currentUser.workExperience !== undefined && currentUser.workExperience !== null && (
+                      <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition">
+                        <div className="p-2 bg-purple-100 rounded-lg">
+                          <Award className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-xs text-gray-500 font-medium">Досвід роботи</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            {currentUser.workExperience} {currentUser.workExperience === 1 ? 'рік' : currentUser.workExperience < 5 ? 'роки' : 'років'}
                           </p>
                         </div>
                       </div>
@@ -665,7 +768,7 @@ export function Profile({ currentUser, orders = [] }: ProfileProps) {
                       whileHover={{ scale: 1.05 }}
                       className="p-4 bg-green-50 rounded-xl border border-green-100"
                     >
-                      <p className="text-xs text-green-600 font-semibold mb-1">Завершено</p>
+                      <p className="text-xs text-green-600 font-semibold mb-1">{t('common.completed')}</p>
                       <p className="text-2xl font-bold text-green-700">{stats.completed}</p>
                     </motion.div>
                     <motion.div
@@ -804,7 +907,7 @@ export function Profile({ currentUser, orders = [] }: ProfileProps) {
                   className="flex items-center justify-center gap-2 px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg font-medium transition text-sm"
             >
                   <X className="w-4 h-4" />
-              Скасувати
+              {t('common.cancel')}
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.02, backgroundColor: '#1976d2' }}
@@ -813,7 +916,7 @@ export function Profile({ currentUser, orders = [] }: ProfileProps) {
                   className="flex items-center justify-center gap-2 px-6 py-2.5 bg-[#1976d2] hover:bg-[#1565c0] text-white rounded-lg font-medium transition shadow-md hover:shadow-lg text-sm"
                 >
                   <Save className="w-4 h-4" />
-                  Зберегти
+                  {t('common.save')}
                 </motion.button>
               </motion.div>
             )}

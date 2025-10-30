@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronRight, ChevronLeft, Check } from 'lucide-react';
 
 interface WizardStep {
@@ -18,15 +19,16 @@ interface OrderData {
   images: File[];
 }
 
-const STEPS: WizardStep[] = [
-  { id: 1, title: '📱 Пристрій', description: 'Виберіть тип пристрою' },
-  { id: 2, title: '🔧 Проблема', description: 'Опишіть проблему' },
-  { id: 3, title: '💰 Бюджет', description: 'Вкажіть бюджет' },
-  { id: 4, title: '📸 Фото', description: 'Завантажте фотографії' },
-  { id: 5, title: '✅ Підтвердження', description: 'Перевірте дані' }
+const getSteps = (t: any): WizardStep[] => [
+  { id: 1, title: '📱 Пристрій', description: t('orderCreation.selectDevice') },
+  { id: 2, title: '🔧 Проблема', description: t('orderCreation.describeProblem') },
+  { id: 3, title: '💰 Бюджет', description: t('orderCreation.enterBudget') },
+  { id: 4, title: '📸 Фото', description: t('orderCreation.uploadPhotos') },
+  { id: 5, title: '✅ Підтвердження', description: t('orderCreation.reviewData') }
 ];
 
 export function OrderCreationWizard({ onComplete }: { onComplete: (order: OrderData) => void }) {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(1);
   const [orderData, setOrderData] = useState<OrderData>({
     deviceType: '',
@@ -45,19 +47,19 @@ export function OrderCreationWizard({ onComplete }: { onComplete: (order: OrderD
     
     switch (step) {
       case 1:
-        if (!orderData.deviceType) newErrors.deviceType = 'Виберіть пристрій';
-        if (!orderData.model) newErrors.model = 'Вкажіть модель';
+        if (!orderData.deviceType) newErrors.deviceType = t('orderCreation.selectDevice');
+        if (!orderData.model) newErrors.model = t('orderCreation.enterModel');
         break;
       case 2:
-        if (!orderData.problem) newErrors.problem = 'Опишіть проблему';
-        if (orderData.problem.length < 10) newErrors.problem = 'Мінімум 10 символів';
+        if (!orderData.problem) newErrors.problem = t('orderCreation.describeProblem');
+        if (orderData.problem.length < 10) newErrors.problem = t('orderCreation.minLength');
         break;
       case 3:
-        if (orderData.budget <= 0) newErrors.budget = 'Вкажіть бюджет';
-        if (!orderData.location) newErrors.location = 'Вкажіть місцеположення';
+        if (orderData.budget <= 0) newErrors.budget = t('orderCreation.enterBudget');
+        if (!orderData.location) newErrors.location = t('orderCreation.enterLocation');
         break;
       case 4:
-        if (orderData.images.length === 0) newErrors.images = 'Додайте хоча б одну фотографію';
+        if (orderData.images.length === 0) newErrors.images = t('orderCreation.addPhoto');
         break;
       default:
         break;
@@ -95,7 +97,7 @@ export function OrderCreationWizard({ onComplete }: { onComplete: (order: OrderD
                 onChange={(e) => setOrderData({ ...orderData, deviceType: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value="">Виберіть тип...</option>
+                <option value="">{t('orderCreation.selectType')}</option>
                 <option value="iPhone">iPhone</option>
                 <option value="iPad">iPad</option>
                 <option value="MacBook">MacBook</option>
@@ -252,14 +254,14 @@ export function OrderCreationWizard({ onComplete }: { onComplete: (order: OrderD
     <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">🎯 Створити Замовлення</h1>
-        <p className="text-gray-600">Крок за кроком до успіху</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">🎯 {t('orderCreation.createOrder')}</h1>
+        <p className="text-gray-600">{t('orderCreation.stepByStep')}</p>
       </div>
 
       {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          {STEPS.map((step, idx) => (
+          {getSteps(t).map((step, idx) => (
             <div key={step.id} className="flex-1 flex items-center">
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition ${
@@ -281,7 +283,7 @@ export function OrderCreationWizard({ onComplete }: { onComplete: (order: OrderD
           ))}
         </div>
         <div className="flex justify-between text-xs text-gray-600">
-          {STEPS.map((step) => (
+          {getSteps(t).map((step) => (
             <span key={step.id} className="text-center flex-1">{step.title}</span>
           ))}
         </div>
@@ -316,7 +318,7 @@ export function OrderCreationWizard({ onComplete }: { onComplete: (order: OrderD
             onClick={handleSubmit}
             className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition ml-auto"
           >
-            <Check className="w-5 h-5" /> Створити Замовлення
+            <Check className="w-5 h-5" /> {t('orderCreation.createOrder')}
           </button>
         )}
       </div>

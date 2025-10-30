@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WorkExperience } from '../../../types/models';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -13,6 +14,7 @@ interface WorkExperienceProps {
 }
 
 export const WorkExperienceSection: React.FC<WorkExperienceProps> = ({ experience, isEditing, onExperienceChange }) => {
+  const { t } = useTranslation();
   const [editingExperience, setEditingExperience] = useState<WorkExperience | null>(null);
 
   const handleAddNew = () => {
@@ -66,14 +68,14 @@ export const WorkExperienceSection: React.FC<WorkExperienceProps> = ({ experienc
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <label className="text-sm font-semibold text-gray-600 uppercase">Досвід роботи</label>
+        <label className="text-sm font-semibold text-gray-600 uppercase">{t('workExperience.title')}</label>
         {isEditing && (
           <button
             onClick={handleAddNew}
             className="flex items-center gap-2 px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg transition text-sm"
           >
             <AddIcon sx={{ fontSize: 18 }} />
-            Додати
+            {t('common.add')}
           </button>
         )}
       </div>
@@ -86,7 +88,7 @@ export const WorkExperienceSection: React.FC<WorkExperienceProps> = ({ experienc
                 <p className="font-bold text-gray-800">{exp.role}</p>
                 <p className="text-sm text-gray-600">{exp.company}</p>
                 <p className="text-xs text-gray-500 mt-1">
-                  {exp.startDate} - {exp.endDate || 'Теперішній час'}
+                  {exp.startDate} - {exp.endDate || t('workExperience.present')}
                 </p>
                 <p className="text-sm text-gray-700 mt-2">{exp.description}</p>
               </div>
@@ -112,7 +114,7 @@ export const WorkExperienceSection: React.FC<WorkExperienceProps> = ({ experienc
           </div>
         ))}
         {experience.length === 0 && !isEditing && (
-          <p className="text-gray-500 text-sm">Немає досвіду роботи</p>
+          <p className="text-gray-500 text-sm">{t('workExperience.noExperience')}</p>
         )}
       </div>
 
@@ -121,7 +123,7 @@ export const WorkExperienceSection: React.FC<WorkExperienceProps> = ({ experienc
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">
-              {editingExperience.id.startsWith('new-') ? 'Додати досвід роботи' : 'Редагувати досвід роботи'}
+              {editingExperience.id.startsWith('new-') ? t('workExperience.add') : t('workExperience.edit')}
             </h3>
 
             <div className="space-y-4">
@@ -130,7 +132,7 @@ export const WorkExperienceSection: React.FC<WorkExperienceProps> = ({ experienc
                 name="role"
                 value={editingExperience.role}
                 onChange={handleInputChange}
-                placeholder="Посада"
+                placeholder={t('workExperience.position')}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
               <input
@@ -138,7 +140,7 @@ export const WorkExperienceSection: React.FC<WorkExperienceProps> = ({ experienc
                 name="company"
                 value={editingExperience.company}
                 onChange={handleInputChange}
-                placeholder="Компанія"
+                placeholder={t('workExperience.company')}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
               <div className="grid grid-cols-2 gap-4">
@@ -147,7 +149,7 @@ export const WorkExperienceSection: React.FC<WorkExperienceProps> = ({ experienc
                   name="startDate"
                   value={editingExperience.startDate}
                   onChange={handleInputChange}
-                  placeholder="Дата початку (напр., 2020)"
+                  placeholder={t('workExperience.startDate')}
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
                 <input
@@ -155,7 +157,7 @@ export const WorkExperienceSection: React.FC<WorkExperienceProps> = ({ experienc
                   name="endDate"
                   value={editingExperience.endDate}
                   onChange={handleInputChange}
-                  placeholder="Дата закінчення (або пусто)"
+                  placeholder={t('workExperience.endDate')}
                   className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
                 />
               </div>
@@ -163,7 +165,7 @@ export const WorkExperienceSection: React.FC<WorkExperienceProps> = ({ experienc
                 name="description"
                 value={editingExperience.description}
                 onChange={handleInputChange}
-                placeholder="Опис"
+                placeholder={t('workExperience.description')}
                 rows={4}
                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
@@ -175,14 +177,14 @@ export const WorkExperienceSection: React.FC<WorkExperienceProps> = ({ experienc
                 className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium"
               >
                 <SaveIcon sx={{ fontSize: 20 }} />
-                Зберегти
+                {t('common.save')}
               </button>
               <button
                 onClick={handleCancel}
                 className="flex-1 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg transition font-medium"
               >
                  <CloseIcon sx={{ fontSize: 20 }} />
-                Скасувати
+                {t('common.cancel')}
               </button>
             </div>
           </div>

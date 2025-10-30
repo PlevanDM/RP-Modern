@@ -215,7 +215,7 @@ export const SpecializationStep = ({ onComplete, onBack }: SpecializationStepPro
               onClick={handleSubmit}
               className="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/30 hover:shadow-xl active:scale-95"
             >
-              Далее
+              Далі
             </button>
           </div>
         )}

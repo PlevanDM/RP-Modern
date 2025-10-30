@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { 
   X, 
   Clock, 
@@ -40,6 +41,7 @@ export function Proposals({
   onRejectProposal,
   onShowToast,
 }: ProposalsProps) {
+  const { t } = useTranslation();
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -74,7 +76,7 @@ export function Proposals({
 
   const handleConfirmCancel = () => {
     if (!cancelReason.trim()) {
-      onShowToast?.('⚠️ Вкажіть причину скасування');
+      onShowToast?.(`⚠️ ${t('proposals.enterCancelReason')}`);
       return;
     }
     
@@ -93,7 +95,7 @@ export function Proposals({
 
   const handleConfirmReject = () => {
     if (!rejectReason.trim()) {
-      onShowToast?.('⚠️ Вкажіть причину відхилення');
+      onShowToast?.(`⚠️ ${t('proposals.enterRejectReason')}`);
       return;
     }
     
@@ -106,7 +108,7 @@ export function Proposals({
 
   const handleSubmitProposal = () => {
     if (!selectedOrderId || !formData.price || !formData.description) {
-      onShowToast?.('⚠️ Заповніть всі поля');
+      onShowToast?.(`⚠️ ${t('common.fillAllFields')}`);
       return;
     }
     onSubmitProposal?.(selectedOrderId, parseFloat(formData.price), formData.description);
@@ -121,13 +123,13 @@ export function Proposals({
   return (
     <div className="space-y-6 overflow-x-hidden w-full">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-gray-900">Пропозиції</h2>
+        <h2 className="text-3xl font-bold text-gray-900">{t('navigation.proposals')}</h2>
         {isMaster && (
           <button
             onClick={() => setShowSubmitModal(true)}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2"
           >
-            <Send className="w-5 h-5" /> Розмістити пропозицію
+            <Send className="w-5 h-5" /> {t('proposals.submitProposal')}
           </button>
         )}
       </div>
@@ -137,7 +139,7 @@ export function Proposals({
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-x-hidden">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold">Розмістити пропозицію</h3>
+              <h3 className="text-xl font-bold">{t('proposals.submitProposal')}</h3>
               <button onClick={() => setShowSubmitModal(false)}>
                 <X size={20} />
               </button>
@@ -147,13 +149,13 @@ export function Proposals({
               <>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Замовлення</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('proposals.order')}</label>
                     <select
                       value={selectedOrderId}
                       onChange={(e) => setSelectedOrderId(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                     >
-                      <option value="">Виберіть замовлення</option>
+                      <option value="">{t('proposals.selectOrder')}</option>
                       {openProposals.map((order) => (
                         <option key={order.id} value={order.id}>
                           {order.title} - {order.deviceType}
@@ -163,7 +165,7 @@ export function Proposals({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Ціна ($)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('proposals.price')}</label>
                     <input
                       type="number"
                       value={formData.price}
@@ -174,7 +176,7 @@ export function Proposals({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Кількість днів</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('proposals.estimatedDays')}</label>
                     <input
                       type="number"
                       value={formData.estimatedDays}
@@ -185,11 +187,11 @@ export function Proposals({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Опис роботи</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('proposals.workDescription')}</label>
                     <textarea
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      placeholder="Поясніть як ви виконаєте роботу..."
+                      placeholder={t('proposals.workDescriptionPlaceholder')}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg h-24"
                     />
                   </div>
@@ -199,13 +201,13 @@ export function Proposals({
                       onClick={handleSubmitProposal}
                       className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
                     >
-                      Розмістити
+                      {t('proposals.submit')}
                     </button>
                     <button
                       onClick={() => setShowSubmitModal(false)}
                       className="flex-1 px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300"
                     >
-                      Скасувати
+                      {t('common.cancel')}
                     </button>
                   </div>
                 </div>
@@ -226,7 +228,7 @@ export function Proposals({
                 : 'bg-gray-200 text-gray-900 hover:bg-gray-300'
             }`}
           >
-            Всі
+            {t('proposals.all')}
           </button>
           <button
             onClick={() => setFilterStatus('pending')}
@@ -236,7 +238,7 @@ export function Proposals({
                 : 'bg-gray-200 text-gray-900 hover:bg-gray-300'
             }`}
           >
-            Очікуючі
+            {t('proposals.pending')}
           </button>
           <button
             onClick={() => setFilterStatus('accepted')}
@@ -246,7 +248,7 @@ export function Proposals({
                 : 'bg-gray-200 text-gray-900 hover:bg-gray-300'
             }`}
           >
-            Прийняті
+            {t('proposals.accepted')}
           </button>
         </div>
       )}
@@ -254,7 +256,7 @@ export function Proposals({
       {/* Proposals List */}
       {filteredProposals.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Немає пропозицій</p>
+          <p className="text-gray-500">{t('proposals.noProposals')}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -271,7 +273,7 @@ export function Proposals({
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1">
                     <h3 className="text-base font-semibold text-gray-900 mb-1">
-                      Замовлення #{proposal.orderId}
+                      {t('proposals.order')} #{proposal.orderId}
                     </h3>
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <User className="w-3.5 h-3.5" />
@@ -285,19 +287,19 @@ export function Proposals({
                   {proposal.status === 'pending' && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs font-medium">
                       <Clock className="w-3 h-3" />
-                      Очікує
+                      {t('proposals.pending')}
                     </span>
                   )}
                   {proposal.status === 'accepted' && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs font-medium">
                       <Check className="w-3 h-3" />
-                      Прийнята
+                      {t('proposals.accepted')}
                     </span>
                   )}
                   {proposal.status === 'cancelled' && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs font-medium">
                       <Ban className="w-3 h-3" />
-                      Скасовано
+                      {t('status.cancelled')}
                     </span>
                   )}
                 </div>
@@ -308,7 +310,7 @@ export function Proposals({
                 {/* Cancel Reason */}
                 {proposal.status === 'cancelled' && proposal.cancelReason && (
                   <div className="p-2 bg-gray-50 border-l-2 border-gray-300 rounded mb-3">
-                    <p className="text-xs text-gray-500 mb-0.5">Причина скасування:</p>
+                    <p className="text-xs text-gray-500 mb-0.5">{t('proposals.cancelReason')}:</p>
                     <p className="text-sm text-gray-700">{proposal.cancelReason}</p>
                   </div>
                 )}
@@ -321,7 +323,7 @@ export function Proposals({
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Clock className="w-4 h-4" />
-                    <span>{proposal.estimatedDays} днів</span>
+                    <span>{proposal.estimatedDays} {t('proposals.days')}</span>
                   </div>
                 </div>
 
@@ -335,7 +337,7 @@ export function Proposals({
                       }}
                       className="flex-1 px-3 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 text-sm font-medium transition-colors"
                     >
-                      Прийняти
+                      {t('proposals.accept')}
                     </button>
                     <button
                       onClick={(e) => {
@@ -344,7 +346,7 @@ export function Proposals({
                       }}
                       className="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm font-medium transition-colors"
                     >
-                      Відхилити
+                      {t('proposals.reject')}
                     </button>
                   </div>
                 )}
@@ -357,7 +359,7 @@ export function Proposals({
                     }}
                     className="w-full px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm font-medium transition-colors"
                   >
-                    Скасувати
+                    {t('proposals.cancelProposal')}
                   </button>
                 )}
               </div>
@@ -366,12 +368,12 @@ export function Proposals({
         </div>
       )}
 
-      {/* Модальное окно для отмены заказа */}
+      {/* Cancel Modal */}
       {showCancelModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-x-hidden">
           <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Скасувати замовлення</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('proposals.cancelOrder')}</h3>
               <button
                 onClick={() => setShowCancelModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -382,12 +384,12 @@ export function Proposals({
             
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Причина скасування *
+                {t('proposals.cancelReason')} *
               </label>
               <textarea
                 value={cancelReason}
                 onChange={(e) => setCancelReason(e.target.value)}
-                placeholder="Вкажіть причину скасування замовлення..."
+                placeholder={t('proposals.cancelReasonPlaceholder')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
                 rows={4}
               />
@@ -398,13 +400,13 @@ export function Proposals({
                 onClick={() => setShowCancelModal(false)}
                 className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
               >
-                Скасувати
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleConfirmCancel}
                 className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 flex items-center gap-2"
               >
-                <CancelIcon sx={{ fontSize: 20 }} /> Підтвердити скасування
+                <CancelIcon sx={{ fontSize: 20 }} /> {t('proposals.confirmCancel')}
               </button>
             </div>
           </div>
@@ -416,7 +418,7 @@ export function Proposals({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-x-hidden">
           <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Відхилити пропозицію</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('proposals.rejectProposal')}</h3>
               <button
                 onClick={() => setShowRejectModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -427,12 +429,12 @@ export function Proposals({
             
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Причина відхилення *
+                {t('proposals.rejectReason')} *
               </label>
               <textarea
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
-                placeholder="Вкажіть причину відхилення пропозиції..."
+                placeholder={t('proposals.rejectReasonPlaceholder')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
                 rows={4}
               />
@@ -443,13 +445,13 @@ export function Proposals({
                 onClick={() => setShowRejectModal(false)}
                 className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
               >
-                Скасувати
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleConfirmReject}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center gap-2"
               >
-                <CancelIcon sx={{ fontSize: 20 }} /> Підтвердити відхилення
+                <CancelIcon sx={{ fontSize: 20 }} /> {t('proposals.confirmReject')}
               </button>
             </div>
           </div>

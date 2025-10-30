@@ -7,6 +7,7 @@ import App from './App.tsx'
 import './index.css'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { CookieConsent } from './components/CookieConsent'
+import { ToastProvider } from './components/common/Toast/ToastProvider'
 
 // Initialize error handling
 import './utils/errorHandler'
@@ -61,14 +62,16 @@ if ('serviceWorker' in navigator) {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
-      <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center">Завантаження...</div>}>
-        <App />
-      </React.Suspense>
-      <CookieConsent />
-      <ReactQueryDevtools
-        initialIsOpen={false}
-        buttonPosition="bottom-right"
-      />
+      <ToastProvider>
+        <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center">Завантаження...</div>}>
+          <App />
+        </React.Suspense>
+        <CookieConsent />
+        <ReactQueryDevtools
+          initialIsOpen={false}
+          buttonPosition="bottom-right"
+        />
+      </ToastProvider>
     </QueryClientProvider>
   </ErrorBoundary>
 )

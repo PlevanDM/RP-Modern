@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { AdminButton } from './AdminDesignSystem';
 import { X } from 'lucide-react';
 
@@ -11,6 +12,7 @@ interface ConfirmationDialogProps {
 }
 
 export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ isOpen, onClose, onConfirm, title, description }) => {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return (
@@ -24,8 +26,8 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ isOpen, 
         </div>
         <p className="text-gray-600 dark:text-gray-400 mb-6">{description}</p>
         <div className="flex justify-end gap-4">
-          <AdminButton variant="ghost" onClick={onClose}>Скасувати</AdminButton>
-          <AdminButton variant="danger" onClick={onConfirm}>Підтвердити</AdminButton>
+          <AdminButton variant="ghost" onClick={onClose}>{t('common.cancel')}</AdminButton>
+          <AdminButton variant="danger" onClick={onConfirm}>{t('common.confirm')}</AdminButton>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
@@ -8,6 +9,7 @@ import { useSettingsStore } from '../../../store/settingsStore';
 import { Settings, Save, RotateCcw, CheckCircle, AlertCircle } from 'lucide-react';
 
 export const SettingsConfiguration = () => {
+  const { t } = useTranslation();
   const { settings, updateSettings, resetSettings } = useSettingsStore();
   const [activeTab, setActiveTab] = useState('api');
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
@@ -22,7 +24,7 @@ export const SettingsConfiguration = () => {
   };
 
   const handleReset = () => {
-    if (confirm('Ви впевнені що хочете скинути всі налаштування?')) {
+    if (confirm(t('settings.resetConfirm'))) {
       resetSettings();
       setSaveStatus('success');
     }
@@ -102,13 +104,13 @@ export const SettingsConfiguration = () => {
       {activeTab === 'payments' && (
         <Card>
           <CardHeader>
-            <CardTitle>Payment Integration</CardTitle>
+            <CardTitle>{t('admin.paymentIntegration') || 'Payment Integration'}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <Label>Enable Stripe</Label>
-                <p className="text-sm text-muted-foreground">Secure payment processing</p>
+                <Label>{t('admin.enableStripe') || 'Enable Stripe'}</Label>
+                <p className="text-sm text-muted-foreground">{t('admin.stripeDescription') || 'Secure payment processing'}</p>
               </div>
               <Switch
                 checked={settings.enableStripe}
@@ -118,14 +120,14 @@ export const SettingsConfiguration = () => {
             {settings.enableStripe && (
               <>
                 <div>
-                  <Label>Stripe Public Key</Label>
+                  <Label>{t('admin.stripePublicKey') || 'Stripe Public Key'}</Label>
                   <Input
                     value={settings.stripePublicKey}
                     onChange={(e) => updateSettings({ stripePublicKey: e.target.value })}
                   />
                 </div>
                 <div>
-                  <Label>Stripe Secret Key</Label>
+                  <Label>{t('admin.stripeSecretKey') || 'Stripe Secret Key'}</Label>
                   <Input
                     type="password"
                     value={settings.stripeSecretKey}
@@ -136,8 +138,8 @@ export const SettingsConfiguration = () => {
             )}
             <div className="flex items-center justify-between">
               <div>
-                <Label>Enable Monobank</Label>
-                <p className="text-sm text-muted-foreground">Ukrainian payment system</p>
+                <Label>{t('admin.enableMonobank') || 'Enable Monobank'}</Label>
+                <p className="text-sm text-muted-foreground">{t('admin.monobankDescription') || 'Ukrainian payment system'}</p>
               </div>
               <Switch
                 checked={settings.enableMonobank}
@@ -146,7 +148,7 @@ export const SettingsConfiguration = () => {
             </div>
             {settings.enableMonobank && (
               <div>
-                <Label>Monobank Token</Label>
+                <Label>{t('admin.monobankToken') || 'Monobank Token'}</Label>
                 <Input
                   type="password"
                   value={settings.monobankToken}
@@ -429,7 +431,7 @@ export const SettingsConfiguration = () => {
           )}
           <Button onClick={handleSave} disabled={saveStatus === 'saving'}>
             <Save className="w-4 h-4 mr-2" />
-            {saveStatus === 'saving' ? 'Збереження...' : 'Зберегти'}
+            {saveStatus === 'saving' ? t('common.saving') : t('common.save')}
           </Button>
         </div>
       </div>

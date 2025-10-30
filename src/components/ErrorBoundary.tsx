@@ -21,7 +21,7 @@ const ErrorFallback: React.FC<{ onReload: () => void; t: (key: string) => string
       </p>
       <button
         onClick={onReload}
-        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
       >
         {t('common.refresh')}
       </button>
@@ -36,19 +36,51 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   static getDerivedStateFromError(error: Error): State {
+    // Ігноруємо помилки, що не критичні для рендерингу
+    const errorMessage = error?.message || '';
+    if (errorMessage.includes('ResizeObserver') || 
+        errorMessage.includes('Non-Error promise rejection') ||
+        errorMessage.includes('ChunkLoadError') ||
+        errorMessage.includes('WebGL') ||
+        errorMessage.includes('THREE.WebGLRenderer') ||
+        errorMessage.includes('Error creating WebGL context')) {
+      console.warn('Non-critical error ignored:', errorMessage);
+      return { hasError: false, error: undefined };
+    }
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+    // Логуємо тільки критичні помилки
+    const errorMessage = error?.message || '';
+    if (!errorMessage.includes('ResizeObserver') && 
+        !errorMessage.includes('Non-Error promise rejection') &&
+        !errorMessage.includes('ChunkLoadError') &&
+        !errorMessage.includes('WebGL') &&
+        !errorMessage.includes('THREE.WebGLRenderer')) {
+      console.error('Error caught by boundary:', error, errorInfo);
+    } else {
+      console.warn('Non-critical error caught (will be ignored):', errorMessage);
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    // Скидаємо помилку якщо props змінилися
+    if (prevProps !== this.props && this.state.hasError) {
+      this.setState({ hasError: false, error: undefined });
+    }
   }
 
   render() {
     if (this.state.hasError) {
-      // Используем HOC для передачи хука переводов
+      // Використовуємо HOC для передачі хука перекладів
       const ErrorWithTranslation = () => {
         const t = useTranslation();
-        return <ErrorFallback onReload={() => window.location.reload()} t={t} />;
+        const handleReload = () => {
+          this.setState({ hasError: false, error: undefined });
+          window.location.reload();
+        };
+        return <ErrorFallback onReload={handleReload} t={t} />;
       };
 
       return <ErrorWithTranslation />;
@@ -57,4 +89,3 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
-

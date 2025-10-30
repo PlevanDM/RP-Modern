@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, Edit2, Save, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Shield, Edit2, Save, X } from 'lucide-react';
 
 interface Role {
@@ -92,6 +92,7 @@ const PERMISSION_LABELS: Record<string, string> = {
 };
 
 export function RoleBasedAccessControl() {
+  const { t } = useTranslation();
   const [roles, setRoles] = useState<Role[]>(DEFAULT_ROLES);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
 
@@ -159,14 +160,14 @@ export function RoleBasedAccessControl() {
                     className="flex-1 px-3 py-2 bg-green-500 text-white rounded text-xs font-semibold hover:bg-green-600 transition flex items-center justify-center gap-1"
                   >
                     <Save className="w-3.5 h-3.5" />
-                    Зберегти
+                    {t('common.save')}
                   </button>
                   <button
                     onClick={() => setEditingRole(null)}
                     className="flex-1 px-3 py-2 bg-gray-300 text-gray-900 rounded text-xs font-semibold hover:bg-gray-400 transition flex items-center justify-center gap-1"
                   >
                     <X className="w-3.5 h-3.5" />
-                    Скасувати
+                    {t('common.cancel')}
                   </button>
                 </div>
               </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { cn } from "../lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -23,7 +24,8 @@ import {
   Pin,
   PinOff,
   Smartphone,
-  Search
+  Search,
+  BarChart3
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
@@ -101,6 +103,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   unviewedOrdersCount,
   onLogout
 }) => {
+  const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const [isPinned, setIsPinned] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
@@ -108,40 +111,41 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   // Оптимизация: используем useMemo чтобы не пересчитывать меню на каждый рендер
   const menuItems = React.useMemo(() => {
     const baseItems: MenuItem[] = [
-      { label: "Дашборд", href: "#", icon: LayoutDashboard },
-      { label: "Створити Заказ", href: "#", icon: Package },
+      { label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
+      { label: t('navigation.createOrder'), href: "#", icon: Package },
     ];
 
     if (currentUser?.role === 'master') {
       baseItems.push(
         { 
-          label: "Доска Замовлень", 
+          label: t('navigation.ordersBoard'), 
           href: "#", 
           icon: ShoppingCart,
-          badge: unviewedOrdersCount > 0 ? { text: `${unviewedOrdersCount} нових`, variant: "destructive" } : undefined
+          badge: unviewedOrdersCount > 0 ? { text: `${unviewedOrdersCount} ${t('common.new') || 'new'}`, variant: "destructive" } : undefined
         },
-        { label: "Рейтинги & Рецензії", href: "#", icon: Star },
-        { label: "Мої Запчастини", href: "#", icon: Wrench },
-        { label: "Мої Пропозиції", href: "#", icon: Tag },
-        { label: "Платежі", href: "#", icon: CreditCard },
-        { label: "Чат", href: "#", icon: MessageSquare },
-        { label: "Портфоліо", href: "#", icon: Briefcase }
+        { label: t('navigation.reports'), href: "#", icon: Star },
+        { label: t('navigation.myParts'), href: "#", icon: Wrench },
+        { label: t('navigation.myProposals'), href: "#", icon: Tag },
+        { label: t('navigation.payments'), href: "#", icon: CreditCard },
+        { label: t('navigation.messages'), href: "#", icon: MessageSquare },
+        { label: t('navigation.portfolio'), href: "#", icon: Briefcase }
       );
     } else if (currentUser?.role === 'client') {
       baseItems.push(
-        { label: "Знайти Майстрів", href: "#", icon: Search },
-        { label: "Мої Замовлення", href: "#", icon: ShoppingCart },
-        { label: "Мої Пристрої", href: "#", icon: Smartphone },
-        { label: "Пропозиції", href: "#", icon: Tag },
-        { label: "Платежі", href: "#", icon: CreditCard },
-        { label: "Чат", href: "#", icon: MessageSquare }
+        { label: t('navigation.findMasters'), href: "#", icon: Search },
+        { label: t('navigation.myOrders'), href: "#", icon: ShoppingCart },
+        { label: t('navigation.myDevices'), href: "#", icon: Smartphone },
+        { label: t('navigation.proposals'), href: "#", icon: Tag },
+        { label: t('navigation.payments'), href: "#", icon: CreditCard },
+        { label: t('navigation.messages'), href: "#", icon: MessageSquare }
       );
     } else if (currentUser?.role === 'admin' || currentUser?.role === 'superadmin') {
-      baseItems.push(
-        { label: "Користувачі", href: "#", icon: User },
-        { label: "Замовлення", href: "#", icon: ShoppingCart },
-        { label: "Фінанси", href: "#", icon: CreditCard },
-        { label: "Налаштування", href: "#", icon: Settings }
+      baseItems = [
+        { label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
+        { label: t('navigation.users'), href: "#", icon: User },
+        { label: t('navigation.analytics'), href: "#", icon: BarChart3 },
+        { label: t('navigation.finance'), href: "#", icon: CreditCard },
+        { label: t('navigation.settings'), href: "#", icon: Settings }
       );
     }
 
@@ -280,7 +284,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
               transition={{ duration: 0.2 }}
               onClick={() => setIsPinned(!isPinned)}
               className="p-1 hover:bg-accent rounded-md transition-colors"
-              title={isPinned ? "Авто скрывать меню" : "Оставить меню открытым"}
+              title={isPinned ? t('navigation.autoHideMenu') : t('navigation.keepMenuOpen')}
             >
               {isPinned ? (
                 <Pin className="h-4 w-4 text-muted-foreground" />

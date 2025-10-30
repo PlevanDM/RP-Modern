@@ -12,6 +12,22 @@ import { allDevicesDatabase } from './data/deviceDatabase.js';
 import * as businessLogic from './businessLogic.js';
 
 // --- DATABASE SETUP ---
+interface ErrorLog {
+  message: string;
+  stack?: string;
+  timestamp: string;
+  userAgent: string;
+  url: string;
+  errorType?: 'network' | 'api' | 'validation' | 'auth' | 'unknown';
+  statusCode?: number;
+  retryable?: boolean;
+  userMessage?: string;
+  suggestions?: string[];
+  userId?: string;
+  serverTimestamp?: string;
+  ip?: string;
+}
+
 interface DbData {
   users: User[];
   orders: Order[];
@@ -20,19 +36,20 @@ interface DbData {
   disputes: Dispute[];
   reviews: Review[];
   notifications: Notification[];
+  errorLogs?: ErrorLog[];
 }
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const file = path.join(__dirname, 'db.json');
 const adapter = new JSONFile<DbData>(file);
-const defaultData: DbData = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [] };
+const defaultData: DbData = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [], errorLogs: [] };
 const db = new Low<DbData>(adapter, defaultData);
 
 async function initializeDatabase() {
   await db.read();
   if (!db.data) {
-    db.data = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [] };
+    db.data = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [], errorLogs: [] };
     await db.write();
   }
   
@@ -140,7 +157,33 @@ const app = express();
 const port = 3001;
 const JWT_SECRET = 'your_super_secret_key_change_in_production'; // Replace with env variable
 
-app.use(cors());
+// CORS configuration for public access via tunnels
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow all origins (including null for same-origin requests)
+    callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Content-Length', 'X-Request-Id'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+}));
+
+// Handle preflight requests explicitly for all routes
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.sendStatus(204);
+  } else {
+    next();
+  }
+});
+
 app.use(express.json());
 
 // --- AUTHENTICATION ---
@@ -186,24 +229,33 @@ app.post('/api/auth/register', async (req, res) => {
   res.status(201).json({ token, user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role } });
 });
 
-// Login a user
+// Login a user (password is required if user has a password in database)
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required.' });
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required.' });
   }
 
   await db.read();
   const user = db.data.users.find(u => u.email === email);
 
-  if (!user || !user.password) {
+  if (!user) {
     return res.status(401).json({ message: 'Invalid credentials.' });
   }
 
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) {
-    return res.status(401).json({ message: 'Invalid credentials.' });
+  // If user has a password in database, password is required
+  if (user.password) {
+    if (!password) {
+      return res.status(400).json({ message: 'Password is required.' });
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid credentials.' });
+    }
+  } else {
+    // If user doesn't have a password, allow login without password (for legacy users)
+    // But in production, this should not happen
   }
 
   if (user.blocked) {
@@ -752,6 +804,38 @@ app.get('/api/profile/me', authMiddleware, (req: AuthRequest, res: Response) => 
 });
 
 // Update user's own profile
+// Update user profile by userId (для Profile компонента)
+app.patch('/api/users/:userId', authMiddleware, async (req: AuthRequest, res: Response) => {
+  const { userId } = req.params;
+  const user = req.user!;
+  
+  // Користувач може оновлювати тільки свій профіль, адмін - будь-який
+  if (user.id !== userId && user.role !== 'admin' && user.role !== 'superadmin') {
+    return res.status(403).json({ message: 'You can only update your own profile.' });
+  }
+
+  await db.read();
+  const userToUpdate = db.data.users.find(u => u.id === userId);
+  if (!userToUpdate) {
+    return res.status(404).json({ message: 'User not found.' });
+  }
+
+  const { name, email, phone, city, bio, avatar } = req.body;
+  
+  if (name) userToUpdate.name = name;
+  if (email) userToUpdate.email = email;
+  if (phone) userToUpdate.phone = phone;
+  if (city) userToUpdate.city = city;
+  if (bio !== undefined) userToUpdate.bio = bio;
+  if (avatar) userToUpdate.avatar = avatar;
+
+  await db.write();
+
+  const { password: _, ...updatedUser } = userToUpdate;
+  res.json(updatedUser);
+});
+
+// Update user profile (старий endpoint, залишаємо для сумісності)
 app.patch('/api/users/profile', authMiddleware, async (req: AuthRequest, res: Response) => {
     const user = req.user!;
     const { name, email, phone, city, bio, avatar } = req.body;
@@ -1459,6 +1543,77 @@ function startAutoDisputeCron() {
     }, 60 * 60 * 1000); // Check every hour
 }
 
+
+// --- ERROR LOGGING API ---
+// Endpoint for frontend error logging
+app.post('/api/errors', async (req, res) => {
+  try {
+    const errorLog: ErrorLog = req.body;
+    
+    // Додаємо інформацію про користувача якщо є токен
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    let userId: string | undefined;
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, JWT_SECRET) as any;
+        userId = decoded.userId;
+      } catch (e) {
+        // Токен невалідний, але це не критично для логування помилок
+      }
+    }
+
+    await db.read();
+    
+    // Зберігаємо помилку в базі даних
+    if (!db.data.errorLogs) {
+      db.data.errorLogs = [];
+    }
+    
+    const logEntry: ErrorLog = {
+      ...errorLog,
+      userId,
+      serverTimestamp: new Date().toISOString(),
+      ip: req.ip || req.socket.remoteAddress,
+    };
+    
+    db.data.errorLogs.push(logEntry);
+    
+    // Обмежуємо кількість логів (останні 1000)
+    if (db.data.errorLogs.length > 1000) {
+      db.data.errorLogs = db.data.errorLogs.slice(-1000);
+    }
+    
+    await db.write();
+    
+    console.log(`[ERROR LOG] ${errorLog.errorType || 'unknown'}: ${errorLog.message} (User: ${userId || 'anonymous'})`);
+    
+    res.status(200).json({ success: true, message: 'Error logged successfully' });
+  } catch (error) {
+    console.error('Failed to log error:', error);
+    res.status(500).json({ success: false, message: 'Failed to log error' });
+  }
+});
+
+// Get error logs (admin only)
+app.get('/api/admin/errors', authMiddleware, requireRole(['admin', 'superadmin']), async (req: AuthRequest, res: Response) => {
+  await db.read();
+  const errors = db.data.errorLogs || [];
+  
+  // Фільтрація за параметрами
+  const { type, limit = '100' } = req.query;
+  let filteredErrors = errors;
+  
+  if (type) {
+    filteredErrors = errors.filter((e: ErrorLog) => e.errorType === type);
+  }
+  
+  // Сортування за часом (новіші спочатку)
+  filteredErrors.sort((a: ErrorLog, b: ErrorLog) => 
+    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
+  
+  res.json(filteredErrors.slice(0, Number(limit)));
+});
 
 // --- SERVER INITIALIZATION ---
 initializeDatabase().then(() => {

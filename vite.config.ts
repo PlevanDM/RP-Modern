@@ -12,12 +12,16 @@ export default defineConfig({
   },
   base: '/',
   server: {
-    port: 3000,
-    host: '127.0.0.1',
+    port: 5173,
+    host: true, // Приймати підключення з будь-якої IP-адреси (включаючи інші пристрої в мережі)
     allowedHosts: [
       'autopsical-forgetfully-lashonda.ngrok-free.dev',
       'localhost',
-      '127.0.0.1'
+      '127.0.0.1',
+      '.ngrok-free.app', // Allow all ngrok URLs
+      '.ngrok.io',
+      '.trycloudflare.com', // Allow cloudflare tunnel URLs
+      'all' // Allow all hosts
     ]
   },
   css: {

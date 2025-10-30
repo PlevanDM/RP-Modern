@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { CheckCircle2, AlertTriangle, Info, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ToastProps {
   message: string;
@@ -14,28 +15,14 @@ export const Toast: React.FC<ToastProps> = ({
   duration = 3000,
   onClose
 }) => {
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    if (duration && duration > 0) {
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-        onClose?.();
-      }, duration);
-      return () => clearTimeout(timer);
-    }
-  }, [duration, onClose]);
-
-  if (!isVisible) return null;
-
   const getStyles = () => {
-    const baseStyles = 'flex items-center gap-3 px-6 py-4 rounded-lg shadow-lg backdrop-blur-sm border animate-in fade-in slide-in-from-top-2 duration-300';
+    const baseStyles = 'flex items-center gap-3 px-4 py-3 rounded-lg shadow-xl backdrop-blur-sm border max-w-md';
     
     const typeStyles = {
-      success: 'bg-green-500/90 text-white border-green-400',
-      error: 'bg-red-500/90 text-white border-red-400',
-      info: 'bg-blue-500/90 text-white border-blue-400',
-      warning: 'bg-amber-500/90 text-white border-amber-400'
+      success: 'bg-green-500/95 text-white border-green-400/50',
+      error: 'bg-red-500/95 text-white border-red-400/50',
+      info: 'bg-blue-500/95 text-white border-blue-400/50',
+      warning: 'bg-amber-500/95 text-white border-amber-400/50'
     };
 
     return `${baseStyles} ${typeStyles[type]}`;
@@ -57,20 +44,22 @@ export const Toast: React.FC<ToastProps> = ({
   };
 
   return (
-    <div className="fixed top-6 right-6 z-50 max-w-md animate-in fade-in slide-in-from-top-2 duration-300">
-      <div className={getStyles()}>
-        {getIcon()}
-        <p className="flex-1 font-medium text-sm">{message}</p>
-        <button
-          onClick={() => {
-            setIsVisible(false);
-            onClose?.();
-          }}
-          className="flex-shrink-0 hover:opacity-75 transition-opacity"
-        >
-          <X className="w-5 h-5" />
-        </button>
-      </div>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: -20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+      transition={{ duration: 0.2 }}
+      className={getStyles()}
+    >
+      {getIcon()}
+      <p className="flex-1 font-medium text-sm">{message}</p>
+      <button
+        onClick={onClose}
+        className="flex-shrink-0 hover:opacity-75 transition-opacity ml-2"
+        aria-label="Close"
+      >
+        <X className="w-4 h-4" />
+      </button>
+    </motion.div>
   );
 };

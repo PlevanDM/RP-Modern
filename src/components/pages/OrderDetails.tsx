@@ -1,5 +1,6 @@
 import React from 'react';
 import { Order, User } from '../../types/models';
+import { useTranslation } from 'react-i18next';
 import SearchIcon from '@mui/icons-material/Search';
 import MessageIcon from '@mui/icons-material/Message';
 import EditIcon from '@mui/icons-material/Edit';
@@ -34,28 +35,30 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
   rejectProposal,
   setActiveItem,
 }) => {
+  const { t } = useTranslation();
+  
   const getStatusText = (status: string) => {
     const statusMap: Record<string, string> = {
-      open: '🟡 Відкрито',
-      proposed: '💬 Є пропозиції',
-      accepted: '✅ Прийнято',
-      in_progress: '🔧 В роботі',
-      completed: '✔️ Завершено',
-      cancelled: '❌ Скасовано',
-      deleted: '🗑️ Видалено',
-      searching: '🔍 Пошук майстра',
-      active_search: '🔍 Активний пошук майстра',
+      open: `🟡 ${t('status.open')}`,
+      proposed: `💬 ${t('status.proposed')}`,
+      accepted: `✅ ${t('status.accepted')}`,
+      in_progress: `🔧 ${t('status.in_progress')}`,
+      completed: `✔️ ${t('status.completed')}`,
+      cancelled: `❌ ${t('status.cancelled')}`,
+      deleted: `🗑️ ${t('status.deleted')}`,
+      searching: `🔍 ${t('status.searching')}`,
+      active_search: `🔍 ${t('status.active_search')}`,
     };
     return statusMap[status] || status;
   };
 
   const getUrgencyBadge = (urgency?: string) => {
     const urgencyMap: Record<string, string> = {
-      high: '🔴 Терміно',
-      medium: '🟡 Звичайно',
-      low: '🟢 Не терміно',
+      high: `🔴 ${t('priority.high')}`,
+      medium: `🟡 ${t('priority.medium')}`,
+      low: `🟢 ${t('priority.low')}`,
     };
-    return urgencyMap[urgency || 'low'] || '🟢 Не терміно';
+    return urgencyMap[urgency || 'low'] || `🟢 ${t('priority.low')}`;
   };
 
   return (
@@ -63,33 +66,33 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
       {/* Order Info */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <p className="text-sm text-gray-500 mb-1">Пристрій</p>
+          <p className="text-sm text-gray-500 mb-1">{t('orderDetails.device')}</p>
           <p className="font-medium text-gray-900">{order.deviceType}</p>
         </div>
         <div>
-          <p className="text-sm text-gray-500 mb-1">Проблема</p>
+          <p className="text-sm text-gray-500 mb-1">{t('orderDetails.problem')}</p>
           <p className="font-medium text-gray-900">{order.issue}</p>
         </div>
         <div>
-          <p className="text-sm text-gray-500 mb-1">Статус</p>
+          <p className="text-sm text-gray-500 mb-1">{t('orderDetails.status')}</p>
           <p className="font-medium text-gray-900">{getStatusText(order.status)}</p>
         </div>
         <div>
-          <p className="text-sm text-gray-500 mb-1">Терміновість</p>
+          <p className="text-sm text-gray-500 mb-1">{t('orderDetails.urgency')}</p>
           <p className="font-medium text-gray-900">{getUrgencyBadge(order.urgency)}</p>
         </div>
       </div>
 
       {/* Description */}
       <div>
-        <p className="text-sm text-gray-500 mb-2">Опис</p>
+        <p className="text-sm text-gray-500 mb-2">{t('orderDetails.description')}</p>
         <p className="text-gray-900 bg-gray-50 p-4 rounded-lg">{order.description}</p>
       </div>
 
       {/* Master Info */}
       {order.assignedMasterId && (
         <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <p className="text-sm text-gray-500 mb-2">Призначений майстер</p>
+          <p className="text-sm text-gray-500 mb-2">{t('orderDetails.assignedMaster')}</p>
           <p className="font-medium text-gray-900">Alex Master</p>
         </div>
       )}
@@ -138,13 +141,13 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                   onClick={handleEditOrder}
                   className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center justify-center gap-2"
                 >
-                  <EditIcon sx={{ fontSize: 20 }} /> Редагувати замовлення
+                  <EditIcon sx={{ fontSize: 20 }} /> {t('common.editOrder')}
                 </button>
                 <button
                   onClick={() => handleSendToMaster(order.id)}
                   className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center justify-center gap-2"
                 >
-                  <MessageIcon sx={{ fontSize: 20 }} /> Відправити майстрам
+                  <MessageIcon sx={{ fontSize: 20 }} /> {t('orderDetails.sendToMasters')}
                 </button>
                 <button
                   onClick={() => handleToggleActiveSearch(order)}
@@ -155,13 +158,13 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                   }`}
                 >
                   <SearchIcon sx={{ fontSize: 20 }} />
-                  {order.isActiveSearch !== false ? 'Призупинити пошук' : 'Активувати пошук'}
+                  {order.isActiveSearch !== false ? t('orderDetails.pauseSearch') : t('orderDetails.activateSearch')}
                 </button>
                 <button
                   onClick={() => handleDeleteOrder(order)}
                   className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors flex items-center justify-center gap-2"
                 >
-                  <CloseIcon sx={{ fontSize: 20 }} /> Видалити замовлення
+                  <CloseIcon sx={{ fontSize: 20 }} /> {t('orderDetails.deleteOrder')}
                 </button>
               </>
             )}
@@ -172,7 +175,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                   onClick={() => handleRestoreOrder(order)}
                   className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center justify-center gap-2"
                 >
-                  <CheckCircleIcon sx={{ fontSize: 20 }} /> Відновити замовлення
+                  <CheckCircleIcon sx={{ fontSize: 20 }} /> {t('orderDetails.restoreOrder')}
                 </button>
               </>
             )}
@@ -182,7 +185,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                 onClick={() => setActiveItem('messages')}
                 className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors flex items-center justify-center gap-2"
               >
-                <MessageIcon sx={{ fontSize: 20 }} /> Чат з майстром
+                <MessageIcon sx={{ fontSize: 20 }} /> {t('orderDetails.chatWithMaster')}
               </button>
             )}
           </>
@@ -195,13 +198,13 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
               onClick={handleEditOrder}
               className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center justify-center gap-2"
             >
-              <EditIcon sx={{ fontSize: 20 }} /> Редагувати
+              <EditIcon sx={{ fontSize: 20 }} /> {t('common.edit')}
             </button>
             <button
               onClick={() => handleDeleteOrder(order)}
               className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors flex items-center justify-center gap-2"
             >
-              <CloseIcon sx={{ fontSize: 20 }} /> Видалити
+              <CloseIcon sx={{ fontSize: 20 }} /> {t('common.delete')}
             </button>
           </>
         )}
@@ -211,7 +214,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
           <>
             {order.status === 'proposed' && (
               <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors">
-                📊 Переглянути пропозиції
+                📊 {t('orderDetails.viewProposals')}
               </button>
             )}
 
@@ -220,7 +223,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                 onClick={() => setShowProposalModal(true)}
                 className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium transition-colors flex items-center justify-center gap-2"
               >
-                <EditIcon sx={{ fontSize: 20 }} /> Розмістити пропозицію
+                <EditIcon sx={{ fontSize: 20 }} /> {t('orderDetails.submitProposal')}
               </button>
             )}
 
@@ -230,10 +233,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                   onClick={() => setActiveItem('messages')}
                   className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors flex items-center justify-center gap-2"
                 >
-                  <MessageIcon sx={{ fontSize: 20 }} /> Чат з клієнтом
+                  <MessageIcon sx={{ fontSize: 20 }} /> {t('orderDetails.chatWithClient')}
                 </button>
                 <button className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium transition-colors">
-                  📸 Поділитися фото
+                  📸 {t('common.sharePhoto')}
                 </button>
               </>
             )}
