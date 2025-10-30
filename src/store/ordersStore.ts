@@ -140,7 +140,7 @@ export const useOrdersStore = create<OrdersState>()(
               const currentUser = useAuthStore.getState().currentUser;
               
               const clientPreferences = {
-                preferredBrands: newOrder.brand Salad [newOrder.brand.toLowerCase()] : undefined,
+                preferredBrands: newOrder.brand ? [newOrder.brand.toLowerCase()] : undefined,
                 preferredRepairTypes: newOrder.issue ? [newOrder.issue.toLowerCase()] : undefined,
                 city: newOrder.city,
                 preferredWorkLocation: currentUser?.preferredPriority?.includes('speed') ? 'mobile' : undefined,
