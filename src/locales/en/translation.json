@@ -184,91 +184,7 @@
     "login": "Login",
     "loginDescription": "Sign in to your account",
     "testUsers": "Test Users",
-    "loggingIn": "Signing in...",
-    "emailPlaceholder": "your.email@example.com",
-    "registrationError": "Registration error. Please try again.",
-    "selectRole": "Select Role",
-    "whoAreYou": "Who are you?",
-    "client": "Client",
-    "clientDescription": "I'm looking for a master for repair",
-    "master": "Master",
-    "masterDescription": "I provide repair services",
-    "adminDescription": "Platform administrator",
-    "yourData": "Your Data",
-    "basicInfo": "Enter basic information",
-    "yourName": "Your Name",
-    "namePlaceholder": "John Doe",
-    "city": "City",
-    "cityPlaceholder": "Kyiv",
-    "phone": "Phone",
-    "phonePlaceholder": "+380 50 123 4567",
-    "yourDevices": "Your Devices",
-    "yourDevicesDescription": "This will help find a suitable master",
-    "mobileDevice": "Mobile Device",
-    "computer": "Computer",
-    "finishRegistration": "Finish Registration",
-    "whereDoYouWork": "Where do you work?",
-    "selectWorkplace": "Select your workplace",
-    "serviceCenter": "Service Center",
-    "serviceCenterDescription": "I work in a service center",
-    "mobileMaster": "Mobile Master",
-    "mobileMasterDescription": "I travel with my tools",
-    "homeWorkshop": "Home Workshop",
-    "homeWorkshopDescription": "I work from home",
-    "whatBrandsDoYouRepair": "What brands do you repair?",
-    "selectBrandsYouWorkWith": "Select all brands you work with",
-    "repairTypes": "Repair Types",
-    "whatDoYouRepairMostOften": "What do you repair most often?",
-    "yourExperience": "Your Experience",
-    "howManyYearsExperience": "How many years have you been in repair?",
-    "enterDetails": "Enter details",
-    "workplace": "Workplace",
-    "brands": "Brands",
-    "experience": "Experience",
-    "finish": "Finish",
-    "alreadyHaveAccount": "Already have an account?",
-    "testUsers": {
-      "admin": {
-        "role": "Admin",
-        "name": "Admin Test"
-      },
-      "master1": {
-        "role": "Master 1",
-        "name": "Service Master"
-      },
-      "master2": {
-        "role": "Master 2",
-        "name": "Mobile Master"
-      },
-      "master3": {
-        "role": "Master 3",
-        "name": "Home Master"
-      },
-      "client1": {
-        "role": "Client 1",
-        "name": "Client iOS"
-      },
-      "client2": {
-        "role": "Client 2",
-        "name": "Client Android"
-      },
-      "client3": {
-        "role": "Client 3",
-        "name": "Client Windows"
-      },
-      "client4": {
-        "role": "Client 4",
-        "name": "Client Mac"
-      },
-      "superadmin": {
-        "role": "Superadmin",
-        "name": "Superadmin Test"
-      },
-      "test": {
-        "role": "Test",
-        "name": "Test User"
-      }
-    }
+    "loggingIn": "Signing in..."
   },
   "common": {
     "search": "Search",
@@ -364,10 +280,7 @@
     "view": "View",
     "search": "Search",
     "help": "Help",
-    "about": "About",
-    "continue": "Continue",
-    "back": "Back",
-    "next": "Next"
+    "about": "About"
   },
   "workExperience": {
     "title": "Work Experience",
@@ -679,73 +592,6 @@
     "tabs": {
       "admin": "Admin",
       "roles": "Roles"
-    }
-  },
-  "brands": {
-    "apple": "Apple",
-    "samsung": "Samsung",
-    "xiaomi": "Xiaomi",
-    "huawei": "Huawei",
-    "oppo": "Oppo",
-    "google": "Google Pixel",
-    "sony": "Sony",
-    "lg": "LG",
-    "motorola": "Motorola",
-    "asus": "ASUS",
-    "lenovo": "Lenovo",
-    "hp": "HP",
-    "dell": "Dell"
-  },
-  "repairTypes": {
-    "screen": {
-      "label": "Screens",
-      "description": "Display replacement and repair"
-    },
-    "battery": {
-      "label": "Batteries",
-      "description": "Battery replacement"
-    },
-    "camera": {
-      "label": "Cameras",
-      "description": "Camera repair and replacement"
-    },
-    "charging": {
-      "label": "Charging",
-      "description": "Connector and board repair"
-    },
-    "software": {
-      "label": "Software",
-      "description": "Firmware and recovery"
-    },
-    "motherboard": {
-      "label": "Boards",
-      "description": "Motherboard repair"
-    },
-    "housing": {
-      "label": "Housings",
-      "description": "Housing restoration"
-    },
-    "audio": {
-      "label": "Audio",
-      "description": "Speakers, microphones"
-    }
-  },
-  "experienceLevels": {
-    "beginner": {
-      "label": "Beginner",
-      "desc": "Less than 1 year"
-    },
-    "intermediate": {
-      "label": "Experienced",
-      "desc": "1-3 years"
-    },
-    "advanced": {
-      "label": "Professional",
-      "desc": "3-5 years"
-    },
-    "expert": {
-      "label": "Expert",
-      "desc": "More than 5 years"
     }
   }
 }

@@ -1,451 +1,127 @@
 {
   "hero": {
-    "title": "Găsește un meșter în 5 minute",
-    "subtitle": "Platformă online pentru conectarea directă a clienților și meșterilor. Fără intermediari și supraplăți.",
-    "description": "Apple, Samsung, Xiaomi, DJI și alte dispozitive. Găsește cel mai bun meșter din orașul tău.",
-    "cta_client": "Caut un meșter",
-    "cta_master": "Sunt un meșter de reparații",
-    "demo_button": "Vezi demo",
-    "quick_switch_title": "🧪 Comutare rapidă a conturilor (pentru testare):",
+    "title": "Găsiți un tehnician în 5 minute",
+    "subtitle": "Platformă online pentru conectarea directă între clienți și tehnicieni. Fără intermediari și fără plăți suplimentare.",
+    "description": "Apple, Samsung, Xiaomi, DJI și alte dispozitive. Găsiți cel mai bun tehnician din orașul dvs.",
+    "cta_client": "Caut un tehnician",
+    "cta_master": "Sunt un tehnician de reparații",
+    "demo_button": "Vedeți demo",
+    "quick_switch_title": "🧪 Comutare rapidă a contului (pentru testare):",
     "role_client": "Client",
-    "role_master": "Meșter",
+    "role_master": "Tehnician",
     "role_admin": "Administrator",
     "header_badge": "🔧 Reparații electronice mobile",
-    "platform_subtitle": "Platformă online pentru repararea dispozitivelor",
-    "find_master": "Găsește un meșter",
-    "earn_on_repairs": "Câștigă din reparații",
+    "platform_subtitle": "Platformă online pentru reparații de dispozitive",
+    "find_master": "Găsiți un tehnician",
+    "earn_on_repairs": "Câștigați din reparații",
     "in_5_minutes": "în 5 minute",
     "of_equipment": "de echipamente"
   },
   "stats": {
-    "masters_online": "Meșteri online",
+    "masters_online": "Tehnicieni online",
     "satisfied_clients": "Clienți mulțumiți",
     "successful_repairs": "Reparații reușite",
     "average_rating": "Evaluare medie"
   },
   "howItWorksClient": {
     "title": "Cum funcționează pentru clienți?",
-    "subtitle": "Proces simplu pentru a găsi un meșter",
-    "step1_title": "Descrie problema",
-    "step1_description": "Spune ce s-a stricat și încarcă o fotografie a dispozitivului",
-    "step2_title": "Primește oferte",
-    "step2_description": "Meșterii vor propune soluții și un preț corect",
-    "step3_title": "Alege specialistul",
-    "step3_description": "Vezi experiența, echipamentul și recenziile reale",
+    "subtitle": "Un proces simplu pentru a găsi un tehnician",
+    "step1_title": "Descrieți problema",
+    "step1_description": "Spuneți-ne ce s-a stricat și încărcați o fotografie a dispozitivului",
+    "step2_title": "Primiți oferte",
+    "step2_description": "Tehnicienii vor oferi soluții și un preț corect",
+    "step3_title": "Alegeți un specialist",
+    "step3_description": "Uitați-vă la experiență, echipamente și recenzii reale",
     "step4_title": "Plată sigură",
     "step4_description": "Banii sunt protejați prin escrow până la finalizarea lucrării"
   },
   "howItWorksMaster": {
-    "title": "Cum funcționează pentru meșteri?",
-    "subtitle": "Proces simplu pentru dezvoltarea afacerii",
-    "step1_title": "Creează un profil",
-    "step1_description": "Descrie-ți abilitățile, echipamentul și specializarea",
-    "step2_title": "Primește comenzi",
-    "step2_description": "Clienții te găsesc după specializare și rating",
-    "step3_title": "Lucrează și câștigă",
-    "step3_description": "Efectuează reparații și primește plata fără comisioane",
-    "step4_title": "Primește recenzii",
-    "step4_description": "Construiește-ți o reputație și primește mai multe comenzi"
+    "title": "Cum funcționează pentru tehnicieni?",
+    "subtitle": "Un proces simplu pentru dezvoltarea afacerii",
+    "step1_title": "Creați un profil",
+    "step1_description": "Descrieți-vă abilitățile, echipamentele și specializarea",
+    "step2_title": "Primiți comenzi",
+    "step2_description": "Clienții vă găsesc după specializare și evaluare",
+    "step3_title": "Lucrați și câștigați",
+    "step3_description": "Efectuați reparații și primiți plata fără comisioane",
+    "step4_title": "Primiți recenzii",
+    "step4_description": "Construiți-vă reputația și obțineți mai multe comenzi"
   },
   "features": {
     "title": "Avantajele platformei",
-    "subtitle": "Tot ce ai nevoie pentru reparații sigure și profitabile",
+    "subtitle": "Tot ce aveți nevoie pentru o reparație sigură și profitabilă",
     "feature1_title": "Contact direct",
-    "feature1_description": "Comunică direct cu meșterul, fără intermediari și manageri.",
+    "feature1_description": "Comunicați direct cu tehnicianul, fără intermediari și manageri.",
     "feature2_title": "Transparență",
-    "feature2_description": "Vezi experiența, echipamentul (microscoape, stații de lipit) și recenziile reale.",
-    "feature3_title": "Siguranță",
-    "feature3_description": "Plățile escrow îți protejează tranzacția, ca pe cele mai bune platforme P2P.",
+    "feature2_description": "Vedeți experiența, echipamentele (microscoape, stații de lipit) și recenziile reale.",
+    "feature3_title": "Securitate",
+    "feature3_description": "Plățile Escrow vă protejează tranzacția, la fel ca pe cele mai bune platforme P2P.",
     "feature4_title": "Prețuri corecte",
-    "feature4_description": "Fără adaosuri și comisioane ascunse ale centrelor de service.",
+    "feature4_description": "Fără adaosuri și taxe ascunse ale centrelor de service.",
     "feature5_title": "Rezolvarea disputelor",
     "feature5_description": "Sistem de arbitraj încorporat pentru rezolvarea corectă a oricăror probleme.",
     "feature6_title": "Orice marcă",
-    "feature6_description": "De la Apple și Samsung la Asus și Dell — găsim un meșter pentru orice echipament."
-  },
-  "landing": {
-    "modernPlatform": "Platformă modernă pentru repararea dispozitivelor direct între clienți și meșteri",
-    "safePlatform": "Platformă sigură • Garanția calității",
-    "safePayment": "Plată sigură",
-    "rating": "Ratingul meșterilor",
-    "warranty": "Garanție 30 de zile",
-    "minCommission": "Comision minim",
-    "support24": "Suport 24/7",
-    "copyright": "© 2026 Repair HUB Pro. Toate drepturile rezervate.",
-    "footerLinks": "Contactează-ne • Suport • Politica de confidențialitate",
-    "nav": {
-      "becomeMaster": "Devino meșter",
-      "orderRepair": "Comandă reparație",
-      "forMasters": "Pentru meșteri",
-      "forClients": "Pentru clienți",
-      "howItWorks": "Cum funcționează"
-    },
-    "masters": {
-      "title": "Pentru meșteri: mai multe comenzi, mai multe venituri",
-      "subtitle": "Fii parte dintr-o nouă platformă la început și obține avantajele pionierilor",
-      "description": "Primește comenzi fără investiții complicate, stabilește-ți singur programul și costul lucrărilor. O platformă pentru profesioniști – arată-ți expertiza și crește-ți clientela!",
-      "cta": "Începe să câștigi acum",
-      "ctaSubtext": "Înregistrarea durează 5 minute",
-      "benefit1": {
-        "title": "Doar 5% comision",
-        "desc": "Nu 15-30% ca la alții, ci un comision corect de 5%. Mai mulți bani îți rămân ție"
-      },
-      "benefit2": {
-        "title": "Comenzi directe",
-        "desc": "Clienții vin direct la tine. Fără lanțuri complicate de intermediari"
-      },
-      "benefit3": {
-        "title": "Crește-ți reputația",
-        "desc": "Muncă de calitate = recenzii bune = mai multe comenzi noi"
-      },
-      "benefit4": {
-        "title": "Program flexibil",
-        "desc": "Lucrează când îți convine. Alege comenzi în funcție de programul și posibilitățile tale"
-      },
-      "benefit5": {
-        "title": "Contact direct",
-        "desc": "Comunică direct cu clienții printr-un chat securizat încorporat"
-      },
-      "benefit6": {
-        "title": "Protecția intereselor",
-        "desc": "Platforma îți protejează drepturile și garantează plata pentru munca efectuată"
-      },
-      "bonus": {
-        "title": "Bonus pentru primii meșteri",
-        "subtitle": "Înregistrează-te în prima lună de la lansare și primește:",
-        "item1": "Plasare gratuită timp de 3 luni (0% comision)",
-        "item2": "Insigna \"Pionier\" în profil",
-        "item3": "Prioritate în afișarea către clienți"
-      }
-    },
-    "clients": {
-      "title": "Pentru clienți: reparații de încredere fără bătăi de cap",
-      "subtitle": "Uită de căutarea meșterilor prin cunoștințe și anunțuri dubioase",
-      "description": "Doar meșteri verificați, prețuri transparente și garanția calității. Descrie-ți sarcina — și în 2 minute vei primi oferte!",
-      "cta": "Creează o cerere gratuit",
-      "ctaTitle": "Ești gata să rezolvi problema cu echipamentul tău?",
-      "ctaDescription": "Creează o cerere chiar acum — este gratuit și durează 2 minute. Primește oferte de la profesioniști și alege cea mai bună",
-      "ctaFooter": "Plătești doar după finalizarea lucrării",
-      "benefit1": {
-        "title": "Doar meșteri verificați",
-        "desc": "Fiecare specialist este verificat înainte de a fi admis pe platformă"
-      },
-      "benefit2": {
-        "title": "Prețuri transparente",
-        "desc": "Vezi costul în avans. Fără taxe ascunse și surprize neplăcute"
-      },
-      "benefit3": {
-        "title": "Sistem de recenzii",
-        "desc": "Alege un meșter pe baza recenziilor reale ale altor clienți"
-      },
-      "benefit4": {
-        "title": "Comunicare convenabilă",
-        "desc": "Toate conversațiile într-un singur loc. Istoricul corespondenței este mereu la îndemână"
-      }
-    },
-    "problems": {
-      "title": "Rezolvăm probleme reale",
-      "subtitle": "Știm cu ce se confruntă atât meșterii, cât și clienții pe piața reparațiilor",
-      "label": "Problemă:",
-      "clients": {
-        "title": "Pentru clienți",
-        "problem1": "Greu de găsit un meșter de încredere",
-        "problem2": "Prețuri netransparente și taxe ascunse",
-        "problem3": "Fără garanții de calitate a lucrării",
-        "solutionTitle": "Soluția noastră:",
-        "solution": "Specialiști verificați, prețuri transparente și un sistem de recenzii — știi întotdeauna cu cine lucrezi"
-      },
-      "masters": {
-        "title": "Pentru meșteri",
-        "problem1": "Puține comenzi, venit instabil",
-        "problem2": "Comisioane mari ale intermediarilor (15-30%)",
-        "problem3": "Greu de construit o reputație",
-        "solutionTitle": "Soluția noastră:",
-        "solution": "Flux constant de comenzi, comision de doar 5%, sistem de rating pentru dezvoltarea afacerii tale"
-      }
-    },
-    "how": {
-      "title": "Cum funcționează",
-      "subtitle": "Proces simplu de la cerere la lucrare finalizată",
-      "clientPath": "Calea clientului",
-      "masterPath": "Calea meșterului",
-      "client": {
-        "step1": {
-          "title": "Creează o cerere",
-          "desc": "Descrie ce trebuie reparat: tipul de echipament, problema, termenele dorite"
-        },
-        "step2": {
-          "title": "Primește oferte",
-          "desc": "Meșterii trimit condițiile lor: preț, termene, garanții. Alege cea mai bună"
-        },
-        "step3": {
-          "title": "Stabilește detaliile",
-          "desc": "Discută toate detaliile cu meșterul prin chatul încorporat"
-        },
-        "step4": {
-          "title": "Primește rezultatul",
-          "desc": "Meșterul finalizează lucrarea. Plătești și lași o recenzie"
-        }
-      },
-      "master": {
-        "step1": {
-          "title": "Înregistrează-te",
-          "desc": "Specifică specializarea, experiența, regiunea de lucru. Durează 5 minute"
-        },
-        "step2": {
-          "title": "Alege comenzi",
-          "desc": "Vezi cererile actuale din regiunea și profilul tău"
-        },
-        "step3": {
-          "title": "Trimite o ofertă",
-          "desc": "Specifică prețul, termenele și condițiile de lucru. Clientul te va alege"
-        },
-        "step4": {
-          "title": "Execută și câștigă",
-          "desc": "Fă-ți treaba bine, primește plata și recenzii pozitive"
-        }
-      }
-    },
-    "trust": {
-      "title": "De ce poți avea încredere în noi",
-      "subtitle": "Construim o platformă pe care am dori să o folosim și noi",
-      "item1": {
-        "title": "Transparență",
-        "desc": "Toate condițiile sunt clare de la început. Fără comisioane ascunse și text mărunt"
-      },
-      "item2": {
-        "title": "Siguranță",
-        "desc": "Protecția datelor, plăți sigure, sistem de rezolvare a disputelor"
-      },
-      "item3": {
-        "title": "Suport",
-        "desc": "Echipa noastră este mereu disponibilă pentru a ajuta atât meșterii, cât și clienții"
-      }
-    },
-    "finalCta": {
-      "title": "Alătură-te RepairHub Pro",
-      "subtitle": "Fii printre primii care creează un nou standard pentru reparațiile de echipamente în România",
-      "master": "Sunt meșter",
-      "client": "Am nevoie de o reparație"
-    },
-    "benefits": {
-      "safe": {
-        "title": "Sigur",
-        "description": "Garanția tranzacțiilor corecte prin platformă și suport 24/7."
-      },
-      "profitable": {
-        "title": "Avantajos pentru toți",
-        "description": "Comision minim — beneficiu maxim atât pentru clienți, cât și pentru meșteri."
-      },
-      "simple": {
-        "title": "Simplu și convenabil",
-        "description": "Înregistrare ușoară, căutare rapidă și plasare de cereri sau comenzi."
-      }
-    },
-    "footer": {
-      "support": "Suport:",
-      "copyright": "© 2025 RepairHub Pro",
-      "description": "Platformă modernă pentru găsirea meșterilor și comenzilor de reparații de echipamente în România",
-      "tagline": "Creăm un nou standard de servicii",
-      "links": "Linkuri rapide",
-      "linkMasters": "Pentru meșteri",
-      "linkClients": "Pentru clienți",
-      "linkHow": "Cum funcționează",
-      "contacts": "Contacte",
-      "responseTime": "Vom răspunde în 24 de ore",
-      "privacy": "Politica de confidențialitate",
-      "terms": "Termeni de utilizare"
-    },
-    "hero": {
-      "badge": "🚀 Ne lansăm în România",
-      "title": "Serviciu interactiv 3D",
-      "description": "O abordare modernă a reparațiilor de echipamente. Vizualizează problema și obține o soluție rapidă de la profesioniști.",
-      "cta": {
-        "client": "Lasă o cerere",
-        "master": "Devino meșter",
-        "findMaster": "Găsește meșter",
-        "startEarning": "Începe să câștigi"
-      },
-      "value": {
-        "safe": "Tranzacții sigure",
-        "fast": "Start rapid",
-        "lowFee": "Comision minim"
-      },
-      "robot": {
-        "title": "Platformă modernă de reparații",
-        "description": "O platformă modernă care îi conectează pe cei care au nevoie de reparații cu profesioniști. Transparent, convenabil și avantajos pentru ambele părți."
-      },
-      "subtitle": "Conexiune directă între clienți și meșteri, fără intermediari",
-      "forClients": {
-        "title": "Pentru clienți",
-        "description": "Găsește un meșter verificat în 5 minute, economisește până la 40% la reparații și primește garanția calității",
-        "cta": "Găsește meșter"
-      },
-      "forMasters": {
-        "title": "Pentru meșteri",
-        "description": "Primește clienți noi zilnic, lucrează cu comisioane minime și construiește-ți reputația",
-        "cta": "Devino meșter"
-      }
-    },
-    "benefitsDetailed": {
-      "client": {
-        "title": "De ce aleg clienții RepairHub Pro?",
-        "subtitle": "Economisește timp și bani, primește reparații de calitate",
-        "benefit1": {
-          "title": "Economisește până la 40%",
-          "description": "Contact direct cu meșterul fără adaosurile centrelor de service"
-        },
-        "benefit2": {
-          "title": "Prețuri transparente",
-          "description": "Vezi toate ofertele și alegi cel mai bun preț"
-        },
-        "benefit3": {
-          "title": "Căutare rapidă",
-          "description": "Găsește un meșter în apropiere în 5 minute"
-        },
-        "benefit4": {
-          "title": "Plată sigură",
-          "description": "Banii sunt protejați prin sistemul escrow până la finalizarea lucrării"
-        },
-        "benefit5": {
-          "title": "Garanția calității",
-          "description": "30 de zile garanție pentru lucrarea efectuată"
-        },
-        "benefit6": {
-          "title": "Orice dispozitiv",
-          "description": "iPhone, Samsung, Xiaomi, MacBook și altele — găsim un meșter"
-        }
-      },
-      "master": {
-        "title": "De ce se alătură meșterii la RepairHub Pro?",
-        "subtitle": "Crește numărul de clienți și câștigă mai mult",
-        "benefit1": {
-          "title": "Mai mulți clienți",
-          "description": "Primește comenzi de la clienți din orașul tău zilnic"
-        },
-        "benefit2": {
-          "title": "Comision minim",
-          "description": "Comisioane mici — mai mulți bani pentru tine"
-        },
-        "benefit3": {
-          "title": "Proces transparent",
-          "description": "Gestionează comenzile, prețurile și programul tău"
-        },
-        "benefit4": {
-          "title": "Plăți rapide",
-          "description": "Primește plata imediat după finalizarea lucrării"
-        },
-        "benefit5": {
-          "title": "Construiește-ți reputația",
-          "description": "Recenziile clienților te ajută să primești mai multe comenzi"
-        },
-        "benefit6": {
-          "title": "Suport 24/7",
-          "description": "Echipa noastră este mereu gata să te ajute"
-        }
-      }
-    },
-    "howItWorks": {
-      "client": {
-        "title": "Cum funcționează pentru clienți?",
-        "step1": {
-          "title": "Descrie problema",
-          "description": "Creează o cerere: ce s-a stricat, modelul dispozitivului, fotografie"
-        },
-        "step2": {
-          "title": "Primește oferte",
-          "description": "Meșterii trimit ofertele lor cu preț și termene"
-        },
-        "step3": {
-          "title": "Alege meșterul",
-          "description": "Vezi ratingul, recenziile și portofoliul — alege cel mai bun"
-        },
-        "step4": {
-          "title": "Reparație sigură",
-          "description": "Plata prin escrow, banii vor fi transferați după verificarea lucrării"
-        }
-      },
-      "master": {
-        "title": "Cum funcționează pentru meșteri?",
-        "step1": {
-          "title": "Creează un profil",
-          "description": "Descrie specializarea, experiența și echipamentul"
-        },
-        "step2": {
-          "title": "Primește comenzi",
-          "description": "Clienții te găsesc după oraș și specializare"
-        },
-        "step3": {
-          "title": "Trimite o ofertă",
-          "description": "Specifică prețul și termenele — clientul va alege cea mai bună ofertă"
-        },
-        "step4": {
-          "title": "Execută și câștigă",
-          "description": "Primește plata rapid după finalizarea cu succes"
-        }
-      }
-    }
+    "feature6_description": "De la Apple și Samsung la Asus și Dell — vom găsi un tehnician pentru orice echipament."
   },
   "cta": {
-    "title": "Ești gata să începi?",
-    "subtitle": "Alătură-te RepairHub Pro și beneficiază de avantaje chiar astăzi",
-    "cta_client": "Caut un meșter",
-    "cta_master": "Sunt un meșter de reparații",
+    "title": "Sunteți gata să începeți?",
+    "subtitle": "Alăturați-vă sutelor de tehnicieni și clienți care deja câștigă și economisesc cu RepairHub Pro",
+    "cta_client": "Caut un tehnician",
+    "cta_master": "Sunt un tehnician de reparații",
     "brands_title": "Lucrăm cu orice marcă",
-    "brands_list": "iPhone, iPad, MacBook | Samsung, Xiaomi, Huawei | Asus, Decock, Lenovo, HP | Și altele"
+    "brands_list": "iPhone, iPad, MacBook | Samsung, Xiaomi, Huawei | Asus, Dell, Lenovo, HP | Și altele"
   },
   "footer": {
-    "platform_subtitle": "Platformă online pentru repararea dispozitivelor",
-    "phone": "+40 123 456 789",
+    "platform_subtitle": "Platformă online pentru reparații de dispozitive",
+    "phone": "+380 50 123 45 67",
     "email": "support@repairhub.pro",
-    "location": "București, România",
-    "copyright": "© 2024 RepairHub Pro. Toate drepturile rezervate. | Pentru meșteri și clienți reali"
+    "location": "Kiev, Ucraina",
+    "copyright": "© 2024 RepairHub Pro. Toate drepturile rezervate. | Pentru tehnicieni și clienți reali"
   },
   "navigation": {
-    "dashboard": "Panou de control",
+    "dashboard": "Panou",
     "home": "Acasă",
     "createOrder": "Creează comandă",
-    "findMasters": "Găsește Meșteri",
-    "myOrders": "Comenzile Mele",
-    "myDevices": "Dispozitivele Mele",
+    "findMasters": "Găsiți tehnicieni",
+    "myOrders": "Comenzile mele",
+    "myDevices": "Dispozitivele mele",
     "orders": "Comenzi",
     "statistics": "Statistici",
     "messages": "Chat",
     "profile": "Profil",
-    "reports": "Evaluări & Recenzii",
+    "reports": "Evaluări și recenzii",
     "orderHistory": "Istoric comenzi",
     "portfolio": "Portofoliu",
     "inventory": "Piese",
-    "myParts": "Piesele Mele",
-    "partsInventory": "Stoc Piese",
-    "proposals": "Oferte",
-    "myProposals": "Ofertele Mele",
+    "myParts": "Piesele mele",
+    "partsInventory": "Inventar piese",
+    "proposals": "Propuneri",
+    "myProposals": "Propunerile mele",
     "payments": "Plăți",
     "paymentMethods": "Metode de plată",
     "priceComparison": "Comparare prețuri",
-    "mastersInventory": "Stocuri meșteri",
+    "mastersInventory": "Inventar tehnicieni",
     "outsourceOrders": "Comenzi externalizate",
     "transactionHistory": "Istoric tranzacții",
     "bookingCalendar": "Calendar rezervări",
     "users": "Utilizatori",
     "analytics": "Analitică",
-    "finance": "Finanțe",
+    "finance": "Finanță",
     "security": "Securitate",
     "activity": "Activitate",
     "database": "Bază de date",
     "settings": "Setări",
-    "ordersBoard": "Panou Comenzi",
-    "autoHideMenu": "Ascunde meniul automat",
-    "keepMenuOpen": "Păstrează meniul deschis",
-    "support": "Suport tehnic"
+    "ordersBoard": "Panou comenzi",
+    "autoHideMenu": "Ascundeți automat meniul",
+    "keepMenuOpen": "Lăsați meniul deschis"
   },
   "auth": {
-    "loginError": "Eroare de autentificare",
-    "invalidCredentials": "Email sau parolă incorectă",
-    "clientMaster": "Client / Meșter",
+    "loginError": "Eroare la autentificare",
+    "invalidCredentials": "Email sau parolă incorecte",
+    "clientMaster": "Client / Maistru",
     "admin": "Admin",
     "roleClient": "Client",
-    "roleMaster": "Meșter",
+    "roleMaster": "Maistru",
     "roleAdmin": "Admin",
     "roleSuperAdmin": "SuperAdmin",
     "or": "sau",
@@ -455,139 +131,46 @@
     "register": "Înregistrează-te",
     "email": "Email",
     "password": "Parolă",
-    "login": "Autentificare",
-    "loginDescription": "Autentifică-te în contul tău",
-    "testUsers": "Utilizatori de test",
-    "loggingIn": "Autentificare...",
-    "emailPlaceholder": "emailul.tau@exemplu.com",
-    "registrationError": "Eroare la înregistrare. Încearcă din nou.",
-    "selectRole": "Alege rolul",
-    "whoAreYou": "Cine ești?",
-    "client": "Client",
-    "clientDescription": "Caut un meșter pentru reparații",
-    "master": "Meșter",
-    "masterDescription": "Ofer servicii de reparații",
-    "adminDescription": "Administrator platformă",
-    "yourData": "Datele tale",
-    "basicInfo": "Introdu informațiile de bază",
-    "yourName": "Numele tău",
-    "namePlaceholder": "Ion Popescu",
-    "city": "Oraș",
-    "cityPlaceholder": "București",
-    "phone": "Telefon",
-    "phonePlaceholder": "+40 123 456 789",
-    "yourDevices": "Dispozitivele tale",
-    "yourDevicesDescription": "Acest lucru va ajuta la găsirea unui meșter potrivit",
-    "mobileDevice": "Dispozitiv mobil",
-    "computer": "Computer",
-    "finishRegistration": "Finalizează înregistrarea",
-    "whereDoYouWork": "Unde lucrezi?",
-    "selectWorkplace": "Alege locul de muncă",
-    "serviceCenter": "Centru de service",
-    "serviceCenterDescription": "Lucrez într-un centru de service",
-    "mobileMaster": "Meșter mobil",
-    "mobileMasterDescription": "Mă deplasez cu uneltele",
-    "homeWorkshop": "Atelier acasă",
-    "homeWorkshopDescription": "Lucrez de acasă",
-    "whatBrandsDoYouRepair": "Ce mărci repari?",
-    "selectBrandsYouWorkWith": "Alege toate mărcile cu care lucrezi",
-    "repairTypes": "Tipuri de reparații",
-    "whatDoYouRepairMostOften": "Ce repari cel mai des?",
-    "yourExperience": "Experiența ta",
-    "howManyYearsExperience": "Câți ani de experiență ai în reparații?",
-    "enterDetails": "Introdu datele",
-    "workplace": "Loc de muncă",
-    "brands": "Mărci",
-    "experience": "Experiență",
-    "finish": "Finalizare",
-    "alreadyHaveAccount": "Ai deja un cont?",
-    "testUsers": {
-      "admin": {
-        "role": "Admin",
-        "name": "Admin Test"
-      },
-      "master1": {
-        "role": "Meșter 1",
-        "name": "Meșter Service"
-      },
-      "master2": {
-        "role": "Meșter 2",
-        "name": "Meșter Mobil"
-      },
-      "master3": {
-        "role": "Meșter 3",
-        "name": "Meșter Acasă"
-      },
-      "client1": {
-        "role": "Client 1",
-        "name": "Client iOS"
-      },
-      "client2": {
-        "role": "Client 2",
-        "name": "Client Android"
-      },
-      "client3": {
-        "role": "Client 3",
-        "name": "Client Windows"
-      },
-      "client4": {
-        "role": "Client 4",
-        "name": "Client Mac"
-      },
-      "superadmin": {
-        "role": "Superadmin",
-        "name": "Superadmin Test"
-      },
-      "test": {
-        "role": "Test",
-        "name": "Utilizator Test"
-      }
-    }
+    "login": "Autentificare"
   },
   "common": {
-    "search": "Caută",
+    "search": "Căutare",
     "filter": "Filtru",
-    "sort": "Sortează",
-    "cancel": "Anulează",
-    "save": "Salvează",
-    "edit": "Editează",
-    "delete": "Șterge",
-    "close": "Închide",
+    "sort": "Sortare",
+    "cancel": "Anulare",
+    "save": "Salvare",
+    "edit": "Editare",
+    "delete": "Ștergere",
+    "close": "Închidere",
     "loading": "Se încarcă...",
     "noResults": "Niciun rezultat găsit",
-    "allStatuses": "Toate stările",
+    "allStatuses": "Toate statusurile",
     "allPriorities": "Toate prioritățile",
-    "pending": "Așteptare",
+    "pending": "În așteptare",
     "inProgress": "În desfășurare",
     "completed": "Finalizat",
     "low": "Scăzut",
     "medium": "Mediu",
-    "high": "Ridicat",
+    "high": "Înalt",
     "active": "Activ",
     "blocked": "Blocat",
-    "newProposal": "Ofertă nouă la comanda ta!",
-    "orderInProgress": "Comanda ta este în desfășurare.",
-    "justNow": "acum",
-    "ago": "în urmă",
-    "fromLastMonth": "din ultima lună",
-    "searchOrders": "Caută comenzi...",
+    "newProposal": "Propunere nouă pentru comanda dvs.!",
+    "orderInProgress": "Comanda dvs. este în desfășurare.",
+    "justNow": "chiar acum",
+    "fromLastMonth": "din luna trecută",
+    "searchOrders": "Căutați comenzi...",
     "profile": "Profil",
     "settings": "Setări",
     "cookiesUsage": "Utilizarea cookie-urilor",
-    "cookiesDescription": "Folosim cookie-uri pentru a-ți îmbunătăți experiența.",
+    "cookiesDescription": "Folosim cookie-uri pentru a vă îmbunătăți experiența.",
     "modernPlatform": "Platformă modernă pentru reparații electronice mobile",
     "revenue": "Venit lunar",
     "rating": "Evaluare medie",
     "completedOrders": "Comenzi finalizate",
     "privacyPolicy": "Politica de confidențialitate",
-    "next": "Următorul",
-    "finish": "Finalizează",
     "acceptAll": "Acceptă tot",
-    "decline": "Refuză",
+    "decline": "Respinge",
     "refresh": "Reîmprospătează pagina",
-    "copy": "Copiază",
-    "use": "Folosește",
-    "fillAllFields": "Completează toate câmpurile",
     "totalOrders": "Total comenzi",
     "activeOrders": "Comenzi active",
     "spent": "Cheltuit",
@@ -595,61 +178,19 @@
     "currentOrders": "Comenzi curente",
     "quickActions": "Acțiuni rapide",
     "createOrder": "Creează comandă",
-    "newRepairRequest": "Cerere nouă de reparație",
+    "newRepairRequest": "Solicitare nouă de reparație",
     "orderHistory": "Istoric comenzi",
-    "yourActivity": "Activitatea ta",
-    "completedThisMonth": "Finalizate luna aceasta",
-    "averageMasterRating": "Evaluarea medie a meșterilor",
-    "timeSaved": "Timp economisit",
+    "yourActivity": "Activitatea dvs.",
+    "completedThisMonth": "Finalizate în această lună",
+    "averageMasterRating": "Evaluare medie tehnicieni",
+    "timeSaved": "Timp salvat",
     "orders": "comenzi",
     "hours": "ore",
     "logout": "Deconectare",
-    "orderInProgressTitle": "Comanda ta este în desfășurare.",
-    "startWorking": "Începe lucrul",
+    "orderInProgressTitle": "Comanda dvs. este în desfășurare.",
+    "startWorking": "Începeți lucrul",
     "login": "Autentificare",
     "register": "Înregistrare",
-    "months": {
-      "january": "Ianuarie",
-      "february": "Februarie",
-      "march": "Martie",
-      "april": "Aprilie",
-      "may": "Mai",
-      "june": "Iunie",
-      "july": "Iulie",
-      "august": "August",
-      "september": "Septembrie",
-      "october": "Octombrie",
-      "november": "Noiembrie",
-      "december": "Decembrie",
-      "jan": "Ian",
-      "feb": "Feb",
-      "mar": "Mar",
-      "apr": "Apr",
-      "may": "Mai",
-      "jun": "Iun",
-      "jul": "Iul",
-      "aug": "Aug",
-      "sep": "Sep",
-      "oct": "Oct",
-      "nov": "Noi",
-      "dec": "Dec"
-    },
-    "daysOfWeek": {
-      "sunday": "Duminică",
-      "monday": "Luni",
-      "tuesday": "Marți",
-      "wednesday": "Miercuri",
-      "thursday": "Joi",
-      "friday": "Vineri",
-      "saturday": "Sâmbătă",
-      "sun": "Dum",
-      "mon": "Lun",
-      "tue": "Mar",
-      "wed": "Mie",
-      "thu": "Joi",
-      "fri": "Vin",
-      "sat": "Sâm"
-    },
     "languages": {
       "uk": "Ucraineană",
       "en": "Engleză",
@@ -667,269 +208,278 @@
     "completed": "Finalizat",
     "roleClient": "Client",
     "roleMaster": "Meșter",
-    "roleService": "Service",
+    "roleService": "Serviciu",
     "biographyNotFilled": "Biografia nu este completată",
-    "tellAboutYourself": "Spune-ne despre tine...",
+    "tellAboutYourself": "Spune despre tine...",
     "editOrder": "Editează comanda",
-    "sharePhoto": "Distribuie fotografia",
-    "saving": "Se salvează...",
+    "sharePhoto": "Distribuie foto",
+    "saving": "Salvare...",
     "saveChanges": "Salvează modificările",
     "saveSettings": "Salvează setările",
     "add": "Adaugă",
     "email": "Email",
     "phone": "Telefon",
     "city": "Oraș",
-    "status": "Stare",
+    "status": "Status",
     "rating": "Evaluare",
     "actions": "Acțiuni",
     "editProfile": "Editează profilul",
     "messages": "Mesaje",
     "confirm": "Confirmă",
-    "fillAllFields": "Completează toate câmpurile",
+    "fillAllFields": "Completați toate câmpurile",
     "viewAll": "Toate →",
-    "view": "Vezi",
-    "search": "Caută",
+    "view": "Vizualizare",
+    "search": "Căutare",
     "help": "Ajutor",
-    "about": "Despre aplicație",
-    "continue": "Continuă",
-    "back": "Înapoi",
-    "next": "Următorul"
-  },
-  "orders": {
-    "allOrders": "Toate comenzile",
-    "deleted": "Șterse",
-    "found": "Găsit",
-    "notFound": "Nu s-au găsit comenzi",
-    "selectMaster": "Alege meșterul",
-    "selectMasterDescription": "Alege meșterul căruia vrei să-i trimiți comanda pentru examinare",
-    "deleteOrder": "Șterge comanda",
-    "deleteConfirm": "Ești sigur că vrei să ștergi comanda \"{{title}}\"?",
-    "tryFilters": "Încearcă să schimbi filtrele de căutare",
-    "sortByDate": "După dată (cele mai noi)",
-    "sortByPrice": "După preț (cele mai mari)",
-    "assignedMaster": "Meșter alocat",
-    "hasProposals": "Există oferte de la meșteri",
-    "status": {
-      "open": "Deschisă",
-      "cancelled": "Anulată",
-      "disputed": "Dispută",
-      "accepted": "Acceptată"
-    }
-  },
-  "orderDetails": {
-    "device": "Dispozitiv",
-    "problem": "Problemă",
-    "status": "Stare",
-    "urgency": "Urgență",
-    "description": "Descriere",
-    "assignedMaster": "Meșter alocat",
-    "editOrder": "Editează comanda",
-    "sendToMasters": "Trimite meșterilor",
-    "pauseSearch": "Oprește căutarea",
-    "activateSearch": "Activează căutarea",
-    "deleteOrder": "Șterge comanda",
-    "restoreOrder": "Restaurează comanda",
-    "chatWithMaster": "Chat cu meșterul",
-    "chatWithClient": "Chat cu clientul",
-    "viewProposals": "Vezi ofertele",
-    "submitProposal": "Trimite oferta"
-  },
-  "proposals": {
-    "submitProposal": "Trimite oferta",
-    "order": "Comandă",
-    "selectOrder": "Alege comanda",
-    "price": "Preț ($)",
-    "estimatedDays": "Număr de zile",
-    "workDescription": "Descrierea lucrării",
-    "workDescriptionPlaceholder": "Explică cum vei efectua lucrarea...",
-    "submit": "Trimite",
-    "all": "Toate",
-    "pending": "În așteptare",
-    "accepted": "Acceptate",
-    "noProposals": "Nicio ofertă",
-    "days": "zile",
-    "accept": "Acceptă",
-    "reject": "Refuză",
-    "cancelProposal": "Anulează",
-    "cancelOrder": "Anulează comanda",
-    "cancelReason": "Motivul anulării",
-    "cancelReasonPlaceholder": "Specifică motivul anulării comenzii...",
-    "confirmCancel": "Confirmă anularea",
-    "rejectProposal": "Refuză oferta",
-    "rejectReason": "Motivul refuzului",
-    "rejectReasonPlaceholder": "Specifică motivul refuzului ofertei...",
-    "confirmReject": "Confirmă refuzul",
-    "enterCancelReason": "Specifică motivul anulării",
-    "enterRejectReason": "Specifică motivul refuzului",
-    "deleteConfirm": "Ștergi oferta?",
-    "accepted": "Oferta a fost acceptată! Meșterul va începe lucrul.",
-    "rejected": "Oferta a fost refuzată. Motiv"
+    "about": "Despre aplicație"
   },
   "workExperience": {
-    "title": "Experiență profesională",
-    "add": "Adaugă experiență profesională",
-    "edit": "Editează experiența profesională",
-    "position": "Poziție",
+    "title": "Experiență de lucru",
+    "add": "Adaugă experiență",
+    "edit": "Editează experiența",
+    "position": "Pozitie",
     "company": "Companie",
-    "startDate": "Data începerii (ex. 2020)",
-    "endDate": "Data încheierii (sau gol)",
+    "startDate": "Data începutului (ex. 2020)",
+    "endDate": "Data sfârșitului (sau gol)",
     "description": "Descriere",
     "present": "Prezent",
-    "noExperience": "Nicio experiență profesională"
+    "noExperience": "Fără experiență"
   },
   "admin": {
-    "editUser": "Editează utilizatorul",
+    "editUser": "Editează utilizator",
     "name": "Nume",
     "role": "Rol",
     "addUser": "Adaugă utilizator",
     "lastSaved": "Ultima salvare",
     "unsavedChanges": "Modificări nesalvate",
-    "settingsPanel": "Panou admin: Setări",
+    "settingsPanel": "Panoul Admin: Setări",
     "settingsDescription": "Gestionarea parametrilor cheie ai sistemului",
     "apiSettings": "Setări API",
     "currencyProvider": "Furnizor curs valutar:",
-    "systemSettings": "Setări de sistem",
+    "systemSettings": "Setări sistem",
     "systemSettingsDescription": "Gestionarea parametrilor cheie ai platformei RepairHub Pro",
-    "securitySettingsDescription": "Setările de securitate ale sistemului",
+    "securitySettingsDescription": "Setări de securitate sistem",
     "apiKeyOptional": "Cheie API (dacă este necesară):",
-    "apiKeyPlaceholder": "Introdu cheia API",
+    "apiKeyPlaceholder": "Introduceți cheia API",
     "apiKey": "Cheie API",
     "platformCommission": "Comision platformă (%):",
     "providerCoingecko": "CoinGecko (gratuit)",
     "providerExchangerate": "ExchangeRate (gratuit)",
     "security": "Securitate",
-    "paymentIntegration": "Integrarea Sistemelor de Plată",
+    "paymentIntegration": "Integrare Plăți",
     "enableStripe": "Activează Stripe",
-    "stripeDescription": "Procesare sigură a plăților",
-    "stripePublicKey": "Cheie Publică Stripe",
-    "stripeSecretKey": "Cheie Secretă Stripe",
+    "stripeDescription": "Procesare sigură plăți",
+    "stripePublicKey": "Stripe Cheie Publică",
+    "stripeSecretKey": "Stripe Cheie Secretă",
     "enableMonobank": "Activează Monobank",
     "monobankDescription": "Sistem de plată ucrainean",
-    "monobankToken": "Token Monobank"
+    "monobankToken": "Monobank Token"
+  },
+  "orders": {
+    "allOrders": "Toate comenzile",
+    "deleted": "Șterse",
+    "found": "Găsite",
+    "notFound": "Nu s-au găsit comenzi",
+    "selectMaster": "Selectați maestru",
+    "selectMasterDescription": "Selectați un maestru căruia doriți să trimiteți comanda pentru examinare",
+    "deleteOrder": "Șterge comanda",
+    "deleteConfirm": "Sunteți sigur că doriți să ștergeți comanda \"{{title}}\"?",
+    "tryFilters": "Încercați să schimbați filtrele de căutare",
+    "sortByDate": "După dată (mai noi)",
+    "sortByPrice": "După preț (mai mari)",
+    "assignedMaster": "Tehnician asignat",
+    "hasProposals": "Are propuneri de la tehnicieni"
+  },
+  "orderDetails": {
+    "device": "Dispozitiv",
+    "problem": "Problemă",
+    "status": "Status",
+    "urgency": "Urgență",
+    "description": "Descriere",
+    "assignedMaster": "Tehnician asignat",
+    "editOrder": "Editează comanda",
+    "sendToMasters": "Trimite la tehnicieni",
+    "pauseSearch": "Oprește căutarea",
+    "activateSearch": "Activează căutarea",
+    "deleteOrder": "Șterge comanda",
+    "restoreOrder": "Restaurează comanda",
+    "chatWithMaster": "Chat cu tehnicianul",
+    "chatWithClient": "Chat cu clientul",
+    "viewProposals": "Vezi propunerile",
+    "submitProposal": "Depune propunere"
   },
   "status": {
-    "pending": "Așteptare",
+    "pending": "În așteptare",
     "in_progress": "În desfășurare",
-    "completed": "Finalizată",
-    "cancelled": "Anulată",
-    "assigned": "Alocată",
-    "new": "Nouă",
-    "open": "Deschisă",
-    "proposed": "Există oferte",
-    "accepted": "Acceptată",
-    "active_search": "Căutare activă de meșter",
-    "deleted": "Ștearsă",
-    "deletedAt": "Ștearsă la",
-    "searching": "Căutare meșter"
+    "completed": "Finalizat",
+    "cancelled": "Anulat",
+    "assigned": "Atribuit",
+    "new": "Nou",
+    "open": "Deschis",
+    "proposed": "Are propuneri",
+    "accepted": "Acceptat",
+    "active_search": "Căutare activă tehnician",
+    "deleted": "Șterse",
+    "deletedAt": "Șterse",
+    "searching": "Căutare tehnician"
+  },
+  "proposals": {
+    "submitProposal": "Depune propunere",
+    "order": "Comandă",
+    "selectOrder": "Selectează comanda",
+    "price": "Preț ($)",
+    "estimatedDays": "Număr de zile",
+    "workDescription": "Descrierea lucrării",
+    "workDescriptionPlaceholder": "Explică cum vei realiza lucrarea...",
+    "submit": "Depune",
+    "all": "Toate",
+    "pending": "În așteptare",
+    "accepted": "Acceptate",
+    "noProposals": "Fără propuneri",
+    "days": "zile",
+    "accept": "Acceptă",
+    "reject": "Respinge",
+    "cancelProposal": "Anulează",
+    "cancelOrder": "Anulează comanda",
+    "cancelReason": "Motiv anulare",
+    "cancelReasonPlaceholder": "Specifică motivul anulării comenzii...",
+    "confirmCancel": "Confirmă anularea",
+    "rejectProposal": "Respinge propunerea",
+    "rejectReason": "Motiv respingere",
+    "rejectReasonPlaceholder": "Specifică motivul respingerii propunerii...",
+    "confirmReject": "Confirmă respingerea",
+    "enterCancelReason": "Specifică motivul anulării",
+    "enterRejectReason": "Specifică motivul respingerii",
+    "deleteConfirm": "Șterge propunerea?",
+    "accepted": "Propunerea acceptată! Maestrul va începe lucrarea.",
+    "rejected": "Propunerea respinsă. Motivul"
+  },
+  "orders": {
+    "allOrders": "Toate comenzile",
+    "deleted": "Șterse",
+    "found": "Găsite",
+    "notFound": "Nu s-au găsit comenzi",
+    "selectMaster": "Selectează tehnician",
+    "selectMasterDescription": "Selectează un tehnician căruia vrei să-i trimiți comanda pentru revizuire",
+    "deleteOrder": "Șterge comandă",
+    "deleteConfirm": "Ești sigur că vrei să ștergi comanda \"{{title}}\"?",
+    "tryFilters": "Încearcă să schimbi filtrile de căutare",
+    "sortByDate": "După dată (cele mai noi)",
+    "sortByPrice": "După preț (cele mai mari)",
+    "assignedMaster": "Tehnician atribuit",
+    "hasProposals": "Are propuneri de la tehnicieni",
+    "status": {
+      "open": "Deschis",
+      "cancelled": "Anulat",
+      "disputed": "Dispuție",
+      "accepted": "Acceptat"
+    }
   },
   "priority": {
-    "low": "Scăzută",
-    "medium": "Medie",
-    "high": "Ridicata"
+    "low": "Scăzut",
+    "medium": "Mediu",
+    "high": "Înalt"
   },
   "errors": {
-    "loadingError": "Eroare la încărcare",
-    "somethingWrong": "Ceva nu a funcționat corect. Încearcă să reîmprospătezi pagina.",
-    "updateProfileFailed": "Nu s-a putut actualiza profilul. Încearcă din nou."
-  },
-  "profile": {
-    "updateSuccess": "Profilul a fost actualizat cu succes!"
+    "loadingError": "Eroare de încărcare",
+    "somethingWrong": "Ceva a mers prost. Încercați să reîmprospătați pagina.",
+    "updateProfileFailed": "Nu s-a putut actualiza profilul. Vă rugăm să încercați din nou."
   },
   "dateTime": {
     "today": "astăzi",
     "yesterday": "ieri"
   },
   "deviceCatalog": {
-    "selectColorAndStorage": "Te rog, alege culoarea și memoria",
-    "needsRepair": "Necesită reparație",
-    "defaultCity": "București",
-    "selectColor": "Alege culoarea",
-    "selectStorage": "Alege memoria",
-    "createRequest": "Creează cerere"
+    "selectColorAndStorage": "Vă rugăm să selectați culoarea și memoria",
+    "needsRepair": "Necesită reparații",
+    "defaultCity": "Kiev",
+    "selectColor": "Selectați culoarea",
+    "selectStorage": "Selectați memoria",
+    "createRequest": "Creați cerere"
   },
   "messages": {
-    "selectChat": "Alege un chat",
-    "selectContact": "Alege un contact pentru a începe conversația",
-    "typeMessage": "Scrie un mesaj..."
+    "selectChat": "Selectați chat",
+    "selectContact": "Selectați un contact pentru a începe o conversație",
+    "typeMessage": "Scrieți un mesaj..."
   },
   "masterOrders": {
-    "selectOrderAndSubmit": "Alege o comandă și trimite o ofertă",
-    "fillProposalDetails": "Completează detaliile ofertei:",
-    "sendProposal": "Trimite oferta",
-    "yourPrice": "Prețul tău (RON)",
-    "noProposals": "Nicio ofertă",
-    "myOrders": "Comenzile Mele",
-    "availableOrders": "Comenzi Disponibile",
-    "searchPlaceholder": "Caută după ID, client, dispozitiv...",
-    "estimatedDays": "Timp de execuție (zile)",
+    "selectOrderAndSubmit": "Selectați o comandă și trimiteți o propunere",
+    "fillProposalDetails": "Completați detaliile propunerii:",
+    "sendProposal": "Trimite propunerea",
+    "yourPrice": "Prețul dvs. (₴)",
+    "noProposals": "Fără propuneri",
+    "myOrders": "Comenzile mele",
+    "availableOrders": "Comenzi disponibile",
+    "searchPlaceholder": "Căutați după ID, client, dispozitiv...",
+    "estimatedDays": "Timp estimat (zile)",
     "workDescription": "Descrierea lucrării",
-    "priceExample": "Exemplu: 2200",
-    "daysExample": "Exemplu: 1",
-    "descriptionPlaceholder": "Descrie ce vei face...",
-    "description": "Vizualizarea comenzilor disponibile și gestionarea ofertelor",
-    "activeProposals": "Oferte active"
+    "priceExample": "De exemplu: 2200",
+    "daysExample": "De exemplu: 1",
+    "descriptionPlaceholder": "Descrieți ce veți face...",
+    "description": "Vizualizarea comenzilor disponibile și gestionarea propunerilor",
+    "activeProposals": "Propuneri active"
   },
   "orderCreation": {
-    "selectDevice": "Alege tipul de dispozitiv",
-    "enterModel": "Specifică modelul",
-    "describeProblem": "Descrie problema",
-    "minLength": "Minim 10 caractere",
-    "enterBudget": "Specifică bugetul",
-    "enterLocation": "Specifică locația",
-    "selectType": "Alege tipul...",
-    "createOrder": "Creează Comandă",
-    "uploadPhotos": "Încarcă fotografii",
-    "reviewData": "Verifică datele",
-    "addPhoto": "Adaugă cel puțin o fotografie",
-    "stepByStep": "Pas cu pas spre succes",
-    "createNewOrder": "Creează o nouă comandă",
+    "selectDevice": "Selectați tipul de dispozitiv",
+    "enterModel": "Introduceți modelul",
+    "describeProblem": "Descrieți problema",
+    "minLength": "Minimum 10 caractere",
+    "enterBudget": "Introduceți bugetul",
+    "enterLocation": "Introduceți locația",
+    "selectType": "Selectați tipul...",
+    "createOrder": "Creați Comanda",
+    "uploadPhotos": "Încărcați fotografii",
+    "reviewData": "Revizuiți datele",
+    "addPhoto": "Adăugați cel puțin o fotografie",
+    "stepByStep": "Pas cu pas către succes",
+    "createNewOrder": "Creați comandă nouă",
     "orderTitle": "Titlul comenzii",
-    "orderTitlePlaceholder": "Exemplu: Reparație ecran iPhone",
-    "deviceType": "Tipul dispozitivului",
-    "selectType": "Alege tipul",
-    "brand": "Marcă",
-    "selectBrand": "Alege marca",
+    "orderTitlePlaceholder": "De exemplu: Reparație ecran iPhone",
+    "deviceType": "Tip dispozitiv",
+    "selectType": "Selectați tipul",
+    "brand": "Marca",
+    "selectBrand": "Selectați marca",
     "deviceModel": "Modelul dispozitivului",
-    "selectModel": "Alege modelul",
-    "enterModel": "Introdu modelul",
-    "budget": "Buget pentru reparație",
-    "enterBudget": "Introdu suma (RON)",
-    "problemType": "Tipul problemei",
-    "selectProblem": "Alege problema",
+    "selectModel": "Selectați modelul",
+    "enterModel": "Introduceți modelul",
+    "budget": "Buget reparație",
+    "enterBudget": "Introduceți suma (₴)",
+    "problemType": "Tip problemă",
+    "selectProblem": "Selectați problema",
     "problemDescription": "Descrierea problemei",
-    "problemDescriptionPlaceholder": "Descrie problema în detaliu...",
+    "problemDescriptionPlaceholder": "Descrieți în detaliu problema...",
     "imeiOptional": "IMEI (opțional)",
-    "serialNumberOptional": "Număr de serie (opțional)"
+    "serialNumberOptional": "Număr serie (opțional)"
   },
   "settings": {
     "saved": "Setările au fost salvate!",
-    "resetConfirm": "Ești sigur că vrei să resetezi toate setările?",
-    "description": "Gestionează-ți setările de profil și de sistem",
-    "general": "Generale",
+    "resetConfirm": "Sunteți sigur că doriți să resetați toate setările?",
+    "description": "Gestionați setările profilului și sistemului",
+    "general": "General",
     "notifications": "Notificări",
     "privacy": "Confidențialitate",
     "languageAndRegion": "Limbă și regiune",
     "language": "Limbă",
     "theme": "Temă",
-    "emailNotifications": "Notificări prin email",
+    "emailNotifications": "Notificări email",
     "pushNotifications": "Notificări push",
-    "pushNotificationsDescription": "Notificări instant pe dispozitiv",
+    "pushNotificationsDescription": "Notificări instantanee pe dispozitiv",
     "smsNotifications": "Notificări SMS",
     "security": "Securitate",
     "profilePrivacy": "Confidențialitatea profilului",
-    "enableSoundNotifications": "Activează notificările sonore",
+    "enableSoundNotifications": "Activați notificările sonore",
     "autoPlayVideos": "Redare automată video",
-    "autoPlayVideosDescription": "Redă automat înregistrările video",
-    "fontSize": "Dimensiunea fontului",
+    "autoPlayVideosDescription": "Redați automat înregistrările video",
+    "fontSize": "Dimensiune font",
     "fontSizeSmall": "Mic",
     "fontSizeNormal": "Normal",
     "fontSizeLarge": "Mare",
-    "display": "Afișaj",
+    "display": "Afișare",
     "displayModes": "Moduri de afișare",
     "compactMode": "Mod compact",
     "compactModeDescription": "Mai puțin spațiu, mai mult conținut",
     "animations": "Animații",
-    "animationsDescription": "Activează animațiile fluide",
+    "animationsDescription": "Activați animații fluide",
     "emailNotificationsDescription": "Primește actualizări pe email",
     "smsNotificationsDescription": "Actualizări critice prin SMS",
     "soundEffects": "Efecte sonore",
@@ -938,49 +488,58 @@
     "themeDark": "Întunecat",
     "themeAuto": "Automat",
     "visibilityPublic": "Public",
-    "visibilityFriends": "Doar prieteni",
+    "visibilityFriends": "Doar prietenii",
     "visibilityPrivate": "Privat",
-    "showEmail": "Arată emailul",
-    "showEmailDescription": "Permite altor utilizatori să-ți vadă emailul"
+    "showEmail": "Afișează email",
+    "showEmailDescription": "Permite altor utilizatori să-ți vadă email-ul"
   },
   "dashboard": {
     "quickActions": "Acțiuni rapide",
     "newOrder": "Comandă nouă",
-    "viewProposals": "Vezi ofertele",
+    "viewProposals": "Vizualizați propunerile",
     "recentOrders": "Comenzi recente",
-    "noOrders": "Nicio comandă",
+    "noOrders": "Fără comenzi",
     "tipOfTheDay": "Sfatul zilei",
-    "tipMessage": "Meșterii cu un rating peste 4.8 primesc cu 40% mai multe comenzi!",
-    "searchPlaceholder": "Caută comenzi, meșteri...",
+    "tipMessage": "Meșterii cu rating peste 4.8 primesc cu 40% mai multe comenzi!",
+    "searchPlaceholder": "Căutați comenzi, meșteri...",
     "masterVirtuoso": "Meșter-virtuoz",
     "reviewsCount": "{{count}} recenzii"
   },
+  "landing": {
+    "modernPlatform": "Platformă modernă pentru repararea electronicii mobile",
+    "safePlatform": "Platformă sigură • Garanție de calitate",
+    "safePayment": "Plată sigură",
+    "rating": "Rating 4.5+",
+    "warranty": "Garanție 30 zile",
+    "minCommission": "Comision minim",
+    "support24": "Suport 24/7",
+    "copyright": "© 2026 Repair HUB Pro. Toate drepturile rezervate.",
+    "footerLinks": "Contactați-ne • Suport • Politica de confidențialitate"
+  },
   "masterDashboard": {
-    "activeTasks": "Sarcini active",
-    "manageCurrentOrders": "Gestionarea comenzilor curente",
     "welcome": "Bun venit, {{name}}!",
     "subtitle": "Panoul tău de control RepairHub",
     "activeOrders": "Comenzi Active",
     "completedOrders": "Comenzi Finalizate",
-    "earned": "Câștigat (RON)",
+    "earned": "Câștigat (UAH)",
     "orderStatistics": "Statistici Comenzi",
-    "activityFeed": "Flux de Activitate"
+    "activityFeed": "Feed Activitate"
   },
   "adminDashboard": {
     "title": "Panou Admin",
     "subtitle": "Gestionarea platformei",
     "welcome": "Bun venit, {{name}}",
-    "controlCenter": "Centru de Control Admin",
+    "controlCenter": "Centru Control Admin",
     "platformManagement": "Gestionarea platformei RepairHub Pro",
-    "searchPlaceholder": "Caută după nume sau email",
+    "searchPlaceholder": "Căutare după nume sau email",
     "tabs": {
       "overview": "Prezentare generală",
       "users": "Utilizatori",
       "orders": "Comenzi",
       "financials": "Finanțe",
       "reviews": "Recenzii",
-      "analytics": "Analitică",
-      "disputes": "Dispute",
+      "analytics": "Analiză",
+      "disputes": "Dispuții",
       "history": "Istoric"
     },
     "filters": {
@@ -999,73 +558,6 @@
     "tabs": {
       "admin": "Admin",
       "roles": "Roluri"
-    }
-  },
-  "brands": {
-    "apple": "Apple",
-    "samsung": "Samsung",
-    "xiaomi": "Xiaomi",
-    "huawei": "Huawei",
-    "oppo": "Oppo",
-    "google": "Google Pixel",
-    "sony": "Sony",
-    "lg": "LG",
-    "motorola": "Motorola",
-    "asus": "ASUS",
-    "lenovo": "Lenovo",
-    "hp": "HP",
-    "dell": "Dell"
-  },
-  "repairTypes": {
-    "screen": {
-      "label": "Ecrane",
-      "description": "Înlocuirea și repararea ecranelor"
-    },
-    "battery": {
-      "label": "Baterii",
-      "description": "Înlocuirea acumulatorilor"
-    },
-    "camera": {
-      "label": "Camere",
-      "description": "Repararea și înlocuirea camerelor"
-    },
-    "charging": {
-      "label": "Încărcare",
-      "description": "Repararea conectorilor și plăcilor"
-    },
-    "software": {
-      "label": "Software",
-      "description": "Flash și recuperare"
-    },
-    "motherboard": {
-      "label": "Plăci",
-      "description": "Repararea plăcilor de bază"
-    },
-    "housing": {
-      "label": "Carcase",
-      "description": "Restaurarea carcaselor"
-    },
-    "audio": {
-      "label": "Audio",
-      "description": "Difuzoare, microfoane"
-    }
-  },
-  "experienceLevels": {
-    "beginner": {
-      "label": "Începător",
-      "desc": "Mai puțin de 1 an"
-    },
-    "intermediate": {
-      "label": "Experimentat",
-      "desc": "1-3 ani"
-    },
-    "advanced": {
-      "label": "Profesionist",
-      "desc": "3-5 ani"
-    },
-    "expert": {
-      "label": "Expert",
-      "desc": "Peste 5 ani"
     }
   }
 }

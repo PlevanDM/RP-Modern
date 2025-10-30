@@ -410,6 +410,7 @@ export function DeviceCatalog({ onCreateOrder }: { onCreateOrder?: (data: Create
               {filteredBrands.map((brand) => (
                 <motion.button
                   key={brand.id}
+                  data-testid={`brand-${brand.id}`}
                   whileHover={{ scale: 1.02 }}
                   onClick={() => handleBrandSelect(brand.id)}
                   className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all ${
@@ -449,6 +450,7 @@ export function DeviceCatalog({ onCreateOrder }: { onCreateOrder?: (data: Create
                   filteredModels.map((model) => (
                     <motion.button
                       key={model}
+                      data-testid={`model-${model.replace(/\s+/g, '-')}`}
                       whileHover={{ scale: 1.02 }}
                       onClick={() => handleModelSelect(model)}
                       className={`w-full flex items-center gap-2 p-3 rounded-lg transition-all ${
@@ -494,6 +496,7 @@ export function DeviceCatalog({ onCreateOrder }: { onCreateOrder?: (data: Create
                 ISSUE_TYPES.map((issue) => (
                   <motion.button
                     key={issue}
+                    data-testid={`issue-${issue.replace(/\s+/g, '-')}`}
                     whileHover={{ scale: 1.02 }}
                     onClick={() => handleIssueSelect(issue)}
                     className={`w-full flex items-center gap-2 p-3 rounded-lg transition-all text-left ${
@@ -567,6 +570,7 @@ export function DeviceCatalog({ onCreateOrder }: { onCreateOrder?: (data: Create
                     onChange={(e) =>
                       setOrderData({ ...orderData, phone: e.target.value })
                     }
+                    data-testid="order-phone-input"
                   />
                 </div>
 
@@ -583,6 +587,7 @@ export function DeviceCatalog({ onCreateOrder }: { onCreateOrder?: (data: Create
                     }
                     className="w-full p-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                     rows={3}
+                    data-testid="order-description-input"
                   />
                 </div>
 
@@ -629,6 +634,7 @@ export function DeviceCatalog({ onCreateOrder }: { onCreateOrder?: (data: Create
                     onClick={handleCreateOrder}
                     disabled={!orderData.phone}
                     className="flex-1 gap-2"
+                    data-testid="create-order-submit-button"
                   >
                     <Plus className="w-4 h-4" />
                     Створити

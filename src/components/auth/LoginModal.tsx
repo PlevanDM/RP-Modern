@@ -115,7 +115,7 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
                   type="button"
                   onClick={() => setShowTestUsers(!showTestUsers)}
                   className="p-1.5 hover:bg-blue-100 rounded-lg transition text-gray-500 hover:text-blue-600"
-                  title={t('auth.testUsers') || 'Тестові користувачі'}
+                  title={t('auth.testUsersTitle') || 'Тестові користувачі'}
                 >
                   <HelpCircle className="w-5 h-5" />
                 </button>
@@ -132,7 +132,7 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
             <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
               <h3 className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
                 <HelpCircle className="w-4 h-4" />
-                {t('auth.testUsers') || 'Тестові користувачі'}
+                {t('auth.testUsersTitle') || 'Тестові користувачі'}
               </h3>
               <div className="space-y-2 max-h-64 overflow-y-auto">
                 {TEST_USERS.map((user, index) => (
@@ -193,6 +193,7 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
                 disabled={isLoading}
                 className="w-full px-4 py-3.5 sm:py-3 text-base sm:text-lg bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 min-h-[56px] sm:min-h-[52px] disabled:opacity-50 disabled:cursor-not-allowed"
                 autoComplete="email"
+                data-testid="email-input"
               />
             </div>
             <div>
@@ -208,6 +209,7 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
                 disabled={isLoading}
                 className="w-full px-4 py-3.5 sm:py-3 text-base sm:text-lg bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 min-h-[56px] sm:min-h-[52px] disabled:opacity-50 disabled:cursor-not-allowed"
                 autoComplete="current-password"
+                data-testid="password-input"
               />
             </div>
             <button

@@ -32,7 +32,17 @@ export const useAuthStore = create<AuthState>()(
       },
       register: async (user: User) => {
         const newUser = await apiAuthService.register(user);
-        set({ currentUser: newUser, isOnboardingCompleted: false });
+        const hasCompleteProfile =
+          newUser.name &&
+          newUser.city &&
+          newUser.phone &&
+          (newUser.role !== 'master' || (
+            newUser.workLocation &&
+            newUser.repairBrands && newUser.repairBrands.length > 0 &&
+            newUser.repairTypes && newUser.repairTypes.length > 0 &&
+            newUser.workExperience !== undefined
+          ));
+        set({ currentUser: newUser, isOnboardingCompleted: hasCompleteProfile });
       },
       logout: () => {
         localStorage.removeItem('jwt-token');

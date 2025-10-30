@@ -72,7 +72,7 @@ export function AdminDashboard({ users: propUsers = [], orders: propOrders = [],
         className="flex items-center justify-between mb-6"
       >
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">{t('adminDashboard.title') || 'Admin Dashboard'}</h1>
+          <h1 className="text-3xl font-bold text-gray-900" data-testid="admin-dashboard-title">{t('adminDashboard.title') || 'Admin Dashboard'}</h1>
           <p className="text-gray-600">{t('adminDashboard.subtitle') || 'Platform Management'}</p>
         </div>
         {currentUser && (

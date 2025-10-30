@@ -359,6 +359,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
             return (
               <motion.button
                 key={item.key}
+                data-testid={`nav-${getRouteKey(item.key)}`}
                 onClick={() => {
                     const routeKey = getRouteKey(item.key);
                     console.log('Navigation click:', { navKey: item.key, routeKey });
@@ -529,6 +530,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
 
         {/* Desktop sidebar */}
         <motion.div
+            data-testid="modern-navigation-sidebar"
             className="fixed left-0 top-0 h-screen w-56 bg-background md:flex md:flex-col hidden z-30"
             initial={false}
             animate={isCollapsed ? "closed" : "open"}
