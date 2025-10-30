@@ -176,7 +176,7 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
       'in-progress': { label: t('status.in_progress'), className: 'bg-blue-500/10 text-blue-500' },
       completed: { label: t('status.completed'), className: 'bg-green-500/10 text-green-500' },
     };
-    return variants[status];
+    return variants[status] || { label: status, className: 'bg-gray-500/10 text-gray-500' };
   };
 
   const getPriorityBadge = (priority: Task['priority']) => {
@@ -185,7 +185,7 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
       medium: { label: t('priority.medium'), className: 'bg-orange-500/10 text-orange-500' },
       high: { label: t('priority.high'), className: 'bg-red-500/10 text-red-500' },
     };
-    return variants[priority];
+    return variants[priority] || { label: priority, className: 'bg-gray-500/10 text-gray-500' };
   };
 
 
