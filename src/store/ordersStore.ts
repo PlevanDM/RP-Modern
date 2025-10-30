@@ -128,6 +128,36 @@ export const useOrdersStore = create<OrdersState>()(
             console.warn('Не вдалося синхронізувати з localStorage:', storageError);
           }
           
+          // Create notifications for masters (as per ARCHITECTURE.md: "Створення замовлення → Усі майстри")
+          try {
+            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
+            const matchingMasters = users.filter((u: any) => 
+              u.role === 'master' && 
+              !u.blocked &&
+              (u.verified !== false) &&
+              (!newOrder.brand || !u.repairBrands || u.repairBrands.length === 0 || 
+               u.repairBrands.some((brand: string) => 
+                 brand.toLowerCase().includes(newOrder.brand?.toLowerCase() || '')))
+            );
+            
+            const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
+            matchingMasters.forEach((master: any) => {
+              notifications.push({
+                id: `notif-${Date.now()}-${master.id}`,
+                userId: master.id,
+                message: `Нове замовлення доступне: "${newOrder.title}" (${newOrder.device})`,
+                type: 'order',
+                read: false,
+                createdAt: new Date(),
+              });
+            });
+            if (matchingMasters.length > 0) {
+              localStorage.setItem('repairhub_notifications', JSON.stringify(notifications));
+            }
+          } catch (error) {
+            console.warn('Не вдалося створити уведомлення для майстрів:', error);
+          }
+          
           useUIStore.getState().showNotification('Замовлення успішно створено!');
           console.log('✅ Замовлення створено:', newOrder);
         } catch (error) {
@@ -531,6 +561,24 @@ export const useOrdersStore = create<OrdersState>()(
           }
         }
 
+        // Create notification for master (as per ARCHITECTURE.md: "Звільнення оплати → Master")
+        try {
+          const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
+          if (masterId) {
+            notifications.push({
+              id: `notif-${Date.now()}-payment`,
+              userId: masterId,
+              message: `Оплату за замовлення "${order.title}" виплачено! Ви отримали ₴${masterAmount.toFixed(2)}`,
+              type: 'payment',
+              read: false,
+              createdAt: new Date(),
+            });
+            localStorage.setItem('repairhub_notifications', JSON.stringify(notifications));
+          }
+        } catch (error) {
+          console.warn('Не вдалося створити уведомлення майстру:', error);
+        }
+        
         useUIStore.getState().showNotification(
           `Оплату виплачено! Майстер отримає ₴${masterAmount.toFixed(2)} (комісія платформи: ₴${commission.toFixed(2)})`
         );
