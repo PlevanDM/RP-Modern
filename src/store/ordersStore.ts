@@ -332,7 +332,7 @@ export const useOrdersStore = create<OrdersState>()(
         }
         
         set((state) => ({
-          processos: state.proposals.map((p) =>
+          proposals: state.proposals.map((p) =>
             p.id === proposalId ? { ...p, ...updates, updatedAt: new Date() } : p
           ),
         }));
@@ -382,7 +382,7 @@ export const useOrdersStore = create<OrdersState>()(
         
         // Automatically create conversation between client and master (as per ARCHITECTURE.md)
         try {
-          const { getOrCreateConversation } = require('../services/chatService');
+          const { getOrCreateConversation } = await import('../services/chatService');
           if (order.clientId && proposal.masterId) {
             getOrCreateConversation(order.clientId, proposal.masterId, proposal.orderId);
           }
@@ -390,12 +390,11 @@ export const useOrdersStore = create<OrdersState>()(
           console.warn('Не вдалося автоматично створити розмову:', error);
         }
         
-        // Update order status to in_progress after a short delay
-        setTimeout(() => {
-          get().updateOrderStatus(proposal.orderId, 'in_progress');
-        }, 500);
+        // Note: Order status remains 'accepted' until payment is made
+        // Status changes to 'in_progress' only after payment (as per ARCHITECTURE.md)
+        // Master can start work only after payment is escrowed
 
-        useUIStore.getState().showNotification('Пропозицію прийнято! Замовлення розпочато. Розмова з майстром створена.');
+        useUIStore.getState().showNotification('Пропозицію прийнято! Розмова з майстром створена. Чекаємо оплати для початку роботи.');
       },
       rejectProposal: (proposalId) => {
         set((state) => ({
