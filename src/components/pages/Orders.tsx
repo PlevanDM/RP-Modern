@@ -320,7 +320,7 @@ export function Orders({
               onClick={() => setShowCreateModal(true)}
               className="flex items-center justify-center gap-2 px-4 sm:px-3 py-2.5 sm:py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition-colors text-base sm:text-sm font-medium min-h-[44px] sm:min-h-[36px]"
             >
-              <AddIcon sx={{ fontSize: 22, fontSize: { xs: 22, sm: 20 } }} />
+                <AddIcon sx={{ fontSize: { xs: 22, sm: 20 } }} />
               <span className="hidden sm:inline">{t('common.createOrder')}</span>
               <span className="sm:hidden">{t('common.createOrder')}</span>
             </button>
