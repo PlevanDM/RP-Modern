@@ -1,11 +1,13 @@
 'use client'
 
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SplineScene } from "./spline-scene";
 import { Card } from "./card"
 import { Spotlight } from "./spotlight"
 
 export const SplineRobotDemo = memo(function SplineRobotDemo() {
+  const { t } = useTranslation();
   
   return (
     <Card className="w-full h-[500px] bg-white relative overflow-hidden border-0 shadow-none">
@@ -21,7 +23,7 @@ export const SplineRobotDemo = memo(function SplineRobotDemo() {
             RepairHub Pro
           </h1>
           <p className="text-xl md:text-2xl font-bold text-gray-700 leading-relaxed">
-            Сучасна платформа ремонту мобільної техніки
+            {t('common.modernPlatform')}
           </p>
         </div>
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, User, Wrench, AlertCircle, ChevronRight, Smartphone, Monitor, Laptop, ArrowLeft, Building2, Home, Car } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 
@@ -9,6 +10,7 @@ interface RegisterModalProps {
 }
 
 export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: RegisterModalProps) {
+  const { t } = useTranslation();
   const [error, setError] = useState('');
   const [step, setStep] = useState<'role' | 'info' | 'devices'>(initialRole ? 'info' : 'role');
   const [selectedRole, setSelectedRole] = useState<'client' | 'master' | 'admin' | null>(initialRole || null);
@@ -149,7 +151,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
       window.location.reload();
     } catch (err) {
       console.error('Registration error:', err);
-      setError('Помилка реєстрації. Спробуйте ще раз.');
+      setError(t('auth.registrationError') || 'Помилка реєстрації. Спробуйте ще раз.');
     }
   };
 
@@ -158,8 +160,8 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
       return (
         <>
           <div className="text-center mb-6 sm:mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Оберіть роль</h2>
-            <p className="text-gray-600 text-sm sm:text-base">Хто ви?</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{t('auth.selectRole')}</h2>
+            <p className="text-gray-600 text-sm sm:text-base">{t('auth.whoAreYou')}</p>
           </div>
 
           <div className="space-y-3 sm:space-y-4">
@@ -171,8 +173,8 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                 <User className="w-6 h-6 sm:w-6 sm:h-6 text-blue-600" />
               </div>
               <div className="text-left flex-1 min-w-0">
-                <div className="font-bold text-gray-900 mb-1 text-lg sm:text-lg">Клієнт</div>
-                <div className="text-sm sm:text-sm text-gray-600">Шукаю майстра для ремонту</div>
+                <div className="font-bold text-gray-900 mb-1 text-lg sm:text-lg">{t('auth.client')}</div>
+                <div className="text-sm sm:text-sm text-gray-600">{t('auth.clientDescription')}</div>
               </div>
               <ChevronRight className="w-6 h-6 sm:w-6 sm:h-6 text-gray-400 shrink-0" />
             </button>
@@ -184,8 +186,8 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                 <Wrench className="w-6 h-6 sm:w-6 sm:h-6 text-orange-600" />
               </div>
               <div className="text-left flex-1 min-w-0">
-                <div className="font-bold text-gray-900 mb-1 text-lg sm:text-lg">Майстер</div>
-                <div className="text-sm sm:text-sm text-gray-600">Надаю послуги ремонту</div>
+                <div className="font-bold text-gray-900 mb-1 text-lg sm:text-lg">{t('auth.master')}</div>
+                <div className="text-sm sm:text-sm text-gray-600">{t('auth.masterDescription')}</div>
               </div>
               <ChevronRight className="w-6 h-6 sm:w-6 sm:h-6 text-gray-400 shrink-0" />
             </button>
@@ -197,8 +199,8 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                 <User className="w-6 h-6 sm:w-6 sm:h-6 text-purple-600" />
               </div>
               <div className="text-left flex-1 min-w-0">
-                <div className="font-bold text-gray-900 mb-1 text-lg sm:text-lg">Адмін</div>
-                <div className="text-sm sm:text-sm text-gray-600">Адміністратор платформи</div>
+                <div className="font-bold text-gray-900 mb-1 text-lg sm:text-lg">{t('auth.admin')}</div>
+                <div className="text-sm sm:text-sm text-gray-600">{t('auth.adminDescription')}</div>
               </div>
               <ChevronRight className="w-6 h-6 sm:w-6 sm:h-6 text-gray-400 shrink-0" />
             </button>
@@ -211,42 +213,42 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
       return (
         <>
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Ваші дані</h2>
-            <p className="text-gray-600 text-sm">Введіть базову інформацію</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.yourData')}</h2>
+            <p className="text-gray-600 text-sm">{t('auth.basicInfo')}</p>
           </div>
 
           <div className="space-y-5">
             <div>
-              <label className="block text-base sm:text-sm font-semibold text-gray-900 mb-2.5">Ваше ім'я</label>
+              <label className="block text-base sm:text-sm font-semibold text-gray-900 mb-2.5">{t('auth.yourName')}</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Іван Петров"
+                placeholder={t('auth.namePlaceholder')}
                 className="w-full px-5 py-4 text-base rounded-xl border-2 border-gray-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all min-h-[56px] bg-gray-50 focus:bg-white"
               />
             </div>
 
             <div>
-              <label className="block text-base sm:text-sm font-semibold text-gray-900 mb-2.5">Місто</label>
+              <label className="block text-base sm:text-sm font-semibold text-gray-900 mb-2.5">{t('auth.city')}</label>
               <input
                 type="text"
                 value={formData.city}
                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                placeholder="Київ"
+                placeholder={t('auth.cityPlaceholder')}
                 className="w-full px-5 py-4 text-base rounded-xl border-2 border-gray-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all min-h-[56px] bg-gray-50 focus:bg-white"
               />
             </div>
 
             <div>
               <label className="block text-base sm:text-sm font-semibold text-gray-900 mb-2.5">
-                Телефон <span className="text-red-500">*</span>
+                {t('auth.phone')} <span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="+380 50 123 4567"
+                placeholder={t('auth.phonePlaceholder')}
                 className="w-full px-5 py-4 text-base rounded-xl border-2 border-gray-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all min-h-[56px] bg-gray-50 focus:bg-white"
               />
             </div>
@@ -256,7 +258,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
               disabled={!formData.name || !formData.city || !formData.phone}
               className="w-full py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold text-base sm:text-lg hover:shadow-lg hover:shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.97] min-h-[56px]"
             >
-              Продовжити
+              {t('common.continue')}
             </button>
           </div>
         </>
@@ -274,15 +276,15 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
         return (
           <>
             <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Ваші пристрої</h2>
-              <p className="text-gray-600 text-sm">Це допоможе знайти відповідного майстра</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.yourDevices')}</h2>
+              <p className="text-gray-600 text-sm">{t('auth.yourDevicesDescription')}</p>
             </div>
 
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                   <Smartphone className="w-5 h-5 text-gray-600" />
-                  Мобільний пристрій
+                  {t('auth.mobileDevice')}
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
                   {(['android', 'ios'] as const).map(os => (
@@ -311,7 +313,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
               <div>
                 <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
                   <Laptop className="w-5 h-5 text-gray-600" />
-                  Комп'ютер
+                  {t('auth.computer')}
                 </h3>
                 <div className="grid grid-cols-3 gap-3">
                   {(['windows', 'mac', 'linux'] as const).map(os => (
@@ -341,7 +343,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                 onClick={handleFinishRegistration}
                 className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all"
               >
-                Завершити реєстрацію
+                {t('auth.finishRegistration')}
               </button>
             </div>
           </>
@@ -403,8 +405,8 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
             return (
               <>
                 <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Де ви працюєте?</h2>
-                  <p className="text-gray-600 text-sm">Оберіть місце роботи</p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.whereDoYouWork')}</h2>
+                  <p className="text-gray-600 text-sm">{t('auth.selectWorkplace')}</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <button
@@ -418,9 +420,9 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                     <div className="flex flex-col items-center">
                       <Building2 className={`w-12 h-12 mb-3 ${workLocation === 'service' ? 'text-orange-600' : 'text-gray-400'}`} />
                       <div className={`font-semibold text-lg ${workLocation === 'service' ? 'text-orange-700' : 'text-gray-700'}`}>
-                        Сервісний центр
+                        {t('auth.serviceCenter')}
                       </div>
-                      <div className="text-sm text-gray-600 mt-2 text-center">Працюю в сервісному центрі</div>
+                      <div className="text-sm text-gray-600 mt-2 text-center">{t('auth.serviceCenterDescription')}</div>
                     </div>
                   </button>
                   <button
@@ -434,9 +436,9 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                     <div className="flex flex-col items-center">
                       <Car className={`w-12 h-12 mb-3 ${workLocation === 'mobile' ? 'text-orange-600' : 'text-gray-400'}`} />
                       <div className={`font-semibold text-lg ${workLocation === 'mobile' ? 'text-orange-700' : 'text-gray-700'}`}>
-                        Виїздний майстер
+                        {t('auth.mobileMaster')}
                       </div>
-                      <div className="text-sm text-gray-600 mt-2 text-center">Виїжджаю з інструментом</div>
+                      <div className="text-sm text-gray-600 mt-2 text-center">{t('auth.mobileMasterDescription')}</div>
                     </div>
                   </button>
                   <button
@@ -450,9 +452,9 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                     <div className="flex flex-col items-center">
                       <Home className={`w-12 h-12 mb-3 ${workLocation === 'home' ? 'text-orange-600' : 'text-gray-400'}`} />
                       <div className={`font-semibold text-lg ${workLocation === 'home' ? 'text-orange-700' : 'text-gray-700'}`}>
-                        Домашня майстерня
+                        {t('auth.homeWorkshop')}
                       </div>
-                      <div className="text-sm text-gray-600 mt-2 text-center">Працюю вдома</div>
+                      <div className="text-sm text-gray-600 mt-2 text-center">{t('auth.homeWorkshopDescription')}</div>
                     </div>
                   </button>
                 </div>
@@ -464,8 +466,8 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
             return (
               <>
                 <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Які бренди ви ремонтуєте?</h2>
-                  <p className="text-gray-600 text-sm">Оберіть всі бренди, з якими працюєте</p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.whatBrandsDoYouRepair')}</h2>
+                  <p className="text-gray-600 text-sm">{t('auth.selectBrandsYouWorkWith')}</p>
                 </div>
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                   {brands.map((brand) => {
@@ -483,7 +485,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                         <div className="flex flex-col items-center">
                           <div className="text-2xl mb-2">{brand.icon}</div>
                           <div className={`font-medium text-xs ${isSelected ? 'text-orange-700' : 'text-gray-900'}`}>
-                            {brand.label}
+                            {t(`brands.${brand.id}`)}
                           </div>
                         </div>
                       </button>
@@ -498,8 +500,8 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
             return (
               <>
                 <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Типи ремонтів</h2>
-                  <p className="text-gray-600 text-sm">Що ви найчастіше ремонтуєте?</p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.repairTypes')}</h2>
+                  <p className="text-gray-600 text-sm">{t('auth.whatDoYouRepairMostOften')}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {repairTypesOptions.map((repair) => {
@@ -514,8 +516,8 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                             : 'border-gray-200 hover:border-orange-300'
                         }`}
                       >
-                        <div className="font-semibold text-sm text-gray-900 mb-1">{repair.label}</div>
-                        <div className="text-xs text-gray-600">{repair.description}</div>
+                        <div className="font-semibold text-sm text-gray-900 mb-1">{t(`repairTypes.${repair.id}.label`)}</div>
+                        <div className="text-xs text-gray-600">{t(`repairTypes.${repair.id}.description`)}</div>
                       </button>
                     );
                   })}
@@ -528,8 +530,8 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
             return (
               <>
                 <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Ваш досвід</h2>
-                  <p className="text-gray-600 text-sm">Скільки років ви працюєте в ремонті?</p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.yourExperience')}</h2>
+                  <p className="text-gray-600 text-sm">{t('auth.howManyYearsExperience')}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {experienceLevels.map((level) => (
@@ -547,12 +549,12 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                         <div className={`font-semibold text-sm mb-1 ${
                           experience === level.id ? 'text-orange-700' : 'text-gray-900'
                         }`}>
-                          {level.label}
+                          {t(`experienceLevels.${level.id}.label`)}
                         </div>
                         <div className={`text-xs ${
                           experience === level.id ? 'text-orange-600' : 'text-gray-600'
                         }`}>
-                          {level.desc}
+                          {t(`experienceLevels.${level.id}.desc`)}
                         </div>
                       </div>
                     </button>
@@ -573,7 +575,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                   onClick={handleBack}
                   className="px-6 py-3 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-all font-semibold"
                 >
-                  Назад
+                  {t('common.back')}
                 </button>
               )}
               <button
@@ -586,7 +588,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                 }
                 className="flex-1 py-3 bg-orange-600 text-white rounded-lg font-semibold hover:bg-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {masterStep === 'experience' ? 'Завершити реєстрацію' : 'Далі'}
+                {masterStep === 'experience' ? t('auth.finishRegistration') : t('common.next')}
               </button>
             </div>
           </>
@@ -606,18 +608,18 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
           >
             <X className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
-          <h2 className="text-xl sm:text-2xl font-bold mb-1">Реєстрація</h2>
+          <h2 className="text-xl sm:text-2xl font-bold mb-1">{t('auth.register')}</h2>
           <p className="text-white/80 text-xs sm:text-sm">
-            {step === 'role' && 'Оберіть роль'}
-            {step === 'info' && 'Введіть дані'}
-            {step === 'devices' && selectedRole === 'client' && 'Ваші пристрої'}
+            {step === 'role' && t('auth.selectRole')}
+            {step === 'info' && t('auth.enterDetails')}
+            {step === 'devices' && selectedRole === 'client' && t('auth.yourDevices')}
             {step === 'devices' && selectedRole === 'master' && (
-              masterStep === 'workLocation' ? 'Місце роботи' :
-              masterStep === 'brands' ? 'Бренди' :
-              masterStep === 'repairs' ? 'Типи ремонтів' :
-              'Досвід'
+              masterStep === 'workLocation' ? t('auth.workplace') :
+              masterStep === 'brands' ? t('auth.brands') :
+              masterStep === 'repairs' ? t('auth.repairTypes') :
+              t('auth.experience')
             )}
-            {step === 'devices' && selectedRole === 'admin' && 'Завершення'}
+            {step === 'devices' && selectedRole === 'admin' && t('auth.finish')}
           </p>
         </div>
 
@@ -638,13 +640,13 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
               className="mt-6 flex items-center gap-2 text-gray-600 hover:text-gray-900"
             >
               <ArrowLeft className="w-4 h-4" />
-              Назад
+              {t('common.back')}
             </button>
           )}
 
           <div className="mt-6 pt-6 border-t border-gray-200 text-center">
             <p className="text-gray-600 text-sm">
-              Вже маєте акаунт?{' '}
+              {t('auth.alreadyHaveAccount')}{' '}
               <button 
                 onClick={() => {
                   if (onSwitchToLogin) onSwitchToLogin();
@@ -652,7 +654,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                 }}
                 className="text-blue-600 hover:text-blue-700 font-semibold"
               >
-                Увійти
+                {t('auth.login')}
               </button>
             </p>
           </div>
