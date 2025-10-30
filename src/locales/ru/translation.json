@@ -119,94 +119,7 @@
     "register": "Зарегистрироваться",
     "email": "Почта",
     "password": "Пароль",
-    "login": "Войти",
-    "loginDescription": "Войдите в свой аккаунт",
-    "testUsers": "Тестовые пользователи",
-    "loggingIn": "Вход...",
-    "emailPlaceholder": "vash.email@example.com",
-    "registrationError": "Ошибка регистрации. Попробуйте еще раз.",
-    "selectRole": "Выберите роль",
-    "whoAreYou": "Кто вы?",
-    "client": "Клиент",
-    "clientDescription": "Ищу мастера для ремонта",
-    "master": "Мастер",
-    "masterDescription": "Предоставляю услуги по ремонту",
-    "adminDescription": "Администратор платформы",
-    "yourData": "Ваши данные",
-    "basicInfo": "Введите основную информацию",
-    "yourName": "Ваше имя",
-    "namePlaceholder": "Иван Иванов",
-    "city": "Город",
-    "cityPlaceholder": "Киев",
-    "phone": "Телефон",
-    "phonePlaceholder": "+7 912 345-67-89",
-    "yourDevices": "Ваши устройства",
-    "yourDevicesDescription": "Это поможет найти подходящего мастера",
-    "mobileDevice": "Мобильное устройство",
-    "computer": "Компьютер",
-    "finishRegistration": "Завершить регистрацию",
-    "whereDoYouWork": "Где вы работаете?",
-    "selectWorkplace": "Выберите место работы",
-    "serviceCenter": "Сервисный центр",
-    "serviceCenterDescription": "Работаю в сервисном центре",
-    "mobileMaster": "Выездной мастер",
-    "mobileMasterDescription": "Выезжаю с инструментом",
-    "homeWorkshop": "Домашняя мастерская",
-    "homeWorkshopDescription": "Работаю на дому",
-    "whatBrandsDoYouRepair": "Какие бренды вы ремонтируете?",
-    "selectBrandsYouWorkWith": "Выберите все бренды, с которыми работаете",
-    "repairTypes": "Типы ремонтов",
-    "whatDoYouRepairMostOften": "Что вы ремонтируете чаще всего?",
-    "yourExperience": "Ваш опыт",
-    "howManyYearsExperience": "Сколько лет вы в ремонте?",
-    "enterDetails": "Введите данные",
-    "workplace": "Место работы",
-    "brands": "Бренды",
-    "experience": "Опыт",
-    "finish": "Завершение",
-    "alreadyHaveAccount": "Уже есть аккаунт?",
-    "testUsers": {
-      "admin": {
-        "role": "Админ",
-        "name": "Админ Тест"
-      },
-      "master1": {
-        "role": "Мастер 1",
-        "name": "Мастер Сервисный"
-      },
-      "master2": {
-        "role": "Мастер 2",
-        "name": "Мастер Выездной"
-      },
-      "master3": {
-        "role": "Мастер 3",
-        "name": "Мастер Домашний"
-      },
-      "client1": {
-        "role": "Клиент 1",
-        "name": "Клиент iOS"
-      },
-      "client2": {
-        "role": "Клиент 2",
-        "name": "Клиент Android"
-      },
-      "client3": {
-        "role": "Клиент 3",
-        "name": "Клиент Windows"
-      },
-      "client4": {
-        "role": "Клиент 4",
-        "name": "Клиент Mac"
-      },
-      "superadmin": {
-        "role": "Суперадмин",
-        "name": "Суперадмин Тест"
-      },
-      "test": {
-        "role": "Тестовый",
-        "name": "Тестовый Пользователь"
-      }
-    }
+    "login": "Войти"
   },
   "common": {
     "search": "Поиск",
@@ -351,10 +264,7 @@
     "view": "Просмотр",
     "search": "Поиск",
     "help": "Помощь",
-    "about": "О приложении",
-    "continue": "Продолжить",
-    "back": "Назад",
-    "next": "Далее"
+    "about": "О приложении"
   },
   "workExperience": {
     "title": "Опыт работы",
@@ -665,73 +575,6 @@
     "tabs": {
       "admin": "Админ",
       "roles": "Роли"
-    }
-  },
-  "brands": {
-    "apple": "Apple",
-    "samsung": "Samsung",
-    "xiaomi": "Xiaomi",
-    "huawei": "Huawei",
-    "oppo": "Oppo",
-    "google": "Google Pixel",
-    "sony": "Sony",
-    "lg": "LG",
-    "motorola": "Motorola",
-    "asus": "ASUS",
-    "lenovo": "Lenovo",
-    "hp": "HP",
-    "dell": "Dell"
-  },
-  "repairTypes": {
-    "screen": {
-      "label": "Экраны",
-      "description": "Замена и ремонт дисплеев"
-    },
-    "battery": {
-      "label": "Батареи",
-      "description": "Замена аккумуляторов"
-    },
-    "camera": {
-      "label": "Камеры",
-      "description": "Ремонт и замена камер"
-    },
-    "charging": {
-      "label": "Зарядка",
-      "description": "Ремонт разъемов и плат"
-    },
-    "software": {
-      "label": "ПО",
-      "description": "Прошивка и восстановление"
-    },
-    "motherboard": {
-      "label": "Платы",
-      "description": "Ремонт материнских плат"
-    },
-    "housing": {
-      "label": "Корпуса",
-      "description": "Восстановление корпусов"
-    },
-    "audio": {
-      "label": "Аудио",
-      "description": "Динамики, микрофоны"
-    }
-  },
-  "experienceLevels": {
-    "beginner": {
-      "label": "Новичок",
-      "desc": "Менее 1 года"
-    },
-    "intermediate": {
-      "label": "Опытный",
-      "desc": "1-3 года"
-    },
-    "advanced": {
-      "label": "Профессионал",
-      "desc": "3-5 лет"
-    },
-    "expert": {
-      "label": "Эксперт",
-      "desc": "Более 5 лет"
     }
   }
 }

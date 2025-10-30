@@ -458,91 +458,7 @@
     "login": "Увійти",
     "loginDescription": "Увійдіть у свій обліковий запис",
     "testUsers": "Тестові користувачі",
-    "loggingIn": "Вхід...",
-    "emailPlaceholder": "vash.email@example.com",
-    "registrationError": "Помилка реєстрації. Спробуйте ще раз.",
-    "selectRole": "Оберіть роль",
-    "whoAreYou": "Хто ви?",
-    "client": "Клієнт",
-    "clientDescription": "Шукаю майстра для ремонту",
-    "master": "Майстер",
-    "masterDescription": "Надаю послуги з ремонту",
-    "adminDescription": "Адміністратор платформи",
-    "yourData": "Ваші дані",
-    "basicInfo": "Введіть основну інформацію",
-    "yourName": "Ваше ім'я",
-    "namePlaceholder": "Іван Петренко",
-    "city": "Місто",
-    "cityPlaceholder": "Київ",
-    "phone": "Телефон",
-    "phonePlaceholder": "+380 50 123 4567",
-    "yourDevices": "Ваші пристрої",
-    "yourDevicesDescription": "Це допоможе знайти відповідного майстра",
-    "mobileDevice": "Мобільний пристрій",
-    "computer": "Комп'ютер",
-    "finishRegistration": "Завершити реєстрацію",
-    "whereDoYouWork": "Де ви працюєте?",
-    "selectWorkplace": "Оберіть місце роботи",
-    "serviceCenter": "Сервісний центр",
-    "serviceCenterDescription": "Працюю в сервісному центрі",
-    "mobileMaster": "Виїзний майстер",
-    "mobileMasterDescription": "Виїжджаю з інструментом",
-    "homeWorkshop": "Домашня майстерня",
-    "homeWorkshopDescription": "Працюю вдома",
-    "whatBrandsDoYouRepair": "Які бренди ви ремонтуєте?",
-    "selectBrandsYouWorkWith": "Оберіть усі бренди, з якими працюєте",
-    "repairTypes": "Типи ремонтів",
-    "whatDoYouRepairMostOften": "Що ви найчастіше ремонтуєте?",
-    "yourExperience": "Ваш досвід",
-    "howManyYearsExperience": "Скільки років ви в ремонті?",
-    "enterDetails": "Введіть дані",
-    "workplace": "Місце роботи",
-    "brands": "Бренди",
-    "experience": "Досвід",
-    "finish": "Завершення",
-    "alreadyHaveAccount": "Вже є акаунт?",
-    "testUsers": {
-      "admin": {
-        "role": "Адмін",
-        "name": "Адмін Тест"
-      },
-      "master1": {
-        "role": "Майстер 1",
-        "name": "Майстер Сервісний"
-      },
-      "master2": {
-        "role": "Майстер 2",
-        "name": "Майстер Виїзний"
-      },
-      "master3": {
-        "role": "Майстер 3",
-        "name": "Майстер Домашній"
-      },
-      "client1": {
-        "role": "Клієнт 1",
-        "name": "Клієнт iOS"
-      },
-      "client2": {
-        "role": "Клієнт 2",
-        "name": "Клієнт Android"
-      },
-      "client3": {
-        "role": "Клієнт 3",
-        "name": "Клієнт Windows"
-      },
-      "client4": {
-        "role": "Клієнт 4",
-        "name": "Клієнт Mac"
-      },
-      "superadmin": {
-        "role": "Суперадмін",
-        "name": "Суперадмін Тест"
-      },
-      "test": {
-        "role": "Тестовий",
-        "name": "Тестовий Користувач"
-      }
-    }
+    "loggingIn": "Вхід..."
   },
   "common": {
     "search": "Пошук",
@@ -690,10 +606,7 @@
     "view": "Переглянути",
     "search": "Пошук",
     "help": "Допомога",
-    "about": "Про додаток",
-    "continue": "Продовжити",
-    "back": "Назад",
-    "next": "Далі"
+    "about": "Про додаток"
   },
   "orders": {
     "allOrders": "Усі замовлення",
@@ -999,73 +912,6 @@
     "tabs": {
       "admin": "Адмін",
       "roles": "Ролі"
-    }
-  },
-  "brands": {
-    "apple": "Apple",
-    "samsung": "Samsung",
-    "xiaomi": "Xiaomi",
-    "huawei": "Huawei",
-    "oppo": "Oppo",
-    "google": "Google Pixel",
-    "sony": "Sony",
-    "lg": "LG",
-    "motorola": "Motorola",
-    "asus": "ASUS",
-    "lenovo": "Lenovo",
-    "hp": "HP",
-    "dell": "Dell"
-  },
-  "repairTypes": {
-    "screen": {
-      "label": "Екрани",
-      "description": "Заміна та ремонт дисплеїв"
-    },
-    "battery": {
-      "label": "Батареї",
-      "description": "Заміна акумуляторів"
-    },
-    "camera": {
-      "label": "Камери",
-      "description": "Ремонт та заміна камер"
-    },
-    "charging": {
-      "label": "Зарядка",
-      "description": "Ремонт роз'ємів та плат"
-    },
-    "software": {
-      "label": "ПЗ",
-      "description": "Прошивка та відновлення"
-    },
-    "motherboard": {
-      "label": "Плати",
-      "description": "Ремонт материнських плат"
-    },
-    "housing": {
-      "label": "Корпуси",
-      "description": "Відновлення корпусів"
-    },
-    "audio": {
-      "label": "Аудіо",
-      "description": "Динаміки, мікрофони"
-    }
-  },
-  "experienceLevels": {
-    "beginner": {
-      "label": "Новачок",
-      "desc": "Менше 1 року"
-    },
-    "intermediate": {
-      "label": "Досвідчений",
-      "desc": "1-3 роки"
-    },
-    "advanced": {
-      "label": "Професіонал",
-      "desc": "3-5 років"
-    },
-    "expert": {
-      "label": "Експерт",
-      "desc": "Більше 5 років"
     }
   }
 }

@@ -3,12 +3,6 @@ import '@testing-library/jest-dom';
 import { WorkExperienceSection } from './WorkExperience';
 import { WorkExperience } from '../../../types/models';
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key) => key,
-  }),
-}));
-
 const mockExperience: WorkExperience[] = [
   {
     id: '1',
@@ -44,11 +38,11 @@ describe('WorkExperienceSection', () => {
       />
     );
 
-    fireEvent.click(screen.getByText('common.add'));
+    fireEvent.click(screen.getByText('Додати'));
 
-    fireEvent.change(screen.getByPlaceholderText('workExperience.position'), { target: { value: 'New Role' } });
-    fireEvent.change(screen.getByPlaceholderText('workExperience.company'), { target: { value: 'New Company' } });
-    fireEvent.click(screen.getByText('common.save'));
+    fireEvent.change(screen.getByPlaceholderText('Посада'), { target: { value: 'New Role' } });
+    fireEvent.change(screen.getByPlaceholderText('Компанія'), { target: { value: 'New Company' } });
+    fireEvent.click(screen.getByText('Зберегти'));
 
     expect(onExperienceChange).toHaveBeenCalledWith(
       expect.arrayContaining([
@@ -69,8 +63,8 @@ describe('WorkExperienceSection', () => {
 
     fireEvent.click(screen.getByTestId('edit-button-1'));
 
-    fireEvent.change(screen.getByPlaceholderText('workExperience.position'), { target: { value: 'Updated Role' } });
-    fireEvent.click(screen.getByText('common.save'));
+    fireEvent.change(screen.getByPlaceholderText('Посада'), { target: { value: 'Updated Role' } });
+    fireEvent.click(screen.getByText('Зберегти'));
 
     expect(onExperienceChange).toHaveBeenCalledWith(
       expect.arrayContaining([
