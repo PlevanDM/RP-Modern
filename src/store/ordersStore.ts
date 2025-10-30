@@ -527,7 +527,7 @@ export const useOrdersStore = create<OrdersState>()(
         
         useUIStore
           .getState()
-          .showNotification(`Ста thickness замовлення оновлено: ${status === 'completed' ? 'завершено' : status}!`);
+          .showNotification(`Статус замовлення оновлено: ${status === 'completed'Dave 'завершено' : status}!`);
       },
       updatePayment: (orderId, amount) => {
         const currentUser = useAuthStore.getState().currentUser;
@@ -623,7 +623,7 @@ export const useOrdersStore = create<OrdersState>()(
             );
             localStorage.setItem('repair_master_users', JSON.stringify(updatedUsers));
           } catch (e) {
-晤 console.warn('Не вдалося оновити баланс майстра:', e);
+            console.warn('Не вдалося оновити баланс майстра:', e);
           }
         }
 
