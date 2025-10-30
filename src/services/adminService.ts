@@ -1,5 +1,6 @@
 import { User, Review, UserAction } from '../types';
 import { mockUsers } from '../utils/mockData';
+import { getApiUrl } from './apiUrlHelper';
 
 // Mock data for reviews
 const mockReviews: Review[] = [
@@ -20,7 +21,7 @@ class AdminService {
   async getUsers(): Promise<User[]> {
     console.log('AdminService: Fetching users...');
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+      const API_URL = getApiUrl();
       const response = await fetch(`${API_URL}/users`, {
         credentials: 'include',
         headers: {
@@ -78,7 +79,7 @@ class AdminService {
   async getUserActions(): Promise<UserAction[]> {
     console.log('AdminService: Fetching user actions...');
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+      const API_URL = getApiUrl();
       // Use error logs as user actions if available
       const response = await fetch(`${API_URL}/admin/errors`, {
         credentials: 'include',
@@ -106,7 +107,7 @@ class AdminService {
 
   async getOrders(): Promise<any[]> {
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+      const API_URL = getApiUrl();
       const response = await fetch(`${API_URL}/orders`, {
         credentials: 'include',
         headers: {
@@ -126,7 +127,7 @@ class AdminService {
 
   async getTransactions(): Promise<any[]> {
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+      const API_URL = getApiUrl();
       const response = await fetch(`${API_URL}/payments`, {
         credentials: 'include',
         headers: {

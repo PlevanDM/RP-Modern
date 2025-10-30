@@ -7,16 +7,9 @@ const LanguageSwitcher: React.FC = () => {
   const { i18n } = useI18n();
   const { t } = useTranslation();
   
-  // Names of languages in their own language
+  // Get language name using translations
   const getLanguageName = (code: string): string => {
-    const names: Record<string, Record<string, string>> = {
-      uk: { uk: 'Українська', en: 'Ukrainian', ru: 'Украинский', pl: 'Ukraiński', ro: 'Ucraineană' },
-      en: { uk: 'Англійська', en: 'English', ru: 'Английский', pl: 'Angielski', ro: 'Engleză' },
-      ru: { uk: 'Російська', en: 'Russian', ru: 'Русский', pl: 'Rosyjski', ro: 'Rusă' },
-      pl: { uk: 'Польська', en: 'Polish', ru: 'Польский', pl: 'Polski', ro: 'Poloneză' },
-      ro: { uk: 'Румунська', en: 'Romanian', ru: 'Румынский', pl: 'Rumuński', ro: 'Română' },
-    };
-    return names[code]?.[i18n.language] || code;
+    return t(`common.languages.${code}`) || code.toUpperCase();
   };
 
   const languages = [

@@ -38,18 +38,7 @@ export interface CircuitBreakerConfig {
 // CONFIGURATION
 // ============================================================================
 
-// Auto-detect API URL based on current host
-const getApiUrl = () => {
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
-  // If accessing via IP, use IP for API too
-  const host = window.location.hostname;
-  if (host !== 'localhost' && host !== '127.0.0.1') {
-    return `http://${host}:3001/api`;
-  }
-  return 'http://localhost:3001/api';
-};
+import { getApiUrl } from '../apiUrlHelper';
 
 const API_BASE_URL = getApiUrl();
 const API_TIMEOUT = parseInt(import.meta.env.VITE_API_TIMEOUT || '30000');

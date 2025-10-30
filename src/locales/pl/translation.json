@@ -191,6 +191,13 @@
     "startWorking": "Rozpocznij pracę",
     "login": "Zaloguj się",
     "register": "Zarejestruj się",
+    "languages": {
+      "uk": "Ukraiński",
+      "en": "Angielski",
+      "ru": "Rosyjski",
+      "pl": "Polski",
+      "ro": "Rumuński"
+    },
     "changeLanguage": "Zmień język",
     "myProfile": "Mój Profil",
     "personalInfo": "Informacje osobiste",

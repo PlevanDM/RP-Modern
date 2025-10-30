@@ -108,12 +108,12 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
                   type="button"
                   onClick={() => setShowTestUsers(!showTestUsers)}
                   className="p-1.5 hover:bg-blue-100 rounded-lg transition text-gray-500 hover:text-blue-600"
-                  title="Тестові користувачі"
+                  title={t('auth.testUsers') || 'Тестові користувачі'}
                 >
                   <HelpCircle className="w-5 h-5" />
                 </button>
               </div>
-              <p className="text-gray-600 text-sm sm:text-base">Увійдіть у свій обліковий запис</p>
+              <p className="text-gray-600 text-sm sm:text-base">{t('auth.loginDescription') || t('auth.login')}</p>
             </div>
           </div>
         </div>
@@ -125,7 +125,7 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
             <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
               <h3 className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
                 <HelpCircle className="w-4 h-4" />
-                Тестові користувачі
+                {t('auth.testUsers') || 'Тестові користувачі'}
               </h3>
               <div className="space-y-2 max-h-64 overflow-y-auto">
                 {TEST_USERS.map((user, index) => (
@@ -136,14 +136,14 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-gray-900 truncate">{user.name}</p>
                       <p className="text-xs text-gray-600 truncate">{user.email}</p>
-                      <p className="text-xs text-gray-500">Пароль: {user.password}</p>
+                      <p className="text-xs text-gray-500">{t('auth.password')}: {user.password}</p>
                     </div>
                     <div className="flex gap-1 ml-2">
                       <button
                         type="button"
                         onClick={() => handleCopyCredentials(user.email, user.password, index)}
                         className="p-1.5 hover:bg-blue-100 rounded text-blue-600 transition"
-                        title="Копіювати"
+                        title={t('common.copy') || 'Копіювати'}
                       >
                         {copiedIndex === index ? (
                           <Check className="w-4 h-4 text-green-600" />
@@ -156,7 +156,7 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
                         onClick={() => handleUseTestUser(user.email, user.password)}
                         className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition"
                       >
-                        Використати
+                        {t('common.use') || 'Використати'}
                       </button>
                     </div>
                   </div>

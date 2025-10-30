@@ -130,7 +130,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { key: 'navigation.payments', label: t('navigation.payments'), href: "#", icon: CreditCard },
         { key: 'navigation.messages', label: t('navigation.messages'), href: "#", icon: MessageSquare },
         { key: 'navigation.portfolio', label: t('navigation.portfolio'), href: "#", icon: Briefcase },
-        { key: 'navigation.support', label: 'Техпідтримка', href: "#", icon: HelpCircle }
+        { key: 'navigation.support', label: t('navigation.support'), href: "#", icon: HelpCircle }
       ];
     } else if (currentUser?.role === 'client') {
       // Client menu

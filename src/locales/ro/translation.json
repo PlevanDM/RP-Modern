@@ -191,6 +191,13 @@
     "startWorking": "Începeți lucrul",
     "login": "Autentificare",
     "register": "Înregistrare",
+    "languages": {
+      "uk": "Ucraineană",
+      "en": "Engleză",
+      "ru": "Rusă",
+      "pl": "Poloneză",
+      "ro": "Română"
+    },
     "changeLanguage": "Schimbă limba",
     "myProfile": "Profilul Meu",
     "personalInfo": "Informații personale",

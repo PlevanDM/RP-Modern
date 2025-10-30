@@ -862,6 +862,31 @@ app.patch('/api/users/profile', authMiddleware, async (req: AuthRequest, res: Re
 });
 
 // Get all devices (public route)
+// Base API endpoint for health check
+app.get('/api', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'RepairHub Pro API is running',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth/login, /api/auth/register',
+      users: '/api/users',
+      orders: '/api/orders',
+      devices: '/api/devices',
+      profile: '/api/profile/me'
+    }
+  });
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 app.get('/api/devices', (req, res) => {
   res.json(allDevicesDatabase);
 });
@@ -1617,8 +1642,10 @@ app.get('/api/admin/errors', authMiddleware, requireRole(['admin', 'superadmin']
 
 // --- SERVER INITIALIZATION ---
 initializeDatabase().then(() => {
-  app.listen(port, () => {
-    console.log(`✅ Server is running on http://localhost:${port}`);
+  app.listen(port, '0.0.0.0', () => {
+    console.log(`✅ Server is running on http://0.0.0.0:${port}`);
+    console.log(`✅ Server accessible at http://localhost:${port}`);
+    console.log(`✅ Server accessible from network at http://<your-ip>:${port}`);
     startAutoReleaseCron(); // Start auto-release cron
     startAutoDisputeCron(); // Start auto-dispute timeout cron
   });
