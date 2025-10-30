@@ -107,8 +107,10 @@ function App() {
     releasePayment,
     refundPayment,
     createDispute,
+    resolveDispute,
     escalateDispute,
     fetchOrders,
+ Internacional
   } = useOrdersStore();
   const { notifications, readNotification, removeNotification } = useNotificationsStore();
   

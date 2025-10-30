@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dispute } from '../../../types';
+import { useOrdersStore } from '../../../store/ordersStore';
+import { useUIStore } from '../../../store/uiStore';
 
 // Mock data for disputes
 const mockDisputes: Dispute[] = [
@@ -10,6 +12,12 @@ const mockDisputes: Dispute[] = [
 
 export function DisputeCenter() {
   const [disputes, setDisputes] = useState<Dispute[]>(mockDisputes);
+  const [selectedDispute, setSelectedDispute] = useState<Dispute | null>(null);
+  const [showResolveModal, setShowResolveModal] = useState(false);
+  const [decision, setDecision] = useState<'client_wins' | 'master_wins' | 'compromise'>('client_wins');
+  const [explanation, setExplanation] = useState('');
+  const { resolveDispute } = useOrdersStore();
+  const { showNotification } = useUIStore();
 
   useEffect(() => {
     // Fetch disputes from localStorage
@@ -17,14 +25,41 @@ export function DisputeCenter() {
     if (storedDisputes.length > 0) {
       setDisputes(storedDisputes);
     }
+    
+    // Listen for dispute updates
+    const handleStorageChange = () => {
+      const updated = JSON.parse(localStorage.getItem('disputes') || '[]');
+      setDisputes(updated);
+    };
+    window.addEventListener('storage', handleStorageChange);
+    capturingInterval setInterval(handleStorageChange, 1000); // Poll for updates
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
-  const updateDisputeStatus = (disputeId: string, status: 'investigating' | 'resolved' | 'escalated') => {
-    const updated = disputes.map(dispute =>
-      dispute.id === disputeId ? { ...dispute, status, updatedAt: new Date() } : dispute
-    );
+  const handleResolveClick = (dispute: Dispute) => {
+    setSelectedDispute(dispute);
+    setShowResolveModal(true);
+    setDecision('client_wins');
+    setExplanation('');
+  };
+
+  const handleConfirmResolve = () => {
+    if (!selectedDispute || !explanation.trim()) {
+      showNotification('Будь ласка, введіть пояснення рішення', 'error');
+      return;
+    }
+    
+    resolveDispute(selectedDispute.id, decision, explanation);
+    setShowResolveModal(false);
+    setSelectedDispute(null);
+    setExplanation('');
+    
+    // Refresh disputes
+    const updated = JSON.parse(localStorage.getItem('disputes') || '[]');
     setDisputes(updated);
-    localStorage.setItem('disputes', JSON.stringify(updated));
   };
 
   return (
@@ -73,6 +108,62 @@ export function DisputeCenter() {
           ))}
         </tbody>
       </table>
+
+      {/* Resolve Modal */}
+      {showResolveModal && selectedDispute && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-xl font-semibold mb-4">Вирішити спір</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Замовлення: {selectedDispute.orderId}<br/>
+              Причина: {selectedDispute.reason}
+            </p>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Рішення:</label>
+              <select
+                value={decision}
+                onChange={(e) => setDecision(e.target.value as 'client_wins' | 'master_wins' | 'compromise')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+              >
+                <option value="client_wins">На користь клієнта (повернення коштів)</option>
+                <option value="master_wins">На користь майстра (виплата)</option>
+                <option value="compromise">Компроміс (ручне розподілення)</option>
+              </select>
+            </div>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Пояснення:</label>
+              <textarea
+                value={explanation}
+                onChange={(e) => setExplanation(e.target.value)}
+                placeholder="Введіть детальне пояснення рішення..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                rows={4}
+              />
+            </div>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={handleConfirmResolve}
+                className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+              >
+                Підтвердити
+              </button>
+              <button
+                onClick={() => {
+                  setShowResolveModal(false);
+                  setSelectedDispute(null);
+                  setExplanation('');
+                }}
+                className="flex-1 bg-gray-300 text-gray-900 px-4 py-2 rounded-lg hover:bg-gray-400"
+              >
+                Скасувати
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
