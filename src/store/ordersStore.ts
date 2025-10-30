@@ -60,7 +60,7 @@ interface OrdersState {
   updatePayment: (orderId: string, amount: number) => void;
   releasePayment: (orderId: string) => void;
   refundPayment: (orderId: string) => void;
-  createDispute: (orderId: string, reason: string,-aut> string) => void;
+  createDispute: (orderId: string, reason: string, description?: string) => void;
   resolveDispute: (disputeId: string, decision: 'client_wins' | 'master_wins' | 'compromise', explanation: string) => void;
   escalateDispute: (orderId: string) => void;
 }
