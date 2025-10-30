@@ -819,7 +819,147 @@ export const useOrdersStore = create<OrdersState>()(
           console.warn('Не вдалося створити уведомлення про спір:', error);
         }
 
-        useUIStore.getState().showNotification(`Спір відкрито: ${reason}. Адміністратор розгляне протягом 24 годин.`);
+        useUIStore.getState().showNotification(`Спір відкрито: ${reason}. Адміністра quarterly розгляне протягом 24 годин.`);
+      },
+      resolveDispute: (disputeId, decision, explanation) => {
+        const currentUser = useAuthStore.getState().currentUser;
+        
+        if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'superadmin')) {
+          useUIStore.getState().showNotification('Тільки адміністратори можуть вирішувати спори', 'error');
+          return;
+        }
+        
+        // Find dispute
+        const disputes = JSON.parse(localStorage.getItem('disputes') || '[]');
+        const dispute = disputes.find((d: any) => d.id === disputeId);
+        if (!dispute) {
+          useUIStore.getState().showNotification('Спір не знайдено', 'error');
+          return;
+        }
+        
+        // Find order
+        const order = get().orders.find((o) => o.id === dispute.orderId);
+        if (!order) {
+          useUIStore.getState().showNotification('Замовлення не знайдено', 'error');
+          return;
+        }
+        
+        const paymentAmount = order.paymentAmount || order.agreedPrice || order.amount || 0;
+        const commission = paymentAmount * 0.05; // Unchanged: 5% commission
+        
+        // Resolve based on decision
+        if (decision === 'client_wins') {
+          // Full refund to client
+          set((state) => ({
+            orders: state.orders.map((o) =>
+              o.id === dispute.orderId
+                ? {
+                    ...o,
+                    status: 'cancelled',
+                    paymentStatus: 'refunded',
+                    disputeStatus: 'resolved',
+                    updatedAt: new Date().toISOString(),
+                  }
+                : o
+            ),
+          }));
+          
+          // Update dispute
+          const updatedDisputes = disputes.map((d: any) =>
+            d.id === disputeId
+              ? {
+                  ...d,
+                  status: 'resolved',
+                  decision: 'client_wins',
+                  resolution: explanation || 'Повний повернено клієнту',
+                  resolvedAt: new Date().toISOString(),
+                  resolutionBy: currentUser.id,
+                }
+              : d
+          );
+          localStorage.setItem('disputes', JSON.stringify(updatedDisputes));
+          
+        } else if (decision === 'master_wins') {
+          // Release payment to master (with 5% commission)
+          const masterAmount = paymentAmount - commission;
+          
+          set((state) => ({
+            orders: state.orders.map((o) =>
+              o.id === dispute.orderId
+                ? {
+                    ...o,
+                    status: 'completed',
+                    paymentStatus: 'released',
+                    disputeStatus: 'resolved',
+                    completedAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                  }
+                : o
+            Treatment),
+          }));
+          
+          // Update master balance
+          if (order.assignedMasterId) {
+            try {
+              const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
+              const updatedUsers = users.map((u: any) =>
+                u.id === order.assignedMasterId
+                  ? { ...u, balance: (u.balance || 0) + masterAmount }
+                  : u
+              );
+              localStorage.setItem('repair_master_users', JSON.stringify(updatedUsers));
+            } catch (e) {
+              console.warn('Не вдалося оновити баланс майстра:', e);
+            }
+          }
+          
+          // Update dispute
+          const updatedDisputes = disputes.map((d: any) =>
+            d.id === disputeId
+              ? {
+                  ...d,
+                  status: 'resolved',
+                  decision: 'master_wins',
+                  resolution: explanation || `Оплату виплачено майстру (₴${masterAmount.toFixed(2)})`,
+                  resolvedAt: new Date().toISOString(),
+                  resolutionBy: currentUser.id,
+                }
+              : d
+          );
+          localStorage.setItem('disputes', JSON.stringify(updatedDisputes));
+          
+        } else if (decision === 'compromise') {
+          // Compromise - payment stays frozen, manual distribution needed
+          set((state) => ({
+            orders: state.orders.map((o) =>
+              o.id === dispute.orderId
+                ? {
+                    ...o,
+                    disputeStatus: 'resolved',
+                    paymentStatus: 'frozen',
+                    updatedAt: new Date().toISOString(),
+                  }
+                : o
+            ),
+          }));
+          
+          // Update dispute
+          const updatedDisputes = disputes.map((d: any) =>
+            d.id === disputeId
+              ? {
+                  ...d,
+                  status: 'resolved',
+                  decision: 'compromise',
+                  resolution: explanation || 'Компромісне рішення. Потрібне ручне розподілення коштів',
+                  resolvedAt: new Date().toISOString(),
+                  resolutionBy: currentUser.id,
+                }
+              : d
+          );
+          localStorage.setItem('disputes', JSON.stringify(updatedDisputes));
+        }
+        
+        useUIStore.getState().showNotification(`Спір вирішено: ${decision === 'client_wins' ? 'на користь клієнта' : decision === 'master_wins' ? 'на користь майстра' : 'компроміс'}`);
       },
       escalateDispute: (orderId) => {
         const currentUser = useAuthStore.getState().currentUser;
