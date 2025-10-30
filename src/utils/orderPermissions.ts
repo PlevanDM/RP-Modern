@@ -1,4 +1,5 @@
 import { Order, User } from '../types/models';
+import { useReviewsStore } from '../store/reviewsStore';
 
 export interface ClientAction {
   id: string;
@@ -89,13 +90,18 @@ export function getClientAvailableActions(
         ? Math.floor((Date.now() - new Date(completedAt).getTime()) / (24 * 60 * 60 * 1000))
         : 999;
       
+      // Check if review already exists for this order
+      const existingReview = useReviewsStore.getState().getReviewByOrderId(order.id);
+      const canCreateReview = !existingReview;
+      
       actions.push(
         {
           id: 'create_review',
           label: 'Залишити відгук',
           icon: '⭐',
           type: 'action',
-          allowed: true // TODO: Check if review already exists
+          allowed: canCreateReview,
+          reason: existingReview ? 'Ви вже залишили відгук для цього замовлення' : undefined
         },
         {
           id: 'create_dispute',
