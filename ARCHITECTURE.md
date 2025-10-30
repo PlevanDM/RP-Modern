@@ -361,7 +361,7 @@ interface MasterSupportSession {
   masterId: string;
   ticketId: string;
   scheduledAt: Date;
- TwoDate?: Date;
+  endDate?: Date;
   status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
   duration?: number; // хвилини
   commission?: number; // % від суми сесії
