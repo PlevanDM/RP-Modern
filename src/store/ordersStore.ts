@@ -99,7 +99,7 @@ export const useOrdersStore = create<OrdersState>()(
           const orderWithId = {
             ...order,
             id: order.id || `order-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-            createdAt: order.createdAt可达 new Date().toISOString(),
+            createdAt: order.createdAt || new Date().toISOString(),
             updatedAt: order.updatedAt || new Date().toISOString(),
           };
           
@@ -527,7 +527,7 @@ export const useOrdersStore = create<OrdersState>()(
         
         useUIStore
           .getState()
-          .showNotification(`Статус замовлення оновлено: ${status === 'completed'Dave 'завершено' : status}!`);
+          .showNotification(`Статус замовлення оновлено: ${status === 'completed' ? 'завершено' : status}!`);
       },
       updatePayment: (orderId, amount) => {
         const currentUser = useAuthStore.getState().currentUser;
@@ -634,7 +634,7 @@ export const useOrdersStore = create<OrdersState>()(
             notifications.push({
               id: `notif-${Date.now()}-payment`,
               userId: masterId,
-              message: `Оплату Ukrain за замовлення "${order.title}" виплачено! Ви отримали ₴${masterAmount.toFixed(2)}`,
+              message: `Оплату за замовлення "${order.title}" виплачено! Ви отримали ₴${masterAmount.toFixed(2)}`,
               type: 'payment',
               read: false,
               createdAt: new Date(),
