@@ -224,7 +224,29 @@ export const useOrdersStore = create<OrdersState>()(
           ),
         }));
         
-        useUIStore.getState().showNotification('Proposal submitted successfully!');
+        // Create notification for client (as per ARCHITECTURE.md: "Отримання пропозиції → Client")
+        try {
+          const { addNotification } = await import('../store/notificationsStore');
+          const order = get().orders.find(o => o.id === orderId);
+          if (order && order.clientId) {
+            const notification = {
+              id: `notif-${Date.now()}`,
+              userId: order.clientId,
+              message: `Ви отримали нову пропозицію від ${currentUser.name} на замовлення "${order.title}"`,
+              type: 'order' as const,
+              read: false,
+              createdAt: new Date(),
+            };
+            // Add notification to localStorage
+            const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
+            notifications.push(notification);
+            localStorage.setItem('repairhub_notifications', JSON.stringify(notifications));
+          }
+        } catch (error) {
+          console.warn('Не вдалося створити уведомлення:', error);
+        }
+        
+        useUIStore.getState().showNotification('Пропозицію відправлено успішно!');
       },
       updateProposal: (proposalId, updates) => {
         const currentUser = useAuthStore.getState().currentUser;
@@ -291,17 +313,27 @@ export const useOrdersStore = create<OrdersState>()(
         set((state) => ({
           orders: state.orders.map((o) =>
             o.id === proposal.orderId
-              ? { ...o, status: 'accepted', assignedMasterId: proposal.masterId }
+              ? { ...o, status: 'accepted', assignedMasterId: proposal.masterId, agreedPrice: proposal.price }
               : o
           ),
         }));
+        
+        // Automatically create conversation between client and master (as per ARCHITECTURE.md)
+        try {
+          const { getOrCreateConversation } = await import('../services/chatService');
+          if (order.clientId && proposal.masterId) {
+            getOrCreateConversation(order.clientId, proposal.masterId, proposal.orderId);
+          }
+        } catch (error) {
+          console.warn('Не вдалося автоматично створити розмову:', error);
+        }
         
         // Update order status to in_progress after a short delay
         setTimeout(() => {
           get().updateOrderStatus(proposal.orderId, 'in_progress');
         }, 500);
 
-        useUIStore.getState().showNotification('Proposal accepted! Order is now in progress.');
+        useUIStore.getState().showNotification('Пропозицію прийнято! Замовлення розпочато. Розмова з майстром створена.');
       },
       rejectProposal: (proposalId) => {
         set((state) => ({
