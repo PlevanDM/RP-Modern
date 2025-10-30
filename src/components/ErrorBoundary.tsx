@@ -83,7 +83,7 @@ export class ErrorBoundary extends Component<Props, State> {
         window.location.reload();
       };
 
-      return <ErrorFallbackWrapper onReload={handleReload} />;
+      return <ErrorFallback onReload={handleReload} />;
     }
 
     return this.props.children;
