@@ -819,7 +819,7 @@ export const useOrdersStore = create<OrdersState>()(
           console.warn('Не вдалося створити уведомлення про спір:', error);
         }
 
-        useUIStore.getState().showNotification(`Спір відкрито: ${reason}. Адміністра quarterly розгляне протягом 24 годин.`);
+        useUIStore.getState().showNotification(`Спір відкрито: ${reason}. Адміністратор розгляне протягом 24 годин.`);
       },
       resolveDispute: (disputeId, decision, explanation) => {
         const currentUser = useAuthStore.getState().currentUser;
