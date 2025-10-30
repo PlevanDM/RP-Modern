@@ -87,7 +87,7 @@ export default function ModernLandingPage() {
                 {t('landing.nav.howItWorks') || 'Як працює'}
               </button>
               <LanguageSwitcher />
-              <button onClick={() => setIsLoginModalOpen(true)} className="text-gray-700 hover:text-blue-600 transition font-medium">
+              <button onClick={() => setIsLoginModalOpen(true)} className="text-gray-700 hover:text-blue-600 transition font-medium" data-testid="login-nav-button">
                 {t('common.login') || 'Увійти'}
               </button>
             </nav>
@@ -98,11 +98,11 @@ export default function ModernLandingPage() {
         <section className="pt-32 pb-20 px-4">
           <div className="max-w-5xl mx-auto text-center">
             <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
-              <button onClick={() => handleRegisterClick('client')} className="group bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+              <button onClick={() => handleRegisterClick('client')} className="group bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300" data-testid="find-master-button">
                 {t('landing.hero.cta.findMaster') || 'Знайти майстра'}
                 <span className="inline-block ml-2 group-hover:translate-x-1 transition-transform">→</span>
               </button>
-              <button onClick={() => handleRegisterClick('master')} className="bg-white text-blue-600 px-8 py-4 rounded-xl border-2 border-blue-600 font-bold text-lg hover:bg-blue-50 hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <button onClick={() => handleRegisterClick('master')} className="bg-white text-blue-600 px-8 py-4 rounded-xl border-2 border-blue-600 font-bold text-lg hover:bg-blue-50 hover:shadow-xl hover:scale-105 transition-all duration-300" data-testid="start-earning-button">
                 {t('landing.hero.cta.startEarning') || 'Почати заробляти'}
               </button>
             </div>

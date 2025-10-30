@@ -70,6 +70,7 @@ const LanguageSwitcher: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg transition flex items-center gap-1 min-h-[40px] min-w-[40px] sm:min-h-[36px] sm:min-w-[36px] justify-center shrink-0"
         title={t('common.changeLanguage') || 'Змінити мову'}
+        data-testid="language-switcher-button"
       >
         <Globe className="w-5 h-5 sm:w-4 sm:h-4 text-gray-600" />
         <span className="hidden md:inline text-sm text-gray-700">{currentLang.flag}</span>
@@ -84,6 +85,7 @@ const LanguageSwitcher: React.FC = () => {
               className={`w-full text-left px-3 sm:px-4 py-2.5 sm:py-2 hover:bg-slate-100 dark:hover:bg-slate-700 active:bg-slate-200 flex items-center gap-2 text-sm sm:text-base min-h-[44px] sm:min-h-auto ${
                 i18n.language === lang.code ? 'bg-primary/10 text-primary' : ''
               }`}
+              data-testid={`lang-button-${lang.code}`}
             >
               <span className="text-lg">{lang.flag}</span>
               <span className="font-medium">{lang.name}</span>

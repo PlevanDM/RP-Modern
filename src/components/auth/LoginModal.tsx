@@ -9,22 +9,28 @@ interface LoginModalProps {
   onSwitchToRegister?: () => void;
 }
 
-// Тестові користувачі
-const TEST_USERS = [
-  { email: 'admin@test.com', password: 'admin123', role: 'Адмін', name: 'Адмін Тест' },
-  { email: 'master1@test.com', password: 'master123', role: 'Майстер 1', name: 'Майстер Сервісний' },
-  { email: 'master2@test.com', password: 'master123', role: 'Майстер 2', name: 'Майстер Виїздний' },
-  { email: 'master3@test.com', password: 'master123', role: 'Майстер 3', name: 'Майстер Домашній' },
-  { email: 'client1@test.com', password: 'client123', role: 'Клієнт 1', name: 'Клієнт iOS' },
-  { email: 'client2@test.com', password: 'client123', role: 'Клієнт 2', name: 'Клієнт Android' },
-  { email: 'client3@test.com', password: 'client123', role: 'Клієнт 3', name: 'Клієнт Windows' },
-  { email: 'client4@test.com', password: 'client123', role: 'Клієнт 4', name: 'Клієнт Mac' },
-  { email: 'superadmin@test.com', password: 'admin123', role: 'Суперадмін', name: 'Суперадмін Тест' },
-  { email: 'test@test.com', password: 'test123', role: 'Тестовий', name: 'Тестовий Користувач' },
+// Test users data with translation keys
+const TEST_USERS_DATA = [
+  { email: 'admin@test.com', password: 'admin123', roleKey: 'auth.testUsers.admin.role', nameKey: 'auth.testUsers.admin.name' },
+  { email: 'master1@test.com', password: 'master123', roleKey: 'auth.testUsers.master1.role', nameKey: 'auth.testUsers.master1.name' },
+  { email: 'master2@test.com', password: 'master123', roleKey: 'auth.testUsers.master2.role', nameKey: 'auth.testUsers.master2.name' },
+  { email: 'master3@test.com', password: 'master123', roleKey: 'auth.testUsers.master3.role', nameKey: 'auth.testUsers.master3.name' },
+  { email: 'client1@test.com', password: 'client123', roleKey: 'auth.testUsers.client1.role', nameKey: 'auth.testUsers.client1.name' },
+  { email: 'client2@test.com', password: 'client123', roleKey: 'auth.testUsers.client2.role', nameKey: 'auth.testUsers.client2.name' },
+  { email: 'client3@test.com', password: 'client123', roleKey: 'auth.testUsers.client3.role', nameKey: 'auth.testUsers.client3.name' },
+  { email: 'client4@test.com', password: 'client123', roleKey: 'auth.testUsers.client4.role', nameKey: 'auth.testUsers.client4.name' },
+  { email: 'superadmin@test.com', password: 'admin123', roleKey: 'auth.testUsers.superadmin.role', nameKey: 'auth.testUsers.superadmin.name' },
+  { email: 'test@test.com', password: 'test123', roleKey: 'auth.testUsers.test.role', nameKey: 'auth.testUsers.test.name' },
 ];
 
 export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
   const { t } = useTranslation();
+  const TEST_USERS = TEST_USERS_DATA.map(user => ({
+    email: user.email,
+    password: user.password,
+    role: t(user.roleKey),
+    name: t(user.nameKey)
+  }));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -96,6 +102,7 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
           <button
             onClick={onClose}
             className="absolute top-3 sm:top-4 right-3 sm:right-4 p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 text-gray-400 hover:text-gray-600 min-h-[44px] min-w-[44px] flex items-center justify-center z-10"
+            data-testid="close-modal-button"
           >
             <X className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
@@ -181,7 +188,7 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
                 type="email"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); setError(''); }}
-                placeholder="your.email@example.com"
+                placeholder={t('auth.emailPlaceholder') || "your.email@example.com"}
                 required
                 disabled={isLoading}
                 className="w-full px-4 py-3.5 sm:py-3 text-base sm:text-lg bg-gray-50 border border-gray-200 rounded-xl sm:rounded-2xl focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 min-h-[56px] sm:min-h-[52px] disabled:opacity-50 disabled:cursor-not-allowed"
@@ -207,6 +214,7 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
               type="submit"
               disabled={isLoading || !email || !password}
               className="w-full py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-200 active:scale-[0.97] min-h-[56px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none"
+              data-testid="login-button"
             >
               {isLoading ? (t('auth.loggingIn') || 'Вхід...') : (t('auth.login') || 'Увійти')}
             </button>
@@ -221,6 +229,7 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
                   else onClose();
                 }}
                 className="text-blue-600 hover:text-blue-700 font-semibold hover:underline"
+                data-testid="switch-to-register-button"
               >
                 {t('auth.register') || 'Зареєструватися'}
               </button>

@@ -1,107 +1,430 @@
 {
   "hero": {
-    "title": "Znajdź wykonawcę w 5 minut",
-    "subtitle": "Platforma internetowa do bezpośredniego kontaktu między klientami a wykonawcami. Bez pośredników i bez dodatkowych opłat.",
-    "description": "Apple, Samsung, Xiaomi, DJI i inne urządzenia. Znajdź najlepszego wykonawcę w swoim mieście.",
-    "cta_client": "Szukam wykonawcy",
-    "cta_master": "Jestem wykonawcą napraw",
+    "title": "Znajdź mistrza w 5 minut",
+    "subtitle": "Platforma online bezpośredniego łączenia klientów i mistrzów. Bez pośredników i przepłacania.",
+    "description": "Apple, Samsung, Xiaomi, DJI i inne urządzenia. Znajdź najlepszego mistrza w swoim mieście.",
+    "cta_client": "Szukam mistrza",
+    "cta_master": "Jestem mistrzem naprawy",
     "demo_button": "Obejrzyj demo",
-    "quick_switch_title": "🧪 Szybkie przełączanie kont (do testowania):",
+    "quick_switch_title": "🧪 Szybkie przełączanie kont (do testów):",
     "role_client": "Klient",
-    "role_master": "Wykonawca",
+    "role_master": "Mistrz",
     "role_admin": "Administrator",
     "header_badge": "🔧 Naprawa elektroniki mobilnej",
-    "platform_subtitle": "Platforma internetowa do naprawy urządzeń",
-    "find_master": "Znajdź wykonawcę",
+    "platform_subtitle": "Platforma online do naprawy urządzeń",
+    "find_master": "Znajdź mistrza",
     "earn_on_repairs": "Zarabiaj na naprawach",
     "in_5_minutes": "w 5 minut",
     "of_equipment": "sprzętu"
   },
   "stats": {
-    "masters_online": "Wykonawcy online",
-    "satisfied_clients": "Zadowoleni klienci",
-    "successful_repairs": "Udane naprawy",
+    "masters_online": "Mistrzów online",
+    "satisfied_clients": "Zadowolonych klientów",
+    "successful_repairs": "Udanych napraw",
     "average_rating": "Średnia ocena"
   },
   "howItWorksClient": {
     "title": "Jak to działa dla klientów?",
-    "subtitle": "Prosty proces znalezienia wykonawcy",
+    "subtitle": "Prosty proces znalezienia mistrza",
     "step1_title": "Opisz problem",
-    "step1_description": "Opisz, co się zepsuło i prześlij zdjęcie urządzenia",
+    "step1_description": "Opowiedz, co się zepsuło i prześlij zdjęcie urządzenia",
     "step2_title": "Otrzymaj oferty",
-    "step2_description": "Wykonawcy zaproponują rozwiązania i uczciwą cenę",
+    "step2_description": "Mistrzowie zaproponują rozwiązania i uczciwą cenę",
     "step3_title": "Wybierz specjalistę",
     "step3_description": "Sprawdź doświadczenie, sprzęt i prawdziwe opinie",
     "step4_title": "Bezpieczna płatność",
-    "step4_description": "Pieniądze są chronione przez escrow do momentu zakończenia pracy"
+    "step4_description": "Pieniądze są chronione przez escrow do zakończenia pracy"
   },
   "howItWorksMaster": {
-    "title": "Jak to działa dla wykonawców?",
+    "title": "Jak to działa dla mistrzów?",
     "subtitle": "Prosty proces rozwoju biznesu",
-    "step1_title": "Utwórz profil",
+    "step1_title": "Stwórz profil",
     "step1_description": "Opisz swoje umiejętności, sprzęt i specjalizację",
     "step2_title": "Otrzymuj zlecenia",
-    "step2_description": "Klienci znajdują Cię według specjalizacji i oceny",
+    "step2_description": "Klienci znajdą Cię po specjalizacji i ocenie",
     "step3_title": "Pracuj i zarabiaj",
-    "step3_description": "Wykonuj naprawy i otrzymuj wynagrodzenie bez prowizji",
+    "step3_description": "Wykonuj naprawy i otrzymuj płatności bez prowizji",
     "step4_title": "Otrzymuj opinie",
-    "step4_description": "Buduj swoją reputację i zdobywaj więcej zleceń"
+    "step4_description": "Buduj reputację i zdobywaj więcej zleceń"
   },
   "features": {
     "title": "Zalety platformy",
     "subtitle": "Wszystko, czego potrzebujesz do bezpiecznej i opłacalnej naprawy",
     "feature1_title": "Bezpośredni kontakt",
-    "feature1_description": "Komunikuj się bezpośrednio z wykonawcą, bez pośredników i menedżerów.",
+    "feature1_description": "Rozmawiaj bezpośrednio z mistrzem, bez pośredników i menedżerów.",
     "feature2_title": "Przejrzystość",
-    "feature2_description": "Widzisz doświadczenie, sprzęt (mikroskopy, stacje lutownicze) i prawdziwe opinie.",
+    "feature2_description": "Zobacz doświadczenie, sprzęt (mikroskopy, stacje lutownicze) i prawdziwe opinie.",
     "feature3_title": "Bezpieczeństwo",
-    "feature3_description": "Płatności Escrow chronią Twoją transakcję, tak jak na najlepszych platformach P2P.",
+    "feature3_description": "Płatności escrow chronią Twoją transakcję, jak na najlepszych platformach P2P.",
     "feature4_title": "Uczciwe ceny",
-    "feature4_description": "Brak narzutów i ukrytych opłat centrów serwisowych.",
-    "feature5_title": "Rozstrzyganie sporów",
+    "feature4_description": "Żadnych narzutów i ukrytych prowizji centrów serwisowych.",
+    "feature5_title": "Rozwiązywanie sporów",
     "feature5_description": "Wbudowany system arbitrażu do sprawiedliwego rozwiązywania wszelkich kwestii.",
-    "feature6_title": "Dowolne marki",
-    "feature6_description": "Od Apple i Samsunga po Asusa i Della — znajdziemy wykonawcę dla każdego sprzętu."
+    "feature6_title": "Wszystkie marki",
+    "feature6_description": "Od Apple i Samsung po Asus i Dell — znajdziemy mistrza dla każdego sprzętu."
+  },
+  "landing": {
+    "modernPlatform": "Nowoczesna platforma do naprawy urządzeń bezpośrednio między klientami a mistrzami",
+    "safePlatform": "Bezpieczna platforma • Gwarancja jakości",
+    "safePayment": "Bezpieczna płatność",
+    "rating": "Ocena mistrzów",
+    "warranty": "Gwarancja 30 dni",
+    "minCommission": "Minimalna prowizja",
+    "support24": "Wsparcie 24/7",
+    "copyright": "© 2026 Repair HUB Pro. Wszelkie prawa zastrzeżone.",
+    "footerLinks": "Skontaktuj się z nami • Wsparcie • Polityka prywatności",
+    "nav": {
+      "becomeMaster": "Zostań mistrzem",
+      "orderRepair": "Zamów naprawę",
+      "forMasters": "Dla mistrzów",
+      "forClients": "Dla klientów",
+      "howItWorks": "Jak to działa"
+    },
+    "masters": {
+      "title": "Dla mistrzów: więcej zleceń, więcej dochodów",
+      "subtitle": "Dołącz do nowej platformy na starcie i zdobądź przewagę pioniera",
+      "description": "Otrzymuj zlecenia bez skomplikowanych inwestycji, sam ustalaj harmonogram i koszty pracy. Platforma dla profesjonalistów – pokaż swoją wiedzę i zdobywaj klientów!",
+      "cta": "Zacznij zarabiać teraz",
+      "ctaSubtext": "Rejestracja zajmie 5 minut",
+      "benefit1": {
+        "title": "Tylko 5% prowizji",
+        "desc": "Nie 15-30% jak u innych, ale uczciwe 5%. Więcej zarobków zostaje u Ciebie"
+      },
+      "benefit2": {
+        "title": "Bezpośrednie zlecenia",
+        "desc": "Klienci trafiają do Ciebie bezpośrednio. Żadnych skomplikowanych łańcuchów pośredników"
+      },
+      "benefit3": {
+        "title": "Buduj reputację",
+        "desc": "Dobra praca = dobre opinie = więcej nowych zleceń"
+      },
+      "benefit4": {
+        "title": "Elastyczny harmonogram",
+        "desc": "Pracuj, kiedy Ci wygodnie. Wybieraj zlecenia zgodnie ze swoim harmonogramem i możliwościami"
+      },
+      "benefit5": {
+        "title": "Bezpośredni kontakt",
+        "desc": "Rozmawiaj z klientami bezpośrednio przez bezpieczny, wbudowany czat"
+      },
+      "benefit6": {
+        "title": "Ochrona interesów",
+        "desc": "Platforma chroni Twoje prawa i gwarantuje płatność za wykonaną pracę"
+      },
+      "bonus": {
+        "title": "Bonus dla pierwszych mistrzów",
+        "subtitle": "Zarejestruj się w pierwszym miesiącu od uruchomienia i otrzymaj:",
+        "item1": "Darmowe umieszczenie na 3 miesiące (0% prowizji)",
+        "item2": "Odznakę \"Pionier\" w profilu",
+        "item3": "Priorytet w wyświetlaniu klientom"
+      }
+    },
+    "clients": {
+      "title": "Dla klientów: niezawodna naprawa bez bólu głowy",
+      "subtitle": "Zapomnij o szukaniu mistrza przez znajomych i wątpliwych ogłoszeniach",
+      "description": "Tylko sprawdzeni mistrzowie, przejrzyste ceny i gwarancja jakości. Opisz swoje zadanie — a już za 2 minuty otrzymasz oferty!",
+      "cta": "Utwórz zgłoszenie za darmo",
+      "ctaTitle": "Gotowy rozwiązać problem ze sprzętem?",
+      "ctaDescription": "Utwórz zgłoszenie teraz — jest bezpłatne i zajmie 2 minuty. Otrzymaj oferty od profesjonalistów i wybierz najlepszą",
+      "ctaFooter": "Płacisz dopiero po wykonaniu pracy",
+      "benefit1": {
+        "title": "Tylko sprawdzeni mistrzowie",
+        "desc": "Każdy specjalista przechodzi weryfikację przed dopuszczeniem na platformę"
+      },
+      "benefit2": {
+        "title": "Przejrzyste ceny",
+        "desc": "Widzisz koszt z góry. Żadnych ukrytych dopłat i niespodzianek"
+      },
+      "benefit3": {
+        "title": "System opinii",
+        "desc": "Wybieraj mistrza na podstawie prawdziwych opinii innych klientów"
+      },
+      "benefit4": {
+        "title": "Wygodny kontakt",
+        "desc": "Wszystkie rozmowy w jednym miejscu. Historia korespondencji zawsze pod ręką"
+      }
+    },
+    "problems": {
+      "title": "Rozwiązujemy prawdziwe problemy",
+      "subtitle": "Wiemy, z czym borykają się zarówno mistrzowie, jak i klienci na rynku napraw",
+      "label": "Problem:",
+      "clients": {
+        "title": "Dla klientów",
+        "problem1": "Trudno znaleźć niezawodnego mistrza",
+        "problem2": "Nieprzejrzyste ceny i ukryte dopłaty",
+        "problem3": "Brak gwarancji jakości pracy",
+        "solutionTitle": "Nasze rozwiązanie:",
+        "solution": "Sprawdzeni specjaliści, przejrzyste ceny i system opinii — zawsze wiesz, z kim pracujesz"
+      },
+      "masters": {
+        "title": "Dla mistrzów",
+        "problem1": "Mało zleceń, niestabilny dochód",
+        "problem2": "Wysokie prowizje pośredników (15-30%)",
+        "problem3": "Trudno zbudować reputację",
+        "solutionTitle": "Nasze rozwiązanie:",
+        "solution": "Stały napływ zleceń, prowizja tylko 5%, system ocen dla rozwoju Twojego biznesu"
+      }
+    },
+    "how": {
+      "title": "Jak to działa",
+      "subtitle": "Prosty proces od zgłoszenia do wykonanej pracy",
+      "clientPath": "Ścieżka klienta",
+      "masterPath": "Ścieżka mistrza",
+      "client": {
+        "step1": {
+          "title": "Utwórz zgłoszenie",
+          "desc": "Opisz, co trzeba naprawić: rodzaj sprzętu, problem, pożądane terminy"
+        },
+        "step2": {
+          "title": "Otrzymaj oferty",
+          "desc": "Mistrzowie przesyłają swoje warunki: cenę, terminy, gwarancje. Wybierasz najlepszą"
+        },
+        "step3": {
+          "title": "Ustal szczegóły",
+          "desc": "Omów z mistrzem wszystkie szczegóły za pośrednictwem wbudowanego czatu"
+        },
+        "step4": {
+          "title": "Odbierz rezultat",
+          "desc": "Mistrz wykonuje pracę. Ty płacisz i wystawiasz opinię"
+        }
+      },
+      "master": {
+        "step1": {
+          "title": "Zarejestruj się",
+          "desc": "Podaj specjalizację, doświadczenie, region pracy. To zajmie 5 minut"
+        },
+        "step2": {
+          "title": "Wybieraj zlecenia",
+          "desc": "Przeglądaj aktualne zgłoszenia w Twoim regionie i profilu"
+        },
+        "step3": {
+          "title": "Wyślij ofertę",
+          "desc": "Podaj cenę, terminy i warunki pracy. Klient wybierze Ciebie"
+        },
+        "step4": {
+          "title": "Wykonuj i zarabiaj",
+          "desc": "Wykonuj pracę dobrze, otrzymuj płatności i pozytywne opinie"
+        }
+      }
+    },
+    "trust": {
+      "title": "Dlaczego można nam zaufać",
+      "subtitle": "Budujemy platformę, z której sami chcielibyśmy korzystać",
+      "item1": {
+        "title": "Przejrzystość",
+        "desc": "Wszystkie warunki są jasne z góry. Żadnych ukrytych prowizji i drobnego druku"
+      },
+      "item2": {
+        "title": "Bezpieczeństwo",
+        "desc": "Ochrona danych, bezpieczne płatności, system rozwiązywania sporów"
+      },
+      "item3": {
+        "title": "Wsparcie",
+        "desc": "Nasz zespół jest zawsze dostępny, aby pomóc zarówno mistrzom, jak i klientom"
+      }
+    },
+    "finalCta": {
+      "title": "Dołącz do RepairHub Pro",
+      "subtitle": "Bądź jednym z pierwszych, którzy tworzą nowy standard naprawy sprzętu w Polsce",
+      "master": "Jestem mistrzem",
+      "client": "Potrzebuję naprawy"
+    },
+    "benefits": {
+      "safe": {
+        "title": "Bezpiecznie",
+        "description": "Gwarancja uczciwych transakcji przez platformę i wsparcie 24/7."
+      },
+      "profitable": {
+        "title": "Korzystne dla wszystkich",
+        "description": "Minimalna prowizja — maksymalne korzyści zarówno dla klientów, jak i dla mistrzów."
+      },
+      "simple": {
+        "title": "Prosto i wygodnie",
+        "description": "Łatwa rejestracja, szybkie wyszukiwanie i składanie zgłoszeń lub zleceń."
+      }
+    },
+    "footer": {
+      "support": "Wsparcie:",
+      "copyright": "© 2025 RepairHub Pro",
+      "description": "Nowoczesna platforma do wyszukiwania mistrzów i zleceń na naprawę sprzętu w Polsce",
+      "tagline": "Tworzymy nowy standard serwisu",
+      "links": "Szybkie linki",
+      "linkMasters": "Dla mistrzów",
+      "linkClients": "Dla klientów",
+      "linkHow": "Jak to działa",
+      "contacts": "Kontakty",
+      "responseTime": "Odpowiemy w ciągu 24 godzin",
+      "privacy": "Polityka prywatności",
+      "terms": "Warunki użytkowania"
+    },
+    "hero": {
+      "badge": "🚀 Startujemy w Polsce",
+      "title": "Interaktywny serwis 3D",
+      "description": "Nowoczesne podejście do naprawy sprzętu. Wizualizuj problem i uzyskaj szybkie rozwiązanie od profesjonalistów.",
+      "cta": {
+        "client": "Zostaw zgłoszenie",
+        "master": "Zostań mistrzem",
+        "findMaster": "Znajdź mistrza",
+        "startEarning": "Zacznij zarabiać"
+      },
+      "value": {
+        "safe": "Bezpieczne transakcje",
+        "fast": "Szybki start",
+        "lowFee": "Minimalna prowizja"
+      },
+      "robot": {
+        "title": "Nowoczesna platforma napraw",
+        "description": "Nowoczesna platforma, która łączy tych, którzy potrzebują naprawy, z profesjonalistami. Przejrzyście, wygodnie i korzystnie dla obu stron."
+      },
+      "subtitle": "Bezpośrednie połączenie klientów i mistrzów bez pośredników",
+      "forClients": {
+        "title": "Dla klientów",
+        "description": "Znajdź sprawdzonego mistrza w 5 minut, zaoszczędź do 40% na naprawie i otrzymaj gwarancję jakości",
+        "cta": "Znajdź mistrza"
+      },
+      "forMasters": {
+        "title": "Dla mistrzów",
+        "description": "Zdobywaj nowych klientów codziennie, pracuj z minimalnymi prowizjami i buduj swoją reputację",
+        "cta": "Zostań mistrzem"
+      }
+    },
+    "benefitsDetailed": {
+      "client": {
+        "title": "Dlaczego klienci wybierają RepairHub Pro?",
+        "subtitle": "Oszczędzaj czas i pieniądze, otrzymuj wysokiej jakości naprawę",
+        "benefit1": {
+          "title": "Oszczędność do 40%",
+          "description": "Bezpośredni kontakt z mistrzem bez narzutów centrów serwisowych"
+        },
+        "benefit2": {
+          "title": "Przejrzyste ceny",
+          "description": "Widzisz wszystkie oferty i wybierasz najlepszą cenę"
+        },
+        "benefit3": {
+          "title": "Szybkie wyszukiwanie",
+          "description": "Znajdź mistrza w pobliżu w 5 minut"
+        },
+        "benefit4": {
+          "title": "Bezpieczna płatność",
+          "description": "Pieniądze są chronione przez system escrow do zakończenia pracy"
+        },
+        "benefit5": {
+          "title": "Gwarancja jakości",
+          "description": "30 dni gwarancji na wykonaną pracę"
+        },
+        "benefit6": {
+          "title": "Wszystkie urządzenia",
+          "description": "iPhone, Samsung, Xiaomi, MacBook i inne — znajdziemy mistrza"
+        }
+      },
+      "master": {
+        "title": "Dlaczego mistrzowie dołączają do RepairHub Pro?",
+        "subtitle": "Zwiększ liczbę klientów i zarabiaj więcej",
+        "benefit1": {
+          "title": "Więcej klientów",
+          "description": "Otrzymuj zlecenia od klientów z Twojego miasta codziennie"
+        },
+        "benefit2": {
+          "title": "Minimalna prowizja",
+          "description": "Niskie prowizje — więcej zarobków dla Ciebie"
+        },
+        "benefit3": {
+          "title": "Przejrzysty proces",
+          "description": "Zarządzaj zleceniami, cenami i harmonogramem samodzielnie"
+        },
+        "benefit4": {
+          "title": "Szybkie płatności",
+          "description": "Otrzymuj płatność natychmiast po zakończeniu pracy"
+        },
+        "benefit5": {
+          "title": "Buduj reputację",
+          "description": "Opinie klientów pomagają zdobywać więcej zleceń"
+        },
+        "benefit6": {
+          "title": "Wsparcie 24/7",
+          "description": "Nasz zespół jest zawsze gotowy do pomocy"
+        }
+      }
+    },
+    "howItWorks": {
+      "client": {
+        "title": "Jak to działa dla klientów?",
+        "step1": {
+          "title": "Opisz problem",
+          "description": "Utwórz zgłoszenie: co się zepsuło, model urządzenia, zdjęcie"
+        },
+        "step2": {
+          "title": "Otrzymaj oferty",
+          "description": "Mistrzowie przesyłają swoje oferty z ceną i terminami"
+        },
+        "step3": {
+          "title": "Wybierz mistrza",
+          "description": "Sprawdź ocenę, opinie i portfolio — wybierz najlepszego"
+        },
+        "step4": {
+          "title": "Bezpieczna naprawa",
+          "description": "Płatność przez escrow, pieniądze zostaną przelane po sprawdzeniu pracy"
+        }
+      },
+      "master": {
+        "title": "Jak to działa dla mistrzów?",
+        "step1": {
+          "title": "Stwórz profil",
+          "description": "Opisz specjalizację, doświadczenie i sprzęt"
+        },
+        "step2": {
+          "title": "Otrzymuj zlecenia",
+          "description": "Klienci znajdą Cię po mieście i specjalizacji"
+        },
+        "step3": {
+          "title": "Wyślij ofertę",
+          "description": "Podaj cenę i terminy — klient wybierze najlepszą ofertę"
+        },
+        "step4": {
+          "title": "Wykonuj i zarabiaj",
+          "description": "Otrzymuj płatność szybko po pomyślnym zakończeniu"
+        }
+      }
+    }
   },
   "cta": {
     "title": "Gotowy, aby zacząć?",
-    "subtitle": "Dołącz do setek wykonawców i klientów, którzy już zarabiają i oszczędzają dzięki RepairHub Pro",
-    "cta_client": "Szukam wykonawcy",
-    "cta_master": "Jestem wykonawcą napraw",
-    "brands_title": "Pracujemy z dowolnymi markami",
-    "brands_list": "iPhone, iPad, MacBook | Samsung, Xiaomi, Huawei | Asus, Dell, Lenovo, HP | I inne"
+    "subtitle": "Dołącz do RepairHub Pro i korzystaj z zalet już dziś",
+    "cta_client": "Szukam mistrza",
+    "cta_master": "Jestem mistrzem naprawy",
+    "brands_title": "Pracujemy z każdą marką",
+    "brands_list": "iPhone, iPad, MacBook | Samsung, Xiaomi, Huawei | Asus, Decock, Lenovo, HP | I inne"
   },
   "footer": {
-    "platform_subtitle": "Platforma internetowa do naprawy urządzeń",
-    "phone": "+380 50 123 45 67",
+    "platform_subtitle": "Platforma online do naprawy urządzeń",
+    "phone": "+48 123 456 789",
     "email": "support@repairhub.pro",
-    "location": "Kijów, Ukraina",
-    "copyright": "© 2024 RepairHub Pro. Wszelkie prawa zastrzeżone. | Dla prawdziwych wykonawców i klientów"
+    "location": "Warszawa, Polska",
+    "copyright": "© 2024 RepairHub Pro. Wszelkie prawa zastrzeżone. | Dla prawdziwych mistrzów i klientów"
   },
   "navigation": {
-    "dashboard": "Panel",
+    "dashboard": "Pulpit",
     "home": "Dom",
     "createOrder": "Utwórz zlecenie",
-    "findMasters": "Znajdź wykonawców",
-    "myOrders": "Moje zlecenia",
-    "myDevices": "Moje urządzenia",
+    "findMasters": "Znajdź Mistrzów",
+    "myOrders": "Moje Zlecenia",
+    "myDevices": "Moje Urządzenia",
     "orders": "Zlecenia",
     "statistics": "Statystyki",
     "messages": "Czat",
     "profile": "Profil",
-    "reports": "Oceny i opinie",
+    "reports": "Oceny i Recenzje",
     "orderHistory": "Historia zleceń",
     "portfolio": "Portfolio",
     "inventory": "Części",
-    "myParts": "Moje części",
-    "partsInventory": "Magazyn części",
-    "proposals": "Propozycje",
-    "myProposals": "Moje propozycje",
+    "myParts": "Moje Części",
+    "partsInventory": "Magazyn Części",
+    "proposals": "Oferty",
+    "myProposals": "Moje Oferty",
     "payments": "Płatności",
     "paymentMethods": "Metody płatności",
     "priceComparison": "Porównanie cen",
-    "mastersInventory": "Magazyny wykonawców",
-    "outsourceOrders": "Zlecenia do outsourcingu",
+    "mastersInventory": "Magazyny mistrzów",
+    "outsourceOrders": "Zlecenia na zewnątrz",
     "transactionHistory": "Historia transakcji",
     "bookingCalendar": "Kalendarz rezerwacji",
     "users": "Użytkownicy",
@@ -111,9 +434,10 @@
     "activity": "Aktywność",
     "database": "Baza danych",
     "settings": "Ustawienia",
-    "ordersBoard": "Tablica zleceń",
-    "autoHideMenu": "Automatycznie ukrywaj menu",
-    "keepMenuOpen": "Zostaw menu otwarte"
+    "ordersBoard": "Tablica Zleceń",
+    "autoHideMenu": "Automatycznie ukryj menu",
+    "keepMenuOpen": "Pozostaw menu otwarte",
+    "support": "Wsparcie techniczne"
   },
   "auth": {
     "loginError": "Błąd logowania",
@@ -131,7 +455,94 @@
     "register": "Zarejestruj się",
     "email": "Email",
     "password": "Hasło",
-    "login": "Zaloguj"
+    "login": "Zaloguj się",
+    "loginDescription": "Zaloguj się na swoje konto",
+    "testUsers": "Użytkownicy testowi",
+    "loggingIn": "Logowanie...",
+    "emailPlaceholder": "twoj.email@example.com",
+    "registrationError": "Błąd rejestracji. Spróbuj ponownie.",
+    "selectRole": "Wybierz rolę",
+    "whoAreYou": "Kim jesteś?",
+    "client": "Klient",
+    "clientDescription": "Szukam mistrza do naprawy",
+    "master": "Mistrz",
+    "masterDescription": "Świadczę usługi naprawcze",
+    "adminDescription": "Administrator platformy",
+    "yourData": "Twoje dane",
+    "basicInfo": "Wprowadź podstawowe informacje",
+    "yourName": "Twoje imię",
+    "namePlaceholder": "Jan Kowalski",
+    "city": "Miasto",
+    "cityPlaceholder": "Warszawa",
+    "phone": "Telefon",
+    "phonePlaceholder": "+48 123 456 789",
+    "yourDevices": "Twoje urządzenia",
+    "yourDevicesDescription": "To pomoże znaleźć odpowiedniego mistrza",
+    "mobileDevice": "Urządzenie mobilne",
+    "computer": "Komputer",
+    "finishRegistration": "Zakończ rejestrację",
+    "whereDoYouWork": "Gdzie pracujesz?",
+    "selectWorkplace": "Wybierz miejsce pracy",
+    "serviceCenter": "Centrum serwisowe",
+    "serviceCenterDescription": "Pracuję w centrum serwisowym",
+    "mobileMaster": "Mistrz mobilny",
+    "mobileMasterDescription": "Dojazd z narzędziami",
+    "homeWorkshop": "Warsztat domowy",
+    "homeWorkshopDescription": "Pracuję w domu",
+    "whatBrandsDoYouRepair": "Jakie marki naprawiasz?",
+    "selectBrandsYouWorkWith": "Wybierz wszystkie marki, z którymi pracujesz",
+    "repairTypes": "Rodzaje napraw",
+    "whatDoYouRepairMostOften": "Co najczęściej naprawiasz?",
+    "yourExperience": "Twoje doświadczenie",
+    "howManyYearsExperience": "Ile lat masz doświadczenia w naprawach?",
+    "enterDetails": "Wprowadź dane",
+    "workplace": "Miejsce pracy",
+    "brands": "Marki",
+    "experience": "Doświadczenie",
+    "finish": "Zakończenie",
+    "alreadyHaveAccount": "Masz już konto?",
+    "testUsers": {
+      "admin": {
+        "role": "Admin",
+        "name": "Admin Testowy"
+      },
+      "master1": {
+        "role": "Mistrz 1",
+        "name": "Mistrz Serwisowy"
+      },
+      "master2": {
+        "role": "Mistrz 2",
+        "name": "Mistrz Mobilny"
+      },
+      "master3": {
+        "role": "Mistrz 3",
+        "name": "Mistrz Domowy"
+      },
+      "client1": {
+        "role": "Klient 1",
+        "name": "Klient iOS"
+      },
+      "client2": {
+        "role": "Klient 2",
+        "name": "Klient Android"
+      },
+      "client3": {
+        "role": "Klient 3",
+        "name": "Klient Windows"
+      },
+      "client4": {
+        "role": "Klient 4",
+        "name": "Klient Mac"
+      },
+      "superadmin": {
+        "role": "Superadmin",
+        "name": "Superadmin Testowy"
+      },
+      "test": {
+        "role": "Testowy",
+        "name": "Użytkownik Testowy"
+      }
+    }
   },
   "common": {
     "search": "Szukaj",
@@ -143,54 +554,102 @@
     "delete": "Usuń",
     "close": "Zamknij",
     "loading": "Ładowanie...",
-    "noResults": "Brak wyników",
+    "noResults": "Nie znaleziono wyników",
     "allStatuses": "Wszystkie statusy",
     "allPriorities": "Wszystkie priorytety",
-    "pending": "Oczekujące",
-    "inProgress": "W trakcie",
-    "completed": "Ukończone",
+    "pending": "Oczekuje",
+    "inProgress": "W toku",
+    "completed": "Zakończono",
     "low": "Niski",
     "medium": "Średni",
     "high": "Wysoki",
     "active": "Aktywny",
     "blocked": "Zablokowany",
-    "newProposal": "Nowa propozycja do Twojego zlecenia!",
-    "orderInProgress": "Twoje zlecenie jest w trakcie realizacji.",
-    "justNow": "właśnie teraz",
+    "newProposal": "Nowa oferta do Twojego zlecenia!",
+    "orderInProgress": "Twoje zlecenie jest w toku.",
+    "justNow": "przed chwilą",
+    "ago": "temu",
     "fromLastMonth": "z ostatniego miesiąca",
     "searchOrders": "Szukaj zleceń...",
     "profile": "Profil",
     "settings": "Ustawienia",
-    "cookiesUsage": "Używanie cookies",
-    "cookiesDescription": "Używamy cookies w celu poprawienia Twojego doświadczenia.",
+    "cookiesUsage": "Użycie plików cookie",
+    "cookiesDescription": "Używamy plików cookie, aby poprawić Twoje doświadczenia.",
     "modernPlatform": "Nowoczesna platforma do naprawy elektroniki mobilnej",
     "revenue": "Przychód miesięczny",
     "rating": "Średnia ocena",
-    "completedOrders": "Ukończone zlecenia",
+    "completedOrders": "Zakończone zlecenia",
     "privacyPolicy": "Polityką prywatności",
-    "acceptAll": "Akceptuj wszystko",
+    "next": "Dalej",
+    "finish": "Zakończ",
+    "acceptAll": "Zaakceptuj wszystko",
     "decline": "Odrzuć",
     "refresh": "Odśwież stronę",
+    "copy": "Kopiuj",
+    "use": "Użyj",
+    "fillAllFields": "Wypełnij wszystkie pola",
     "totalOrders": "Wszystkie zlecenia",
     "activeOrders": "Aktywne zlecenia",
-    "spent": "Wydane",
+    "spent": "Wydano",
     "searchSpecialists": "Szukaj specjalistów",
     "currentOrders": "Bieżące zlecenia",
-    "quickActions": "Szybkie akcje",
+    "quickActions": "Szybkie działania",
     "createOrder": "Utwórz zlecenie",
-    "newRepairRequest": "Nowa prośba o naprawę",
+    "newRepairRequest": "Nowe zgłoszenie naprawy",
     "orderHistory": "Historia zleceń",
     "yourActivity": "Twoja aktywność",
-    "completedThisMonth": "Ukończone w tym miesiącu",
-    "averageMasterRating": "Średnia ocena wykonawców",
-    "timeSaved": "Zaoszczędzony czas",
+    "completedThisMonth": "Zakończone w tym miesiącu",
+    "averageMasterRating": "Średnia ocena mistrzów",
+    "timeSaved": "Oszczędzony czas",
     "orders": "zleceń",
     "hours": "godzin",
-    "logout": "Wyloguj się",
-    "orderInProgressTitle": "Twoje zlecenie jest w trakcie realizacji.",
+    "logout": "Wyloguj",
+    "orderInProgressTitle": "Twoje zlecenie jest w toku.",
     "startWorking": "Rozpocznij pracę",
-    "login": "Zaloguj się",
-    "register": "Zarejestruj się",
+    "login": "Zaloguj",
+    "register": "Rejestracja",
+    "months": {
+      "january": "Styczeń",
+      "february": "Luty",
+      "march": "Marzec",
+      "april": "Kwiecień",
+      "may": "Maj",
+      "june": "Czerwiec",
+      "july": "Lipiec",
+      "august": "Sierpień",
+      "september": "Wrzesień",
+      "october": "Październik",
+      "november": "Listopad",
+      "december": "Grudzień",
+      "jan": "Sty",
+      "feb": "Lut",
+      "mar": "Mar",
+      "apr": "Kwi",
+      "may": "Maj",
+      "jun": "Cze",
+      "jul": "Lip",
+      "aug": "Sie",
+      "sep": "Wrz",
+      "oct": "Paź",
+      "nov": "Lis",
+      "dec": "Gru"
+    },
+    "daysOfWeek": {
+      "sunday": "Niedziela",
+      "monday": "Poniedziałek",
+      "tuesday": "Wtorek",
+      "wednesday": "Środa",
+      "thursday": "Czwartek",
+      "friday": "Piątek",
+      "saturday": "Sobota",
+      "sun": "Nd",
+      "mon": "Pn",
+      "tue": "Wt",
+      "wed": "Śr",
+      "thu": "Czw",
+      "fri": "Pt",
+      "sat": "Sb"
+    },
     "languages": {
       "uk": "Ukraiński",
       "en": "Angielski",
@@ -205,13 +664,13 @@
     "favorite": "Ulubione",
     "share": "Udostępnij",
     "memberSince": "Członek od",
-    "completed": "Ukończono",
+    "completed": "Zakończono",
     "roleClient": "Klient",
     "roleMaster": "Mistrz",
     "roleService": "Serwis",
-    "biographyNotFilled": "Biografia nie wypełniona",
+    "biographyNotFilled": "Biografia nie została wypełniona",
     "tellAboutYourself": "Opowiedz o sobie...",
-    "editOrder": "Edytuj zamówienie",
+    "editOrder": "Edytuj zlecenie",
     "sharePhoto": "Udostępnij zdjęcie",
     "saving": "Zapisywanie...",
     "saveChanges": "Zapisz zmiany",
@@ -228,52 +687,13 @@
     "confirm": "Potwierdź",
     "fillAllFields": "Wypełnij wszystkie pola",
     "viewAll": "Wszystkie →",
-    "view": "Wyświetl",
+    "view": "Zobacz",
     "search": "Szukaj",
     "help": "Pomoc",
-    "about": "O aplikacji"
-  },
-  "workExperience": {
-    "title": "Doświadczenie zawodowe",
-    "add": "Dodaj doświadczenie",
-    "edit": "Edytuj doświadczenie",
-    "position": "Stanowisko",
-    "company": "Firma",
-    "startDate": "Data rozpoczęcia (np. 2020)",
-    "endDate": "Data zakończenia (lub puste)",
-    "description": "Opis",
-    "present": "Obecny czas",
-    "noExperience": "Brak doświadczenia"
-  },
-  "admin": {
-    "editUser": "Edytuj użytkownika",
-    "name": "Imię",
-    "role": "Rola",
-    "addUser": "Dodaj użytkownika",
-    "lastSaved": "Ostatnie zapisanie",
-    "unsavedChanges": "Niezapisane zmiany",
-    "settingsPanel": "Panel administratora: Ustawienia",
-    "settingsDescription": "Zarządzanie kluczowymi parametrami systemu",
-    "apiSettings": "Ustawienia API",
-    "currencyProvider": "Dostawca kursów walut:",
-    "systemSettings": "Ustawienia systemu",
-    "systemSettingsDescription": "Zarządzanie kluczowymi parametrami platformy RepairHub Pro",
-    "securitySettingsDescription": "Ustawienia bezpieczeństwa systemu",
-    "apiKeyOptional": "Klucz API (jeśli potrzebny):",
-    "apiKeyPlaceholder": "Wprowadź klucz API",
-    "apiKey": "Klucz API",
-    "platformCommission": "Prowizja platformy (%):",
-    "providerCoingecko": "CoinGecko (bezpłatny)",
-    "providerExchangerate": "ExchangeRate (bezpłatny)",
-    "security": "Bezpieczeństwo",
-    "paymentIntegration": "Integracja Płatności",
-    "enableStripe": "Włącz Stripe",
-    "stripeDescription": "Bezpieczne przetwarzanie płatności",
-    "stripePublicKey": "Stripe Klucz Publiczny",
-    "stripeSecretKey": "Stripe Klucz Sekretny",
-    "enableMonobank": "Włącz Monobank",
-    "monobankDescription": "Ukraiński system płatności",
-    "monobankToken": "Monobank Token"
+    "about": "O aplikacji",
+    "continue": "Kontynuuj",
+    "back": "Wstecz",
+    "next": "Dalej"
   },
   "orders": {
     "allOrders": "Wszystkie zlecenia",
@@ -281,14 +701,20 @@
     "found": "Znaleziono",
     "notFound": "Nie znaleziono zleceń",
     "selectMaster": "Wybierz mistrza",
-    "selectMasterDescription": "Wybierz mistrza, któremu chcesz wysłać zamówienie do przeglądu",
-    "deleteOrder": "Usuń zamówienie",
-    "deleteConfirm": "Czy na pewno chcesz usunąć zamówienie \"{{title}}\"?",
+    "selectMasterDescription": "Wybierz mistrza, któremu chcesz wysłać zlecenie do rozpatrzenia",
+    "deleteOrder": "Usuń zlecenie",
+    "deleteConfirm": "Czy na pewno chcesz usunąć zlecenie \"{{title}}\"?",
     "tryFilters": "Spróbuj zmienić filtry wyszukiwania",
-    "sortByDate": "Po dacie (najnowsze)",
-    "sortByPrice": "Po cenie (najwyższe)",
-    "assignedMaster": "Przypisany wykonawca",
-    "hasProposals": "Ma propozycje od wykonawców"
+    "sortByDate": "Według daty (najnowsze)",
+    "sortByPrice": "Według ceny (najwyższe)",
+    "assignedMaster": "Przypisany mistrz",
+    "hasProposals": "Są oferty od mistrzów",
+    "status": {
+      "open": "Otwarte",
+      "cancelled": "Anulowane",
+      "disputed": "Spór",
+      "accepted": "Zaakceptowane"
+    }
   },
   "orderDetails": {
     "device": "Urządzenie",
@@ -296,37 +722,22 @@
     "status": "Status",
     "urgency": "Pilność",
     "description": "Opis",
-    "assignedMaster": "Przypisany wykonawca",
-    "editOrder": "Edytuj zamówienie",
-    "sendToMasters": "Wyślij do wykonawców",
+    "assignedMaster": "Przypisany mistrz",
+    "editOrder": "Edytuj zlecenie",
+    "sendToMasters": "Wyślij do mistrzów",
     "pauseSearch": "Wstrzymaj wyszukiwanie",
     "activateSearch": "Aktywuj wyszukiwanie",
-    "deleteOrder": "Usuń zamówienie",
-    "restoreOrder": "Przywróć zamówienie",
-    "chatWithMaster": "Czat z wykonawcą",
+    "deleteOrder": "Usuń zlecenie",
+    "restoreOrder": "Przywróć zlecenie",
+    "chatWithMaster": "Czat z mistrzem",
     "chatWithClient": "Czat z klientem",
-    "viewProposals": "Zobacz propozycje",
-    "submitProposal": "Złóż propozycję"
-  },
-  "status": {
-    "pending": "Oczekujące",
-    "in_progress": "W trakcie",
-    "completed": "Ukończone",
-    "cancelled": "Anulowane",
-    "assigned": "Przypisane",
-    "new": "Nowe",
-    "open": "Otwarte",
-    "proposed": "Ma propozycje",
-    "accepted": "Zaakceptowane",
-    "active_search": "Aktywne poszukiwanie",
-    "deleted": "Usunięte",
-    "deletedAt": "Usunięte",
-    "searching": "Poszukiwanie wykonawcy"
+    "viewProposals": "Zobacz oferty",
+    "submitProposal": "Złóż ofertę"
   },
   "proposals": {
-    "submitProposal": "Złóż propozycję",
-    "order": "Zamówienie",
-    "selectOrder": "Wybierz zamówienie",
+    "submitProposal": "Złóż ofertę",
+    "order": "Zlecenie",
+    "selectOrder": "Wybierz zlecenie",
     "price": "Cena ($)",
     "estimatedDays": "Liczba dni",
     "workDescription": "Opis pracy",
@@ -335,45 +746,81 @@
     "all": "Wszystkie",
     "pending": "Oczekujące",
     "accepted": "Zaakceptowane",
-    "noProposals": "Brak propozycji",
+    "noProposals": "Brak ofert",
     "days": "dni",
-    "accept": "Zaakceptuj",
+    "accept": "Akceptuj",
     "reject": "Odrzuć",
     "cancelProposal": "Anuluj",
-    "cancelOrder": "Anuluj zamówienie",
+    "cancelOrder": "Anuluj zlecenie",
     "cancelReason": "Powód anulowania",
-    "cancelReasonPlaceholder": "Podaj powód anulowania zamówienia...",
+    "cancelReasonPlaceholder": "Podaj powód anulowania zlecenia...",
     "confirmCancel": "Potwierdź anulowanie",
-    "rejectProposal": "Odrzuć propozycję",
+    "rejectProposal": "Odrzuć ofertę",
     "rejectReason": "Powód odrzucenia",
-    "rejectReasonPlaceholder": "Podaj powód odrzucenia propozycji...",
+    "rejectReasonPlaceholder": "Podaj powód odrzucenia oferty...",
     "confirmReject": "Potwierdź odrzucenie",
     "enterCancelReason": "Podaj powód anulowania",
     "enterRejectReason": "Podaj powód odrzucenia",
-    "deleteConfirm": "Usunąć propozycję?",
-    "accepted": "Propozycja przyjęta! Mistrz rozpocznie pracę.",
-    "rejected": "Propozycja odrzucona. Powód"
+    "deleteConfirm": "Usunąć ofertę?",
+    "accepted": "Oferta zaakceptowana! Mistrz rozpocznie pracę.",
+    "rejected": "Oferta odrzucona. Powód"
   },
-  "orders": {
-    "allOrders": "Wszystkie zlecenia",
-    "deleted": "Usunięte",
-    "found": "Znalezione",
-    "notFound": "Nie znaleziono zleceń",
-    "selectMaster": "Wybierz wykonawcę",
-    "selectMasterDescription": "Wybierz wykonawcę, któremu chcesz wysłać zlecenie do przejrzenia",
-    "deleteOrder": "Usuń zlecenie",
-    "deleteConfirm": "Czy na pewno chcesz usunąć zlecenie \"{{title}}\"?",
-    "tryFilters": "Spróbuj zmienić filtry wyszukiwania",
-    "sortByDate": "Według daty (najnowsze)",
-    "sortByPrice": "Według ceny (wyższe)",
-    "assignedMaster": "Przypisany wykonawca",
-    "hasProposals": "Ma propozycje od wykonawców",
-    "status": {
-      "open": "Otwarte",
-      "cancelled": "Anulowane",
-      "disputed": "Spór",
-      "accepted": "Zaakceptowane"
-    }
+  "workExperience": {
+    "title": "Doświadczenie zawodowe",
+    "add": "Dodaj doświadczenie zawodowe",
+    "edit": "Edytuj doświadczenie zawodowe",
+    "position": "Stanowisko",
+    "company": "Firma",
+    "startDate": "Data rozpoczęcia (np. 2020)",
+    "endDate": "Data zakończenia (lub puste)",
+    "description": "Opis",
+    "present": "Obecnie",
+    "noExperience": "Brak doświadczenia zawodowego"
+  },
+  "admin": {
+    "editUser": "Edytuj użytkownika",
+    "name": "Imię",
+    "role": "Rola",
+    "addUser": "Dodaj użytkownika",
+    "lastSaved": "Ostatni zapis",
+    "unsavedChanges": "Niezapisane zmiany",
+    "settingsPanel": "Panel admina: Ustawienia",
+    "settingsDescription": "Zarządzanie kluczowymi parametrami systemu",
+    "apiSettings": "Ustawienia API",
+    "currencyProvider": "Dostawca kursów walut:",
+    "systemSettings": "Ustawienia systemu",
+    "systemSettingsDescription": "Zarządzanie kluczowymi parametrami platformy RepairHub Pro",
+    "securitySettingsDescription": "Ustawienia bezpieczeństwa systemu",
+    "apiKeyOptional": "Klucz API (jeśli wymagany):",
+    "apiKeyPlaceholder": "Wprowadź klucz API",
+    "apiKey": "Klucz API",
+    "platformCommission": "Prowizja platformy (%):",
+    "providerCoingecko": "CoinGecko (darmowy)",
+    "providerExchangerate": "ExchangeRate (darmowy)",
+    "security": "Bezpieczeństwo",
+    "paymentIntegration": "Integracja Systemów Płatności",
+    "enableStripe": "Włącz Stripe",
+    "stripeDescription": "Bezpieczne przetwarzanie płatności",
+    "stripePublicKey": "Klucz publiczny Stripe",
+    "stripeSecretKey": "Klucz tajny Stripe",
+    "enableMonobank": "Włącz Monobank",
+    "monobankDescription": "Ukraiński system płatności",
+    "monobankToken": "Token Monobank"
+  },
+  "status": {
+    "pending": "Oczekuje",
+    "in_progress": "W toku",
+    "completed": "Zakończono",
+    "cancelled": "Anulowano",
+    "assigned": "Przypisano",
+    "new": "Nowe",
+    "open": "Otwarte",
+    "proposed": "Są oferty",
+    "accepted": "Zaakceptowano",
+    "active_search": "Aktywne poszukiwanie mistrza",
+    "deleted": "Usunięto",
+    "deletedAt": "Usunięto",
+    "searching": "Szukanie mistrza"
   },
   "priority": {
     "low": "Niski",
@@ -385,6 +832,9 @@
     "somethingWrong": "Coś poszło nie tak. Spróbuj odświeżyć stronę.",
     "updateProfileFailed": "Nie udało się zaktualizować profilu. Spróbuj ponownie."
   },
+  "profile": {
+    "updateSuccess": "Profil został pomyślnie zaktualizowany!"
+  },
   "dateTime": {
     "today": "dzisiaj",
     "yesterday": "wczoraj"
@@ -392,7 +842,7 @@
   "deviceCatalog": {
     "selectColorAndStorage": "Proszę wybrać kolor i pamięć",
     "needsRepair": "Wymaga naprawy",
-    "defaultCity": "Kijów",
+    "defaultCity": "Warszawa",
     "selectColor": "Wybierz kolor",
     "selectStorage": "Wybierz pamięć",
     "createRequest": "Utwórz zgłoszenie"
@@ -403,21 +853,21 @@
     "typeMessage": "Napisz wiadomość..."
   },
   "masterOrders": {
-    "selectOrderAndSubmit": "Wybierz zamówienie i wyślij propozycję",
-    "fillProposalDetails": "Wypełnij szczegóły propozycji:",
-    "sendProposal": "Wyślij propozycję",
-    "yourPrice": "Twoja cena (₴)",
-    "noProposals": "Brak propozycji",
-    "myOrders": "Moje Zamówienia",
-    "availableOrders": "Dostępne Zamówienia",
-    "searchPlaceholder": "Wyszukaj po ID, kliencie, urządzeniu...",
-    "estimatedDays": "Szacowany czas (dni)",
+    "selectOrderAndSubmit": "Wybierz zlecenie i złóż ofertę",
+    "fillProposalDetails": "Wypełnij szczegóły oferty:",
+    "sendProposal": "Wyślij ofertę",
+    "yourPrice": "Twoja cena (zł)",
+    "noProposals": "Brak ofert",
+    "myOrders": "Moje Zlecenia",
+    "availableOrders": "Dostępne Zlecenia",
+    "searchPlaceholder": "Szukaj po ID, kliencie, urządzeniu...",
+    "estimatedDays": "Czas wykonania (dni)",
     "workDescription": "Opis pracy",
     "priceExample": "Na przykład: 2200",
     "daysExample": "Na przykład: 1",
-    "descriptionPlaceholder": "Opisz co będziesz robić...",
-    "description": "Przeglądanie dostępnych zamówień i zarządzanie propozycjami",
-    "activeProposals": "Aktywne propozycje"
+    "descriptionPlaceholder": "Opisz, co będziesz robić...",
+    "description": "Przeglądanie dostępnych zleceń i zarządzanie ofertami",
+    "activeProposals": "Aktywne oferty"
   },
   "orderCreation": {
     "selectDevice": "Wybierz typ urządzenia",
@@ -427,13 +877,13 @@
     "enterBudget": "Podaj budżet",
     "enterLocation": "Podaj lokalizację",
     "selectType": "Wybierz typ...",
-    "createOrder": "Utwórz Zamówienie",
+    "createOrder": "Utwórz Zlecenie",
     "uploadPhotos": "Prześlij zdjęcia",
     "reviewData": "Sprawdź dane",
     "addPhoto": "Dodaj przynajmniej jedno zdjęcie",
     "stepByStep": "Krok po kroku do sukcesu",
-    "createNewOrder": "Utwórz nowe zamówienie",
-    "orderTitle": "Tytuł zamówienia",
+    "createNewOrder": "Utwórz nowe zlecenie",
+    "orderTitle": "Tytuł zlecenia",
     "orderTitlePlaceholder": "Na przykład: Naprawa wyświetlacza iPhone",
     "deviceType": "Typ urządzenia",
     "selectType": "Wybierz typ",
@@ -443,7 +893,7 @@
     "selectModel": "Wybierz model",
     "enterModel": "Wprowadź model",
     "budget": "Budżet na naprawę",
-    "enterBudget": "Wprowadź kwotę (₴)",
+    "enterBudget": "Wprowadź kwotę (zł)",
     "problemType": "Typ problemu",
     "selectProblem": "Wybierz problem",
     "problemDescription": "Opis problemu",
@@ -454,33 +904,33 @@
   "settings": {
     "saved": "Ustawienia zapisane!",
     "resetConfirm": "Czy na pewno chcesz zresetować wszystkie ustawienia?",
-    "description": "Zarządzaj ustawieniami profilu i systemu",
+    "description": "Zarządzaj ustawieniami swojego profilu i systemu",
     "general": "Ogólne",
     "notifications": "Powiadomienia",
     "privacy": "Prywatność",
     "languageAndRegion": "Język i region",
     "language": "Język",
     "theme": "Motyw",
-    "emailNotifications": "Powiadomienia e-mail",
+    "emailNotifications": "Powiadomienia email",
     "pushNotifications": "Powiadomienia push",
-    "pushNotificationsDescription": "Natychmiastowe powiadomienia na urządzenie",
+    "pushNotificationsDescription": "Natychmiastowe powiadomienia na urządzeniu",
     "smsNotifications": "Powiadomienia SMS",
     "security": "Bezpieczeństwo",
     "profilePrivacy": "Prywatność profilu",
     "enableSoundNotifications": "Włącz powiadomienia dźwiękowe",
-    "autoPlayVideos": "Automatyczne odtwarzanie wideo",
+    "autoPlayVideos": "Autoodtwarzanie wideo",
     "autoPlayVideosDescription": "Automatycznie odtwarzaj nagrania wideo",
     "fontSize": "Rozmiar czcionki",
     "fontSizeSmall": "Mały",
     "fontSizeNormal": "Normalny",
     "fontSizeLarge": "Duży",
-    "display": "Wyświetlanie",
+    "display": "Wyświetlacz",
     "displayModes": "Tryby wyświetlania",
     "compactMode": "Tryb kompaktowy",
     "compactModeDescription": "Mniej miejsca, więcej treści",
     "animations": "Animacje",
     "animationsDescription": "Włącz płynne animacje",
-    "emailNotificationsDescription": "Otrzymywać aktualizacje na email",
+    "emailNotificationsDescription": "Otrzymuj aktualizacje na email",
     "smsNotificationsDescription": "Krytyczne aktualizacje przez SMS",
     "soundEffects": "Efekty dźwiękowe",
     "profileVisibility": "Widoczność profilu",
@@ -491,47 +941,38 @@
     "visibilityFriends": "Tylko znajomi",
     "visibilityPrivate": "Prywatny",
     "showEmail": "Pokaż email",
-    "showEmailDescription": "Pozwól innym użytkownikom widzieć twój email"
+    "showEmailDescription": "Pozwól innym użytkownikom widzieć Twój email"
   },
   "dashboard": {
-    "quickActions": "Szybkie akcje",
-    "newOrder": "Nowe zamówienie",
-    "viewProposals": "Przeglądaj propozycje",
-    "recentOrders": "Ostatnie zamówienia",
-    "noOrders": "Brak zamówień",
+    "quickActions": "Szybkie działania",
+    "newOrder": "Nowe zlecenie",
+    "viewProposals": "Zobacz oferty",
+    "recentOrders": "Ostatnie zlecenia",
+    "noOrders": "Brak zleceń",
     "tipOfTheDay": "Wskazówka dnia",
-    "tipMessage": "Mistrzowie z oceną powyżej 4.8 otrzymują o 40% więcej zamówień!",
-    "searchPlaceholder": "Szukaj zamówień, mistrzów...",
+    "tipMessage": "Mistrzowie z oceną powyżej 4.8 otrzymują o 40% więcej zleceń!",
+    "searchPlaceholder": "Szukaj zleceń, mistrzów...",
     "masterVirtuoso": "Mistrz-wirtuoz",
-    "reviewsCount": "{{count}} recenzji"
-  },
-  "landing": {
-    "modernPlatform": "Nowoczesna platforma do naprawy elektroniki mobilnej",
-    "safePlatform": "Bezpieczna platforma • Gwarancja jakości",
-    "safePayment": "Bezpieczna płatność",
-    "rating": "Ocena 4.5+",
-    "warranty": "Gwarancja 30 dni",
-    "minCommission": "Minimalna prowizja",
-    "support24": "Wsparcie 24/7",
-    "copyright": "© 2026 Repair HUB Pro. Wszelkie prawa zastrzeżone.",
-    "footerLinks": "Skontaktuj się z nami • Wsparcie • Polityka prywatności"
+    "reviewsCount": "{{count}} opinii"
   },
   "masterDashboard": {
+    "activeTasks": "Aktywne zadania",
+    "manageCurrentOrders": "Zarządzanie bieżącymi zleceniami",
     "welcome": "Witaj, {{name}}!",
-    "subtitle": "Twój panel kontrolny RepairHub",
+    "subtitle": "Twój panel sterowania RepairHub",
     "activeOrders": "Aktywne Zlecenia",
-    "completedOrders": "Ukończone Zlecenia",
-    "earned": "Zarobione (UAH)",
+    "completedOrders": "Zakończone Zlecenia",
+    "earned": "Zarobiono (zł)",
     "orderStatistics": "Statystyki Zleceń",
     "activityFeed": "Kanał Aktywności"
   },
   "adminDashboard": {
-    "title": "Panel Administratora",
+    "title": "Pulpit Admina",
     "subtitle": "Zarządzanie platformą",
     "welcome": "Witaj, {{name}}",
-    "controlCenter": "Centrum Kontroli Administratora",
+    "controlCenter": "Centrum Sterowania Admina",
     "platformManagement": "Zarządzanie platformą RepairHub Pro",
-    "searchPlaceholder": "Szukaj według nazwy lub email",
+    "searchPlaceholder": "Szukaj po imieniu lub emailu",
     "tabs": {
       "overview": "Przegląd",
       "users": "Użytkownicy",
@@ -546,18 +987,85 @@
       "allRoles": "Wszystkie role"
     },
     "sort": {
-      "newestFirst": "Najnowsze najpierw",
-      "oldestFirst": "Najstarsze najpierw",
+      "newestFirst": "Najpierw najnowsze",
+      "oldestFirst": "Najpierw najstarsze",
       "priceHighToLow": "Cena: od wysokiej do niskiej",
       "priceLowToHigh": "Cena: od niskiej do wysokiej"
     },
     "orderManagement": "Zarządzanie Zleceniami"
   },
   "superadminDashboard": {
-    "title": "Panel Superadministratora",
+    "title": "Pulpit Superadmina",
     "tabs": {
       "admin": "Admin",
       "roles": "Role"
+    }
+  },
+  "brands": {
+    "apple": "Apple",
+    "samsung": "Samsung",
+    "xiaomi": "Xiaomi",
+    "huawei": "Huawei",
+    "oppo": "Oppo",
+    "google": "Google Pixel",
+    "sony": "Sony",
+    "lg": "LG",
+    "motorola": "Motorola",
+    "asus": "ASUS",
+    "lenovo": "Lenovo",
+    "hp": "HP",
+    "dell": "Dell"
+  },
+  "repairTypes": {
+    "screen": {
+      "label": "Ekrany",
+      "description": "Wymiana i naprawa wyświetlaczy"
+    },
+    "battery": {
+      "label": "Baterie",
+      "description": "Wymiana akumulatorów"
+    },
+    "camera": {
+      "label": "Kamery",
+      "description": "Naprawa i wymiana kamer"
+    },
+    "charging": {
+      "label": "Ładowanie",
+      "description": "Naprawa złączy i płyt"
+    },
+    "software": {
+      "label": "Oprogramowanie",
+      "description": "Flashowanie i odzyskiwanie"
+    },
+    "motherboard": {
+      "label": "Płyty",
+      "description": "Naprawa płyt głównych"
+    },
+    "housing": {
+      "label": "Obudowy",
+      "description": "Odnawianie obudów"
+    },
+    "audio": {
+      "label": "Audio",
+      "description": "Głośniki, mikrofony"
+    }
+  },
+  "experienceLevels": {
+    "beginner": {
+      "label": "Początkujący",
+      "desc": "Mniej niż 1 rok"
+    },
+    "intermediate": {
+      "label": "Doświadczony",
+      "desc": "1-3 lata"
+    },
+    "advanced": {
+      "label": "Profesjonalista",
+      "desc": "3-5 lat"
+    },
+    "expert": {
+      "label": "Ekspert",
+      "desc": "Ponad 5 lat"
     }
   }
 }

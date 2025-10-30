@@ -1,53 +1,30 @@
-
 import asyncio
-from playwright.async_api import async_playwright, expect
+from playwright.async_api import async_playwright
+import os
 
 async def main():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
 
-        try:
-            await page.goto("http://localhost:5173", wait_until="networkidle", timeout=20000)
+        # Create a directory for screenshots if it doesn't exist
+        os.makedirs("jules-scratch/verification", exist_ok=True)
 
-            language_tests = {
-                "uk": "🇺🇦",
-                "en": "🇬🇧",
-                "ru": "🇷🇺",
-                "pl": "🇵🇱",
-                "ro": "🇷🇴"
-            }
+        languages = ["uk", "en", "pl", "ro"]
+        for lang in languages:
+            await page.goto("http://localhost:5173")
 
-            language_switcher_selector = (
-                'button[title="Змінити мову"], '
-                'button[title="Change Language"], '
-                'button[title="Изменить язык"], '
-                'button[title="Zmień język"], '
-                'button[title="Schimbă limba"]'
-            )
+            # Set language in localStorage
+            await page.evaluate(f"localStorage.setItem('i18nextLng', '{lang}')")
 
-            for lang_code, flag in language_tests.items():
-                print(f"--- Capturing screenshot for language: {lang_code.upper()} ---")
+            await page.reload()
 
-                # Open language switcher
-                await page.locator(language_switcher_selector).click()
+            # Wait for the page to load
+            await page.wait_for_load_state('networkidle')
 
-                # Click on the language button identified by its flag
-                lang_button = page.locator(f'button:has(span:text-is("{flag}"))')
-                await lang_button.click()
-                await page.wait_for_timeout(1000)
+            await page.screenshot(path=f"jules-scratch/verification/landing_page_{lang}.png")
 
-                # Take screenshot
-                await page.screenshot(path=f"jules-scratch/verification/verification_{lang_code}.png")
-                print(f"--- Screenshot for {lang_code.upper()} captured ---")
-
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            await page.screenshot(path="jules-scratch/verification/error_screenshot.png")
-            raise
-
-        finally:
-            await browser.close()
+        await browser.close()
 
 if __name__ == "__main__":
     asyncio.run(main())
