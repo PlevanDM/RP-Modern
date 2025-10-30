@@ -110,7 +110,6 @@ function App() {
     resolveDispute,
     escalateDispute,
     fetchOrders,
- Internacional
   } = useOrdersStore();
   const { notifications, readNotification, removeNotification } = useNotificationsStore();
   

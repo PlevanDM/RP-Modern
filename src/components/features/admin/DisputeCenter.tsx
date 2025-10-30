@@ -32,10 +32,11 @@ export function DisputeCenter() {
       setDisputes(updated);
     };
     window.addEventListener('storage', handleStorageChange);
-    capturingInterval setInterval(handleStorageChange, 1000); // Poll for updates
+    const interval = setInterval(handleStorageChange, 1000); // Poll for updates
     
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
     };
   }, []);
 
