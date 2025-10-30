@@ -128,17 +128,52 @@ export const useOrdersStore = create<OrdersState>()(
             console.warn('Не вдалося синхронізувати з localStorage:', storageError);
           }
           
-          // Create notifications for masters (as per ARCHITECTURE.md: "Створення замовлення → Усі майстри")
+          // Create notifications for masters using master matching (as per ARCHITECTURE.md)
           try {
             const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
-            const matchingMasters = users.filter((u: any) => 
-              u.role === 'master' && 
-              !u.blocked &&
-              (u.verified !== false) &&
-              (!newOrder.brand || !u.repairBrands || u.repairBrands.length === 0 || 
-               u.repairBrands.some((brand: string) => 
-                 brand.toLowerCase().includes(newOrder.brand?.toLowerCase() || '')))
-            );
+            const allMasters = users.filter((u: any) => u.role === 'master' && !u.blocked && (u.verified !== false));
+            
+            // Use master matching service to find best matches
+            let matchingMasters: any[] = [];
+            try {
+              const { findMatchingMasters } = await import('../services/masterMatchingService');
+              const currentUser = useAuthStore.getState().currentUser;
+              
+              const clientPreferences = {
+                preferredBrands: newOrder.brand ? [newOrder.brand.toLowerCase()] : undefined,
+                preferredRepairTypes: newOrder.issue ? [newOrder.issue.toLowerCase()] : undefined,
+                city: newOrder.city,
+                preferredWorkLocation: currentUser?.preferredPriority?.includes('speed') ? 'mobile' : undefined,
+                clientMobileOS: currentUser?.clientMobileOS,
+                clientComputerOS: currentUser?.clientComputerOS,
+                skillLevel: currentUser?.skillLevel,
+                budgetRange: currentUser?.budgetRange,
+              };
+              
+              const masterProfiles = allMasters.map((u: any) => ({
+                id: u.id,
+                repairBrands: u.repairBrands,
+                repairTypes: u.repairTypes,
+                workLocation: u.workLocation,
+                isMobile: u.isMobile,
+                city: u.city,
+                rating: u.rating,
+                completedOrders: u.completedOrders,
+                workExperience: u.workExperience,
+                workingRadius: u.workingRadius,
+              }));
+              
+              const matched = findMatchingMasters(clientPreferences, masterProfiles, 20);
+              matchingMasters = matched.map(m => allMasters.find((u: any) => u.id === m.master.id)).filter(Boolean);
+            } catch (error) {
+              console.warn('Помилка master matching, використовуємо простий фільтр:', error);
+              // Fallback to simple filtering
+              matchingMasters = allMasters.filter((u: any) => 
+                (!newOrder.brand || !u.repairBrands || u.repairBrands.length === 0 || 
+                 u.repairBrands.some((brand: string) => 
+                   brand.toLowerCase().includes(newOrder.brand?.toLowerCase() || '')))
+              );
+            }
             
             const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
             matchingMasters.forEach((master: any) => {
@@ -453,15 +488,50 @@ export const useOrdersStore = create<OrdersState>()(
           return;
         }
 
-        set((state) => ({
+        set((独自) => ({
           orders: state.orders.map((o) =>
-            o.id === orderId ? { ...o, status, updatedAt: new Date() } : o
+            o.id === orderId ? { ...o, status, updatedAt: new Date(), completedAt: status === 'completed' ? new Date().toISOString() : o.completedAt } : o
           ),
         }));
         
+        // Create notifications based on status change (as per ARCHITECTURE.md)
+        if (status === 'completed') {
+          try {
+            const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
+            
+            // Notify client (as per ARCHITECTURE.md: "Завершення роботи → Client")
+            if (order.clientId) {
+              notifications.push({
+                id: `notif-${Date.now()}-client-complete`,
+                userId: order.clientId,
+                message: `Майстер завершив роботу над замовленням "${order.title}". Можете перевірити та підтвердити.`,
+                type: 'status',
+                read: false,
+                createdAt: new Date(),
+              });
+            }
+            
+            // Notify master (as per ARCHITECTURE.md: "Завершення роботи → Master")
+            if (order.assignedMasterId) {
+              notifications.push({
+                id: `notif-${Date.now()}-master-complete`,
+                userId: order.assignedMasterId,
+                message: `Замовлення "${order.title}" позначено як завершене. Очікуємо підтвердження від клієнта.`,
+                type: 'status',
+                read: false,
+                createdAt: new Date(),
+              });
+            }
+            
+            localStorage.setItem('repairhub_notifications', JSON.stringify(notifications));
+          } catch (error) {
+            console.warn('Не вдалося створити уведомлення при завершенні:', error);
+          }
+        }
+        
         useUIStore
           .getState()
-          .showNotification(`Order status updated to ${status}!`);
+          .showNotification(`Статус замовлення оновлено: ${status === 'completed' ? 'завершено' : status}!`);
       },
       updatePayment: (orderId, amount) => {
         const currentUser = useAuthStore.getState().currentUser;
