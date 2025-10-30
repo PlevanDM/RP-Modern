@@ -12,6 +12,7 @@ import { CreateOrderModal } from './CreateOrderModal';
 import { ProposalModal } from './ProposalModal';
 import { useOrdersStore } from '../store/ordersStore';
 import { Pagination } from './ui/Pagination';
+import { useDebounce } from '../hooks/useDebounce';
 
 interface OrdersProps {
   currentUser: CurrentUser;
@@ -43,24 +44,17 @@ export function Orders({ currentUser, masters = [] }: OrdersProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
   const [showProposalModal, setShowProposalModal] = useState(false);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   useEffect(() => {
-    fetchOrders(currentPage);
-  }, [currentPage, fetchOrders]);
+    fetchOrders(currentPage, 10, debouncedSearchTerm, statusFilter, sortBy);
+  }, [currentPage, debouncedSearchTerm, statusFilter, sortBy, fetchOrders]);
 
   const handlePageChange = (page: number) => {
-    fetchOrders(page);
+    fetchOrders(page, 10, debouncedSearchTerm, statusFilter, sortBy);
   };
 
-  const filteredOrders = useMemo(() => {
-    // The filtering logic is now handled by the backend, so we just use the orders from the store.
-    // A search term filter is kept for real-time filtering on the current page.
-    return orders.filter(order =>
-      (order?.deviceType?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (order?.issue?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (order?.title?.toLowerCase() || '').includes(searchTerm.toLowerCase())
-    );
-  }, [orders, searchTerm]);
+  const filteredOrders = orders;
 
   const getStatusColor = (status: string) => {
     const statusColors: Record<string, string> = {

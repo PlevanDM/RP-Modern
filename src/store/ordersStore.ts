@@ -44,7 +44,7 @@ interface OrdersState {
   currentPage: number;
   totalPages: number;
   totalOrders: number;
-  fetchOrders: (page?: number, limit?: number) => Promise<void>;
+  fetchOrders: (page?: number, limit?: number, searchTerm?: string, status?: string, sortBy?: string) => Promise<void>;
   createOrder: (order: Omit<Order, 'id'>) => void;
   deleteOrder: (orderId: string) => void;
   restoreOrder: (orderId: string) => void;
@@ -76,9 +76,9 @@ export const useOrdersStore = create<OrdersState>()(
       currentPage: 1,
       totalPages: 1,
       totalOrders: 0,
-      fetchOrders: async (page = 1, limit = 10) => {
+      fetchOrders: async (page = 1, limit = 10, searchTerm = '', status = 'all', sortBy = 'date') => {
         try {
-          const { orders, totalPages, currentPage, totalOrders } = await apiOrderService.getOrders(page, limit);
+          const { orders, totalPages, currentPage, totalOrders } = await apiOrderService.getOrders(page, limit, searchTerm, status, sortBy);
           set({ orders, totalPages, currentPage, totalOrders });
           
           try {

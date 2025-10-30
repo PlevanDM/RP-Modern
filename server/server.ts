@@ -725,14 +725,34 @@ app.get('/api/orders', authMiddleware, async (req: AuthRequest, res: Response) =
   if (user.role === 'client') {
     allUserOrders = db.data.orders.filter(o => o.clientId === user.id);
   } else if (user.role === 'master') {
-    // For masters, let's also sort by creation date to show newest first
-    allUserOrders = db.data.orders
-      .filter(o => o.status === 'open' || o.masterId === user.id)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    allUserOrders = db.data.orders.filter(o => o.status === 'open' || o.masterId === user.id);
   } else { // admin or superadmin
-    allUserOrders = db.data.orders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    allUserOrders = db.data.orders;
   }
 
+  // Filtering
+  const { status, searchTerm } = req.query;
+  if (status && status !== 'all') {
+    allUserOrders = allUserOrders.filter(o => o.status === status);
+  }
+  if (searchTerm) {
+    const lowercasedSearch = (searchTerm as string).toLowerCase();
+    allUserOrders = allUserOrders.filter(o =>
+      o.title.toLowerCase().includes(lowercasedSearch) ||
+      o.device.toLowerCase().includes(lowercasedSearch) ||
+      o.issue.toLowerCase().includes(lowercasedSearch)
+    );
+  }
+
+  // Sorting
+  const { sortBy } = req.query;
+  if (sortBy === 'price') {
+    allUserOrders.sort((a, b) => (b.agreedPrice || 0) - (a.agreedPrice || 0));
+  } else { // Default sort by date
+    allUserOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  // Pagination
   const page = parseInt(req.query.page as string, 10) || 1;
   const limit = parseInt(req.query.limit as string, 10) || 10;
   const startIndex = (page - 1) * limit;

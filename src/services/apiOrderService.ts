@@ -46,9 +46,9 @@ class ApiOrderService {
     return ApiOrderService.instance;
   }
 
-  public async getOrders(page = 1, limit = 10): Promise<{ orders: Order[]; totalPages: number; currentPage: number; totalOrders: number }> {
+  public async getOrders(page = 1, limit = 10, searchTerm = '', status = 'all', sortBy = 'date'): Promise<{ orders: Order[]; totalPages: number; currentPage: number; totalOrders: number }> {
     const response = await apiClient.get('/orders', {
-      params: { page, limit },
+      params: { page, limit, searchTerm, status, sortBy },
     });
     return response.data;
   }
