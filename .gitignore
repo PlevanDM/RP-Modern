@@ -61,21 +61,24 @@ desktop.ini
 *-old.ps1
 *BACKUP*
 
-# Documentation - keep only README.md and essential production docs
+# Documentation - keep only essential production docs
+# Note: These documentation files are kept:
+# - ARCHITECTURE.md
+# - ARCHITECTURE_COMPLIANCE_REPORT.md
+# - PROJECT_STATUS.md
+# - PERFORMANCE_OPTIMIZATION.md
+# - API_ENDPOINTS_V2.md
+# - DESIGN_SYSTEM.md
 *-GUIDE.*
 *-INSTRUCTIONS.*
 MANUAL-*
 LAST-*
-FINAL-*
 FULL-*
 QUICK-*
 VNC-*
 AUTO-*
 DEBUG-*
 CHECK-*
-*-SUMMARY.*
-*-STATUS.*
-*-REPORT.*
 *-INFO.*
 *-COMMANDS.*
 *-COPY-PASTE.*
@@ -95,11 +98,8 @@ CHECK-*
 *-TROUBLESHOOTING.*
 *-SOLUTION.*
 *-SCHEDULE.*
-*-SUMMARY.*
 *-COMPLETE.*
-*-FINAL.*
 *-SUCCESS.*
-*-REPORT.*
 
 # Test results and temporary files
 TEST-*
