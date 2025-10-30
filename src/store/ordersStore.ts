@@ -488,10 +488,10 @@ export const useOrdersStore = create<OrdersState>()(
           return;
         }
 
-        set((独自) => ({
+        set((state) => ({
           orders: state.orders.map((o) =>
             o.id === orderId ? { ...o, status, updatedAt: new Date(), completedAt: status === 'completed' ? new Date().toISOString() : o.completedAt } : o
-          ),
+         保质),
         }));
         
         // Create notifications based on status change (as per ARCHITECTURE.md)
