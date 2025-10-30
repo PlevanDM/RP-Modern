@@ -499,19 +499,7 @@ function App() {
               ) : (
                 <Orders
                   currentUser={currentUser}
-                  orders={selectedOrder ? [selectedOrder] : safeOrders}
-                  onSendToMaster={sendToMaster}
-                  onCreateOrder={createOrder}
-                  onDeleteOrder={deleteOrder}
-                  onRestoreOrder={restoreOrder}
-                  onToggleActiveSearch={toggleActiveSearch}
-                  onUpdateOrderStatus={updateOrderStatus}
                   masters={masters}
-                  onEditOrder={editOrder}
-                  onCreateProposal={() => {}}
-                  acceptProposal={acceptProposal}
-                  rejectProposal={rejectProposal}
-                  setActiveItem={setActiveItem}
                 />
               )
             )}

@@ -41,7 +41,10 @@ export const canMasterPerformAction = (order: Order, userId: string, action: str
 interface OrdersState {
   orders: Order[];
   proposals: Proposal[];
-  fetchOrders: () => Promise<void>;
+  currentPage: number;
+  totalPages: number;
+  totalOrders: number;
+  fetchOrders: (page?: number, limit?: number) => Promise<void>;
   createOrder: (order: Omit<Order, 'id'>) => void;
   deleteOrder: (orderId: string) => void;
   restoreOrder: (orderId: string) => void;
@@ -70,15 +73,18 @@ export const useOrdersStore = create<OrdersState>()(
     (set, get) => ({
       orders: [],
       proposals: mockProposals,
-      fetchOrders: async () => {
+      currentPage: 1,
+      totalPages: 1,
+      totalOrders: 0,
+      fetchOrders: async (page = 1, limit = 10) => {
         try {
-          // Пробуємо завантажити з API
-          const apiOrders = await apiOrderService.getOrders();
-          set({ orders: apiOrders });
+          const { orders, totalPages, currentPage, totalOrders } = await apiOrderService.getOrders(page, limit);
+          set({ orders, totalPages, currentPage, totalOrders });
           
-          // Синхронізуємо з localStorage
           try {
-            localStorage.setItem('repair_master_orders', JSON.stringify(apiOrders));
+            const localOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
+            const updatedLocalOrders = [...orders, ...localOrders.filter((o: Order) => !orders.find(no => no.id === o.id))];
+            localStorage.setItem('repair_master_orders', JSON.stringify(updatedLocalOrders));
           } catch (e) {
             console.warn('Не вдалося синхронізувати з localStorage');
           }

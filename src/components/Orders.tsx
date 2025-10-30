@@ -10,17 +10,11 @@ import { Search, Filter, ChevronDown, Package, User, Calendar, DollarSign, Clock
 import { Order, User as CurrentUser } from '../types/models';
 import { CreateOrderModal } from './CreateOrderModal';
 import { ProposalModal } from './ProposalModal';
+import { useOrdersStore } from '../store/ordersStore';
+import { Pagination } from './ui/Pagination';
 
 interface OrdersProps {
   currentUser: CurrentUser;
-  orders?: Order[];
-  onSendToMaster?: (orderId: string, masterId: string) => void;
-  onCreateOrder?: (orderData: Partial<Order>) => void;
-  onDeleteOrder?: (orderId: string) => void;
-  onRestoreOrder?: (orderId: string) => void;
-  onToggleActiveSearch?: (orderId: string) => void;
-  onUpdateOrderStatus?: (orderId: string, newStatus: Order['status']) => void;
-  onCreateProposal?: (proposalData: Partial<Proposal>) => void;
   masters?: {
     id: string;
     avatar: string;
@@ -29,10 +23,10 @@ interface OrdersProps {
     rating: number;
     city: string;
   }[];
-  onEditOrder?: (orderId: string, updates: Partial<Order>) => void;
 }
 
-export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder, onDeleteOrder, onRestoreOrder, onToggleActiveSearch, onUpdateOrderStatus, masters = [], onEditOrder, onCreateProposal }: OrdersProps) {
+export function Orders({ currentUser, masters = [] }: OrdersProps) {
+  const { orders, currentPage, totalPages, fetchOrders, createOrder, deleteOrder, restoreOrder, toggleActiveSearch, updateOrderStatus, editOrder, submitProposal, sendToMaster } = useOrdersStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -50,37 +44,23 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
   const [showProposalModal, setShowProposalModal] = useState(false);
 
-  const filteredOrders = useMemo(() => {
-    // Фільтруємо заказы: если клиент, то только его заказы; если мастер, то все
-    let result = orders;
-    if (currentUser?.role === 'client') {
-      result = orders.filter(order => order?.clientId === currentUser?.id);
-    }
+  useEffect(() => {
+    fetchOrders(currentPage);
+  }, [currentPage, fetchOrders]);
 
-    // Фільтр за пошуковим термом
-    result = result.filter(order =>
+  const handlePageChange = (page: number) => {
+    fetchOrders(page);
+  };
+
+  const filteredOrders = useMemo(() => {
+    // The filtering logic is now handled by the backend, so we just use the orders from the store.
+    // A search term filter is kept for real-time filtering on the current page.
+    return orders.filter(order =>
       (order?.deviceType?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
       (order?.issue?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
       (order?.title?.toLowerCase() || '').includes(searchTerm.toLowerCase())
     );
-
-    // Фільтр за статусом
-    if (statusFilter !== 'all') {
-      result = result.filter(order => order.status === statusFilter);
-    }
-
-    // Сортування
-    result.sort((a, b) => {
-      if (sortBy === 'date') {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      } else if (sortBy === 'price') {
-        return (b.agreedPrice || 0) - (a.agreedPrice || 0);
-      }
-      return 0;
-    });
-
-    return result;
-  }, [orders, searchTerm, statusFilter, sortBy, currentUser?.id, currentUser?.role]);
+  }, [orders, searchTerm]);
 
   const getStatusColor = (status: string) => {
     const statusColors: Record<string, string> = {
@@ -133,8 +113,8 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
   };
 
   const handleSaveOrder = () => {
-    if (selectedOrder && onEditOrder) {
-      onEditOrder(selectedOrder.id, editForm);
+    if (selectedOrder) {
+      editOrder({ ...selectedOrder, ...editForm });
     }
     setIsEditing(false);
   };
@@ -149,13 +129,13 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
   };
 
   const handleSelectMaster = (masterId: string) => {
-    onSendToMaster?.(selectedOrderForMaster, masterId);
+    sendToMaster(selectedOrderForMaster, masterId);
     setShowMasterSelection(false);
     setSelectedOrderForMaster('');
   };
 
   const handleCreateOrder = (orderData: Partial<Order>) => {
-    onCreateOrder?.(orderData);
+    createOrder(orderData as Omit<Order, 'id'>);
   };
 
   const handleDeleteOrder = (order: Order) => {
@@ -164,8 +144,8 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
   };
 
   const confirmDeleteOrder = () => {
-    if (orderToDelete && onDeleteOrder) {
-      onDeleteOrder(orderToDelete.id);
+    if (orderToDelete) {
+      deleteOrder(orderToDelete.id);
       setShowDeleteConfirm(false);
       setOrderToDelete(null);
       setSelectedOrder(null); // Закрываем детальный просмотр
@@ -178,21 +158,15 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
   };
 
   const handleRestoreOrder = (order: Order) => {
-    if (onRestoreOrder) {
-      onRestoreOrder(order.id);
-    }
+    restoreOrder(order.id);
   };
 
   const handleToggleActiveSearch = (order: Order) => {
-    if (onToggleActiveSearch) {
-      onToggleActiveSearch(order.id);
-    }
+    toggleActiveSearch(order.id);
   };
 
   const handleStatusChange = (order: Order, newStatus: string) => {
-    if (onUpdateOrderStatus) {
-      onUpdateOrderStatus(order.id, newStatus as Order['status']);
-    }
+    updateOrderStatus(order.id, newStatus as Order['status']);
   };
 
   const statuses = [
@@ -350,6 +324,12 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
           })}
         </div>
       )}
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       {/* Order Details Modal */}
       {selectedOrder && (
@@ -657,8 +637,10 @@ export function Orders({ currentUser, orders = [], onSendToMaster, onCreateOrder
             isOpen={showProposalModal}
             onClose={() => setShowProposalModal(false)}
             onSubmit={(proposalData) => {
-                onCreateProposal?.({ ...proposalData, orderId: selectedOrder.id });
-                setShowProposalModal(false);
+              if (currentUser) {
+                submitProposal(selectedOrder.id, proposalData.price, proposalData.description);
+              }
+              setShowProposalModal(false);
             }}
             order={selectedOrder}
             currentUser={currentUser}

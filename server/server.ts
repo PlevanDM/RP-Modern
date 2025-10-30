@@ -720,17 +720,33 @@ app.post('/api/orders', authMiddleware, requireRole(['client']), async (req: Aut
 app.get('/api/orders', authMiddleware, async (req: AuthRequest, res: Response) => {
   await db.read();
   const user = req.user!;
-  let orders;
+  let allUserOrders;
 
   if (user.role === 'client') {
-    orders = db.data.orders.filter(o => o.clientId === user.id);
+    allUserOrders = db.data.orders.filter(o => o.clientId === user.id);
   } else if (user.role === 'master') {
-    orders = db.data.orders.filter(o => o.status === 'open' || o.masterId === user.id);
+    // For masters, let's also sort by creation date to show newest first
+    allUserOrders = db.data.orders
+      .filter(o => o.status === 'open' || o.masterId === user.id)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   } else { // admin or superadmin
-    orders = db.data.orders;
+    allUserOrders = db.data.orders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 
-  res.json(orders);
+  const page = parseInt(req.query.page as string, 10) || 1;
+  const limit = parseInt(req.query.limit as string, 10) || 10;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  const paginatedOrders = allUserOrders.slice(startIndex, endIndex);
+  const totalOrders = allUserOrders.length;
+
+  res.json({
+    orders: paginatedOrders,
+    totalOrders,
+    currentPage: page,
+    totalPages: Math.ceil(totalOrders / limit),
+  });
 });
 
 // 3. Get a single order by ID
