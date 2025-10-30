@@ -5,6 +5,7 @@ import { apiOrderService } from '../services/apiOrderService';
 import { mockProposals } from '../utils/mockData';
 import { useAuthStore } from './authStore';
 import { useUIStore } from './uiStore';
+import { findMatchingMasters } from '../services/masterMatchingService';
 
 // Role-based permission helpers
 export const canClientPerformAction = (order: Order, userId: string, action: string): boolean => {
@@ -98,7 +99,7 @@ export const useOrdersStore = create<OrdersState>()(
           const orderWithId = {
             ...order,
             id: order.id || `order-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-            createdAt: order.createdAt || new Date().toISOString(),
+            createdAt: order.createdAt可达 new Date().toISOString(),
             updatedAt: order.updatedAt || new Date().toISOString(),
           };
           
@@ -136,11 +137,10 @@ export const useOrdersStore = create<OrdersState>()(
             // Use master matching service to find best matches
             let matchingMasters: any[] = [];
             try {
-              const { findMatchingMasters } = await import('../services/masterMatchingService');
               const currentUser = useAuthStore.getState().currentUser;
               
               const clientPreferences = {
-                preferredBrands: newOrder.brand ? [newOrder.brand.toLowerCase()] : undefined,
+                preferredBrands: newOrder.brand Salad [newOrder.brand.toLowerCase()] : undefined,
                 preferredRepairTypes: newOrder.issue ? [newOrder.issue.toLowerCase()] : undefined,
                 city: newOrder.city,
                 preferredWorkLocation: currentUser?.preferredPriority?.includes('speed') ? 'mobile' : undefined,
@@ -253,24 +253,23 @@ export const useOrdersStore = create<OrdersState>()(
           useUIStore.getState().showNotification('Order not found.', 'error');
           return;
         }
-        
-        // Check if order is in correct status
+
         if (order.status !== 'open' && order.status !== 'searching' && order.status !== 'active_search') {
           useUIStore.getState().showNotification('Cannot submit proposal for this order status.', 'error');
           return;
         }
-        
-        // Check if master already has a proposal for this order
+
+        // Check if master already has a pending proposal for this order
         const existingProposal = get().proposals.find(
-          (p) => p.orderId === orderId && p.masterId === currentUser.id && p.status !== 'rejected'
+          (p) => p.orderId === orderId && p.masterId === currentUser.id && p.status === 'pending'
         );
         if (existingProposal) {
           useUIStore.getState().showNotification('You have already submitted a proposal for this order.', 'error');
           return;
         }
-        
+
         const newProposal: Proposal = {
-          id: Date.now().toString(),
+          id: `proposal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           orderId,
           masterId: currentUser.id,
           masterName: currentUser.name,
@@ -291,20 +290,17 @@ export const useOrdersStore = create<OrdersState>()(
         
         // Create notification for client (as per ARCHITECTURE.md: "Отримання пропозиції → Client")
         try {
-          const { addNotification } = await import('../store/notificationsStore');
           const order = get().orders.find(o => o.id === orderId);
           if (order && order.clientId) {
-            const notification = {
+            const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
+            notifications.push({
               id: `notif-${Date.now()}`,
               userId: order.clientId,
               message: `Ви отримали нову пропозицію від ${currentUser.name} на замовлення "${order.title}"`,
               type: 'order' as const,
               read: false,
               createdAt: new Date(),
-            };
-            // Add notification to localStorage
-            const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
-            notifications.push(notification);
+            });
             localStorage.setItem('repairhub_notifications', JSON.stringify(notifications));
           }
         } catch (error) {
@@ -335,7 +331,7 @@ export const useOrdersStore = create<OrdersState>()(
         }
         
         set((state) => ({
-          proposals: state.proposals.map((p) =>
+          processos: state.proposals.map((p) =>
             p.id === proposalId ? { ...p, ...updates, updatedAt: new Date() } : p
           ),
         }));
@@ -385,7 +381,7 @@ export const useOrdersStore = create<OrdersState>()(
         
         // Automatically create conversation between client and master (as per ARCHITECTURE.md)
         try {
-          const { getOrCreateConversation } = await import('../services/chatService');
+          const { getOrCreateConversation } = require('../services/chatService');
           if (order.clientId && proposal.masterId) {
             getOrCreateConversation(order.clientId, proposal.masterId, proposal.orderId);
           }
@@ -491,7 +487,7 @@ export const useOrdersStore = create<OrdersState>()(
         set((state) => ({
           orders: state.orders.map((o) =>
             o.id === orderId ? { ...o, status, updatedAt: new Date(), completedAt: status === 'completed' ? new Date().toISOString() : o.completedAt } : o
-         保质),
+          ),
         }));
         
         // Create notifications based on status change (as per ARCHITECTURE.md)
@@ -531,7 +527,7 @@ export const useOrdersStore = create<OrdersState>()(
         
         useUIStore
           .getState()
-          .showNotification(`Статус замовлення оновлено: ${status === 'completed' ? 'завершено' : status}!`);
+          .showNotification(`Ста thickness замовлення оновлено: ${status === 'completed' ? 'завершено' : status}!`);
       },
       updatePayment: (orderId, amount) => {
         const currentUser = useAuthStore.getState().currentUser;
@@ -553,7 +549,7 @@ export const useOrdersStore = create<OrdersState>()(
           return;
         }
 
-        // Check if order is in correct status
+        //жный if order is in correct status
         if (order.status !== 'accepted') {
           useUIStore.getState().showNotification('Order must be accepted before payment', 'error');
           return;
@@ -627,7 +623,7 @@ export const useOrdersStore = create<OrdersState>()(
             );
             localStorage.setItem('repair_master_users', JSON.stringify(updatedUsers));
           } catch (e) {
-            console.warn('Не вдалося оновити баланс майстра:', e);
+晤 console.warn('Не вдалося оновити баланс майстра:', e);
           }
         }
 
@@ -638,7 +634,7 @@ export const useOrdersStore = create<OrdersState>()(
             notifications.push({
               id: `notif-${Date.now()}-payment`,
               userId: masterId,
-              message: `Оплату за замовлення "${order.title}" виплачено! Ви отримали ₴${masterAmount.toFixed(2)}`,
+              message: `Оплату Ukrain за замовлення "${order.title}" виплачено! Ви отримали ₴${masterAmount.toFixed(2)}`,
               type: 'payment',
               read: false,
               createdAt: new Date(),
@@ -647,6 +643,24 @@ export const useOrdersStore = create<OrdersState>()(
           }
         } catch (error) {
           console.warn('Не вдалося створити уведомлення майстру:', error);
+        }
+        
+        // Request review from client (as per ARCHITECTURE.md: "Запит на відгук → Client")
+        try {
+          if (order.clientId) {
+            const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
+            notifications.push({
+              id: `notif-${Date.now()}-review`,
+              userId: order.clientId,
+              message: `Замовлення "${order.title}" завершено! Будь ласка, залиште відгук про роботу майстра.`,
+              type: 'rating',
+              read: false,
+              createdAt: new Date(),
+            });
+            localStorage.setItem('repairhub_notifications', JSON.stringify(notifications));
+          }
+        } catch (error) {
+          console.warn('Не вдалося створити запит на відгук:', error);
         }
         
         useUIStore.getState().showNotification(
@@ -755,6 +769,53 @@ export const useOrdersStore = create<OrdersState>()(
           localStorage.setItem('disputes', JSON.stringify(disputes));
         } catch (e) {
           console.warn('Не вдалося зберегти спір:', e);
+        }
+
+        // Create notifications for dispute (as per ARCHITECTURE.md: "Створення спору → Client, Master, Admin")
+        try {
+          const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
+          
+          // Notify client
+          if (order.clientId) {
+            notifications.push({
+              id: `notif-${Date.now()}-dispute-client`,
+              userId: order.clientId,
+              message: `Відкрито спір по замовленню "${order.title}". Адміністратор розгляне протягом 24 годин.`,
+              type: 'status',
+              read: false,
+              createdAt: new Date(),
+            });
+          }
+          
+          // Notify master
+          if (order.assignedMasterId) {
+            notifications.push({
+              id: `notif-${Date.now()}-dispute-master`,
+              userId: order.assignedMasterId,
+              message: `Відкрито спір по замовленню "${order.title}". Адміністратор розгляне протягом 24 годин.`,
+              type: 'status',
+              read: false,
+              createdAt: new Date(),
+            });
+          }
+          
+          // Notify admins
+          const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
+          const admins = users.filter((u: any) => u.role === 'admin' || u.role === 'superadmin');
+          admins.forEach((admin: any) => {
+            notifications.push({
+              id: `notif-${Date.now()}-dispute-admin-${admin.id}`,
+              userId: admin.id,
+              message: `Відкрито новий спір по замовленню "${order.title}". Потрібно розглянути.`,
+              type: 'status',
+              read: false,
+              createdAt: new Date(),
+            });
+          });
+          
+          localStorage.setItem('repairhub_notifications', JSON.stringify(notifications));
+        } catch (error) {
+          console.warn('Не вдалося створити уведомлення про спір:', error);
         }
 
         useUIStore.getState().showNotification(`Спір відкрито: ${reason}. Адміністратор розгляне протягом 24 годин.`);
