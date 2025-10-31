@@ -315,7 +315,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
     );
   };
 
-  const NavigationMenu = ({ collapsed: _collapsed }: { collapsed: boolean }) => {
+  const NavigationMenu = ({ collapsed }: { collapsed: boolean }) => {
     return (
       <>
         <ScrollArea className="flex-1 px-3 sm:px-2">

@@ -15,30 +15,15 @@ import {
   MessageSquare, 
   Briefcase, 
   User, 
-  LogOut,
-  Menu,
-  X,
-  ChevronDown,
   Settings,
-  Bell,
   Pin,
   PinOff,
   Smartphone,
   Search,
   BarChart3
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
 import { ScrollArea } from "./ui/scroll-area";
-import { Separator } from "./ui/separator";
 import JarvisChat from "./features/ai/JarvisChat";
 
 interface SidebarContextProps {
@@ -48,7 +33,7 @@ interface SidebarContextProps {
 
 const SidebarContext = React.createContext<SidebarContextProps | undefined>(undefined);
 
-const useSidebar = () => {
+const _useSidebar = () => {
   const context = React.useContext(SidebarContext);
   if (!context) {
     throw new Error("useSidebar must be used within a SidebarProvider");
@@ -67,7 +52,13 @@ interface MenuItem {
 }
 
 interface ModernNavigationProps {
-  currentUser: any;
+  currentUser: {
+    id: string;
+    name: string;
+    email: string;
+    role: 'client' | 'master' | 'admin' | 'superadmin';
+    avatar?: string;
+  };
   activeItem: string;
   setActiveItem: (item: string) => void;
   unviewedOrdersCount: number;
@@ -298,7 +289,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
     );
   };
 
-  const UserProfile = ({ collapsed }: { collapsed: boolean }) => {
+  const UserProfile = ({ collapsed: _collapsed }: { collapsed: boolean }) => {
     return null;
   };
 
