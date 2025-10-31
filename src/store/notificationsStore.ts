@@ -72,7 +72,7 @@ export const useNotificationsStore = create<NotificationsState>()(
               n.id === notificationId ? { ...n, read: true } : n
             ),
           }));
-        } catch (error) {
+        } catch {
           // Тиха обробка - оновлюємо локально навіть якщо сервер не відповів
           set((state) => ({
             notifications: state.notifications.map((n) =>

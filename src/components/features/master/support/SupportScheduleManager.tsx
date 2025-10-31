@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
   Calendar,
@@ -45,20 +45,20 @@ export function SupportScheduleManager() {
     if (currentUser?.id) {
       loadSchedules();
     }
-  }, [currentUser?.id]);
+  }, [currentUser?.id, loadSchedules]);
 
-  const loadSchedules = () => {
+  const loadSchedules = useCallback(() => {
     if (!currentUser?.id) return;
     const masterSchedules = getMasterSchedule(currentUser.id);
     setSchedules(masterSchedules);
-  };
+  }, [currentUser?.id]);
 
   const handleSaveNew = () => {
     if (!currentUser?.id || !newSchedule.dayOfWeek || !newSchedule.startTime || !newSchedule.endTime) return;
     
     const schedule: MasterSupportSchedule = {
       id: Date.now().toString(),
-      masterId: current契合.id,
+      masterId: currentUser.id,
       dayOfWeek: newSchedule.dayOfWeek,
       startTime: newSchedule.startTime,
       endTime: newSchedule.endTime,
@@ -130,7 +130,7 @@ export function SupportScheduleManager() {
               <label className="text-sm font-medium text-gray-700 mb-2 block">День тижня</label>
               <select
                 value={newSchedule.dayOfWeek}
-                onChange={(e) => setNewSchedule({ ...newSchedule, dayOfWeek: parseInt(e.target.value) as any })}
+                onChange={(e) => setNewSchedule({ ...newSchedule, dayOfWeek: parseInt(e.target.value) })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {DAYS_OF_WEEK.map(day => (

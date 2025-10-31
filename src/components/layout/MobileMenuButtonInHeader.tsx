@@ -6,7 +6,7 @@ export const MobileMenuButtonInHeader: React.FC = () => {
 
   React.useEffect(() => {
     const updateState = () => {
-      const menuState = (window as any).__mobileMenuState;
+      const menuState = (window as Window & typeof globalThis & { __mobileMenuState: { isOpen: boolean } }).__mobileMenuState;
       if (menuState) {
         setIsOpen(menuState.isOpen);
       }
@@ -27,7 +27,7 @@ export const MobileMenuButtonInHeader: React.FC = () => {
   }, []);
 
   const handleClick = () => {
-    const menuState = (window as any).__mobileMenuState;
+    const menuState = (window as Window & typeof globalThis & { __mobileMenuState: { isOpen: boolean, toggle: () => void } }).__mobileMenuState;
     if (menuState && menuState.toggle) {
       menuState.toggle();
       // Невелика затримка для синхронізації

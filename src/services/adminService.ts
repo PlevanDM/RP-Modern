@@ -1,4 +1,4 @@
-import { User, Review, UserAction } from '../types';
+import { User, Review, UserAction, Order, Transaction } from '../types';
 import { getApiUrl, getAuthHeaders } from './apiUrlHelper';
 import { apiUserService } from './apiUserService';
 
@@ -80,7 +80,7 @@ class AdminService {
       if (response.ok) {
         const errorLogs = await response.json();
         if (Array.isArray(errorLogs) && errorLogs.length > 0) {
-          return errorLogs.map((log: any, index: number) => ({
+          return errorLogs.map((log: { userId: string; userMessage: string; message: string; timestamp: string | number | Date; serverTimestamp: string | number | Date }, index: number) => ({
             id: `action-${index}`,
             userId: log.userId || 'unknown',
             action: log.userMessage || log.message || 'User action',
@@ -95,7 +95,7 @@ class AdminService {
     }
   }
 
-  async getOrders(): Promise<any[]> {
+  async getOrders(): Promise<Order[]> {
     try {
       const API_URL = getApiUrl();
       const response = await fetch(`${API_URL}/orders`, {
@@ -115,7 +115,7 @@ class AdminService {
     }
   }
 
-  async getTransactions(): Promise<any[]> {
+  async getTransactions(): Promise<Transaction[]> {
     try {
       const API_URL = getApiUrl();
       const response = await fetch(`${API_URL}/payments`, {

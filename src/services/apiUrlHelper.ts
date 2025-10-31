@@ -5,7 +5,7 @@ export const getApiUrl = (): string => {
   // Prefer configured backend URL from settings store when available
   try {
     // Lazy import to avoid circular deps in SSR/build
-    const settingsStore = (window as any)?.useSettingsStore || undefined;
+    const settingsStore = (window as Window & typeof globalThis & { useSettingsStore?: () => { getState: () => { settings: { backendUrl: string } } } })?.useSettingsStore || undefined;
     if (!settingsStore && typeof window !== 'undefined') {
       // Attempt dynamic import only in browser
       // Note: this is best-effort; failures fall through to env/auto-detect
@@ -18,7 +18,9 @@ export const getApiUrl = (): string => {
     if (settings?.backendUrl) {
       return settings.backendUrl;
     }
-  } catch {}
+  } catch {
+    // ignore - fallback to auto-detect
+  }
   // Auto-detect based on current hostname (priority)
   if (typeof window !== 'undefined') {
     const host = window.location.hostname;
@@ -57,7 +59,7 @@ export const getAuthHeaders = (): Record<string, string> => {
       }
     }
     // Fallback: try window.store approach
-    const settingsStore = (window as any)?.useSettingsStore;
+    const settingsStore = (window as Window & typeof globalThis & { useSettingsStore?: () => { getState: () => { settings: { apiKey: string, secretKey: string } } } })?.useSettingsStore;
     const settings = settingsStore?.getState?.().settings;
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (settings?.apiKey) headers['x-api-key'] = settings.apiKey;

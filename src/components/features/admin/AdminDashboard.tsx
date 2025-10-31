@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { User } from '../../../types';
@@ -14,7 +14,6 @@ import { useAuthStore } from '../../../store/authStore';
 import { UsersTab } from './tabs/UsersTab';
 import { OrdersTab } from './tabs/OrdersTab';
 import { StatCards } from './StatCards';
-import SuperadminDashboard from '../superadmin/SuperadminDashboard';
 import { Order, Transaction } from '../../../types';
 
 interface AdminDashboardProps {

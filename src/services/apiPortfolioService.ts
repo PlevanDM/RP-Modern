@@ -1,3 +1,4 @@
+import axios from 'axios';
 import api from './api/client';
 import { PortfolioItem } from '../types';
 
@@ -6,10 +7,10 @@ class ApiPortfolioService {
     try {
       const response = await api.get(`/portfolio/${masterId}`);
       return response.data || [];
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching portfolio:', error);
       // Fallback: якщо portfolio не знайдено, повертаємо пустий масив
-      if (error.response?.status === 404) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
         return [];
       }
       throw error;

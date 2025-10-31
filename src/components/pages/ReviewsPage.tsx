@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Star, Edit, Trash2, Reply } from 'lucide-react';
 import { useReviewsStore } from '../../store/reviewsStore';
 import { useAuthStore } from '../../store/authStore';
-import { useOrdersStore } from '../../store/ordersStore';
 import { Review } from '../../types/review';
 import { ReviewModal } from '../modals/ReviewModal';
 

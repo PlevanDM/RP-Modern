@@ -80,9 +80,9 @@ class ApiAuthService {
       }
       
       return user;
-    } catch (apiError: any) {
+    } catch (apiError) {
       // Якщо API недоступний, повертаємо помилку
-      throw new Error(apiError?.response?.data?.message || 'Невірний email або пароль');
+      throw new Error(apiError instanceof Error ? apiError.message : 'Невірний email або пароль');
     }
   }
 
@@ -96,7 +96,7 @@ class ApiAuthService {
       // const { token, newUser } = response.data;
       // localStorage.setItem('jwt-token', token);
       return response.data;
-    } catch (error) {
+    } catch {
       console.warn('API register failed, falling back to localStorage mock.');
       // Fallback for testing when the backend is not available.
       const storedUsers = JSON.parse(localStorage.getItem('repair_master_users') || '[]');

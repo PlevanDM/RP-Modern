@@ -1,4 +1,3 @@
-import React from 'react';
 import { User, Order } from '../../../../types';
 import { safeLocaleDate } from '../../../../utils/localeUtils';
 

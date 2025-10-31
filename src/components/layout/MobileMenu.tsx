@@ -4,7 +4,6 @@ import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Menu } from "lucide-react";
 import { Button } from "../ui/button";
-import { useTranslation } from "react-i18next";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -19,8 +18,6 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   children,
   headerHeight = 80,
 }) => {
-  const { t } = useTranslation();
-
   React.useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Order, Proposal } from '../types';
+import { Order, Proposal, User } from '../types';
 import { apiOrderService } from '../services/apiOrderService';
 import { useAuthStore } from './authStore';
 import { useUIStore } from './uiStore';
@@ -84,7 +84,7 @@ export const useOrdersStore = create<OrdersState>()(
             const localOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
             const updatedLocalOrders = [...orders, ...localOrders.filter((o: Order) => !orders.find(no => no.id === o.id))];
             localStorage.setItem('repair_master_orders', JSON.stringify(updatedLocalOrders));
-          } catch (e) {
+          } catch (_e) {
             console.warn('Не вдалося синхронізувати з localStorage');
           }
         } catch (error) {
@@ -137,11 +137,11 @@ export const useOrdersStore = create<OrdersState>()(
           
           // Create notifications for masters using master matching (as per ARCHITECTURE.md)
           try {
-            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
-            const allMasters = users.filter((u: any) => u.role === 'master' && !u.blocked && (u.verified !== false));
+            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]') as User[];
+            const allMasters = users.filter((u: User) => u.role === 'master' && !u.blocked && (u.verified !== false));
             
             // Use master matching service to find best matches
-            let matchingMasters: any[] = [];
+            let matchingMasters: User[] = [];
             try {
               const currentUser = useAuthStore.getState().currentUser;
               
@@ -156,7 +156,7 @@ export const useOrdersStore = create<OrdersState>()(
                 budgetRange: currentUser?.budgetRange,
               };
               
-              const masterProfiles = allMasters.map((u: any) => ({
+              const masterProfiles = allMasters.map((u: User) => ({
                 id: u.id,
                 repairBrands: u.repairBrands,
                 repairTypes: u.repairTypes,
@@ -170,11 +170,11 @@ export const useOrdersStore = create<OrdersState>()(
               }));
               
               const matched = findMatchingMasters(clientPreferences, masterProfiles, 20);
-              matchingMasters = matched.map(m => allMasters.find((u: any) => u.id === m.master.id)).filter(Boolean);
+              matchingMasters = matched.map(m => allMasters.find((u: User) => u.id === m.master.id)).filter(Boolean) as User[];
             } catch (error) {
               console.warn('Помилка master matching, використовуємо простий фільтр:', error);
               // Fallback to simple filtering
-              matchingMasters = allMasters.filter((u: any) => 
+              matchingMasters = allMasters.filter((u: User) =>
                 (!newOrder.brand || !u.repairBrands || u.repairBrands.length === 0 || 
                  u.repairBrands.some((brand: string) => 
                    brand.toLowerCase().includes(newOrder.brand?.toLowerCase() || '')))
@@ -182,7 +182,7 @@ export const useOrdersStore = create<OrdersState>()(
             }
             
             const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
-            matchingMasters.forEach((master: any) => {
+            matchingMasters.forEach((master: User) => {
               notifications.push({
                 id: `notif-${Date.now()}-${master.id}`,
                 userId: master.id,
@@ -623,8 +623,8 @@ export const useOrdersStore = create<OrdersState>()(
         const masterId = order.assignedMasterId;
         if (masterId) {
           try {
-            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
-            const updatedUsers = users.map((u: any) =>
+            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]') as User[];
+            const updatedUsers = users.map((u: User) =>
               u.id === masterId
                 ? { ...u, balance: (u.balance || 0) + masterAmount }
                 : u
@@ -808,9 +808,9 @@ export const useOrdersStore = create<OrdersState>()(
           }
           
           // Notify admins
-          const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
-          const admins = users.filter((u: any) => u.role === 'admin' || u.role === 'superadmin');
-          admins.forEach((admin: any) => {
+          const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]') as User[];
+          const admins = users.filter((u: User) => u.role === 'admin' || u.role === 'superadmin');
+          admins.forEach((admin: User) => {
             notifications.push({
               id: `notif-${Date.now()}-dispute-admin-${admin.id}`,
               userId: admin.id,
@@ -908,8 +908,8 @@ export const useOrdersStore = create<OrdersState>()(
           // Update master balance
           if (order.assignedMasterId) {
             try {
-              const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
-              const updatedUsers = users.map((u: any) =>
+              const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]') as User[];
+              const updatedUsers = users.map((u: User) =>
                 u.id === order.assignedMasterId
                   ? { ...u, balance: (u.balance || 0) + masterAmount }
                   : u

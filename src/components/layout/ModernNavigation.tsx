@@ -14,8 +14,6 @@ import {
   MessageSquare,
   Briefcase,
   User,
-  Menu,
-  X,
   Settings,
   Pin,
   PinOff,
@@ -28,7 +26,6 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { JarvisChat } from "../features/ai/JarvisChat";
 import { User as CurrentUser, Order } from "../../types/models";
@@ -499,7 +496,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   // Експортуємо стан через ref/глобальний доступ для header
   React.useEffect(() => {
     const updateGlobalState = () => {
-      (window as any).__mobileMenuState = {
+      (window as Window & typeof globalThis & { __mobileMenuState: { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, toggle: () => void } }).__mobileMenuState = {
         isOpen: isMobileMenuOpen,
         setIsOpen: setIsMobileMenuOpen,
         toggle: () => setIsMobileMenuOpen(!isMobileMenuOpen)

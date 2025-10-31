@@ -1,7 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Search, MessageSquare } from 'lucide-react';
-import { useAuthStore } from '../../store/authStore';
 import { User, Order, Conversation } from '../../types/models';
 import { 
   getUserConversations, 
@@ -31,13 +30,13 @@ export function MessagesNew({ currentUser, masters = [], orders = [] }: Messages
 
       return () => clearInterval(interval);
     }
-  }, [currentUser?.id, masters, orders]);
+  }, [currentUser?.id, loadConversations]);
 
-  const loadConversations = () => {
+  const loadConversations = useCallback(() => {
     try {
       if (!currentUser?.id) return;
 
-      const userConversations = getUserConversations(currentUser.id);
+      getUserConversations(currentUser.id);
       
       orders.forEach(order => {
       if (currentUser.role === 'client' && order.assignedMasterId) {
@@ -80,7 +79,7 @@ export function MessagesNew({ currentUser, masters = [], orders = [] }: Messages
       console.error('Помилка завантаження розмов:', error);
       setConversations([]);
     }
-  };
+  }, [currentUser, masters, orders]);
 
   const filteredConversations = useMemo(() => {
     if (!searchQuery.trim()) return conversations;

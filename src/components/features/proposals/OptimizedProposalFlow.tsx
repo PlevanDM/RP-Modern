@@ -15,6 +15,7 @@ interface Proposal {
 }
 
 export function OptimizedProposalFlow() {
+  const { t } = useTranslation();
   const [proposals, setProposals] = useState<Proposal[]>([
     {
       id: 'p1',
@@ -65,7 +66,7 @@ export function OptimizedProposalFlow() {
     setProposals(proposals.map(p => 
       p.id === selectedProposalId ? { ...p, status: 'rejected' } : p
     ));
-    alert(`❌ ${t('proposals.rejected')}: ${rejectReason}`);
+    alert(`❌ ${t('proposals.rejected', { reason: rejectReason })}`);
     setShowRejectModal(false);
     setRejectReason('');
     setSelectedProposalId('');
@@ -250,7 +251,7 @@ export function OptimizedProposalFlow() {
               <textarea
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
-                placeholder={t('proposals.rejectReasonPlaceholder')}
+                placeholder={t('proposals.rejectReasonPlaceholder') || ''}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 resize-none"
                 rows={4}
               />

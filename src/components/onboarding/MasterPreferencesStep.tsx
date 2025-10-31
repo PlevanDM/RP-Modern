@@ -15,7 +15,6 @@ export const MasterPreferencesStep = ({ onComplete, onBack }: MasterPreferencesS
   const [repairBrands, setRepairBrands] = useState<string[]>([]);
   const [repairTypes, setRepairTypes] = useState<string[]>([]);
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
-  const [serviceAreas, setServiceAreas] = useState<string[]>([]);
   const [experience, setExperience] = useState<'beginner' | 'intermediate' | 'advanced' | 'expert' | null>(null);
   const [maxDistance, setMaxDistance] = useState<number | null>(null);
 
@@ -259,7 +258,7 @@ export const MasterPreferencesStep = ({ onComplete, onBack }: MasterPreferencesS
             ].map((level) => (
               <motion.button
                 key={level.id}
-                onClick={() => setExperience(level.id as any)}
+                onClick={() => setExperience(level.id as 'beginner' | 'intermediate' | 'advanced' | 'expert' | null)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`p-4 rounded-xl border-2 transition-all duration-200 ${

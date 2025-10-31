@@ -1,4 +1,4 @@
-import { Message, Conversation, MessageAttachment, MessageReaction, ChatLog } from '../types/models';
+import { Message, Conversation, MessageAttachment, ChatLog } from '../types/models';
 
 // Ключі для localStorage
 const CONVERSATIONS_STORAGE_KEY = 'repairhub_conversations';
@@ -401,7 +401,7 @@ export function logChatAction(
   action: ChatLog['action'],
   userId: string,
   userName: string,
-  details?: Record<string, any>
+  details?: Record<string, unknown>
 ): void {
   try {
     const stored = localStorage.getItem(CHAT_LOGS_STORAGE_KEY);

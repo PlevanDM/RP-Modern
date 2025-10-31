@@ -18,7 +18,7 @@ apiClient.interceptors.request.use((config) => {
   // Always set current baseURL from settings/env on each request
   config.baseURL = getApiUrl();
   // Merge auth headers from settings
-  config.headers = { ...(config.headers || {}), ...getAuthHeaders() } as any;
+  config.headers = { ...(config.headers || {}), ...getAuthHeaders() };
   const authStorage = localStorage.getItem('auth-storage');
   if (authStorage) {
     try {

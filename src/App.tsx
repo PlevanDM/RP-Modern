@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ModernNavigation from './components/layout/ModernNavigation';
 import ModernLandingPage from './components/pages/ModernLandingPage';
 import ModernMasterDashboard from './components/features/master/MasterDashboard/ModernMasterDashboard';
@@ -216,7 +216,7 @@ function App() {
     if (currentUser) {
       fetchUsers();
     }
-  }, [currentUser, fetchOrders]);
+  }, [currentUser, fetchOrders, fetchNotifications]);
 
   // Оптимізовано: оновлюємо час тільки кожну хвилину замість кожної секунди
   useEffect(() => {

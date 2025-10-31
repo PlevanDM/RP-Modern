@@ -46,7 +46,7 @@ export function useImprovedUI() {
     setTimeout(() => {
       removeNotification(id);
     }, 5000);
-  }, []);
+  }, [removeNotification]);
 
   // Remove notification
   const removeNotification = useCallback((id: string) => {

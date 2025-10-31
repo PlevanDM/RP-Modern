@@ -4,7 +4,7 @@ interface UseAutoRefreshOptions {
   enabled?: boolean;
   interval?: number; // мілісекунди
   onRefresh: () => void | Promise<void>;
-  dependencies?: any[]; // залежності для перезапуску
+  dependencies?: unknown[]; // залежності для перезапуску
 }
 
 /**

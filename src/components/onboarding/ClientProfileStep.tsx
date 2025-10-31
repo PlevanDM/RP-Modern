@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Smartphone, Monitor, Laptop } from 'lucide-react';
+import { Smartphone, Laptop } from 'lucide-react';
 import { AndroidIcon, IOSIcon, WindowsIcon, MacIcon, LinuxIcon } from '../common/PlatformIcons';
 import { motion } from 'framer-motion';
 

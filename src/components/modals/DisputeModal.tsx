@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { X, AlertCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
 
 interface DisputeModalProps {
   isOpen: boolean;
@@ -15,7 +14,6 @@ export const DisputeModal: React.FC<DisputeModalProps> = ({
   onSubmit,
   orderTitle,
 }) => {
-  const { t } = useTranslation();
   const [reason, setReason] = useState('');
   const [description, setDescription] = useState('');
 

@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
-import { Search, Filter, ChevronDown, Package, User, Calendar, DollarSign, Clock, MessageCircle } from 'lucide-react';
+import { Search, Package, User, Calendar, DollarSign, Clock, MessageCircle } from 'lucide-react';
 import { Order, User as CurrentUser } from '../../types/models';
 import { CreateOrderModal } from '../CreateOrderModal';
 import { ProposalModal } from '../ProposalModal';
@@ -144,7 +144,7 @@ export function Orders({
     });
 
     return result;
-  }, [orders, searchTerm, statusFilter, sortBy, currentUser?.id, currentUser?.role]);
+  }, [orders, searchTerm, statusFilter, sortBy, currentUser?.id, currentUser?.role, currentUser?.repairBrands, currentUser?.repairTypes]);
 
   const getStatusIcon = (status: string) => {
     const icons: Record<string, string> = {

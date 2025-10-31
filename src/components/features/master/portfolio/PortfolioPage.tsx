@@ -21,8 +21,8 @@ const PortfolioPage: React.FC = () => {
     try {
       const data = await apiPortfolioService.getPortfolioItems(currentUser.id);
       setPortfolio(data);
-    } catch (err: any) {
-      setError(err?.message || 'Failed to fetch portfolio');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch portfolio');
       console.error('Portfolio fetch error:', err);
     } finally {
       setIsLoading(false);
@@ -46,8 +46,8 @@ const PortfolioPage: React.FC = () => {
       await fetchPortfolio(); // Re-fetch to get the latest data
       setIsFormOpen(false);
       setEditingItem(null);
-    } catch (err: any) {
-      setError(err?.message || `Failed to ${item.id ? 'update' : 'create'} portfolio item`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : `Failed to ${item.id ? 'update' : 'create'} portfolio item`);
       console.error('Portfolio submit error:', err);
     }
   };
@@ -64,8 +64,8 @@ const PortfolioPage: React.FC = () => {
       try {
         await apiPortfolioService.deletePortfolioItem(currentUser.id, itemId);
         await fetchPortfolio(); // Re-fetch
-      } catch (err: any) {
-        setError(err?.message || 'Failed to delete portfolio item');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to delete portfolio item');
         console.error('Portfolio delete error:', err);
       }
     }

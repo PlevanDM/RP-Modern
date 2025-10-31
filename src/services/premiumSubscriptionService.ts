@@ -1,4 +1,4 @@
-import { PremiumSubscription, Receipt, WarrantyCase, User } from '../types/models';
+import { PremiumSubscription, Receipt, WarrantyCase } from '../types/models';
 
 const PREMIUM_PRICE = 4.99; // EUR
 const STORAGE_KEY = 'repairhub_premium_subscriptions';
