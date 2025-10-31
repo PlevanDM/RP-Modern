@@ -1,59 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { motion, useAnimation, useInView, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Progress } from './ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import {
   Wrench,
-  Zap,
-  Shield,
-  Users,
-  TrendingUp,
   Star,
   CheckCircle,
-  ArrowRight,
   Calendar,
-  Clock,
   DollarSign,
-  BarChart3,
-  Smartphone,
-  Sparkles,
-  Package,
-  ArrowRightLeft,
-  Play,
-  Award,
-  Heart,
-  Target,
-  Rocket,
-  Globe,
-  Phone,
-  Mail,
   MapPin,
-  Settings,
   Bell,
-  Search,
   Filter,
   MoreHorizontal,
   Eye,
-  Edit,
-  Trash2,
   Plus,
-  Download,
-  Upload,
   RefreshCw,
   Activity,
-  PieChart,
-  LineChart,
-  BarChart,
   TrendingDown,
   AlertCircle,
   CheckCircle2,
   XCircle,
   Info,
-  ExternalLink,
+  Package,
 } from 'lucide-react';
 
 // Интерфейсы
@@ -146,7 +117,7 @@ const StatCard: React.FC<StatCardProps> = ({
 
 // Компонент карточки заказа
 const OrderCard: React.FC<OrderCardProps> = ({ 
-  id, 
+  id: _id, 
   title, 
   status, 
   progress, 
@@ -238,7 +209,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
 
 // Компонент уведомления
 const NotificationCard: React.FC<NotificationProps> = ({ 
-  id, 
+  id: _id, 
   title, 
   message, 
   type, 
@@ -280,8 +251,7 @@ const NotificationCard: React.FC<NotificationProps> = ({
 
 // Основной компонент дашборда
 const ModernDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [notifications, setNotifications] = useState<NotificationProps[]>([
+  const [notifications] = useState<NotificationProps[]>([
     {
       id: '1',
       title: 'Нове замовлення',
@@ -405,7 +375,7 @@ const ModernDashboard: React.FC = () => {
             </div>
             <div className="flex items-center gap-4">
               <Button variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
+                <RefreshCw className="w-4 h-4 mr-2" />
                 Експорт
               </Button>
               <Button variant="outline" size="sm">

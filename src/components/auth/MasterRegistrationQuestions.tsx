@@ -13,11 +13,6 @@ import {
   Zap 
 } from 'lucide-react';
 
-interface EquipmentItem {
-  id: string;
-  label: string;
-  placeholder: string;
-}
 
 interface MasterRegistrationQuestionsProps {
   onComplete: (data: {
@@ -39,7 +34,7 @@ export function MasterRegistrationQuestions({ onComplete }: MasterRegistrationQu
   const [equipmentModel, setEquipmentModel] = useState('');
   const [step, setStep] = useState<'info' | 'work'>('info');
 
-  const equipmentOptions: Array<{ id: string; label: string; placeholder: string; Icon: any }> = [
+  const equipmentOptions: Array<{ id: string; label: string; placeholder: string; Icon: React.ComponentType<{ className?: string }> }> = [
     { id: 'microscope', label: 'Мікроскоп', placeholder: 'Наприклад, Motic SMZ-171', Icon: Microscope },
     { id: 'soldering', label: 'Паяльна станція', placeholder: 'Наприклад, Yihua 898D', Icon: Wrench },
     { id: 'hot_air', label: 'Термофен', placeholder: 'Наприклад, Quick 861DW', Icon: Wind },
@@ -50,7 +45,7 @@ export function MasterRegistrationQuestions({ onComplete }: MasterRegistrationQu
     { id: 'dc_power', label: 'DC живлення', placeholder: 'Наприклад, Keysight E3631A', Icon: Zap },
   ];
 
-  const handleEquipmentClick = (id: string, Icon: any) => {
+  const handleEquipmentClick = (id: string, _Icon: React.ComponentType<{ className?: string }>) => {
     const existing = equipment.find(eq => eq.id === id);
     if (existing) {
       // Якщо вже вибрано, видаляємо

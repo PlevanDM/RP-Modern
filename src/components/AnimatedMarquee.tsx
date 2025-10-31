@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Wrench, CheckCircle, Star, UserPlus, DollarSign, MessageSquare, Info, Smartphone, Tablet, Watch } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ShoppingCart, Star, MessageSquare, Info, Smartphone, Tablet, Watch } from 'lucide-react';
 import { Notification } from '../types';
 
 interface AnimatedMarqueeProps {

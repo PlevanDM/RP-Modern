@@ -1,49 +1,44 @@
-# Базовый образ Node.js
-FROM node:20-alpine
+# Multi-stage build for RepairHub Pro
+# Stage 1: Build
+FROM node:20-alpine AS builder
 
-# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем package.json и package-lock.json
+# Copy package files
 COPY package*.json ./
 
-# Устанавливаем зависимости
-RUN npm install --legacy-peer-deps
+# Install dependencies
+RUN npm ci --legacy-peer-deps --only=production=false
 
-# Копируем исходный код
+# Copy source code
 COPY . .
 
-# Собираем проект
-RUN npm run build && \
-    npm cache clean --force
+# Build application
+RUN npm run build
 
-# Устанавливаем nginx для статики и wget для healthcheck
-RUN apk add --no-cache nginx wget curl && \
-    mkdir -p /etc/nginx/conf.d
+# Stage 2: Production
+FROM nginx:alpine
 
-# Копируем nginx конфиг
+# Install wget for healthcheck
+RUN apk add --no-cache wget
+
+# Copy nginx configuration
 COPY nginx.conf /etc/nginx/http.d/default.conf
 
-# Создаем необходимые директории для nginx
-RUN mkdir -p /var/log/nginx && \
-    mkdir -p /var/cache/nginx && \
-    mkdir -p /etc/nginx/http.d && \
-    mkdir -p /run/nginx
+# Copy built application from builder
+COPY --from=builder /app/dist /app/dist
 
-# Открываем порт 80
+# Create necessary nginx directories
+RUN mkdir -p /var/log/nginx /var/cache/nginx /run/nginx && \
+    chown -R nginx:nginx /app/dist /var/log/nginx /var/cache/nginx /run/nginx
+
+# Expose port
 EXPOSE 80
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
   CMD wget --quiet --tries=1 --spider http://localhost:80 || exit 1
 
-# Create startup script
-RUN echo '#!/bin/sh' > /start.sh && \
-    echo 'echo "Starting RepairHub Pro..."' >> /start.sh && \
-    echo 'nginx -t || exit 1' >> /start.sh && \
-    echo 'nginx -g "daemon off;"' >> /start.sh && \
-    chmod +x /start.sh
-
-# Запускаем nginx
-CMD ["/start.sh"]
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
 

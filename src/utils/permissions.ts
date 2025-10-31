@@ -120,7 +120,7 @@ export const canViewOrder = (user: User | null, order: Order): boolean => {
  */
 export const checkProposalPermission = (
   user: User | null,
-  proposal: any,
+  proposal: { masterId?: string; orderId?: string; status?: string; clientId?: string },
   action: string
 ): boolean => {
   if (!user || !proposal) return false;

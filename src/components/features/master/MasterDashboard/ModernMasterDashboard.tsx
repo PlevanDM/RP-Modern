@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Calendar,
-  DollarSign,
   Star,
   Clock,
   CheckCircle2,
@@ -10,8 +9,6 @@ import {
   Wrench,
   Users,
   BarChart3,
-  ArrowUpRight,
-  ArrowDownRight,
   Search,
   ChevronRight,
   Activity,

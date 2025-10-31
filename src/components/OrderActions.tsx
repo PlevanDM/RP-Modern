@@ -2,7 +2,7 @@ import React from 'react';
 import { Order, User } from '../types';
 import { Button } from './ui/button';
 import { Check, X, AlertCircle, Trash2, Edit, Clock } from 'lucide-react';
-import { checkOrderPermission, getAvailableActions } from '../utils/permissions';
+import { getAvailableActions } from '../utils/permissions';
 
 interface OrderActionsProps {
   order: Order;
@@ -21,7 +21,7 @@ export const OrderActions: React.FC<OrderActionsProps> = ({
   order,
   currentUser,
   onAcceptProposal,
-  onRejectProposal,
+  onRejectProposal: _onRejectProposal,
   onComplete,
   onCancel,
   onDispute,

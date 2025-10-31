@@ -83,17 +83,25 @@ export default function DeviceGallery({
     }
   };
 
+  // Функція для отримання кольору бренду
+  const getBrandColor = (brand: string) => {
+    const brandData = SUPPORTED_BRANDS.find(b => b.name === brand);
+    return brandData?.color || '#000000';
+  };
+
   const getBrandIcon = (brand: string) => {
+    const brandColor = getBrandColor(brand);
     const brandLower = brand.toLowerCase();
     switch (brandLower) {
       case 'apple':
-        return <AppleIcon className="w-14 h-14 text-gray-700" />;
+        return <AppleIcon className="w-14 h-14" style={{ color: brandColor }} />;
       case 'samsung':
-        return <SamsungIconComponent className="w-14 h-14 text-blue-600" />;
+        return <SamsungIconComponent className="w-14 h-14" style={{ color: brandColor }} />;
       case 'google':
-        return <GoogleIcon className="w-14 h-14 text-green-600" />;
+      case 'google pixel':
+        return <GoogleIcon className="w-14 h-14" style={{ color: brandColor }} />;
       case 'oneplus':
-        return <AndroidIcon className="w-14 h-14" style={{ color: '#F5010C' }} />;
+        return <AndroidIcon className="w-14 h-14" style={{ color: brandColor }} />;
       case 'xiaomi':
         return (
           <svg className="w-14 h-14" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -148,14 +156,8 @@ export default function DeviceGallery({
       case 'dyson':
         return <StorageIcon className="w-14 h-14 text-blue-400" />;
       default:
-        return <StorageIcon className="w-14 h-14 text-gray-400" />;
+        return <StorageIcon className="w-14 h-14" style={{ color: brandColor }} />;
     }
-  };
-
-  // Функція для отримання кольору бренду
-  const getBrandColor = (brand: string) => {
-    const brandData = SUPPORTED_BRANDS.find(b => b.name === brand);
-    return brandData?.color || '#000000';
   };
 
   const handleBrandSelect = (brand: string) => {
@@ -225,6 +227,7 @@ export default function DeviceGallery({
             const brandDevices = allDevices.filter(d => d.brand === brand);
             const brandData = SUPPORTED_BRANDS.find(b => b.name === brand);
             const deviceCount = brandData ? brandData.devices.length : brandDevices.length;
+            const brandColor = getBrandColor(brand);
             
             return (
               <motion.button
@@ -232,7 +235,18 @@ export default function DeviceGallery({
                 onClick={() => handleBrandSelect(brand)}
                 whileHover={{ scale: 1.05, y: -4 }}
                 whileTap={{ scale: 0.98 }}
-                className="p-8 bg-white border-2 border-gray-200 rounded-2xl hover:border-purple-500 hover:shadow-2xl hover:bg-gradient-to-br hover:from-purple-50 hover:to-blue-50 transition-all group relative overflow-hidden"
+                className="p-8 bg-white border-2 border-gray-200 rounded-2xl hover:shadow-2xl transition-all group relative overflow-hidden"
+                style={{
+                  '--brand-color': brandColor,
+                } as React.CSSProperties & { '--brand-color': string }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = brandColor;
+                  e.currentTarget.style.background = `linear-gradient(to bottom right, ${brandColor}15, ${brandColor}08)`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '';
+                  e.currentTarget.style.background = '';
+                }}
               >
                 {/* Shine effect */}
                 <motion.div
@@ -242,15 +256,26 @@ export default function DeviceGallery({
                   transition={{ duration: 0.6 }}
                 />
                 
-                <div className="relative z-10 text-6xl mb-4 text-center">
+                <div className="relative z-10 text-6xl mb-4 text-center" style={{ color: brandColor }}>
                   {brandData?.logo ? (
                     <span className="text-6xl">{brandData.logo}</span>
                   ) : (
                     getBrandIcon(brand)
                   )}
                 </div>
-                <p className="font-bold text-gray-900 text-lg mb-3 group-hover:text-purple-600 transition-colors">{brand}</p>
-                <div className="text-xs text-gray-500 bg-gradient-to-r from-purple-100 to-blue-100 px-3 py-1.5 rounded-full font-semibold">
+                <p className="font-bold text-gray-900 text-lg mb-3 group-hover:transition-colors transition-colors" 
+                   style={{ '--hover-color': brandColor } as React.CSSProperties & { '--hover-color': string }}
+                   onMouseEnter={(e) => { e.currentTarget.style.color = brandColor; }}
+                   onMouseLeave={(e) => { e.currentTarget.style.color = ''; }}
+                >
+                  {brand}
+                </p>
+                <div className="text-xs text-gray-500 px-3 py-1.5 rounded-full font-semibold"
+                     style={{ 
+                       background: `${brandColor}15`,
+                       color: brandColor 
+                     }}
+                >
                   {deviceCount} моделей
                 </div>
               </motion.button>
