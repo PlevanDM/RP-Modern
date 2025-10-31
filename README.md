@@ -94,10 +94,11 @@
 ## 📦 Установка и запуск
 
 ### Требования
-- Node.js 16+
+- Node.js 20+
 - npm или yarn
+- Docker и Docker Compose (для деплою)
 
-### Шаги установки
+### Локальная разработка
 
 ```bash
 # Клонирование репозитория
@@ -119,11 +120,29 @@ npm run preview
 
 ### Доступные скрипты
 ```bash
-npm run dev      # Запуск на localhost:3002
-npm run build    # Оптимизированная сборка
-npm run preview  # Превью production версии
-npm run lint     # Проверка кода
+npm run dev          # Запуск dev сервера (localhost:5173)
+npm run build        # Оптимизированная сборка для продакшена
+npm run preview      # Превью production версии
+npm run serve        # Запуск production сервера (localhost:3000)
+npm run lint         # Проверка кода ESLint
+npm run type-check   # Проверка TypeScript типов
 ```
+
+### 🚀 Deployment с Docker
+
+**Быстрый старт:**
+
+```bash
+# Создайте .env файл (см. DEPLOYMENT.md)
+cp .env.example .env
+
+# Запустите с Docker Compose
+docker-compose up -d --build
+
+# Приложение доступно на http://localhost:80
+```
+
+**Подробная инструкция по деплою:** [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ---
 
@@ -241,8 +260,7 @@ src/
 
 - [`ARCHITECTURE.md`](./ARCHITECTURE.md) - детальна схема архітектури та взаємодій
 - [`ARCHITECTURE_COMPLIANCE_REPORT.md`](./ARCHITECTURE_COMPLIANCE_REPORT.md) - звіт про відповідність архітектурі
-- [`PROJECT_STATUS.md`](./PROJECT_STATUS.md) - поточний стан проєкту
-- [`PERFORMANCE_OPTIMIZATION.md`](./PERFORMANCE_OPTIMIZATION.md) - рекомендації по оптимізації
+- [`DEPLOYMENT.md`](./DEPLOYMENT.md) - **инструкция по развертыванию**
 - [`API_ENDPOINTS_V2.md`](./API_ENDPOINTS_V2.md) - документація API
 - [`DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) - система дизайну
 

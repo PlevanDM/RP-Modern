@@ -65,10 +65,10 @@ desktop.ini
 # Note: These documentation files are kept:
 # - ARCHITECTURE.md
 # - ARCHITECTURE_COMPLIANCE_REPORT.md
-# - PROJECT_STATUS.md
-# - PERFORMANCE_OPTIMIZATION.md
+# - DEPLOYMENT.md
 # - API_ENDPOINTS_V2.md
 # - DESIGN_SYSTEM.md
+# - README.md
 *-GUIDE.*
 *-INSTRUCTIONS.*
 MANUAL-*
