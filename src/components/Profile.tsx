@@ -101,14 +101,21 @@ export function Profile({ currentUser }: ProfileProps) {
       console.error('Failed to update profile:', error);
       
       // Показуємо більш інформативне повідомлення через toast
-      const errorMessage = ((error as { response?: { data?: { message?: string } } })?.response?.data?.message) || 
-                          ((error as { message?: string })?.message) || 
-                          t('errors.updateProfileFailed') || 
-                          'Не вдалося оновити профіль. Спробуйте ще раз.';
+      const errorMessage = (error && typeof error === 'object' && 'response' in error && 
+        error.response && typeof error.response === 'object' && 'data' in error.response &&
+        error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data
+        ? String(error.response.data.message) : 
+        (error instanceof Error ? error.message : null)) || 
+        t('errors.updateProfileFailed') || 
+        'Не вдалося оновити профіль. Спробуйте ще раз.';
       
       // Для тестування: якщо endpoint не існує, просто оновлюємо локально
-      const errorWithResponse = error as { response?: { status?: number }; code?: string };
-      if (errorWithResponse?.response?.status === 404 || errorWithResponse?.code === 'ERR_NETWORK') {
+      const hasNetworkError = error && typeof error === 'object' && (
+        ('response' in error && error.response && typeof error.response === 'object' && 
+         'status' in error.response && error.response.status === 404) ||
+        ('code' in error && error.code === 'ERR_NETWORK')
+      );
+      if (hasNetworkError) {
         console.warn('API endpoint not available, updating locally');
         setProfile(formData);
         updateCurrentUser({ ...currentUser, ...formData } as UserType);

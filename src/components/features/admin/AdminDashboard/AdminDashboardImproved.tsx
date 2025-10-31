@@ -37,7 +37,7 @@ export const AdminDashboardImproved = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <h1 className="text-4xl font-bold text-gray-900 mb-2">? Admin Control Center</h1>
-      <p className="text-gray-600 mb-8">��������� ���������� RepairHub Pro</p>
+      <p className="text-gray-600 mb-8">��������� ���������� RepairHub</p>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsData.map((stat, idx) => (

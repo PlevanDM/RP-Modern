@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Order, Proposal } from '../types';
+import { Order, Proposal, User } from '../types';
+import { Dispute } from '../types/models';
 import { apiOrderService } from '../services/apiOrderService';
 import { useAuthStore } from './authStore';
 import { useUIStore } from './uiStore';
@@ -137,8 +138,8 @@ export const useOrdersStore = create<OrdersState>()(
           
           // Create notifications for masters using master matching (as per ARCHITECTURE.md)
           try {
-            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
-            const allMasters = users.filter((u) => u.role === 'master' && !u.blocked && (u.verified !== false));
+            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]') as User[];
+            const allMasters = users.filter((u: User) => u.role === 'master' && !u.blocked && (u.verified !== false));
             
             // Use master matching service to find best matches
             let matchingMasters: User[] = [];
@@ -156,7 +157,7 @@ export const useOrdersStore = create<OrdersState>()(
                 budgetRange: currentUser?.budgetRange,
               };
               
-              const masterProfiles = allMasters.map((u) => ({
+              const masterProfiles = allMasters.map((u: User) => ({
                 id: u.id,
                 repairBrands: u.repairBrands,
                 repairTypes: u.repairTypes,
@@ -170,11 +171,11 @@ export const useOrdersStore = create<OrdersState>()(
               }));
               
               const matched = findMatchingMasters(clientPreferences, masterProfiles, 20);
-              matchingMasters = matched.map(m => allMasters.find((u) => u.id === m.master.id)).filter(Boolean) as User[];
+              matchingMasters = matched.map(m => allMasters.find((u: User) => u.id === m.master.id)).filter(Boolean) as User[];
             } catch (error) {
               console.warn('Помилка master matching, використовуємо простий фільтр:', error);
               // Fallback to simple filtering
-              matchingMasters = allMasters.filter((u) => 
+              matchingMasters = allMasters.filter((u: User) =>
                 (!newOrder.brand || !u.repairBrands || u.repairBrands.length === 0 || 
                  u.repairBrands.some((brand: string) => 
                    brand.toLowerCase().includes(newOrder.brand?.toLowerCase() || '')))
@@ -182,7 +183,7 @@ export const useOrdersStore = create<OrdersState>()(
             }
             
             const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
-            matchingMasters.forEach((master) => {
+            matchingMasters.forEach((master: User) => {
               notifications.push({
                 id: `notif-${Date.now()}-${master.id}`,
                 userId: master.id,
@@ -623,7 +624,7 @@ export const useOrdersStore = create<OrdersState>()(
         const masterId = order.assignedMasterId;
         if (masterId) {
           try {
-            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
+            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]') as User[];
             const updatedUsers = users.map((u: User) =>
               u.id === masterId
                 ? { ...u, balance: (u.balance || 0) + masterAmount }
@@ -808,7 +809,7 @@ export const useOrdersStore = create<OrdersState>()(
           }
           
           // Notify admins
-          const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
+          const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]') as User[];
           const admins = users.filter((u: User) => u.role === 'admin' || u.role === 'superadmin');
           admins.forEach((admin: User) => {
             notifications.push({
@@ -838,7 +839,9 @@ export const useOrdersStore = create<OrdersState>()(
         
         // Find dispute
         const disputes = JSON.parse(localStorage.getItem('disputes') || '[]');
-        const dispute = disputes.find((d: Dispute) => d.id === disputeId);
+        const dispute = disputes.find((d: Dispute | Record<string, unknown>) => {
+          return (typeof d === 'object' && d !== null && 'id' in d && d.id === disputeId);
+        }) as Dispute | undefined;
         if (!dispute) {
           useUIStore.getState().showNotification('Спір не знайдено', 'error');
           return;
@@ -872,18 +875,19 @@ export const useOrdersStore = create<OrdersState>()(
           }));
           
           // Update dispute
-          const updatedDisputes = disputes.map((d: Dispute) =>
-            d.id === disputeId
+          const updatedDisputes = disputes.map((d: Dispute | Record<string, unknown>) => {
+            const disputeData = d as Dispute;
+            return disputeData.id === disputeId
               ? {
-                  ...d,
-                  status: 'resolved',
-                  decision: 'client_wins',
+                  ...disputeData,
+                  status: 'resolved' as const,
+                  decision: 'client_wins' as const,
                   resolution: explanation || 'Повний повернено клієнту',
-                  resolvedAt: new Date().toISOString(),
+                  resolvedAt: new Date(),
                   resolutionBy: currentUser.id,
                 }
-              : d
-          );
+              : disputeData;
+          });
           localStorage.setItem('disputes', JSON.stringify(updatedDisputes));
           
         } else if (decision === 'master_wins') {
@@ -908,7 +912,7 @@ export const useOrdersStore = create<OrdersState>()(
           // Update master balance
           if (order.assignedMasterId) {
             try {
-              const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
+              const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]') as User[];
               const updatedUsers = users.map((u: User) =>
                 u.id === order.assignedMasterId
                   ? { ...u, balance: (u.balance || 0) + masterAmount }
@@ -921,18 +925,19 @@ export const useOrdersStore = create<OrdersState>()(
           }
           
           // Update dispute
-          const updatedDisputes = disputes.map((d: Dispute) =>
-            d.id === disputeId
+          const updatedDisputes = disputes.map((d: Dispute | Record<string, unknown>) => {
+            const disputeData = d as Dispute;
+            return disputeData.id === disputeId
               ? {
-                  ...d,
-                  status: 'resolved',
-                  decision: 'master_wins',
+                  ...disputeData,
+                  status: 'resolved' as const,
+                  decision: 'master_wins' as const,
                   resolution: explanation || `Оплату виплачено майстру (₴${masterAmount.toFixed(2)})`,
-                  resolvedAt: new Date().toISOString(),
+                  resolvedAt: new Date(),
                   resolutionBy: currentUser.id,
                 }
-              : d
-          );
+              : disputeData;
+          });
           localStorage.setItem('disputes', JSON.stringify(updatedDisputes));
           
         } else if (decision === 'compromise') {
@@ -951,18 +956,19 @@ export const useOrdersStore = create<OrdersState>()(
           }));
           
           // Update dispute
-          const updatedDisputes = disputes.map((d: Dispute) =>
-            d.id === disputeId
+          const updatedDisputes = disputes.map((d: Dispute | Record<string, unknown>) => {
+            const disputeData = d as Dispute;
+            return disputeData.id === disputeId
               ? {
-                  ...d,
-                  status: 'resolved',
-                  decision: 'compromise',
+                  ...disputeData,
+                  status: 'resolved' as const,
+                  decision: 'compromise' as const,
                   resolution: explanation || 'Компромісне рішення. Потрібне ручне розподілення коштів',
-                  resolvedAt: new Date().toISOString(),
+                  resolvedAt: new Date(),
                   resolutionBy: currentUser.id,
                 }
-              : d
-          );
+              : disputeData;
+          });
           localStorage.setItem('disputes', JSON.stringify(updatedDisputes));
         }
         

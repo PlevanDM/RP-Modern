@@ -18,7 +18,6 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   children,
   headerHeight = 80,
 }) => {
-
   React.useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";

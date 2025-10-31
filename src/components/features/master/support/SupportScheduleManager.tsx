@@ -58,7 +58,7 @@ export function SupportScheduleManager() {
     
     const schedule: MasterSupportSchedule = {
       id: Date.now().toString(),
-      masterId: current契合.id,
+      masterId: currentUser.id,
       dayOfWeek: newSchedule.dayOfWeek,
       startTime: newSchedule.startTime,
       endTime: newSchedule.endTime,
@@ -130,7 +130,7 @@ export function SupportScheduleManager() {
               <label className="text-sm font-medium text-gray-700 mb-2 block">День тижня</label>
               <select
                 value={newSchedule.dayOfWeek}
-                onChange={(e) => setNewSchedule({ ...newSchedule, dayOfWeek: parseInt(e.target.value) as 0 | 1 | 2 | 3 | 4 | 5 | 6 })}
+                onChange={(e) => setNewSchedule({ ...newSchedule, dayOfWeek: parseInt(e.target.value) })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {DAYS_OF_WEEK.map(day => (

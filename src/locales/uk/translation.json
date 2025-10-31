@@ -71,7 +71,7 @@
     "warranty": "Гарантія 30 днів",
     "minCommission": "Мінімальна комісія",
     "support24": "Підтримка 24/7",
-    "copyright": "© 2026 Repair HUB Pro. Всі права захищені.",
+    "copyright": "© 2026 RepairHub. Всі права захищені.",
     "footerLinks": "Зв'яжіться з нами • Підтримка • Політика конфіденційності",
     "nav": {
       "becomeMaster": "Стати майстром",
@@ -223,7 +223,7 @@
       }
     },
     "finalCta": {
-      "title": "Приєднуйтесь до RepairHub Pro",
+      "title": "Приєднуйтесь до RepairHub",
       "subtitle": "Будьте серед перших, хто створює новий стандарт ремонту техніки в Україні",
       "master": "Я майстер",
       "client": "Мені потрібен ремонт"
@@ -244,7 +244,7 @@
     },
     "footer": {
       "support": "Підтримка:",
-      "copyright": "© 2025 RepairHub Pro",
+      "copyright": "© 2025 RepairHub",
       "description": "Сучасна платформа для пошуку майстрів та замовлень на ремонт техніки в Україні",
       "tagline": "Створюємо новий стандарт сервісу",
       "links": "Швидкі посилання",
@@ -289,7 +289,7 @@
     },
     "benefitsDetailed": {
       "client": {
-        "title": "Чому клієнти обирають RepairHub Pro?",
+        "title": "Чому клієнти обирають RepairHub?",
         "subtitle": "Економте час та гроші, отримуйте якісний ремонт",
         "benefit1": {
           "title": "Економія до 40%",
@@ -317,7 +317,7 @@
         }
       },
       "master": {
-        "title": "Чому майстри приєднуються до RepairHub Pro?",
+        "title": "Чому майстри приєднуються до RepairHub?",
         "subtitle": "Збільште кількість клієнтів та заробляйте більше",
         "benefit1": {
           "title": "Більше клієнтів",
@@ -388,7 +388,7 @@
   },
   "cta": {
     "title": "Готові почати?",
-    "subtitle": "Приєднуйтесь до RepairHub Pro та отримуйте переваги вже сьогодні",
+    "subtitle": "Приєднуйтесь до RepairHub та отримуйте переваги вже сьогодні",
     "cta_client": "Я шукаю майстра",
     "cta_master": "Я майстер ремонту",
     "brands_title": "Працюємо з будь-якими брендами",
@@ -399,7 +399,7 @@
     "phone": "+380 50 123 45 67",
     "email": "support@repairhub.pro",
     "location": "Київ, Україна",
-    "copyright": "© 2024 RepairHub Pro. Всі права захищені. | Для реальних майстрів та клієнтів"
+    "copyright": "© 2024 RepairHub. Всі права захищені. | Для реальних майстрів та клієнтів"
   },
   "navigation": {
     "dashboard": "Дашборд",
@@ -457,10 +457,54 @@
     "password": "Пароль",
     "login": "Увійти",
     "loginDescription": "Увійдіть у свій обліковий запис",
-    "testUsers": "Тестові користувачі",
-    "loggingIn": "Вхід..."
+    "testUsersTitle": "Тестові користувачі",
+    "emailPlaceholder": "Введіть email",
+    "loggingIn": "Вхід...",
+    "testUsers": {
+      "admin": {
+        "name": "Адмін Тест",
+        "role": "Адміністратор"
+      },
+      "superadmin": {
+        "name": "Суперадмін Тест",
+        "role": "СуперАдміністратор"
+      },
+      "master1": {
+        "name": "Майстер Сервісний",
+        "role": "Майстер (сервісний центр)"
+      },
+      "master2": {
+        "name": "Майстер Виїздний",
+        "role": "Майстер (виїзна служба)"
+      },
+      "master3": {
+        "name": "Майстер Домашній",
+        "role": "Майстер (домашній)"
+      },
+      "client1": {
+        "name": "Клієнт iOS",
+        "role": "Клієнт (iOS/Mac)"
+      },
+      "client2": {
+        "name": "Клієнт Android",
+        "role": "Клієнт (Android/Windows)"
+      },
+      "client3": {
+        "name": "Клієнт Windows",
+        "role": "Клієнт (Android/Windows)"
+      },
+      "client4": {
+        "name": "Клієнт Mac",
+        "role": "Клієнт (iOS/Mac)"
+      },
+      "test": {
+        "name": "Тестовий Користувач",
+        "role": "Клієнт"
+      }
+    }
   },
   "common": {
+    "platformName": "RepairHub",
     "search": "Пошук",
     "filter": "Фільтр",
     "sort": "Сортування",
@@ -702,7 +746,7 @@
     "apiSettings": "Налаштування API",
     "currencyProvider": "Провайдер курсів валют:",
     "systemSettings": "Налаштування системи",
-    "systemSettingsDescription": "Керування ключовими параметрами платформи RepairHub Pro",
+    "systemSettingsDescription": "Керування ключовими параметрами платформи RepairHub",
     "securitySettingsDescription": "Налаштування безпеки системи",
     "apiKeyOptional": "API ключ (якщо потрібно):",
     "apiKeyPlaceholder": "Введіть API ключ",
@@ -884,7 +928,7 @@
     "subtitle": "Управління платформою",
     "welcome": "Ласкаво просимо, {{name}}",
     "controlCenter": "Адмін Центр Керування",
-    "platformManagement": "Управління платформою RepairHub Pro",
+    "platformManagement": "Управління платформою RepairHub",
     "searchPlaceholder": "Пошук за ім'ям або email",
     "tabs": {
       "overview": "Огляд",

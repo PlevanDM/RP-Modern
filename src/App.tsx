@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import ModernNavigation from './components/layout/ModernNavigation';
 import ModernLandingPage from './components/pages/ModernLandingPage';
-import ModernMasterDashboard from './components/features/master/MasterDashboard/ModernMasterDashboard';
-import ModernClientDashboard from './components/features/client/ClientDashboard/ModernClientDashboard';
+const ModernMasterDashboard = React.lazy(() => import('./components/features/master/MasterDashboard/ModernMasterDashboard'));
+const ModernClientDashboard = React.lazy(() => import('./components/features/client/ClientDashboard/ModernClientDashboard'));
 import { MyDevices } from './components/features/client/MyDevices';
 import { DeviceCatalog } from './components/features/client/DeviceCatalog';
-import { AdminDashboard } from './components/features/admin/AdminDashboard';
-import SuperadminDashboard from './components/features/superadmin/SuperadminDashboard';
+const AdminDashboard = React.lazy(() => import('./components/features/admin/AdminDashboard'));
+const SuperadminDashboard = React.lazy(() => import('./components/features/superadmin/SuperadminDashboard'));
 import { SettingsConfiguration } from './components/features/admin/SettingsConfiguration';
 import { ModernUsersPanel } from './components/features/admin/ModernUsersPanel';
 import { ModernFinancialPanel } from './components/features/admin/ModernFinancialPanel';
 import { Orders } from './components/pages/Orders';
+// import { Portfolio } from './components/pages/Portfolio';
+// import { Messages } from './components/pages/Messages';
 import { MessagesNew } from './components/pages/MessagesNew';
 import { Reports } from './components/Reports';
 import { Profile } from './components/pages/Profile';
@@ -23,6 +25,7 @@ import { PartsInventory } from './components/features/parts/PartsInventory';
 import { PaymentManagement } from './components/pages/PaymentManagement';
 import PortfolioPage from './components/features/master/portfolio/PortfolioPage';
 import { MasterOrdersBoard } from './components/features/master/MasterOrdersBoard/MasterOrdersBoard';
+// import { MasterInventory } from './components/MasterInventory';
 import MasterPartsMarketplace from './components/features/master/MasterPartsMarketplace';
 import { MasterSupportPanel } from './components/features/master/MasterSupportPanel';
 import { useAuthStore } from './store/authStore';
@@ -106,7 +109,16 @@ function App() {
   };
 
   // Обробник створення замовлення від Джарвіса
-  const handleCreateOrder = (orderData: { title?: string; device?: string; deviceType?: string; issue?: string; description?: string; urgency?: string; clientId?: string; clientName?: string; city?: string; status?: string; createdAt?: Date; updatedAt?: Date; proposalCount?: number; clientPhone?: string; clientEmail?: string }) => {
+  const handleCreateOrder = (orderData: {
+    title: string;
+    description: string;
+    device: string;
+    deviceType: string;
+    issue: string;
+    budget: number;
+    urgency?: 'low' | 'medium' | 'high';
+    location?: string;
+  }) => {
     const newOrder: Order = {
       id: `order-${Date.now()}`,
       title: orderData.title,
@@ -143,10 +155,11 @@ function App() {
   
   // Debug: логування зміни activeItem
   useEffect(() => {
-    console.log('ActiveItem changed to:', activeItem);
+    if (import.meta.env.DEV) {
+      console.log('ActiveItem changed to:', activeItem);
+    }
   }, [activeItem]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [_selectedOrder, _setSelectedOrder] = useState<Order | null>(null);
   const [users, setUsers] = useState<User[]>([]);
 
   const { fetchNotifications } = useNotificationsStore();
@@ -178,41 +191,6 @@ function App() {
     dependencies: [currentUser?.id],
   });
 
-  // Відновлення токена при завантаженні сторінки
-  useEffect(() => {
-    const restoreToken = async () => {
-      const storedUser = currentUser;
-      const storedToken = localStorage.getItem('jwt-token');
-      
-      // Якщо є користувач, але немає токена - спробуємо відновити
-      if (storedUser && !storedToken) {
-        try {
-          const { getApiUrl } = await import('./services/apiUrlHelper');
-          // Спробуємо отримати токен через /auth/login
-          const response = await fetch(`${getApiUrl()}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: storedUser.email }),
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            if (data.token) {
-              localStorage.setItem('jwt-token', data.token);
-              console.log('✅ Token restored');
-            }
-          }
-        } catch (error) {
-          console.warn('⚠️ Failed to restore token:', error);
-        }
-      }
-    };
-
-    if (currentUser) {
-      restoreToken();
-    }
-  }, [currentUser]);
-
   useEffect(() => {
     if (currentUser) {
       fetchNotifications();
@@ -231,8 +209,8 @@ function App() {
         }
       } catch (error: unknown) {
         // Тиха обробка помилок - не ламаємо рендеринг
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        console.warn('Failed to fetch users (non-critical):', message);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.warn('Failed to fetch users (non-critical):', errorMessage);
         // Якщо не вдалося завантажити, залишаємо порожній масив
         setUsers([]);
       }
@@ -241,7 +219,7 @@ function App() {
     if (currentUser) {
       fetchUsers();
     }
-  }, [currentUser, fetchOrders, fetchNotifications]);
+  }, [currentUser?.id, fetchOrders, fetchNotifications]);
 
   // Оптимізовано: оновлюємо час тільки кожну хвилину замість кожної секунди
   useEffect(() => {
@@ -288,7 +266,15 @@ function App() {
 
   if (!isOnboardingCompleted) {
 
-    const handleOnboardingComplete = async (data: Record<string, unknown>) => {
+    const handleOnboardingComplete = async (data: {
+      name?: string;
+      city?: string;
+      phone?: string;
+      specialization?: string[];
+      serviceAreas?: string[];
+      repairBrands?: string[];
+      repairTypes?: string[];
+    }) => {
       if (currentUser) {
         try {
           // Оновлюємо дані користувача в localStorage
@@ -423,59 +409,61 @@ function App() {
             </div>
           </div>
           <div className="pl-2 pr-4 lg:pl-3 lg:pr-6 py-2 w-full">
-            {activeItem === 'dashboard' &&
-              (currentUser.role === 'master' ? (
-                <ModernMasterDashboard
-                  currentUser={currentUser}
-                  stats={{
-                    activeOrders: safeOrders.filter((o) => o.status === 'in_progress').length,
-                    completedOrders: safeOrders.filter(
-                      (o) => o.status === 'completed' || o.status === 'paid'
-                    ).length,
-                    totalEarned: 125000,
-                    rating: currentUser.rating || 4.9,
-                  }}
-                  orders={safeOrders}
-                  tasks={safeOrders.map((o) => ({
-                    id: o.id,
-                    title: o.title,
-                    client: o.clientName || o.clientId,
-                    status: o.status === 'in_progress' ? 'in-progress' : o.status === 'completed' ? 'completed' : 'pending' as 'pending' | 'in-progress' | 'completed',
-                    priority: o.urgency,
-                    deadline: o.deadline ? o.deadline.toISOString().split('T')[0] : '',
-                    progress: 0, // Default progress since Order doesn't have this field
-                  }))}
-                  notifications={notifications}
-                  revenueData={[
-                    { month: 'Jan', value: 85 },
-                    { month: 'Feb', value: 72 },
-                    { month: 'Mar', value: 90 },
-                    { month: 'Apr', value: 78 },
-                    { month: 'May', value: 95 },
-                    { month: 'Jun', value: 88 },
-                  ]}
-                  setActiveItem={setActiveItem}
-                  setSelectedOrder={setSelectedOrder}
-                />
-              ) : currentUser.role === 'client' ? (
-                <ModernClientDashboard
-                  currentUser={currentUser}
-                  orders={clientOrders}
-                  notifications={notifications}
-                  setActiveItem={setActiveItem}
-                  createOrder={createOrder}
-                  setSelectedOrder={setSelectedOrder}
-                />
-              ) : currentUser.role === 'admin' ? (
-                <AdminDashboard />
-              ) : currentUser.role === 'superadmin' ? (
-                <SuperadminDashboard />
-              ) : (
-                <div className="text-center p-8">
-                  <h1 className="text-2xl font-bold mb-4">Ласкаво просимо до RepairHub Pro!</h1>
-                  <p className="text-gray-600">Оберіть роль для продовження роботи.</p>
-                </div>
-              ))}
+            <Suspense fallback={<div className="p-8"><div className="animate-pulse">Завантаження панелі...</div></div>}>
+              {activeItem === 'dashboard' &&
+                (currentUser.role === 'master' ? (
+                  <ModernMasterDashboard
+                    currentUser={currentUser}
+                    stats={{
+                      activeOrders: safeOrders.filter((o) => o.status === 'in_progress').length,
+                      completedOrders: safeOrders.filter(
+                        (o) => o.status === 'completed' || o.status === 'paid'
+                      ).length,
+                      totalEarned: 125000,
+                      rating: currentUser.rating || 4.9,
+                    }}
+                    orders={safeOrders}
+                    tasks={safeOrders.map((o) => ({
+                      id: o.id,
+                      title: o.title,
+                      client: o.clientName || o.clientId,
+                      status: o.status === 'in_progress' ? 'in-progress' : o.status === 'completed' ? 'completed' : 'pending' as 'pending' | 'in-progress' | 'completed',
+                      priority: o.urgency,
+                      deadline: o.deadline ? o.deadline.toISOString().split('T')[0] : '',
+                      progress: 0, // Default progress since Order doesn't have this field
+                    }))}
+                    notifications={notifications}
+                    revenueData={[
+                      { month: 'Jan', value: 85 },
+                      { month: 'Feb', value: 72 },
+                      { month: 'Mar', value: 90 },
+                      { month: 'Apr', value: 78 },
+                      { month: 'May', value: 95 },
+                      { month: 'Jun', value: 88 },
+                    ]}
+                    setActiveItem={setActiveItem}
+                    setSelectedOrder={setSelectedOrder}
+                  />
+                ) : currentUser.role === 'client' ? (
+                  <ModernClientDashboard
+                    currentUser={currentUser}
+                    orders={clientOrders}
+                    notifications={notifications}
+                    setActiveItem={setActiveItem}
+                    createOrder={createOrder}
+                    setSelectedOrder={setSelectedOrder}
+                  />
+                ) : currentUser.role === 'admin' ? (
+                  <AdminDashboard />
+                ) : currentUser.role === 'superadmin' ? (
+                  <SuperadminDashboard />
+                ) : (
+                  <div className="text-center p-8">
+                    <h1 className="text-2xl font-bold mb-4">{t('common.platformName') || 'RepairHub'}</h1>
+                    <p className="text-gray-600">Оберіть роль для продовження роботи.</p>
+                  </div>
+                ))}
+            </Suspense>
 
             {activeItem === 'catalog' && <DeviceCatalog onCreateOrder={handleCreateOrder} />}
 

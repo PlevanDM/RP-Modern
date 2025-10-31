@@ -65,7 +65,7 @@
   },
   "cta": {
     "title": "Gotowy, aby zacząć?",
-    "subtitle": "Dołącz do setek wykonawców i klientów, którzy już zarabiają i oszczędzają dzięki RepairHub Pro",
+    "subtitle": "Dołącz do setek wykonawców i klientów, którzy już zarabiają i oszczędzają dzięki RepairHub",
     "cta_client": "Szukam wykonawcy",
     "cta_master": "Jestem wykonawcą napraw",
     "brands_title": "Pracujemy z dowolnymi markami",
@@ -76,7 +76,7 @@
     "phone": "+380 50 123 45 67",
     "email": "support@repairhub.pro",
     "location": "Kijów, Ukraina",
-    "copyright": "© 2024 RepairHub Pro. Wszelkie prawa zastrzeżone. | Dla prawdziwych wykonawców i klientów"
+    "copyright": "© 2024 RepairHub. Wszelkie prawa zastrzeżone. | Dla prawdziwych wykonawców i klientów"
   },
   "navigation": {
     "dashboard": "Panel",
@@ -134,6 +134,7 @@
     "login": "Zaloguj"
   },
   "common": {
+    "platformName": "RepairHub",
     "search": "Szukaj",
     "filter": "Filtr",
     "sort": "Sortuj",
@@ -257,7 +258,7 @@
     "apiSettings": "Ustawienia API",
     "currencyProvider": "Dostawca kursów walut:",
     "systemSettings": "Ustawienia systemu",
-    "systemSettingsDescription": "Zarządzanie kluczowymi parametrami platformy RepairHub Pro",
+    "systemSettingsDescription": "Zarządzanie kluczowymi parametrami platformy RepairHub",
     "securitySettingsDescription": "Ustawienia bezpieczeństwa systemu",
     "apiKeyOptional": "Klucz API (jeśli potrzebny):",
     "apiKeyPlaceholder": "Wprowadź klucz API",
@@ -513,7 +514,7 @@
     "warranty": "Gwarancja 30 dni",
     "minCommission": "Minimalna prowizja",
     "support24": "Wsparcie 24/7",
-    "copyright": "© 2026 Repair HUB Pro. Wszelkie prawa zastrzeżone.",
+    "copyright": "© 2026 RepairHub. Wszelkie prawa zastrzeżone.",
     "footerLinks": "Skontaktuj się z nami • Wsparcie • Polityka prywatności"
   },
   "masterDashboard": {
@@ -530,7 +531,7 @@
     "subtitle": "Zarządzanie platformą",
     "welcome": "Witaj, {{name}}",
     "controlCenter": "Centrum Kontroli Administratora",
-    "platformManagement": "Zarządzanie platformą RepairHub Pro",
+    "platformManagement": "Zarządzanie platformą RepairHub",
     "searchPlaceholder": "Szukaj według nazwy lub email",
     "tabs": {
       "overview": "Przegląd",

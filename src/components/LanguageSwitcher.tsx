@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation as useI18n, useTranslation } from 'react-i18next';
+// import { Button } from './ui/button'; // Not used
 import { Globe } from 'lucide-react';
 
 const LanguageSwitcher: React.FC = () => {

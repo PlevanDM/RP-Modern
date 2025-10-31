@@ -1,7 +1,6 @@
-import { User, Review, UserAction } from '../types';
+import { User, Review, UserAction, Order, Transaction } from '../types';
 import { getApiUrl, getAuthHeaders } from './apiUrlHelper';
 import { apiUserService } from './apiUserService';
-import { Order, EscrowTransaction } from '../types/models';
 
 // Mock data for reviews
 const mockReviews: Review[] = [
@@ -81,7 +80,7 @@ class AdminService {
       if (response.ok) {
         const errorLogs = await response.json();
         if (Array.isArray(errorLogs) && errorLogs.length > 0) {
-          return errorLogs.map((log: Record<string, unknown>, index: number) => ({
+          return errorLogs.map((log: { userId: string; userMessage: string; message: string; timestamp: string | number | Date; serverTimestamp: string | number | Date }, index: number) => ({
             id: `action-${index}`,
             userId: log.userId || 'unknown',
             action: log.userMessage || log.message || 'User action',
@@ -116,7 +115,7 @@ class AdminService {
     }
   }
 
-  async getTransactions(): Promise<EscrowTransaction[]> {
+  async getTransactions(): Promise<Transaction[]> {
     try {
       const API_URL = getApiUrl();
       const response = await fetch(`${API_URL}/payments`, {

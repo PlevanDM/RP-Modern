@@ -1,15 +1,14 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Send, Image as ImageIcon, X, Smile, Edit2, Trash2, Reply, Check, CheckCheck, Loader2, Download, Eye } from 'lucide-react';
-import { Message, Conversation, MessageReaction } from '../../../types/models';
+import { Message, Conversation } from '../../../types/models';
 import { 
   sendMessage as sendMessageService, 
   getMessages, 
-  markMessageAsRead, 
   markConversationAsRead,
   editMessage, 
   deleteMessage, 
-  addReaction,
+  addReaction
 } from '../../../services/chatService';
 import { Button } from '../../ui/button';
 
@@ -52,6 +51,11 @@ export function ChatWindow({
   const otherUserId = conversation.participants.find(id => id !== currentUserId) || '';
   const otherUserName = conversation.participantNames?.[otherUserId] || 'Користувач';
 
+  const loadMessages = useCallback(() => {
+    const loadedMessages = getMessages(conversation.id);
+    setMessages(loadedMessages);
+  }, [conversation.id]);
+
   useEffect(() => {
     loadMessages();
     // Позначаємо розмову як прочитану
@@ -68,18 +72,6 @@ export function ChatWindow({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const loadMessages = useCallback(() => {
-    const loadedMessages = getMessages(conversation.id);
-    setMessages(loadedMessages);
-    
-    // Позначаємо непрочитані повідомлення як прочитані
-    loadedMessages.forEach(msg => {
-      if (msg.recipientId === currentUserId && !msg.read) {
-        markMessageAsRead(msg.id);
-      }
-    });
-  }, [conversation.id, currentUserId]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

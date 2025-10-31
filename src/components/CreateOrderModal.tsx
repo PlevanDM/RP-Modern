@@ -66,14 +66,7 @@ export function CreateOrderModal({
     }
   }, [formData.brand, formData.deviceType]);
 
-  // handleInputChange is defined but not used - keeping for potential future use
-  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-  //   const { name, value } = e.target;
-  //   setFormData(prev => ({
-  //     ...prev,
-  //     [name]: value
-  //   }));
-  // };
+  // Removed unused handleInputChange - form fields handle their own onChange
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -234,7 +227,7 @@ export function CreateOrderModal({
             value={formData.deviceType}
             onChange={(v) => {
               const newValue = String(v);
-              setFormData({ ...formData, deviceType: newValue as 'smartphone' | 'tablet' | 'laptop' | 'other' });
+              setFormData({ ...formData, deviceType: newValue });
             }}
             placeholder="Оберіть тип..."
             required

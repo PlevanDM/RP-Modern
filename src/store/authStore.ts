@@ -20,16 +20,15 @@ export const useAuthStore = create<AuthState>()(
       isOnboardingCompleted: false,
       login: async (email: string, password?: string) => {
         const user = await apiAuthService.login(email, password);
-        if (!user) {
-          throw new Error('Невірний email або пароль');
+        if (user) {
+          // Перевіряємо чи користувач має всі необхідні дані для автоматичного завершення онбордингу
+          const hasCompleteProfile = user.name && user.city && user.phone;
+          console.log('🔐 Login user:', { email, name: user.name, city: user.city, phone: user.phone, hasCompleteProfile });
+          set({
+            currentUser: user,
+            isOnboardingCompleted: hasCompleteProfile,
+          });
         }
-        // Перевіряємо чи користувач має всі необхідні дані для автоматичного завершення онбордингу
-        const hasCompleteProfile = user.name && user.city && user.phone;
-        console.log('🔐 Login user:', { email, name: user.name, city: user.city, phone: user.phone, hasCompleteProfile });
-        set({
-          currentUser: user,
-          isOnboardingCompleted: hasCompleteProfile,
-        });
       },
       register: async (user: User) => {
         const newUser = await apiAuthService.register(user);

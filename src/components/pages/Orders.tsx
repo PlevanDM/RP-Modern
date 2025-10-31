@@ -535,7 +535,7 @@ export function Orders({
         onClose={() => setShowCreateModal(false)}
         createOrder={(orderData) => {
           if (onCreateOrder) {
-            onCreateOrder(orderData as Partial<Order>);
+            onCreateOrder(orderData);
           }
         }}
         currentUser={currentUser}

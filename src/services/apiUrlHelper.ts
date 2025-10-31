@@ -1,15 +1,11 @@
 // Helper function to auto-detect API URL based on current host
 // This ensures API calls work correctly when accessing via IP address
 
-interface WindowWithSettingsStore extends Window {
-  useSettingsStore?: { getState?: () => { settings?: { backendUrl?: string; apiKey?: string; secretKey?: string } } };
-}
-
 export const getApiUrl = (): string => {
   // Prefer configured backend URL from settings store when available
   try {
     // Lazy import to avoid circular deps in SSR/build
-    const settingsStore = (window as WindowWithSettingsStore)?.useSettingsStore || undefined;
+    const settingsStore = (window as Window & typeof globalThis & { useSettingsStore?: () => { getState: () => { settings: { backendUrl: string } } } })?.useSettingsStore || undefined;
     if (!settingsStore && typeof window !== 'undefined') {
       // Attempt dynamic import only in browser
       // Note: this is best-effort; failures fall through to env/auto-detect
@@ -23,7 +19,7 @@ export const getApiUrl = (): string => {
       return settings.backendUrl;
     }
   } catch {
-    // Settings store not available, continue to auto-detect
+    // ignore - fallback to auto-detect
   }
   // Auto-detect based on current hostname (priority)
   if (typeof window !== 'undefined') {
@@ -48,43 +44,28 @@ export const getApiUrl = (): string => {
 
 export const getAuthHeaders = (): Record<string, string> => {
   try {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    
     // Try to get settings from localStorage directly to avoid circular deps
     if (typeof window !== 'undefined') {
-      // Add JWT token if available
-      const token = localStorage.getItem('jwt-token');
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-      
       const settingsStorage = localStorage.getItem('app-settings');
       if (settingsStorage) {
         const parsed = JSON.parse(settingsStorage);
         if (parsed?.state?.settings) {
           const settings = parsed.state.settings;
+          const headers: Record<string, string> = { 'Content-Type': 'application/json' };
           if (settings.apiKey) headers['x-api-key'] = settings.apiKey;
           if (settings.secretKey) headers['x-api-secret'] = settings.secretKey;
+          return headers;
         }
       }
-      
-      // Fallback: try window.store approach
-      const settingsStore = (window as WindowWithSettingsStore)?.useSettingsStore;
-      const settings = settingsStore?.getState?.().settings;
-      if (settings?.apiKey) headers['x-api-key'] = settings.apiKey;
-      if (settings?.secretKey) headers['x-api-secret'] = settings.secretKey;
     }
-    
+    // Fallback: try window.store approach
+    const settingsStore = (window as Window & typeof globalThis & { useSettingsStore?: () => { getState: () => { settings: { apiKey: string, secretKey: string } } } })?.useSettingsStore;
+    const settings = settingsStore?.getState?.().settings;
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (settings?.apiKey) headers['x-api-key'] = settings.apiKey;
+    if (settings?.secretKey) headers['x-api-secret'] = settings.secretKey;
     return headers;
   } catch {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    // Try to add token even on error
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('jwt-token');
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-    }
-    return headers;
+    return { 'Content-Type': 'application/json' };
   }
 };

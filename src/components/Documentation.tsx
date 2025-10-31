@@ -36,7 +36,7 @@ export function Documentation() {
                 <thead className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
                   <tr>
                     <th className="px-6 py-4 text-left font-bold">Критерій</th>
-                    <th className="px-6 py-4 text-center font-bold">RepairHub Pro</th>
+                    <th className="px-6 py-4 text-center font-bold">RepairHub</th>
                     <th className="px-6 py-4 text-center font-bold">Традиційні сервіси</th>
                     <th className="px-6 py-4 text-center font-bold">Фріланс майстри</th>
                   </tr>

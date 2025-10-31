@@ -40,7 +40,7 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
   
   // Ініціалізуємо тестових користувачів при відкритті модального вікна
   useEffect(() => {
-    initializeTestUsers().catch(console.error);
+    initializeTestUsers();
   }, []);
 
   // Clear error when typing
@@ -71,8 +71,11 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
       onClose(); // Close modal on success - App.tsx will handle navigation
     } catch (err: unknown) {
       console.error('Login error:', err);
-      const errorMessage = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
-      setError(errorMessage || t('auth.invalidCredentials') || 'Невірний email або пароль');
+      const errorMessage = (err && typeof err === 'object' && 'response' in err && 
+        err.response && typeof err.response === 'object' && 'data' in err.response &&
+        err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data
+        ? String(err.response.data.message) : null) || t('auth.invalidCredentials') || 'Невірний email або пароль';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

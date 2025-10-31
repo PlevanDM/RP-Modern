@@ -60,7 +60,7 @@ export const AdminDashboard: React.FC = () => {
           <div className="flex items-center justify-between mb-2">
             <div>
               <h1 className="text-4xl font-bold text-white mb-2">⚡ {t('adminDashboard.controlCenter') || 'Admin Control Center'}</h1>
-              <p className="text-slate-300">{t('adminDashboard.platformManagement') || 'RepairHub Pro Platform Management'}</p>
+              <p className="text-slate-300">{t('adminDashboard.platformManagement') || 'RepairHub Platform Management'}</p>
             </div>
             <div className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full">
               <span className="text-white text-sm font-semibold">🔴 Online</span>

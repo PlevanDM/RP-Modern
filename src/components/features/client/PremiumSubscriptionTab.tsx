@@ -7,6 +7,7 @@ import {
   CreditCard,
   Clock,
   X,
+  Star,
   CheckCircle2,
   Sparkles
 } from 'lucide-react';

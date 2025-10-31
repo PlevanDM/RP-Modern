@@ -340,35 +340,16 @@ export function initializeTestOrders() {
   }
 }
 
-// Функція для ініціалізації тестових користувачів в localStorage та на бекенді
-export async function initializeTestUsers() {
+// Функція для ініціалізації тестових користувачів в localStorage
+export function initializeTestUsers() {
   try {
     const existingUsers = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
     const existingEmails = new Set(existingUsers.map((u: User) => u.email));
 
-    // Імпортуємо динамічно, щоб уникнути циклічних залежностей
-    const { getApiUrl } = await import('../services/apiUrlHelper');
-    const axios = (await import('axios')).default;
-
-    // Паролі для тестових користувачів
-    const passwords: Record<string, string> = {
-      'admin@test.com': 'admin123',
-      'superadmin@test.com': 'admin123',
-      'master1@test.com': 'master123',
-      'master2@test.com': 'master123',
-      'master3@test.com': 'master123',
-      'client1@test.com': 'client123',
-      'client2@test.com': 'client123',
-      'client3@test.com': 'client123',
-      'client4@test.com': 'client123',
-      'test@test.com': 'test123',
-    };
-
-    for (const { email, password, user } of TEST_LOGIN_USERS) {
-      if (!existingEmails.has(user.email!)) {
+    TEST_LOGIN_USERS.forEach(({ user }) => {
+      if (!existingEmails.has(user.email)) {
         const fullUser: User = {
           ...user,
-          password: password || passwords[email] || 'password123',
           avatar: `https://i.pravatar.cc/96?img=${Math.floor(Math.random() * 70)}`,
           skills: [],
           specialization: user.role === 'master' ? 'Master' : 'Client',
@@ -380,37 +361,8 @@ export async function initializeTestUsers() {
         } as User;
         existingUsers.push(fullUser);
         existingEmails.add(user.email!);
-
-        // Реєструємо користувача на бекенді
-        try {
-          const registerData = {
-            email: fullUser.email,
-            password: fullUser.password,
-            name: fullUser.name,
-            role: fullUser.role,
-            city: fullUser.city || 'Київ',
-            phone: fullUser.phone || '+380501111111',
-            ...(fullUser.role === 'master' && {
-              workLocation: fullUser.workLocation || 'service',
-              repairBrands: fullUser.repairBrands || ['Apple', 'Samsung'],
-              repairTypes: fullUser.repairTypes || ['Екрани', 'Батареї'],
-              workExperience: fullUser.workExperience || 3,
-            })
-          };
-
-          await axios.post(`${getApiUrl()}/auth/register`, registerData, {
-            headers: { 'Content-Type': 'application/json' }
-          });
-          console.log(`✅ Registered ${email} on backend`);
-        } catch (error: unknown) {
-          // Якщо користувач вже існує, це нормально
-          const errorObj = error as { response?: { status?: number; data?: { message?: string } }; message?: string };
-          if (errorObj.response?.status !== 409) {
-            console.warn(`⚠️ Failed to register ${email} on backend:`, errorObj.response?.data?.message || errorObj.message);
-          }
-        }
       }
-    }
+    });
 
     localStorage.setItem('repair_master_users', JSON.stringify(existingUsers));
     console.log('✅ Test users initialized:', existingUsers.length);

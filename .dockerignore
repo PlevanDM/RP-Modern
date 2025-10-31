@@ -1,15 +1,51 @@
-node_modules
-npm-debug.log
+# Git
 .git
 .gitignore
-README.md
-.env
-.nyc_output
-coverage
-.nyc_output
+
+# Documentation (not needed in container)
+*.md
+!README.md
+
+# Development files
+node_modules
+dist
 .vscode
 .idea
-*.log
-dist
-.DS_Store
 
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Test files
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__
+coverage
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Scratch and temporary directories
+jules-scratch
+
+# CI/CD
+.github
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+build
+*.tar.gz

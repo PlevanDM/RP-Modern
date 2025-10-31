@@ -65,7 +65,7 @@
   },
   "cta": {
     "title": "Sunteți gata să începeți?",
-    "subtitle": "Alăturați-vă sutelor de tehnicieni și clienți care deja câștigă și economisesc cu RepairHub Pro",
+    "subtitle": "Alăturați-vă sutelor de tehnicieni și clienți care deja câștigă și economisesc cu RepairHub",
     "cta_client": "Caut un tehnician",
     "cta_master": "Sunt un tehnician de reparații",
     "brands_title": "Lucrăm cu orice marcă",
@@ -76,7 +76,7 @@
     "phone": "+380 50 123 45 67",
     "email": "support@repairhub.pro",
     "location": "Kiev, Ucraina",
-    "copyright": "© 2024 RepairHub Pro. Toate drepturile rezervate. | Pentru tehnicieni și clienți reali"
+    "copyright": "© 2024 RepairHub. Toate drepturile rezervate. | Pentru tehnicieni și clienți reali"
   },
   "navigation": {
     "dashboard": "Panou",
@@ -134,6 +134,7 @@
     "login": "Autentificare"
   },
   "common": {
+    "platformName": "RepairHub",
     "search": "Căutare",
     "filter": "Filtru",
     "sort": "Sortare",
@@ -257,7 +258,7 @@
     "apiSettings": "Setări API",
     "currencyProvider": "Furnizor curs valutar:",
     "systemSettings": "Setări sistem",
-    "systemSettingsDescription": "Gestionarea parametrilor cheie ai platformei RepairHub Pro",
+    "systemSettingsDescription": "Gestionarea parametrilor cheie ai platformei RepairHub",
     "securitySettingsDescription": "Setări de securitate sistem",
     "apiKeyOptional": "Cheie API (dacă este necesară):",
     "apiKeyPlaceholder": "Introduceți cheia API",
@@ -513,7 +514,7 @@
     "warranty": "Garanție 30 zile",
     "minCommission": "Comision minim",
     "support24": "Suport 24/7",
-    "copyright": "© 2026 Repair HUB Pro. Toate drepturile rezervate.",
+    "copyright": "© 2026 RepairHub. Toate drepturile rezervate.",
     "footerLinks": "Contactați-ne • Suport • Politica de confidențialitate"
   },
   "masterDashboard": {
@@ -530,7 +531,7 @@
     "subtitle": "Gestionarea platformei",
     "welcome": "Bun venit, {{name}}",
     "controlCenter": "Centru Control Admin",
-    "platformManagement": "Gestionarea platformei RepairHub Pro",
+    "platformManagement": "Gestionarea platformei RepairHub",
     "searchPlaceholder": "Căutare după nume sau email",
     "tabs": {
       "overview": "Prezentare generală",

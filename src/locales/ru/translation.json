@@ -65,7 +65,7 @@
   },
   "cta": {
     "title": "Готовы начать?",
-    "subtitle": "Присоединяйтесь к сотням мастеров и клиентов, которые уже зарабатывают и экономят с помощью RepairHub Pro",
+    "subtitle": "Присоединяйтесь к сотням мастеров и клиентов, которые уже зарабатывают и экономят с помощью RepairHub",
     "cta_client": "Я ищу мастера",
     "cta_master": "Я мастер ремонта",
     "brands_title": "Работаем с любыми брендами",
@@ -76,7 +76,7 @@
     "phone": "+380 50 123 45 67",
     "email": "support@repairhub.pro",
     "location": "Киев, Украина",
-    "copyright": "© 2024 RepairHub Pro. Все права защищены. | Для реальных мастеров и клиентов"
+    "copyright": "© 2024 RepairHub. Все права защищены. | Для реальных мастеров и клиентов"
   },
   "navigation": {
     "dashboard": "Панель",
@@ -119,9 +119,56 @@
     "register": "Зарегистрироваться",
     "email": "Почта",
     "password": "Пароль",
-    "login": "Войти"
+    "login": "Войти",
+    "loginDescription": "Войдите в свой аккаунт",
+    "testUsersTitle": "Тестовые пользователи",
+    "emailPlaceholder": "Введите email",
+    "loggingIn": "Вход...",
+    "testUsers": {
+      "admin": {
+        "name": "Админ Тест",
+        "role": "Администратор"
+      },
+      "superadmin": {
+        "name": "СуперАдмин Тест",
+        "role": "СуперАдминистратор"
+      },
+      "master1": {
+        "name": "Мастер Сервисный",
+        "role": "Мастер (сервисный центр)"
+      },
+      "master2": {
+        "name": "Мастер Выездной",
+        "role": "Мастер (выездная служба)"
+      },
+      "master3": {
+        "name": "Мастер Домашний",
+        "role": "Мастер (домашний)"
+      },
+      "client1": {
+        "name": "Клиент iOS",
+        "role": "Клиент (iOS/Mac)"
+      },
+      "client2": {
+        "name": "Клиент Android",
+        "role": "Клиент (Android/Windows)"
+      },
+      "client3": {
+        "name": "Клиент Windows",
+        "role": "Клиент (Android/Windows)"
+      },
+      "client4": {
+        "name": "Клиент Mac",
+        "role": "Клиент (iOS/Mac)"
+      },
+      "test": {
+        "name": "Тестовый Пользователь",
+        "role": "Клиент"
+      }
+    }
   },
   "common": {
+    "platformName": "RepairHub",
     "search": "Поиск",
     "filter": "Фильтр",
     "sort": "Сортировка",
@@ -290,7 +337,7 @@
     "apiSettings": "Настройки API",
     "currencyProvider": "Провайдер курсов валют:",
     "systemSettings": "Настройки системы",
-    "systemSettingsDescription": "Управление ключевыми параметрами платформы RepairHub Pro",
+    "systemSettingsDescription": "Управление ключевыми параметрами платформы RepairHub",
     "securitySettingsDescription": "Настройки безопасности системы",
     "apiKeyOptional": "API ключ (если нужен):",
     "apiKeyPlaceholder": "Введите API ключ",
@@ -530,7 +577,7 @@
     "warranty": "Гарантия 30 дней",
     "minCommission": "Минимальная комиссия",
     "support24": "Поддержка 24/7",
-    "copyright": "© 2026 Repair HUB Pro. Все права защищены.",
+    "copyright": "© 2026 RepairHub. Все права защищены.",
     "footerLinks": "Свяжитесь с нами • Поддержка • Политика конфиденциальности"
   },
   "masterDashboard": {
@@ -547,7 +594,7 @@
     "subtitle": "Управление платформой",
     "welcome": "Добро пожаловать, {{name}}",
     "controlCenter": "Админ Центр Управления",
-    "platformManagement": "Управление платформой RepairHub Pro",
+    "platformManagement": "Управление платформой RepairHub",
     "searchPlaceholder": "Поиск по имени или email",
     "tabs": {
       "overview": "Обзор",

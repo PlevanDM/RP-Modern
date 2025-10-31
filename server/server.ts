@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-import { User, Order, Offer, Dispute, Review, Payment, Notification, Part } from '../src/types/models';
+import { User, Order, Offer, Dispute, Review, Payment, Notification, Part, Conversation, Message } from '../src/types/models';
 import { allDevicesDatabase } from './data/deviceDatabase.js';
 import * as businessLogic from './businessLogic.js';
 
@@ -37,19 +37,21 @@ interface DbData {
   reviews: Review[];
   notifications: Notification[];
   errorLogs?: ErrorLog[];
+  conversations: Conversation[];
+  messages: Message[];
 }
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const file = path.join(__dirname, 'db.json');
 const adapter = new JSONFile<DbData>(file);
-const defaultData: DbData = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [], errorLogs: [] };
+const defaultData: DbData = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [], errorLogs: [], conversations: [], messages: [] };
 const db = new Low<DbData>(adapter, defaultData);
 
 async function initializeDatabase() {
   await db.read();
   if (!db.data) {
-    db.data = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [], errorLogs: [] };
+    db.data = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [], errorLogs: [], conversations: [], messages: [] };
     await db.write();
   }
   
@@ -139,26 +141,17 @@ async function initializeDatabase() {
 
 // --- NOTIFICATION HELPER ---
 async function createNotification(userId: string, message: string, type: 'order' | 'message' | 'status' | 'rating' = 'order') {
-    try {
-        await db.read(); // Ensure we have latest data
-        if (!db.data.notifications) {
-            db.data.notifications = [];
-        }
-        const newNotification: Notification = {
-            id: `notif-${Date.now()}-${Math.random()}`,
-            userId,
-            message,
-            type,
-            read: false,
-            createdAt: new Date(),
-        };
-        db.data.notifications.push(newNotification);
-        await db.write();
-        return newNotification;
-    } catch (error) {
-        console.error('Error creating notification:', error);
-        throw error;
-    }
+    const newNotification: Notification = {
+        id: `notif-${Date.now()}`,
+        userId,
+        message,
+        type,
+        read: false,
+        createdAt: new Date(),
+    };
+    db.data.notifications.push(newNotification);
+    await db.write();
+    return newNotification;
 }
 
 // --- EXPRESS APP SETUP ---
@@ -278,46 +271,12 @@ app.post('/api/auth/login', async (req, res) => {
   res.json({ token, user: userData });
 });
 
-// Get current user info (refresh token if needed)
-app.get('/api/auth/me', authMiddleware, async (req: AuthRequest, res: Response) => {
-  try {
-    const user = req.user!;
-    await db.read();
-    const currentUser = db.data.users.find(u => u.id === user.id);
-    
-    if (!currentUser) {
-      return res.status(404).json({ message: 'User not found.' });
-    }
-    
-    if (currentUser.blocked) {
-      return res.status(403).json({ message: 'Your account has been blocked.' });
-    }
-    
-    // Generate new token
-    const token = jwt.sign({ userId: currentUser.id, role: currentUser.role, email: currentUser.email }, JWT_SECRET, { expiresIn: '7d' });
-    
-    // Return user data without password
-    const { password: _, ...userData } = currentUser;
-    res.json({ token, user: userData });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Internal server error.';
-    res.status(500).json({ message });
-  }
-});
 
 // --- MIDDLEWARE ---
 
 // Extend Express Request type to include user
 interface AuthRequest extends Request {
   user?: User;
-}
-
-interface AuthRequestWithOrder extends AuthRequest {
-  order: Order;
-}
-
-interface AuthRequestWithOffer extends AuthRequest {
-  offer: Offer;
 }
 
 const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -366,7 +325,7 @@ const getOrder = async (req: AuthRequest, res: Response, next: NextFunction) => 
   if (!order) {
     return res.status(404).json({ message: 'Order not found.' });
   }
-  (req as AuthRequestWithOrder).order = order; // Attach order to request
+  (req as AuthRequest & { order: Order }).order = order; // Attach order to request
   next();
 };
 
@@ -377,7 +336,7 @@ const getOffer = async (req: AuthRequest, res: Response, next: NextFunction) => 
     if (!offer) {
         return res.status(404).json({ message: 'Offer not found.' });
     }
-    (req as AuthRequestWithOffer).offer = offer; // Attach offer to request
+    (req as AuthRequest & { offer: Offer }).offer = offer; // Attach offer to request
     next();
 };
 
@@ -395,7 +354,7 @@ const _checkOrderOwnership = async (req: AuthRequest, res: Response, next: NextF
     
     // Admin can access any order
     if (user.role === 'admin' || user.role === 'superadmin') {
-        (req as AuthRequestWithOrder).order = order;
+        (req as AuthRequest & { order: Order }).order = order;
         return next();
     }
     
@@ -404,7 +363,7 @@ const _checkOrderOwnership = async (req: AuthRequest, res: Response, next: NextF
         return res.status(403).json({ message: 'You do not have permission to access this order.' });
     }
     
-    (req as AuthRequestWithOrder).order = order;
+    (req as AuthRequest & { order: Order }).order = order;
     next();
 };
 
@@ -480,7 +439,7 @@ app.get('/api/offers', authMiddleware, async (req: AuthRequest, res: Response) =
 // 3. Accept an offer
 app.post('/api/offers/:id/accept', authMiddleware, requireRole(['client']), getOffer, async (req: AuthRequest, res: Response) => {
     const client = req.user!;
-    const offerToAccept = (req as AuthRequestWithOffer).offer;
+    const offerToAccept = (req as AuthRequest & { offer: Offer }).offer;
 
     await db.read();
     const order = db.data.orders.find(o => o.id === offerToAccept.orderId);
@@ -522,7 +481,7 @@ app.post('/api/offers/:id/accept', authMiddleware, requireRole(['client']), getO
 // 4. Retract/Delete an offer (by master)
 app.delete('/api/offers/:id', authMiddleware, requireRole(['master']), getOffer, async (req: AuthRequest, res: Response) => {
     const master = req.user!;
-    const offer = (req as AuthRequestWithOffer).offer;
+    const offer = (req as AuthRequest & { offer: Offer }).offer;
 
     if (offer.masterId !== master.id) {
         return res.status(403).json({ message: 'You can only delete your own offers.' });
@@ -671,7 +630,7 @@ app.post('/api/payments/:orderId/release', authMiddleware, requireRole(['client'
 // 3. Master notifies that work has started
 app.post('/api/orders/:id/start', authMiddleware, requireRole(['master']), getOrder, async (req: AuthRequest, res: Response) => {
     const master = req.user!;
-    const order = (req as AuthRequestWithOrder).order;
+    const order = (req as AuthRequest & { order: Order }).order;
 
     if(order.masterId !== master.id) {
         return res.status(403).json({ message: 'You are not the assigned master for this order.' });
@@ -685,7 +644,7 @@ app.post('/api/orders/:id/start', authMiddleware, requireRole(['master']), getOr
 // 4. Master notifies that work is finished
 app.post('/api/orders/:id/finish', authMiddleware, requireRole(['master']), getOrder, async (req: AuthRequest, res: Response) => {
     const master = req.user!;
-    const order = (req as AuthRequestWithOrder).order;
+    const order = (req as AuthRequest & { order: Order }).order;
 
     if(order.masterId !== master.id) {
         return res.status(403).json({ message: 'You are not the assigned master for this order.' });
@@ -751,19 +710,9 @@ app.post('/api/orders', authMiddleware, requireRole(['client']), async (req: Aut
   await db.write();
 
   // Notify all masters about the new order
-  try {
-    const masters = db.data.users.filter(u => u.role === 'master');
-    for (const master of masters) {
-      try {
-        await createNotification(master.id, `New order available: "${newOrder.title}"`, 'order');
-      } catch (notifError) {
-        console.error(`Failed to create notification for master ${master.id}:`, notifError);
-        // Continue with other masters even if one fails
-      }
-    }
-  } catch (error) {
-    console.error('Error creating notifications:', error);
-    // Don't fail the order creation if notifications fail
+  const masters = db.data.users.filter(u => u.role === 'master');
+  for (const master of masters) {
+    await createNotification(master.id, `New order available: "${newOrder.title}"`, 'order');
   }
 
   res.status(201).json(newOrder);
@@ -825,7 +774,7 @@ app.get('/api/orders', authMiddleware, async (req: AuthRequest, res: Response) =
 // 3. Get a single order by ID
 app.get('/api/orders/:id', authMiddleware, getOrder, async (req: AuthRequest, res: Response) => {
   const user = req.user!;
-  const order = (req as AuthRequestWithOrder).order;
+  const order = (req as AuthRequest & { order: Order }).order;
 
   // Ownership check
   if (user.role !== 'admin' && user.role !== 'superadmin' && user.id !== order.clientId && user.id !== order.masterId) {
@@ -838,7 +787,7 @@ app.get('/api/orders/:id', authMiddleware, getOrder, async (req: AuthRequest, re
 // 4. Update an order
 app.patch('/api/orders/:id', authMiddleware, requireRole(['client']), getOrder, async (req: AuthRequest, res: Response) => {
   const user = req.user!;
-  const order = (req as AuthRequestWithOrder).order;
+  const order = (req as AuthRequest & { order: Order }).order;
 
   // Check ownership and status
   if (order.clientId !== user.id) {
@@ -859,70 +808,10 @@ app.patch('/api/orders/:id', authMiddleware, requireRole(['client']), getOrder, 
   res.json(order);
 });
 
-// Update order status
-app.patch('/api/orders/:id/status', authMiddleware, getOrder, async (req: AuthRequest, res: Response) => {
-  const order = (req as AuthRequestWithOrder).order;
-  const { status } = req.body;
-  const user = req.user!;
-
-  if (!status) {
-    return res.status(400).json({ message: 'Status is required.' });
-  }
-
-  // Перевірка прав доступу
-  const canUpdate = 
-    (user.role === 'admin' || user.role === 'superadmin') ||
-    (user.role === 'master' && order.assignedMasterId === user.id) ||
-    (user.role === 'client' && order.clientId === user.id);
-
-  if (!canUpdate) {
-    return res.status(403).json({ message: 'You do not have permission to update this order status.' });
-  }
-
-  order.status = status;
-  order.updatedAt = new Date();
-  await db.write();
-
-  res.json(order);
-});
-
-// Delete order (soft delete for clients, hard delete for admins)
-app.delete('/api/orders/:id', authMiddleware, getOrder, async (req: AuthRequest, res: Response) => {
-  const order = (req as AuthRequestWithOrder).order;
-  const user = req.user!;
-
-  // Тільки клієнт може видалити своє замовлення, або адмін
-  if (user.role === 'client' && order.clientId !== user.id) {
-    return res.status(403).json({ message: 'You can only delete your own orders.' });
-  }
-
-  if (user.role !== 'admin' && user.role !== 'superadmin' && user.role !== 'client') {
-    return res.status(403).json({ message: 'You do not have permission to delete orders.' });
-  }
-
-  // Клієнт може видаляти тільки замовлення зі статусом "open"
-  if (user.role === 'client' && order.status !== 'open') {
-    return res.status(403).json({ message: 'You can only delete orders with status "open".' });
-  }
-
-  // Soft delete для клієнта, hard delete для адміна
-  if (user.role === 'client') {
-    order.deletedAt = new Date();
-    order.status = 'cancelled';
-    await db.write();
-    res.json({ message: 'Order deleted successfully.', order });
-  } else {
-    // Hard delete для адміна
-    db.data.orders = db.data.orders.filter(o => o.id !== order.id);
-    await db.write();
-    res.status(204).send();
-  }
-});
-
 // 5. Cancel an order
 app.post('/api/orders/:id/cancel', authMiddleware, requireRole(['client', 'admin']), getOrder, async (req: AuthRequest, res: Response) => {
     const user = req.user!;
-    const order = (req as AuthRequestWithOrder).order;
+    const order = (req as AuthRequest & { order: Order }).order;
 
     // Client cancellation logic
     if (user.role === 'client') {
@@ -948,7 +837,7 @@ app.post('/api/orders/:id/cancel', authMiddleware, requireRole(['client', 'admin
 // Example of a protected route
 app.get('/api/profile/me', authMiddleware, (req: AuthRequest, res: Response) => {
     // req.user is guaranteed to be defined here by the middleware
-    const { password: _, ...userProfile } = req.user!;
+    const { password: _password, ...userProfile } = req.user!;
     res.json(userProfile);
 });
 
@@ -1006,7 +895,7 @@ app.patch('/api/users/profile', authMiddleware, async (req: AuthRequest, res: Re
 
     await db.write();
 
-    const { password: _, ...updatedUser } = userToUpdate;
+    const { password: _password, ...updatedUser } = userToUpdate;
     res.json(updatedUser);
 });
 
@@ -1015,7 +904,7 @@ app.patch('/api/users/profile', authMiddleware, async (req: AuthRequest, res: Re
 app.get('/api', (req, res) => {
   res.json({
     status: 'ok',
-    message: 'RepairHub Pro API is running',
+    message: 'RepairHub API is running',
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth/login, /api/auth/register',
@@ -1051,7 +940,7 @@ const getUser = async (req: AuthRequest, res: Response, next: NextFunction) => {
     if (!user) {
         return res.status(404).json({ message: 'User not found.' });
     }
-    (req as AuthRequestWithTargetUser).targetUser = user;
+    (req as AuthRequest & { targetUser: User }).targetUser = user;
     next();
 };
 
@@ -1059,7 +948,7 @@ const getUser = async (req: AuthRequest, res: Response, next: NextFunction) => {
 app.get('/api/users', authMiddleware, async (req: AuthRequest, res: Response) => {
     await db.read();
     const users = db.data.users.map(u => {
-        const { password: _, ...user } = u;
+        const { password: _password, ...user } = u;
         return user;
     });
     res.json(users);
@@ -1069,7 +958,7 @@ app.get('/api/users', authMiddleware, async (req: AuthRequest, res: Response) =>
 app.get('/api/admin/users', authMiddleware, requireRole(['admin', 'superadmin']), async (req: AuthRequest, res: Response) => {
     await db.read();
     const users = db.data.users.map(u => {
-        const { password: _, ...user } = u;
+        const { password: _password, ...user } = u;
         return user;
     });
     res.json(users);
@@ -1077,13 +966,13 @@ app.get('/api/admin/users', authMiddleware, requireRole(['admin', 'superadmin'])
 
 // 2. Get a single user
 app.get('/api/admin/users/:id', authMiddleware, requireRole(['admin', 'superadmin']), getUser, (req: AuthRequest, res: Response) => {
-    const { password: _, ...user } = (req as unknown as { targetUser: User }).targetUser;
+    const { password: _password, ...user } = (req as AuthRequest & { targetUser: User }).targetUser;
     res.json(user);
 });
 
 // 3. Update a user
 app.patch('/api/admin/users/:id', authMiddleware, requireRole(['admin', 'superadmin']), getUser, async (req: AuthRequest, res: Response) => {
-    const userToUpdate = (req as AuthRequestWithTargetUser).targetUser;
+    const userToUpdate = (req as AuthRequest & { targetUser: User }).targetUser;
     const { role, balance, verified, blocked } = req.body;
 
     // Update fields if they are provided in the body
@@ -1093,19 +982,21 @@ app.patch('/api/admin/users/:id', authMiddleware, requireRole(['admin', 'superad
     if (blocked !== undefined) userToUpdate.blocked = blocked;
 
     await db.write();
-    const { password: _, ...updatedUser } = userToUpdate;
+    const { password: _password, ...updatedUser } = userToUpdate;
     res.json(updatedUser);
 });
 
 // 4. Ban/Unban a user
 app.post('/api/admin/users/:id/ban', authMiddleware, requireRole(['admin', 'superadmin']), getUser, async (req: AuthRequest, res: Response) => {
-    (req as AuthRequestWithTargetUser).targetUser.blocked = true;
+    const targetUser = (req as AuthRequest & { targetUser: User }).targetUser;
+    targetUser.blocked = true;
     await db.write();
     res.json({ message: 'User has been banned.' });
 });
 
 app.post('/api/admin/users/:id/unban', authMiddleware, requireRole(['admin', 'superadmin']), getUser, async (req: AuthRequest, res: Response) => {
-    (req as AuthRequestWithTargetUser).targetUser.blocked = false;
+    const targetUser = (req as AuthRequest & { targetUser: User }).targetUser;
+    targetUser.blocked = false;
     await db.write();
     res.json({ message: 'User has been unbanned.' });
 });
@@ -1118,7 +1009,7 @@ app.get('/api/admin/orders', authMiddleware, requireRole(['admin', 'superadmin']
 
 // 6. Force update an order
 app.patch('/api/admin/orders/:id', authMiddleware, requireRole(['admin', 'superadmin']), getOrder, async (req: AuthRequest, res: Response) => {
-    const orderToUpdate = (req as AuthRequestWithOrder).order;
+    const orderToUpdate = (req as AuthRequest & { order: Order }).order;
     const { status, masterId } = req.body;
 
     if (status) orderToUpdate.status = status;
@@ -1150,7 +1041,7 @@ app.post('/api/admin/escrow/:orderId/refund', authMiddleware, requireRole(['admi
 
 // Update a user's role (superadmin only)
 app.patch('/api/superadmin/users/:id/role', authMiddleware, requireRole(['superadmin']), getUser, async (req: AuthRequest, res: Response) => {
-    const userToUpdate = (req as AuthRequestWithTargetUser).targetUser;
+    const userToUpdate = (req as AuthRequest & { targetUser: User }).targetUser;
     const { role } = req.body;
 
     const allowedRoles: Array<User['role']> = ['client', 'master', 'admin'];
@@ -1168,7 +1059,7 @@ app.patch('/api/superadmin/users/:id/role', authMiddleware, requireRole(['supera
 
     await db.write();
 
-    const { password: _, ...updatedUser } = userToUpdate;
+    const { password: _password, ...updatedUser } = userToUpdate;
     res.json(updatedUser);
 });
 
@@ -1287,7 +1178,6 @@ app.post('/api/disputes/:id/resolve', authMiddleware, requireRole(['admin', 'sup
     } else if (decision === 'master_wins') {
         // Full release to master (same as normal release)
         const earnings = payment.amount * (1 - payment.commission);
-        // Platform commission is calculated but logged separately
         const _platformEarnings = payment.amount * payment.commission;
         
         master.balance += earnings;
@@ -1631,6 +1521,268 @@ app.delete('/api/inventory/:partId', authMiddleware, requireRole(['master']), as
 
     await db.write();
     res.status(204).send();
+});
+
+// --- CHAT API ---
+
+// 1. Get user's conversations
+app.get('/api/conversations', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    await db.read();
+    const conversations = db.data.conversations.filter(c => c.participants.includes(user.id));
+    res.json(conversations);
+});
+
+// 2. Create a new conversation
+app.post('/api/conversations', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { recipientId } = req.body;
+
+    if (!recipientId) {
+        return res.status(400).json({ message: 'Recipient ID is required.' });
+    }
+
+    await db.read();
+
+    const recipient = db.data.users.find(u => u.id === recipientId);
+
+    if (!recipient) {
+        return res.status(404).json({ message: 'Recipient not found.' });
+    }
+
+    const participants = [user.id, recipientId].sort();
+    const conversationId = `conv_${participants[0]}_${participants[1]}`;
+
+    let conversation = db.data.conversations.find(c => c.id === conversationId);
+
+    if (conversation) {
+        return res.status(200).json(conversation);
+    }
+
+    conversation = {
+        id: conversationId,
+        participants: participants,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        unreadCount: {
+            [user.id]: 0,
+            [recipientId]: 0,
+        },
+    };
+
+    db.data.conversations.push(conversation);
+    await db.write();
+
+    res.status(201).json(conversation);
+});
+
+// 3. Get messages for a conversation
+app.get('/api/messages', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { conversationId } = req.query;
+
+    if (!conversationId) {
+        return res.status(400).json({ message: 'Conversation ID is required.' });
+    }
+
+    await db.read();
+
+    const conversation = db.data.conversations.find(c => c.id === conversationId);
+
+    if (!conversation) {
+        return res.status(404).json({ message: 'Conversation not found.' });
+    }
+
+    if (!conversation.participants.includes(user.id)) {
+        return res.status(403).json({ message: 'You are not a participant in this conversation.' });
+    }
+
+    const messages = db.data.messages.filter(m => m.conversationId === conversationId);
+    res.json(messages);
+});
+
+// 4. Send a new message
+app.post('/api/messages', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { conversationId, recipientId, content } = req.body;
+
+    if (!conversationId || !recipientId || !content) {
+        return res.status(400).json({ message: 'Conversation ID, recipient ID, and content are required.' });
+    }
+
+    await db.read();
+
+    const conversation = db.data.conversations.find(c => c.id === conversationId);
+
+    if (!conversation) {
+        return res.status(404).json({ message: 'Conversation not found.' });
+    }
+
+    if (!conversation.participants.includes(user.id)) {
+        return res.status(403).json({ message: 'You are not a participant in this conversation.' });
+    }
+
+    const message: Message = {
+        id: `msg-${Date.now()}`,
+        conversationId,
+        senderId: user.id,
+        recipientId,
+        content,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        read: false,
+    };
+
+    db.data.messages.push(message);
+
+    conversation.lastMessage = message;
+    conversation.lastMessageAt = message.createdAt;
+    conversation.updatedAt = new Date();
+
+    if (conversation.unreadCount[recipientId] !== undefined) {
+        conversation.unreadCount[recipientId]++;
+    } else {
+        conversation.unreadCount[recipientId] = 1;
+    }
+
+    await db.write();
+
+    res.status(201).json(message);
+});
+
+// 5. Mark a conversation as read
+app.post('/api/conversations/:id/read', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { id } = req.params;
+
+    await db.read();
+
+    const conversation = db.data.conversations.find(c => c.id === id);
+
+    if (!conversation) {
+        return res.status(404).json({ message: 'Conversation not found.' });
+    }
+
+    if (!conversation.participants.includes(user.id)) {
+        return res.status(403).json({ message: 'You are not a participant in this conversation.' });
+    }
+
+    // Mark all messages in the conversation as read for the current user
+    db.data.messages.forEach(message => {
+        if (message.conversationId === id && message.recipientId === user.id) {
+            message.read = true;
+        }
+    });
+
+    // Reset the unread count for the current user
+    if (conversation.unreadCount[user.id] !== undefined) {
+        conversation.unreadCount[user.id] = 0;
+    }
+
+    await db.write();
+
+    res.status(200).json({ message: 'Conversation marked as read.' });
+});
+
+// 6. Edit a message
+app.patch('/api/messages/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { id } = req.params;
+    const { content } = req.body;
+
+    if (!content) {
+        return res.status(400).json({ message: 'Content is required.' });
+    }
+
+    await db.read();
+
+    const message = db.data.messages.find(m => m.id === id);
+
+    if (!message) {
+        return res.status(404).json({ message: 'Message not found.' });
+    }
+
+    if (message.senderId !== user.id) {
+        return res.status(403).json({ message: 'You can only edit your own messages.' });
+    }
+
+    message.content = content;
+    message.updatedAt = new Date();
+    message.edited = true;
+
+    await db.write();
+
+    res.json(message);
+});
+
+// 7. Delete a message
+app.delete('/api/messages/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { id } = req.params;
+
+    await db.read();
+
+    const message = db.data.messages.find(m => m.id === id);
+
+    if (!message) {
+        return res.status(404).json({ message: 'Message not found.' });
+    }
+
+    if (message.senderId !== user.id) {
+        return res.status(403).json({ message: 'You can only delete your own messages.' });
+    }
+
+    // Soft delete
+    message.deleted = true;
+    message.content = 'Повідомлення видалено';
+    message.updatedAt = new Date();
+
+    await db.write();
+
+    res.status(204).send();
+});
+
+// 8. Add a reaction to a message
+app.post('/api/messages/:id/reactions', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { id } = req.params;
+    const { emoji } = req.body;
+
+    if (!emoji) {
+        return res.status(400).json({ message: 'Emoji is required.' });
+    }
+
+    await db.read();
+
+    const message = db.data.messages.find(m => m.id === id);
+
+    if (!message) {
+        return res.status(404).json({ message: 'Message not found.' });
+    }
+
+    if (!message.reactions) {
+        message.reactions = [];
+    }
+
+    // Check if the user has already reacted with this emoji
+    const existingReactionIndex = message.reactions.findIndex(r => r.userId === user.id && r.emoji === emoji);
+
+    if (existingReactionIndex > -1) {
+        // Remove the reaction
+        message.reactions.splice(existingReactionIndex, 1);
+    } else {
+        // Add the reaction
+        message.reactions.push({
+            userId: user.id,
+            emoji,
+            createdAt: new Date(),
+            userName: user.name,
+        });
+    }
+
+    await db.write();
+
+    res.json(message);
 });
 
 

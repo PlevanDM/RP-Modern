@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, User, Wrench, AlertCircle, ChevronRight, Smartphone, Monitor, Laptop, ArrowLeft, Building2, Home, Car } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
+import { User as UserType } from '../../types';
 
 interface RegisterModalProps {
   onClose: () => void;
@@ -132,7 +133,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
         // Якщо всі дані заповнені, автоматично завершуємо onboarding
         if (hasCompleteData) {
           useAuthStore.setState({ 
-            currentUser: registeredUser || registrationData as User, 
+            currentUser: registrationData as UserType, 
             isOnboardingCompleted: true 
           });
         }
@@ -140,7 +141,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
         console.warn('Register failed, setting directly:', registerErr);
         // Якщо register не спрацював, встановлюємо напряму
         useAuthStore.setState({ 
-          currentUser: registrationData as User, 
+          currentUser: registrationData as UserType, 
           isOnboardingCompleted: hasCompleteData 
         });
       }

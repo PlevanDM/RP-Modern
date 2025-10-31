@@ -15,7 +15,7 @@ class ApiAuthService {
   private constructor() {
     // Ініціалізуємо тестових користувачів при створенні сервісу
     if (typeof window !== 'undefined') {
-      initializeTestUsers().catch(console.error);
+      initializeTestUsers();
     }
   }
 
@@ -53,24 +53,7 @@ class ApiAuthService {
           if (!password) {
             throw new Error('Пароль required для тестового користувача');
           }
-          // Спробуємо отримати справжній токен через API
-          try {
-            const requestData = { email, password };
-            const response = await axios.post(`${getApiUrl()}/auth/login`, requestData, {
-              withCredentials: true,
-              headers: getAuthHeaders(),
-            });
-            
-            const { token, user } = response.data;
-            if (token) {
-              localStorage.setItem('jwt-token', token);
-            }
-            return user || testUser as User;
-          } catch (apiError: unknown) {
-            // Якщо API не відповідає, повертаємо тестового користувача (для offline режиму)
-            console.warn('API login failed for test user, using local user:', apiError);
-            return testUser as User;
-          }
+          return testUser as User;
         } else if (!password && !expectedPassword) {
           // Якщо пароль не потрібен і це не тестовий користувач, дозволяємо вхід
           return testUser as User;
@@ -97,10 +80,9 @@ class ApiAuthService {
       }
       
       return user;
-    } catch (apiError: unknown) {
+    } catch (apiError) {
       // Якщо API недоступний, повертаємо помилку
-      const errorWithResponse = apiError as { response?: { data?: { message?: string } }; message?: string };
-      throw new Error(errorWithResponse?.response?.data?.message || errorWithResponse?.message || 'Невірний email або пароль');
+      throw new Error(apiError instanceof Error ? apiError.message : 'Невірний email або пароль');
     }
   }
 

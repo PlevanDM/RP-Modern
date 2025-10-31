@@ -13,7 +13,7 @@ export default defineConfig({
   base: '/',
   server: {
     port: 5173,
-    host: '0.0.0.0',
+    host: '0.0.0.0', // Приймати підключення з будь-якої IP-адреси (включаючи інші пристрої в мережі)
     strictPort: false,
     cors: true,
   },

@@ -32,17 +32,17 @@ export class ErrorHandler {
 
   // Парсинг помилки для визначення типу та можливих дій
   private static parseError(error: unknown): ErrorLog {
-    interface ErrorLike {
-      message?: string;
-      stack?: string;
-      code?: string;
-      response?: { status?: number };
-      statusCode?: number;
-    }
-    const errorObj = error as ErrorLike;
+    const errorObj = error && typeof error === 'object' ? error : {};
+    const errorMessage = (errorObj && 'message' in errorObj && typeof errorObj.message === 'string' 
+      ? errorObj.message 
+      : String(error || 'Unknown error'));
+    const errorStack = (errorObj && 'stack' in errorObj && typeof errorObj.stack === 'string' 
+      ? errorObj.stack 
+      : undefined);
+    
     const baseLog: ErrorLog = {
-      message: errorObj?.message || String(error || 'Unknown error'),
-      stack: errorObj?.stack,
+      message: errorMessage,
+      stack: errorStack,
       timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent,
       url: window.location.href,
@@ -50,7 +50,8 @@ export class ErrorHandler {
     };
 
     // Визначення типу помилки
-    if (errorObj?.code === 'NETWORK_ERROR' || errorObj?.message?.includes('Failed to fetch') || errorObj?.message?.includes('ERR_')) {
+    const errorCode = errorObj && 'code' in errorObj ? String(errorObj.code) : '';
+    if (errorCode === 'NETWORK_ERROR' || errorMessage.includes('Failed to fetch') || errorMessage.includes('ERR_')) {
       baseLog.errorType = 'network';
       baseLog.retryable = true;
       baseLog.userMessage = 'Проблема з інтернет-з\'єднанням';
@@ -59,47 +60,56 @@ export class ErrorHandler {
         'Перезавантажте сторінку',
         'Спробуйте через кілька хвилин'
       ];
-    } else if (errorObj?.response?.status || errorObj?.statusCode) {
-      baseLog.errorType = 'api';
-      baseLog.statusCode = errorObj.response?.status || errorObj.statusCode;
-      baseLog.retryable = [408, 429, 500, 502, 503, 504].includes(baseLog.statusCode);
+    } else {
+      const responseStatus = (errorObj && 'response' in errorObj && 
+        errorObj.response && typeof errorObj.response === 'object' && 
+        'status' in errorObj.response ? Number(errorObj.response.status) : undefined);
+      const statusCode = responseStatus || (errorObj && 'statusCode' in errorObj && typeof errorObj.statusCode === 'number' 
+        ? errorObj.statusCode 
+        : undefined);
       
-      switch (baseLog.statusCode) {
-        case 401:
-          baseLog.userMessage = 'Потрібна авторизація';
-          baseLog.suggestions = ['Увійдіть в систему знову'];
-          break;
-        case 403:
-          baseLog.userMessage = 'Доступ заборонено';
-          baseLog.suggestions = ['Зверніться до адміністратора'];
-          break;
-        case 404:
-          baseLog.userMessage = 'Ресурс не знайдено';
-          baseLog.suggestions = ['Перевірте правильність даних'];
-          break;
-        case 429:
-          baseLog.userMessage = 'Забагато запитів';
-          baseLog.suggestions = ['Зачекайте кілька секунд'];
-          break;
-        case 500:
-        case 502:
-        case 503:
-        case 504:
-          baseLog.userMessage = 'Проблема на сервері';
-          baseLog.retryable = true;
-          baseLog.suggestions = ['Спробуйте пізніше', 'Оновіть сторінку'];
-          break;
-        default:
-          baseLog.userMessage = 'Помилка сервера';
+      if (statusCode) {
+        baseLog.errorType = 'api';
+        baseLog.statusCode = statusCode;
+        baseLog.retryable = [408, 429, 500, 502, 503, 504].includes(statusCode);
+        
+        switch (statusCode) {
+          case 401:
+            baseLog.userMessage = 'Потрібна авторизація';
+            baseLog.suggestions = ['Увійдіть в систему знову'];
+            break;
+          case 403:
+            baseLog.userMessage = 'Доступ заборонено';
+            baseLog.suggestions = ['Зверніться до адміністратора'];
+            break;
+          case 404:
+            baseLog.userMessage = 'Ресурс не знайдено';
+            baseLog.suggestions = ['Перевірте правильність даних'];
+            break;
+          case 429:
+            baseLog.userMessage = 'Забагато запитів';
+            baseLog.suggestions = ['Зачекайте кілька секунд'];
+            break;
+          case 500:
+          case 502:
+          case 503:
+          case 504:
+            baseLog.userMessage = 'Проблема на сервері';
+            baseLog.retryable = true;
+            baseLog.suggestions = ['Спробуйте пізніше', 'Оновіть сторінку'];
+            break;
+          default:
+            baseLog.userMessage = 'Помилка сервера';
+        }
+      } else if (errorMessage.includes('validation') || errorMessage.includes('required')) {
+        baseLog.errorType = 'validation';
+        baseLog.userMessage = 'Помилка введення даних';
+        baseLog.suggestions = ['Перевірте заповнені поля'];
+      } else if (errorMessage.includes('auth') || errorMessage.includes('token')) {
+        baseLog.errorType = 'auth';
+        baseLog.userMessage = 'Проблема з авторизацією';
+        baseLog.suggestions = ['Увійдіть в систему знову'];
       }
-    } else if (errorObj?.message?.includes('validation') || errorObj?.message?.includes('required')) {
-      baseLog.errorType = 'validation';
-      baseLog.userMessage = 'Помилка введення даних';
-      baseLog.suggestions = ['Перевірте заповнені поля'];
-    } else if (errorObj?.message?.includes('auth') || errorObj?.message?.includes('token')) {
-      baseLog.errorType = 'auth';
-      baseLog.userMessage = 'Проблема з авторизацією';
-      baseLog.suggestions = ['Увійдіть в систему знову'];
     }
 
     return baseLog;

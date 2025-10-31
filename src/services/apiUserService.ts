@@ -15,87 +15,22 @@ class ApiUserService {
     return ApiUserService.instance;
   }
 
-  private async restoreToken(): Promise<boolean> {
-    try {
-      const authStorage = localStorage.getItem('auth-storage');
-      if (!authStorage) return false;
-      
-      const parsed = JSON.parse(authStorage);
-      const user = parsed.state?.currentUser;
-      
-      if (user?.email) {
-        // Спочатку спробуємо /auth/me якщо є старий токен
-        const oldToken = localStorage.getItem('jwt-token');
-        if (oldToken) {
-          try {
-            const response = await axios.get(`${getApiUrl()}/auth/me`, {
-              headers: { 'Authorization': `Bearer ${oldToken}`, ...getAuthHeaders() },
-              withCredentials: true
-            });
-            
-            if (response.data?.token) {
-              localStorage.setItem('jwt-token', response.data.token);
-              return true;
-            }
-          } catch {
-            // Старий токен не працює, спробуємо login
-          }
-        }
-        
-        // Якщо /auth/me не працює, спробуємо login (але потрібен пароль)
-        // Для тестових користувачів спробуємо загальний пароль
-        const testPasswords: Record<string, string> = {
-          'admin@test.com': 'admin123',
-          'superadmin@test.com': 'admin123',
-          'master1@test.com': 'master123',
-          'master2@test.com': 'master123',
-          'master3@test.com': 'master123',
-          'client1@test.com': 'client123',
-          'client2@test.com': 'client123',
-          'client3@test.com': 'client123',
-          'client4@test.com': 'client123',
-        };
-        
-        const password = testPasswords[user.email];
-        if (password) {
-          const response = await axios.post(`${getApiUrl()}/auth/login`, { email: user.email, password }, {
-            headers: { 'Content-Type': 'application/json' }
-          });
-          
-          if (response.data?.token) {
-            localStorage.setItem('jwt-token', response.data.token);
-            return true;
-          }
-        }
-      }
-    } catch (error) {
-      console.warn('Failed to restore token:', error);
-    }
-    return false;
-  }
-
   public async getUsers(): Promise<User[]> {
     try {
       const response = await axios.get(`${getApiUrl()}/users`, { headers: getAuthHeaders(), withCredentials: true });
       return response.data;
-    } catch (error: unknown) {
-      // Якщо помилка авторизації, спробуємо відновити токен
-      const errorWithResponse = error as { response?: { status?: number } };
-      if (errorWithResponse?.response?.status === 401) {
-        const restored = await this.restoreToken();
-        if (restored) {
-          // Повторюємо запит з новим токеном
-          try {
-            const response = await axios.get(`${getApiUrl()}/users`, { headers: getAuthHeaders(), withCredentials: true });
-            return response.data;
-          } catch (retryError) {
-            console.error('Failed to get users after token restore:', retryError);
-            return [];
-          }
+    } catch (error) {
+      // Якщо помилка авторизації, спробуємо без токену (для тестування)
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        console.warn('Auth error getting users, trying without token');
+        try {
+          const response = await axios.get(`${getApiUrl()}/users`);
+          return response.data;
+        } catch (error) {
+          // Якщо все одно не працює, повертаємо пустий масив
+          console.error('Failed to get users:', error);
+          return [];
         }
-        // Якщо не вдалося відновити, повертаємо пустий масив
-        console.warn('Could not restore token, returning empty array');
-        return [];
       }
       throw error;
     }
@@ -116,7 +51,7 @@ class ApiUserService {
   public async getUserById(userId: string): Promise<User | undefined> {
     try {
       const token = this.getAuthToken();
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      const headers: { [key: string]: string } = { 'Content-Type': 'application/json' };
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
@@ -126,15 +61,14 @@ class ApiUserService {
         withCredentials: true 
       });
       return response.data;
-    } catch (error: unknown) {
-      const errorWithResponse = error as { response?: { status?: number } };
-      if (errorWithResponse?.response?.status === 401) {
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
         console.warn('Auth error getting user, trying without token');
         try {
           const response = await axios.get(`${getApiUrl()}/users/${userId}`);
           return response.data;
-        } catch (e) {
-          console.error('Failed to get user:', e);
+        } catch (error) {
+          console.error('Failed to get user:', error);
           return undefined;
         }
       }
@@ -202,7 +136,7 @@ class ApiUserService {
       // Спробуємо без токену (для локального тестування)
     }
 
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const headers: { [key: string]: string } = { 'Content-Type': 'application/json' };
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
@@ -218,10 +152,9 @@ class ApiUserService {
         }
       );
       return response.data;
-    } catch (error: unknown) {
+    } catch (error) {
       // Якщо endpoint не працює, спробуємо інший
-      const errorWithResponse = error as { response?: { status?: number } };
-      if (errorWithResponse?.response?.status === 404 || errorWithResponse?.response?.status === 405) {
+      if (axios.isAxiosError(error) && (error.response?.status === 404 || error.response?.status === 405)) {
         const response = await axios.put(
           `${getApiUrl()}/users/${userId}`,
           profileData,

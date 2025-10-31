@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
-import { Search, Filter, ChevronDown, Package, User, Calendar, DollarSign, Clock, MessageCircle } from 'lucide-react';
+import { Search, Package, User, Calendar, DollarSign, Clock, MessageCircle } from 'lucide-react';
 import { Order, User as CurrentUser } from '../types/models';
 import { CreateOrderModal } from './CreateOrderModal';
 import { ProposalModal } from './ProposalModal';
@@ -27,7 +27,7 @@ interface OrdersProps {
 }
 
 export function Orders({ currentUser, masters = [] }: OrdersProps) {
-  const { orders, currentPage, totalPages, fetchOrders, createOrder, deleteOrder, restoreOrder, toggleActiveSearch, updateOrderStatus, editOrder, submitProposal, sendToMaster } = useOrdersStore();
+  const { orders, currentPage, totalPages, fetchOrders, createOrder, deleteOrder, restoreOrder, toggleActiveSearch, updateOrderStatus: _updateOrderStatus, editOrder, submitProposal, sendToMaster } = useOrdersStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -159,9 +159,7 @@ export function Orders({ currentUser, masters = [] }: OrdersProps) {
     toggleActiveSearch(order.id);
   };
 
-  const _handleStatusChange = (order: Order, newStatus: string) => {
-    updateOrderStatus(order.id, newStatus as Order['status']);
-  };
+  // Removed unused handleStatusChange - status changes are handled via order actions
 
   const statuses = [
     { value: 'all', label: 'Усі замовлення' },
