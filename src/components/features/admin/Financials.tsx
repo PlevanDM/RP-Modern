@@ -13,22 +13,27 @@ export function Financials() {
     const fetchData = async () => {
       try {
         const orders: Order[] = await adminService.getOrders();
-        const transactions: any[] = await adminService.getTransactions();
+        const transactions = await adminService.getTransactions();
 
         // Convert payments to transactions format
-        const escrowTransactions: EscrowTransaction[] = transactions.map((payment: any) => ({
+        // EscrowTransaction has fields: id, orderId, clientId, masterId, amount, status, createdAt, releasedAt, refundedAt
+        const escrowTransactions: EscrowTransaction[] = transactions.map((payment) => ({
           id: payment.id,
-          type: payment.status === 'released' ? 'income' : 'pending',
+          orderId: payment.orderId || '',
+          clientId: payment.clientId || '',
+          masterId: payment.masterId || '',
           amount: payment.amount || 0,
-          status: payment.status === 'released' ? 'completed' : payment.status || 'pending',
+          status: payment.status || 'pending',
           createdAt: payment.createdAt || new Date(),
+          releasedAt: payment.releasedAt,
+          refundedAt: payment.refundedAt,
         }));
 
         const revenue = escrowTransactions
-            .filter((t: EscrowTransaction) => t.type === 'income' && t.status === 'completed')
-            .reduce((sum: number, t: EscrowTransaction) => sum + (t.amount || 0), 0);
+            .filter((t) => t.status === 'released')
+            .reduce((sum, t) => sum + (t.amount || 0), 0);
 
-        const completedTransactions = escrowTransactions.filter((t: EscrowTransaction) => t.status === 'completed');
+        const completedTransactions = escrowTransactions.filter((t) => t.status === 'released');
 
         // Виправляємо розрахунок - використовуємо реальні ціни з замовлень
         const totalOrderValue = orders
