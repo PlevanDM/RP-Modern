@@ -13,25 +13,9 @@ export default defineConfig({
   base: '/',
   server: {
     port: 5173,
-<<<<<<< HEAD
     host: '0.0.0.0', // Приймати підключення з будь-якої IP-адреси (включаючи інші пристрої в мережі)
     strictPort: false,
-    allowedHosts: [
-      'autopsical-forgetfully-lashonda.ngrok-free.dev',
-      'localhost',
-      '127.0.0.1',
-      '192.168.100.12',
-      '.ngrok-free.app', // Allow all ngrok URLs
-      '.ngrok.io',
-      '.trycloudflare.com', // Allow cloudflare tunnel URLs
-      'all' // Allow all hosts
-    ],
-    cors: true, // Enable CORS for all origins
-=======
-    host: '0.0.0.0',
-    strictPort: false,
     cors: true,
->>>>>>> main
   },
   css: {
     postcss: null

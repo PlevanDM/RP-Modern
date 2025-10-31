@@ -73,7 +73,7 @@ export default function ModernLandingPage() {
                 <Wrench className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-                RepairHub Pro
+                {t('common.platformName') || 'RepairHub'}
               </h1>
             </div>
             <nav className="hidden md:flex gap-4 items-center">
@@ -389,7 +389,7 @@ export default function ModernLandingPage() {
         <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              {t('landing.finalCta.title') || 'Приєднуйтесь до RepairHub Pro'}
+              {t('landing.finalCta.title') || 'Приєднуйтесь до RepairHub'}
             </h2>
             <p className="text-xl mb-10 text-blue-100">
               {t('landing.finalCta.subtitle') || 'Будьте серед перших, хто створює новий стандарт ремонту техніки в Україні'}
@@ -414,7 +414,7 @@ export default function ModernLandingPage() {
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center">
                     <Wrench className="w-6 h-6 text-white" />
                   </div>
-                  <span className="font-bold text-xl">RepairHub Pro</span>
+                  <span className="font-bold text-xl">{t('common.platformName') || 'RepairHub'}</span>
                 </div>
                 <p className="text-gray-400 mb-4">
                   {t('landing.footer.description') || 'Сучасна платформа для пошуку майстрів та замовлень на ремонт техніки в Україні'}
@@ -454,7 +454,7 @@ export default function ModernLandingPage() {
             
             <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center">
               <p className="text-gray-400 text-sm mb-4 md:mb-0">
-                {t('landing.footer.copyright') || '© 2025 RepairHub Pro. Всі права захищені'}
+                {t('landing.footer.copyright') || '© 2025 RepairHub. Всі права захищені'}
               </p>
               <div className="flex gap-6 text-sm text-gray-400">
                 <a href="/privacy" className="hover:text-white transition">{t('landing.footer.privacy') || 'Політика конфіденційності'}</a>

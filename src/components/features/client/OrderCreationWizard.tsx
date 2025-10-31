@@ -19,7 +19,7 @@ interface OrderData {
   images: File[];
 }
 
-const getSteps = (t: any): WizardStep[] => [
+const getSteps = (t: (key: string) => string): WizardStep[] => [
   { id: 1, title: '📱 Пристрій', description: t('orderCreation.selectDevice') },
   { id: 2, title: '🔧 Проблема', description: t('orderCreation.describeProblem') },
   { id: 3, title: '💰 Бюджет', description: t('orderCreation.enterBudget') },

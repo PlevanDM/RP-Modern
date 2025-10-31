@@ -65,7 +65,7 @@
   },
   "cta": {
     "title": "Ready to start?",
-    "subtitle": "Join hundreds of technicians and clients who are already earning and saving with RepairHub Pro",
+    "subtitle": "Join hundreds of technicians and clients who are already earning and saving with RepairHub",
     "cta_client": "I'm looking for a technician",
     "cta_master": "I am a repair technician",
     "brands_title": "We work with any brands",
@@ -76,7 +76,7 @@
     "phone": "+380 50 123 45 67",
     "email": "support@repairhub.pro",
     "location": "Kyiv, Ukraine",
-    "copyright": "© 2024 RepairHub Pro. All rights reserved. | For real technicians and clients"
+    "copyright": "© 2024 RepairHub. All rights reserved. | For real technicians and clients"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -187,6 +187,7 @@
     "loggingIn": "Signing in..."
   },
   "common": {
+    "platformName": "RepairHub",
     "search": "Search",
     "filter": "Filter",
     "sort": "Sort",
@@ -306,7 +307,7 @@
     "apiSettings": "API Settings",
     "currencyProvider": "Currency Rate Provider:",
     "systemSettings": "System Settings",
-    "systemSettingsDescription": "Manage key RepairHub Pro platform parameters",
+    "systemSettingsDescription": "Manage key RepairHub platform parameters",
     "securitySettingsDescription": "System security settings",
     "apiKeyOptional": "API key (if needed):",
     "apiKeyPlaceholder": "Enter API key",
@@ -547,7 +548,7 @@
     "warranty": "30 days warranty",
     "minCommission": "Minimum commission",
     "support24": "Support 24/7",
-    "copyright": "© 2026 Repair HUB Pro. All rights reserved.",
+    "copyright": "© 2026 RepairHub. All rights reserved.",
     "footerLinks": "Contact us • Support • Privacy Policy"
   },
   "masterDashboard": {
@@ -564,7 +565,7 @@
     "subtitle": "Platform Management",
     "welcome": "Welcome, {{name}}",
     "controlCenter": "Admin Control Center",
-    "platformManagement": "RepairHub Pro Platform Management",
+    "platformManagement": "RepairHub Platform Management",
     "searchPlaceholder": "Search by name or email",
     "tabs": {
       "overview": "Overview",

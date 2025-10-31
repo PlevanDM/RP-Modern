@@ -201,7 +201,7 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex items-center justify-between">
                     <div className="p-2.5 sm:p-3 bg-primary/10 rounded-xl">
-                      {isValidElement(stat.icon) ? cloneElement(stat.icon as React.ReactElement<any>, { className: "w-5 h-5 sm:w-6 sm:h-6" }) : stat.icon}
+                      {isValidElement(stat.icon) ? cloneElement(stat.icon as React.ReactElement<{ className?: string }>, { className: "w-5 h-5 sm:w-6 sm:h-6" }) : stat.icon}
                     </div>
                     <Badge variant="secondary" className={`text-xs sm:text-sm ${stat.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
                       {stat.change}

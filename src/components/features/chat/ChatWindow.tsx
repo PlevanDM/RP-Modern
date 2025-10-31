@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Image as ImageIcon, X, Smile, MoreVertical, Edit2, Trash2, Reply, Check, CheckCheck, Loader2, Download, Eye } from 'lucide-react';
-import { Message, Conversation, MessageAttachment, MessageReaction } from '../../../types/models';
+import { motion } from 'framer-motion';
+import { Send, Image as ImageIcon, X, Smile, Edit2, Trash2, Reply, Check, CheckCheck, Loader2, Download, Eye } from 'lucide-react';
+import { Message, Conversation } from '../../../types/models';
 import { 
   sendMessage as sendMessageService, 
   getMessages, 
@@ -9,11 +9,9 @@ import {
   markConversationAsRead,
   editMessage, 
   deleteMessage, 
-  addReaction,
-  searchMessages 
+  addReaction
 } from '../../../services/chatService';
 import { Button } from '../../ui/button';
-import { Input } from '../../ui/input';
 
 const REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🙏'];
 
@@ -54,6 +52,18 @@ export function ChatWindow({
   const otherUserId = conversation.participants.find(id => id !== currentUserId) || '';
   const otherUserName = conversation.participantNames?.[otherUserId] || 'Користувач';
 
+  const loadMessages = useCallback(() => {
+    const loadedMessages = getMessages(conversation.id);
+    setMessages(loadedMessages);
+    
+    // Позначаємо непрочитані повідомлення як прочитані
+    loadedMessages.forEach(msg => {
+      if (msg.recipientId === currentUserId && !msg.read) {
+        markMessageAsRead(msg.id);
+      }
+    });
+  }, [conversation.id, currentUserId]);
+
   useEffect(() => {
     loadMessages();
     // Позначаємо розмову як прочитану
@@ -65,23 +75,11 @@ export function ChatWindow({
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [conversation.id, currentUserId]);
+  }, [conversation.id, currentUserId, loadMessages]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const loadMessages = () => {
-    const loadedMessages = getMessages(conversation.id);
-    setMessages(loadedMessages);
-    
-    // Позначаємо непрочитані повідомлення як прочитані
-    loadedMessages.forEach(msg => {
-      if (msg.recipientId === currentUserId && !msg.read) {
-        markMessageAsRead(msg.id);
-      }
-    });
-  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

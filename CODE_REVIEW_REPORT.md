@@ -1,4 +1,4 @@
-# Code Review Report - RepairHub Pro
+# Code Review Report - RepairHub
 
 **Дата:** $(date +%Y-%m-%d)
 **Версія:** pdate5

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Search, ShoppingCart, Store, ArrowRight, 
-  Check, X, TrendingUp, DollarSign, Percent,
-  Users, Package, Star, MapPin, Filter
+  Search, ShoppingCart, Store, 
+  Check, X, Package, Star, MapPin
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { Button } from '../../ui/button';
@@ -25,7 +24,7 @@ interface Part {
   condition: 'new' | 'used' | 'refurbished';
 }
 
-interface Master {
+interface _Master {
   id: string;
   name: string;
   city: string;

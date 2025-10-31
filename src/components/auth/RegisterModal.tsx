@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X, User, Wrench, AlertCircle, ChevronRight, Smartphone, Monitor, Laptop, ArrowLeft, Building2, Home, Car } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
+import { User as UserType } from '../../types';
 
 interface RegisterModalProps {
   onClose: () => void;
@@ -132,7 +133,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
         // Якщо всі дані заповнені, автоматично завершуємо onboarding
         if (hasCompleteData) {
           useAuthStore.setState({ 
-            currentUser: registeredUser || registrationData as any, 
+            currentUser: registrationData as UserType, 
             isOnboardingCompleted: true 
           });
         }
@@ -140,7 +141,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
         console.warn('Register failed, setting directly:', registerErr);
         // Якщо register не спрацював, встановлюємо напряму
         useAuthStore.setState({ 
-          currentUser: registrationData as any, 
+          currentUser: registrationData as UserType, 
           isOnboardingCompleted: hasCompleteData 
         });
       }
@@ -535,7 +536,7 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                   {experienceLevels.map((level) => (
                     <button
                       key={level.id}
-                      onClick={() => setExperience(level.id as any)}
+                      onClick={() => setExperience(level.id as 'beginner' | 'intermediate' | 'advanced' | 'expert')}
                       className={`p-4 rounded-xl border-2 transition-all ${
                         experience === level.id
                           ? 'border-orange-500 bg-orange-50 shadow-md'

@@ -57,6 +57,7 @@ export function useAutoRefresh({
         intervalRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, interval, onRefresh, ...dependencies]);
 
   // Функція для ручного оновлення

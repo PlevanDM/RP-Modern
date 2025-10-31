@@ -22,7 +22,7 @@ interface AdminDashboardProps {
   transactions?: Transaction[];
 }
 
-export function AdminDashboard({ users: propUsers = [], orders: propOrders = [], transactions: propTransactions = [] }: AdminDashboardProps) {
+export function AdminDashboard({ users: propUsers = [], orders: propOrders = [], transactions: _propTransactions = [] }: AdminDashboardProps) {
   const { t } = useTranslation();
   const { orders: storeOrders } = useOrdersStore();
   const { currentUser } = useAuthStore();

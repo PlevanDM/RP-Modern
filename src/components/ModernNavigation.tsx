@@ -31,15 +31,9 @@ interface SidebarContextProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SidebarContext = React.createContext<SidebarContextProps | undefined>(undefined);
+const _SidebarContext = React.createContext<SidebarContextProps | undefined>(undefined);
 
-const _useSidebar = () => {
-  const context = React.useContext(SidebarContext);
-  if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider");
-  }
-  return context;
-};
+// Removed unused _useSidebar - SidebarContext is defined but not used in this component
 
 interface MenuItem {
   label: string;
@@ -92,7 +86,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   activeItem,
   setActiveItem,
   unviewedOrdersCount,
-  onLogout
+  onLogout: _onLogout
 }) => {
   const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = React.useState(false);
@@ -141,7 +135,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
     }
 
     return baseItems;
-  }, [currentUser?.role, unviewedOrdersCount]);
+  }, [currentUser?.role, unviewedOrdersCount, t]);
 
   // Оптимизация: функция getRouteKey теперь использует кешированную константу
   const getRouteKey = React.useCallback((label: string): string => {
@@ -253,14 +247,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                   animate={{ backgroundPosition: ["0%", "100%", "0%"] }}
                   transition={{ duration: 8, repeat: Infinity }}
                 >
-                  Repair HUB
-                </motion.span>
-                <motion.span 
-                  className="text-xs text-muted-foreground font-medium"
-                  animate={{ opacity: [0.7, 1, 0.7] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  Pro
+                  {t('common.platformName') || 'RepairHub'}
                 </motion.span>
               </motion.div>
             )}

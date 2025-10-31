@@ -1,6 +1,5 @@
 import React from 'react';
 import { Filter, X, Search, ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface FilterOption {
   value: string;

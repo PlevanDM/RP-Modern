@@ -1,6 +1,6 @@
 import React from 'react';
 import { CheckCircle2, AlertTriangle, Info, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface ToastProps {
   message: string;
@@ -12,7 +12,7 @@ interface ToastProps {
 export const Toast: React.FC<ToastProps> = ({
   message,
   type = 'info',
-  duration = 3000,
+  duration: _duration = 3000,
   onClose
 }) => {
   const getStyles = () => {

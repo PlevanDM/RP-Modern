@@ -33,7 +33,7 @@ export const ModernOrdersPanel = () => {
       try {
         const { orders } = await apiOrderService.getOrders(1, 50);
         setOrders(orders || []);
-      } catch (e) {
+      } catch {
         setError('Не вдалося завантажити замовлення');
       } finally {
         setLoading(false);
@@ -45,8 +45,8 @@ export const ModernOrdersPanel = () => {
     const matchesSearch = `${order.id}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          (order.clientName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
                          (order.title || '').toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || order.status === (filterStatus as any);
-    const matchesPriority = filterPriority === 'all' || ((order as any).priority) === filterPriority;
+    const matchesStatus = filterStatus === 'all' || order.status === filterStatus;
+    const matchesPriority = filterPriority === 'all' || order.priority === filterPriority;
     
     return matchesSearch && matchesStatus && matchesPriority;
   });
@@ -87,9 +87,10 @@ export const ModernOrdersPanel = () => {
     }
   };
 
-  const formatDate = (dateValue: any) => {
-    const d = typeof dateValue === 'string' || typeof dateValue === 'number' ? new Date(dateValue) : (dateValue ? new Date(dateValue) : null);
-    return d ? d.toLocaleDateString('uk-UA') : '-';
+  const formatDate = (dateValue: string | number | Date | null | undefined) => {
+    if (!dateValue) return '-';
+    const d = typeof dateValue === 'string' || typeof dateValue === 'number' ? new Date(dateValue) : dateValue;
+    return d instanceof Date && !isNaN(d.getTime()) ? d.toLocaleDateString('uk-UA') : '-';
   };
 
   const formatPrice = (price?: number) => {
@@ -196,7 +197,7 @@ export const ModernOrdersPanel = () => {
                       <div className="flex items-center gap-2 mt-1">
                         <Calendar className="w-3 h-3 text-gray-400" />
                         <span className="text-xs text-gray-500 dark:text-gray-400">
-                          Створено: {formatDate(order.createdAt as any)}
+                          Створено: {formatDate(order.createdAt)}
                         </span>
                       </div>
                     </div>
@@ -211,7 +212,7 @@ export const ModernOrdersPanel = () => {
                       </div>
                       <div className="flex items-center gap-2 mt-1">
                         <MapPin className="w-3 h-3 text-gray-400" />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">{(order as any).location || order.city || '-'}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">{order.location || order.city || '-'}</span>
                       </div>
                     </div>
                   </TableCell>
@@ -220,15 +221,15 @@ export const ModernOrdersPanel = () => {
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center">
                         <span className="text-white font-semibold text-xs">
-                          {(order as any).assignedMasterName ? (order as any).assignedMasterName.split(' ').map((n: string) => n[0]).join('') : '—'}
+                          {order.assignedMasterId ? order.assignedMasterId.substring(0, 2).toUpperCase() : '—'}
                         </span>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">{(order as any).assignedMasterName || '—'}</p>
-                        {(order as any).rating && (order as any).rating > 0 && (
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">{order.assignedMasterId ? `Мастер ${order.assignedMasterId.substring(0, 8)}` : 'Не призначено'}</p>
+                        {order.clientRating && order.clientRating > 0 && (
                           <div className="flex items-center gap-1">
                             <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                            <span className="text-xs text-gray-500 dark:text-gray-400">{(order as any).rating}</span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">{order.clientRating}</span>
                           </div>
                         )}
                       </div>
@@ -251,16 +252,16 @@ export const ModernOrdersPanel = () => {
                   </TableCell>
                   
                   <TableCell>
-                    <Badge variant={getPriorityColor(((order as any).priority) || 'medium')} size="sm">
-                      {((order as any).priority) === 'high' ? 'Високий' :
-                       ((order as any).priority) === 'low' ? 'Низький' : 'Середній'}
+                    <Badge variant={getPriorityColor(order.priority || 'medium')} size="sm">
+                      {order.priority === 'high' ? 'Високий' :
+                       order.priority === 'low' ? 'Низький' : 'Середній'}
                     </Badge>
                   </TableCell>
                   
                   <TableCell>
                     <div className="flex items-center gap-1">
                       <DollarSign className="w-4 h-4 text-green-600" />
-                      <span className="font-medium text-gray-900 dark:text-white">{formatPrice(order.paymentAmount || (order as any).agreedPrice || 0)}</span>
+                      <span className="font-medium text-gray-900 dark:text-white">{formatPrice(order.paymentAmount || order.agreedPrice || 0)}</span>
                     </div>
                   </TableCell>
                   

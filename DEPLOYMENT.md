@@ -1,4 +1,4 @@
-# Deployment Guide - RepairHub Pro
+# Deployment Guide - RepairHub
 
 ## Prerequisites
 

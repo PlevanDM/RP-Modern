@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Order, Proposal, User } from '../types';
+import { Dispute } from '../types/models';
 import { apiOrderService } from '../services/apiOrderService';
 import { useAuthStore } from './authStore';
 import { useUIStore } from './uiStore';
@@ -84,7 +85,7 @@ export const useOrdersStore = create<OrdersState>()(
             const localOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
             const updatedLocalOrders = [...orders, ...localOrders.filter((o: Order) => !orders.find(no => no.id === o.id))];
             localStorage.setItem('repair_master_orders', JSON.stringify(updatedLocalOrders));
-          } catch (_e) {
+          } catch {
             console.warn('Не вдалося синхронізувати з localStorage');
           }
         } catch (error) {
@@ -838,7 +839,9 @@ export const useOrdersStore = create<OrdersState>()(
         
         // Find dispute
         const disputes = JSON.parse(localStorage.getItem('disputes') || '[]');
-        const dispute = disputes.find((d: any) => d.id === disputeId);
+        const dispute = disputes.find((d: Dispute | Record<string, unknown>) => {
+          return (typeof d === 'object' && d !== null && 'id' in d && d.id === disputeId);
+        }) as Dispute | undefined;
         if (!dispute) {
           useUIStore.getState().showNotification('Спір не знайдено', 'error');
           return;
@@ -872,18 +875,19 @@ export const useOrdersStore = create<OrdersState>()(
           }));
           
           // Update dispute
-          const updatedDisputes = disputes.map((d: any) =>
-            d.id === disputeId
+          const updatedDisputes = disputes.map((d: Dispute | Record<string, unknown>) => {
+            const disputeData = d as Dispute;
+            return disputeData.id === disputeId
               ? {
-                  ...d,
-                  status: 'resolved',
-                  decision: 'client_wins',
+                  ...disputeData,
+                  status: 'resolved' as const,
+                  decision: 'client_wins' as const,
                   resolution: explanation || 'Повний повернено клієнту',
-                  resolvedAt: new Date().toISOString(),
+                  resolvedAt: new Date(),
                   resolutionBy: currentUser.id,
                 }
-              : d
-          );
+              : disputeData;
+          });
           localStorage.setItem('disputes', JSON.stringify(updatedDisputes));
           
         } else if (decision === 'master_wins') {
@@ -921,18 +925,19 @@ export const useOrdersStore = create<OrdersState>()(
           }
           
           // Update dispute
-          const updatedDisputes = disputes.map((d: any) =>
-            d.id === disputeId
+          const updatedDisputes = disputes.map((d: Dispute | Record<string, unknown>) => {
+            const disputeData = d as Dispute;
+            return disputeData.id === disputeId
               ? {
-                  ...d,
-                  status: 'resolved',
-                  decision: 'master_wins',
+                  ...disputeData,
+                  status: 'resolved' as const,
+                  decision: 'master_wins' as const,
                   resolution: explanation || `Оплату виплачено майстру (₴${masterAmount.toFixed(2)})`,
-                  resolvedAt: new Date().toISOString(),
+                  resolvedAt: new Date(),
                   resolutionBy: currentUser.id,
                 }
-              : d
-          );
+              : disputeData;
+          });
           localStorage.setItem('disputes', JSON.stringify(updatedDisputes));
           
         } else if (decision === 'compromise') {
@@ -951,18 +956,19 @@ export const useOrdersStore = create<OrdersState>()(
           }));
           
           // Update dispute
-          const updatedDisputes = disputes.map((d: any) =>
-            d.id === disputeId
+          const updatedDisputes = disputes.map((d: Dispute | Record<string, unknown>) => {
+            const disputeData = d as Dispute;
+            return disputeData.id === disputeId
               ? {
-                  ...d,
-                  status: 'resolved',
-                  decision: 'compromise',
+                  ...disputeData,
+                  status: 'resolved' as const,
+                  decision: 'compromise' as const,
                   resolution: explanation || 'Компромісне рішення. Потрібне ручне розподілення коштів',
-                  resolvedAt: new Date().toISOString(),
+                  resolvedAt: new Date(),
                   resolutionBy: currentUser.id,
                 }
-              : d
-          );
+              : disputeData;
+          });
           localStorage.setItem('disputes', JSON.stringify(updatedDisputes));
         }
         

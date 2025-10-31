@@ -4,13 +4,10 @@ import {
   Crown,
   Shield,
   Receipt,
-  CheckCircle,
   CreditCard,
   Clock,
   X,
   Star,
-  FileCheck,
-  AlertCircle,
   CheckCircle2,
   Sparkles
 } from 'lucide-react';
@@ -19,13 +16,12 @@ import { Button } from '../../ui/button';
 import { useAuthStore } from '../../../store/authStore';
 import {
   getUserSubscription,
-  hasActivePremium,
   createSubscription,
   cancelSubscription,
   loadReceipts,
   loadWarrantyCases
 } from '../../../services/premiumSubscriptionService';
-import { PremiumSubscription, Receipt as ReceiptType, WarrantyCase } from '../../../types/models';
+import { PremiumSubscription } from '../../../types/models';
 
 const PREMIUM_PRICE = 4.99; // EUR
 

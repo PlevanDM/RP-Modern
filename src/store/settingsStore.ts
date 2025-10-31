@@ -83,10 +83,10 @@ const defaultSettings: AppSettings = {
   smtpUser: '',
   smtpPassword: '',
   smtpFromEmail: 'noreply@repairhub.pro',
-  smtpFromName: 'RepairHub Pro',
+  smtpFromName: 'RepairHub',
   
   // Business Settings
-  platformName: 'RepairHub Pro',
+  platformName: 'RepairHub',
   platformEmail: 'info@repairhub.pro',
   platformPhone: '+380501234567',
   supportEmail: 'support@repairhub.pro',

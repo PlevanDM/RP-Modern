@@ -41,12 +41,12 @@ export const setImage = (imageUrl: string) => {
 export const initializeSEO = () => {
   setMetaTag('viewport', 'width=device-width, initial-scale=1.0');
   setMetaTag('theme-color', '#6366f1');
-  setMetaTag('author', 'RepairHub Pro');
+  setMetaTag('author', 'RepairHub');
   setMetaTag('robots', 'index, follow');
   
   // Open Graph
   setOpenGraphTag('og:type', 'website');
-  setOpenGraphTag('og:site_name', 'RepairHub Pro');
+  setOpenGraphTag('og:site_name', 'RepairHub');
   setOpenGraphTag('og:locale', 'uk_UA');
   
   // Twitter Card
@@ -54,7 +54,7 @@ export const initializeSEO = () => {
   setMetaTag('twitter:site', '@repairhubpro');
   
   // App-specific
-  setMetaTag('application-name', 'RepairHub Pro');
+  setMetaTag('application-name', 'RepairHub');
   setMetaTag('mobile-web-app-capable', 'yes');
 };
 

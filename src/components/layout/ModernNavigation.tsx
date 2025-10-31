@@ -270,24 +270,8 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                     backgroundClip: "text"
                   }}
                 >
-                  Repair HUB
+                  {t('common.platformName') || 'RepairHub'}
                 </motion.span>
-                
-                {/* Pro badge with animation */}
-                <motion.div className="flex items-center gap-1.5">
-                  <motion.span 
-                    className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground"
-                    animate={{ opacity: [0.4, 1, 0.4] }}
-                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    Pro
-                  </motion.span>
-                  <motion.div
-                    animate={{ scale: [1, 1.3, 1], opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"
-                  />
-                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>

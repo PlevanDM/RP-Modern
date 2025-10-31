@@ -1,9 +1,13 @@
 // src/components/features/ai/JarvisChat.tsx
 
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send, Brain, Sparkles, Loader2, HelpCircle, Mic, MicOff, ChevronRight, CheckCircle } from 'lucide-react';
+import { X, Send, Brain, Sparkles, Loader2, ChevronRight, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Order, User } from '../../../types';
+
+interface WindowWithJarvis extends Window {
+  jarvisOrderData?: Partial<Order>;
+}
 
 interface Message {
   sender: 'user' | 'jarvis';
@@ -131,13 +135,13 @@ export const JarvisChat: React.FC<JarvisChatProps> = ({ onCreateOrder, onSearchM
         }]);
 
         // Зберігаємо для можливості створення
-        (window as any).jarvisOrderData = orderData;
+        (window as WindowWithJarvis).jarvisOrderData = orderData;
       }, 1000);
     }
   };
 
   const handleCreateOrder = () => {
-    const orderData = (window as any).jarvisOrderData;
+    const orderData = (window as WindowWithJarvis).jarvisOrderData;
     if (orderData && onCreateOrder && currentUser?.role === 'client') {
       onCreateOrder(orderData);
       setMessages(prev => [...prev, {
@@ -145,7 +149,7 @@ export const JarvisChat: React.FC<JarvisChatProps> = ({ onCreateOrder, onSearchM
         text: '✅ Замовлення створено! Зараз шукаю підходящих майстрів...',
         timestamp: new Date()
       }]);
-      delete (window as any).jarvisOrderData;
+      delete (window as WindowWithJarvis).jarvisOrderData;
     }
   };
 
@@ -167,7 +171,7 @@ export const JarvisChat: React.FC<JarvisChatProps> = ({ onCreateOrder, onSearchM
       let response = '';
 
       if (lowerText.includes('створити') || lowerText.includes('замовлення') || lowerText.includes('створи')) {
-        if ((window as any).jarvisOrderData && onCreateOrder && currentUser?.role === 'client') {
+        if ((window as WindowWithJarvis).jarvisOrderData && onCreateOrder && currentUser?.role === 'client') {
           handleCreateOrder();
           response = '✅ Замовлення створено успішно!';
         } else {
@@ -202,7 +206,7 @@ export const JarvisChat: React.FC<JarvisChatProps> = ({ onCreateOrder, onSearchM
       isFormComplete: false
     });
     setMessages([]);
-    delete (window as any).jarvisOrderData;
+    delete (window as WindowWithJarvis).jarvisOrderData;
   };
 
   if (!isOpen) {
@@ -458,7 +462,7 @@ export const JarvisChat: React.FC<JarvisChatProps> = ({ onCreateOrder, onSearchM
             </AnimatePresence>
 
             {/* Кнопка створення замовлення */}
-            {(window as any).jarvisOrderData && currentUser?.role === 'client' && onCreateOrder && (
+            {(window as WindowWithJarvis).jarvisOrderData && currentUser?.role === 'client' && onCreateOrder && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}

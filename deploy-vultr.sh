@@ -1,10 +1,10 @@
 #!/bin/bash
 # Deployment script for Vultr VPS
-# RepairHub Pro - Production Deployment
+# RepairHub - Production Deployment
 
 set -e
 
-echo "🚀 Starting RepairHub Pro deployment on Vultr..."
+echo "🚀 Starting RepairHub deployment on Vultr..."
 
 # Colors for output
 RED='\033[0;31m'

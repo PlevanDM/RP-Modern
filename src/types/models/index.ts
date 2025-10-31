@@ -266,7 +266,7 @@ export interface Message {
   deletedAt?: Date; // Коли видалено
   replyToId?: string; // ID повідомлення, на яке відповідають
   reactions?: MessageReaction[]; // Реакції (👍, ❤️, 😂 тощо)
-  metadata?: Record<string, any>; // Додаткові дані
+  metadata?: Record<string, unknown>; // Додаткові дані
   createdAt: Date;
   timestamp?: Date; // Альтернативне поле для сумісності
   updatedAt?: Date;
@@ -317,7 +317,7 @@ export interface ChatLog {
   action: 'sent' | 'read' | 'deleted' | 'edited' | 'reaction_added' | 'reaction_removed';
   userId: string;
   userName: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   timestamp: Date;
   ipAddress?: string; // IP адреса (якщо потрібно)
   userAgent?: string; // User agent браузера

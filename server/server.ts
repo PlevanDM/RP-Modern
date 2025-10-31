@@ -902,7 +902,7 @@ app.patch('/api/users/profile', authMiddleware, async (req: AuthRequest, res: Re
 app.get('/api', (req, res) => {
   res.json({
     status: 'ok',
-    message: 'RepairHub Pro API is running',
+    message: 'RepairHub API is running',
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth/login, /api/auth/register',

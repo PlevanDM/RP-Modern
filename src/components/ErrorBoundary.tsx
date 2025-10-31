@@ -11,6 +11,7 @@ interface State {
 }
 
 // Error fallback with i18n support using i18n directly (not hook, since ErrorBoundary is outside I18nextProvider)
+// eslint-disable-next-line react-refresh/only-export-components
 const ErrorFallback: React.FC<{ onReload: () => void; error?: Error }> = ({ onReload }) => {
   // Use i18n directly instead of hook (since we're outside I18nextProvider)
   const getTranslation = (key: string, defaultValue: string) => {
