@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-import { User, Order, Offer, Dispute, Review, Payment, Notification, PortfolioItem, Part } from '../src/types/models';
+import { User, Order, Offer, Dispute, Review, Payment, Notification, Part } from '../src/types/models';
 import { allDevicesDatabase } from './data/deviceDatabase.js';
 import * as businessLogic from './businessLogic.js';
 
@@ -300,7 +300,7 @@ const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunctio
 
     req.user = user;
     next();
-  } catch (error) {
+  } catch {
     return res.status(401).json({ message: 'Invalid or expired token.' });
   }
 };
@@ -334,7 +334,7 @@ const getOffer = async (req: AuthRequest, res: Response, next: NextFunction) => 
     if (!offer) {
         return res.status(404).json({ message: 'Offer not found.' });
     }
-    (req as any).offer = offer; // Attach offer to request
+    (req as AuthRequest & { offer: Offer }).offer = offer; // Attach offer to request
     next();
 };
 
@@ -352,7 +352,7 @@ const checkOrderOwnership = async (req: AuthRequest, res: Response, next: NextFu
     
     // Admin can access any order
     if (user.role === 'admin' || user.role === 'superadmin') {
-        (req as any).order = order;
+        (req as AuthRequest & { order: Order }).order = order;
         return next();
     }
     
@@ -437,7 +437,7 @@ app.get('/api/offers', authMiddleware, async (req: AuthRequest, res: Response) =
 // 3. Accept an offer
 app.post('/api/offers/:id/accept', authMiddleware, requireRole(['client']), getOffer, async (req: AuthRequest, res: Response) => {
     const client = req.user!;
-    const offerToAccept = (req as any).offer as Offer;
+    const offerToAccept = (req as AuthRequest & { offer: Offer }).offer;
 
     await db.read();
     const order = db.data.orders.find(o => o.id === offerToAccept.orderId);
@@ -479,7 +479,7 @@ app.post('/api/offers/:id/accept', authMiddleware, requireRole(['client']), getO
 // 4. Retract/Delete an offer (by master)
 app.delete('/api/offers/:id', authMiddleware, requireRole(['master']), getOffer, async (req: AuthRequest, res: Response) => {
     const master = req.user!;
-    const offer = (req as any).offer as Offer;
+    const offer = (req as AuthRequest & { offer: Offer }).offer;
 
     if (offer.masterId !== master.id) {
         return res.status(403).json({ message: 'You can only delete your own offers.' });
@@ -508,7 +508,7 @@ app.delete('/api/offers/:id', authMiddleware, requireRole(['master']), getOffer,
 // 1. Client pays for an accepted order (moves money to escrow)
 // POST /api/payments
 app.post('/api/payments', authMiddleware, requireRole(['client']), async (req: AuthRequest, res: Response) => {
-    const { orderId, amount, method } = req.body;
+    const { orderId, amount } = req.body;
     const client = req.user!;
 
     if (!orderId || !amount) {
@@ -628,7 +628,7 @@ app.post('/api/payments/:orderId/release', authMiddleware, requireRole(['client'
 // 3. Master notifies that work has started
 app.post('/api/orders/:id/start', authMiddleware, requireRole(['master']), getOrder, async (req: AuthRequest, res: Response) => {
     const master = req.user!;
-    const order = (req as any).order as Order;
+    const order = (req as AuthRequest & { order: Order }).order;
 
     if(order.masterId !== master.id) {
         return res.status(403).json({ message: 'You are not the assigned master for this order.' });
@@ -642,7 +642,7 @@ app.post('/api/orders/:id/start', authMiddleware, requireRole(['master']), getOr
 // 4. Master notifies that work is finished
 app.post('/api/orders/:id/finish', authMiddleware, requireRole(['master']), getOrder, async (req: AuthRequest, res: Response) => {
     const master = req.user!;
-    const order = (req as any).order as Order;
+    const order = (req as AuthRequest & { order: Order }).order;
 
     if(order.masterId !== master.id) {
         return res.status(403).json({ message: 'You are not the assigned master for this order.' });
@@ -772,7 +772,7 @@ app.get('/api/orders', authMiddleware, async (req: AuthRequest, res: Response) =
 // 3. Get a single order by ID
 app.get('/api/orders/:id', authMiddleware, getOrder, async (req: AuthRequest, res: Response) => {
   const user = req.user!;
-  const order = (req as any).order as Order;
+  const order = (req as AuthRequest & { order: Order }).order;
 
   // Ownership check
   if (user.role !== 'admin' && user.role !== 'superadmin' && user.id !== order.clientId && user.id !== order.masterId) {
@@ -785,7 +785,7 @@ app.get('/api/orders/:id', authMiddleware, getOrder, async (req: AuthRequest, re
 // 4. Update an order
 app.patch('/api/orders/:id', authMiddleware, requireRole(['client']), getOrder, async (req: AuthRequest, res: Response) => {
   const user = req.user!;
-  const order = (req as any).order as Order;
+  const order = (req as AuthRequest & { order: Order }).order;
 
   // Check ownership and status
   if (order.clientId !== user.id) {
@@ -809,7 +809,7 @@ app.patch('/api/orders/:id', authMiddleware, requireRole(['client']), getOrder, 
 // 5. Cancel an order
 app.post('/api/orders/:id/cancel', authMiddleware, requireRole(['client', 'admin']), getOrder, async (req: AuthRequest, res: Response) => {
     const user = req.user!;
-    const order = (req as any).order as Order;
+    const order = (req as AuthRequest & { order: Order }).order;
 
     // Client cancellation logic
     if (user.role === 'client') {
@@ -835,7 +835,7 @@ app.post('/api/orders/:id/cancel', authMiddleware, requireRole(['client', 'admin
 // Example of a protected route
 app.get('/api/profile/me', authMiddleware, (req: AuthRequest, res: Response) => {
     // req.user is guaranteed to be defined here by the middleware
-    const { password, ...userProfile } = req.user!;
+    const { password: _password, ...userProfile } = req.user!;
     res.json(userProfile);
 });
 
@@ -938,7 +938,7 @@ const getUser = async (req: AuthRequest, res: Response, next: NextFunction) => {
     if (!user) {
         return res.status(404).json({ message: 'User not found.' });
     }
-    (req as any).targetUser = user;
+    (req as AuthRequest & { targetUser: User }).targetUser = user;
     next();
 };
 
@@ -964,13 +964,13 @@ app.get('/api/admin/users', authMiddleware, requireRole(['admin', 'superadmin'])
 
 // 2. Get a single user
 app.get('/api/admin/users/:id', authMiddleware, requireRole(['admin', 'superadmin']), getUser, (req: AuthRequest, res: Response) => {
-    const { password, ...user } = (req as any).targetUser;
+    const { password: _password, ...user } = (req as AuthRequest & { targetUser: User }).targetUser;
     res.json(user);
 });
 
 // 3. Update a user
 app.patch('/api/admin/users/:id', authMiddleware, requireRole(['admin', 'superadmin']), getUser, async (req: AuthRequest, res: Response) => {
-    const userToUpdate = (req as any).targetUser;
+    const userToUpdate = (req as AuthRequest & { targetUser: User }).targetUser;
     const { role, balance, verified, blocked } = req.body;
 
     // Update fields if they are provided in the body
@@ -1005,7 +1005,7 @@ app.get('/api/admin/orders', authMiddleware, requireRole(['admin', 'superadmin']
 
 // 6. Force update an order
 app.patch('/api/admin/orders/:id', authMiddleware, requireRole(['admin', 'superadmin']), getOrder, async (req: AuthRequest, res: Response) => {
-    const orderToUpdate = (req as any).order as Order;
+    const orderToUpdate = (req as AuthRequest & { order: Order }).order;
     const { status, masterId } = req.body;
 
     if (status) orderToUpdate.status = status;
@@ -1618,7 +1618,7 @@ app.post('/api/errors', async (req, res) => {
       try {
         const decoded = jwt.verify(token, JWT_SECRET) as any;
         userId = decoded.userId;
-      } catch (e) {
+      } catch {
         // Токен невалідний, але це не критично для логування помилок
       }
     }

@@ -11,8 +11,8 @@ import { SettingsConfiguration } from './components/features/admin/SettingsConfi
 import { ModernUsersPanel } from './components/features/admin/ModernUsersPanel';
 import { ModernFinancialPanel } from './components/features/admin/ModernFinancialPanel';
 import { Orders } from './components/pages/Orders';
-import { Portfolio } from './components/pages/Portfolio';
-import { Messages } from './components/pages/Messages';
+// import { Portfolio } from './components/pages/Portfolio';
+// import { Messages } from './components/pages/Messages';
 import { MessagesNew } from './components/pages/MessagesNew';
 import { Reports } from './components/Reports';
 import { Profile } from './components/pages/Profile';
@@ -25,7 +25,7 @@ import { PartsInventory } from './components/features/parts/PartsInventory';
 import { PaymentManagement } from './components/pages/PaymentManagement';
 import PortfolioPage from './components/features/master/portfolio/PortfolioPage';
 import { MasterOrdersBoard } from './components/features/master/MasterOrdersBoard/MasterOrdersBoard';
-import { MasterInventory } from './components/MasterInventory';
+// import { MasterInventory } from './components/MasterInventory';
 import MasterPartsMarketplace from './components/features/master/MasterPartsMarketplace';
 import { MasterSupportPanel } from './components/features/master/MasterSupportPanel';
 import { useAuthStore } from './store/authStore';
@@ -78,7 +78,7 @@ function App() {
       i18n.emit('languageChanged');
     };
     
-    const handleLanguageUpdated = (event: CustomEvent) => {
+    const handleLanguageUpdated = (_event: CustomEvent) => {
       // Додаткова синхронізація після зміни мови
       forceUpdate({});
     };
@@ -94,31 +94,31 @@ function App() {
   
   const {
     orders,
-    acceptProposal,
-    rejectProposal,
-    updateOrderStatus,
     createOrder,
-    deleteOrder,
-    restoreOrder,
-    toggleActiveSearch,
-    sendToMaster,
-    editOrder,
     updatePayment,
     releasePayment,
     refundPayment,
     createDispute,
-    resolveDispute,
     escalateDispute,
     fetchOrders,
   } = useOrdersStore();
-  const { notifications, readNotification, removeNotification } = useNotificationsStore();
+  const { notifications, readNotification } = useNotificationsStore();
   
   const handleNotificationClick = (notification: Notification) => {
     readNotification(notification.id);
   };
 
   // Обробник створення замовлення від Джарвіса
-  const handleCreateOrder = (orderData: any) => {
+  const handleCreateOrder = (orderData: {
+    title: string;
+    description: string;
+    device: string;
+    deviceType: string;
+    issue: string;
+    budget: number;
+    urgency?: 'low' | 'medium' | 'high';
+    location?: string;
+  }) => {
     const newOrder: Order = {
       id: `order-${Date.now()}`,
       title: orderData.title,
@@ -155,9 +155,11 @@ function App() {
   
   // Debug: логування зміни activeItem
   useEffect(() => {
-    console.log('ActiveItem changed to:', activeItem);
+    if (import.meta.env.DEV) {
+      console.log('ActiveItem changed to:', activeItem);
+    }
   }, [activeItem]);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [_selectedOrder, _setSelectedOrder] = useState<Order | null>(null);
   const [users, setUsers] = useState<User[]>([]);
 
   const { fetchNotifications } = useNotificationsStore();
@@ -175,7 +177,7 @@ function App() {
         // щоб помилки не ламали основний функціонал
         try {
           await fetchNotifications();
-        } catch (notifError) {
+        } catch {
           // Ігноруємо помилки повідомлень - вони не критичні
           if (import.meta.env.DEV) {
             console.debug('Notifications refresh failed (non-critical)');
@@ -202,12 +204,13 @@ function App() {
         // Initialize test data if needed
         const orders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
         if (orders.length === 0) {
-          const { initializeTestData } = require('./utils/testData');
+          const { initializeTestData } = await import('./utils/testData');
           initializeTestData();
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Тиха обробка помилок - не ламаємо рендеринг
-        console.warn('Failed to fetch users (non-critical):', error?.message);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.warn('Failed to fetch users (non-critical):', errorMessage);
         // Якщо не вдалося завантажити, залишаємо порожній масив
         setUsers([]);
       }
@@ -263,7 +266,15 @@ function App() {
 
   if (!isOnboardingCompleted) {
 
-    const handleOnboardingComplete = async (data: any) => {
+    const handleOnboardingComplete = async (data: {
+      name?: string;
+      city?: string;
+      phone?: string;
+      specialization?: string[];
+      serviceAreas?: string[];
+      repairBrands?: string[];
+      repairTypes?: string[];
+    }) => {
       if (currentUser) {
         try {
           // Оновлюємо дані користувача в localStorage

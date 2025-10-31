@@ -156,7 +156,7 @@ export async function canCancelOrder(
 
 export async function checkAutoRelease(
   order: Order,
-  db: Low<DbData>
+  _db: Low<DbData>
 ): Promise<boolean> {
   if (order.status !== 'in_progress') {
     return false;
@@ -215,7 +215,7 @@ export async function shouldAutoResolveDispute(
   
   // Check if master has responded
   await db.read();
-  const order = db.data.orders.find(o => o.id === dispute.orderId);
+  const _order = db.data.orders.find(o => o.id === dispute.orderId);
   
   // For now, if no master response in 24h, client wins (simple logic)
   // In production, you'd check response timestamp
