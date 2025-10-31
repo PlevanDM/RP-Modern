@@ -117,7 +117,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
   
   // Helper to safely convert error to string
-  static procurString(error: any): string {
+  static procurString(error: unknown): string {
     if (typeof error === 'string') return error;
     if (error?.message) return String(error.message);
     if (error?.toString) return error.toString();

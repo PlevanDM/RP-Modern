@@ -6,7 +6,7 @@ interface DbData {
   orders: Order[];
   offers: Offer[];
   disputes: Dispute[];
-  reviews: any[];
+  reviews: unknown[];
 }
 
 /**
@@ -16,58 +16,50 @@ interface DbData {
 
 // --- ORDER PERMISSIONS ---
 
-export function canCreateOrder(user: User, db: Low<DbData>): Promise<boolean> {
-  return new Promise(async (resolve) => {
-    await db.read();
-    if (user.role !== 'client') {
-      resolve(false);
-      return;
-    }
-    
-    const activeOrders = db.data.orders.filter(
-      o => o.clientId === user.id && 
-      o.status !== 'completed' && 
-      o.status !== 'cancelled'
-    );
-    
-    resolve(activeOrders.length < 10);
-  });
+export async function canCreateOrder(user: User, db: Low<DbData>): Promise<boolean> {
+  await db.read();
+  if (user.role !== 'client') {
+    return false;
+  }
+  
+  const activeOrders = db.data.orders.filter(
+    o => o.clientId === user.id && 
+    o.status !== 'completed' && 
+    o.status !== 'cancelled'
+  );
+  
+  return activeOrders.length < 10;
 }
 
 export function canEditOrder(user: User, order: Order): boolean {
   return order.clientId === user.id && order.status === 'open';
 }
 
-export function canCreateOffer(user: User, order: Order, db: Low<DbData>): Promise<boolean> {
-  return new Promise(async (resolve) => {
-    await db.read();
-    
-    if (user.role !== 'master') {
-      resolve(false);
-      return;
-    }
-    
-    if (order.status !== 'open') {
-      resolve(false);
-      return;
-    }
-    
-    const activeOffers = db.data.offers.filter(
-      o => o.masterId === user.id && o.status === 'pending'
-    );
-    
-    if (activeOffers.length >= 5) {
-      resolve(false);
-      return;
-    }
-    
-    // Check if master already made an offer for this order
-    const existingOffer = db.data.offers.find(
-      o => o.orderId === order.id && o.masterId === user.id
-    );
-    
-    resolve(!existingOffer);
-  });
+export async function canCreateOffer(user: User, order: Order, db: Low<DbData>): Promise<boolean> {
+  await db.read();
+  
+  if (user.role !== 'master') {
+    return false;
+  }
+  
+  if (order.status !== 'open') {
+    return false;
+  }
+  
+  const activeOffers = db.data.offers.filter(
+    o => o.masterId === user.id && o.status === 'pending'
+  );
+  
+  if (activeOffers.length >= 5) {
+    return false;
+  }
+  
+  // Check if master already made an offer for this order
+  const existingOffer = db.data.offers.find(
+    o => o.orderId === order.id && o.masterId === user.id
+  );
+  
+  return !existingOffer;
 }
 
 export function canAcceptOffer(user: User, order: Order): boolean {
@@ -97,23 +89,23 @@ export function canCreateDispute(user: User, order: Order): boolean {
   );
 }
 
-export function canCreateReview(user: User, order: Order, db: Low<DbData>): Promise<boolean> {
-  return new Promise(async (resolve) => {
-    if (user.role !== 'client' || order.clientId !== user.id || order.status !== 'completed') {
-      resolve(false);
-      return;
+export async function canCreateReview(user: User, order: Order, db: Low<DbData>): Promise<boolean> {
+  if (user.role !== 'client' || order.clientId !== user.id || order.status !== 'completed') {
+    return false;
+  }
+  
+  await db.read();
+  const existingReview = db.data.reviews.find(
+    (r: unknown) => {
+      const review = r as { orderId?: string; authorId?: string };
+      return review.orderId === order.id && review.authorId === user.id;
     }
-    
-    await db.read();
-    const existingReview = db.data.reviews.find(
-      r => r.orderId === order.id && r.authorId === user.id
-    );
-    
-    resolve(!existingReview);
-  });
+  );
+  
+  return !existingReview;
 }
 
-export function canEditReview(user: User, review: any): boolean {
+export function canEditReview(user: User, review: { authorId?: string; createdAt?: string }): boolean {
   if (review.authorId !== user.id) {
     return false;
   }

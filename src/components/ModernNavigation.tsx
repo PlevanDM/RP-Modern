@@ -140,7 +140,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { label: t('navigation.messages'), href: "#", icon: MessageSquare }
       );
     } else if (currentUser?.role === 'admin' || currentUser?.role === 'superadmin') {
-      baseItems = [
+      baseItems.push(
         { label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
         { label: t('navigation.users'), href: "#", icon: User },
         { label: t('navigation.analytics'), href: "#", icon: BarChart3 },
