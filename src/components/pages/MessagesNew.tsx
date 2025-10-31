@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Search, MessageSquare } from 'lucide-react';
 import { User, Order, Conversation } from '../../types/models';
 import { 
-  getUserConversations, 
+  getConversations,
   getOrCreateConversation
 } from '../../services/chatService';
 import { ChatWindow } from '../features/chat/ChatWindow';
@@ -32,54 +32,16 @@ export function MessagesNew({ currentUser, masters = [], orders = [] }: Messages
     }
   }, [currentUser?.id, loadConversations]);
 
-  const loadConversations = useCallback(() => {
+  const loadConversations = useCallback(async () => {
     try {
       if (!currentUser?.id) return;
-
-      getUserConversations(currentUser.id);
-      
-      orders.forEach(order => {
-      if (currentUser.role === 'client' && order.assignedMasterId) {
-        const master = masters.find(m => m.id === order.assignedMasterId);
-        if (master) {
-          const conversation = getOrCreateConversation(currentUser.id, master.id, order.id);
-          
-          if (!conversation.participantNames) {
-            conversation.participantNames = {};
-          }
-          conversation.participantNames[currentUser.id] = currentUser.name || 'Клієнт';
-          conversation.participantNames[master.id] = master.name || 'Майстер';
-          
-          if (!conversation.participantRoles) {
-            conversation.participantRoles = {};
-          }
-          conversation.participantRoles[currentUser.id] = 'client';
-          conversation.participantRoles[master.id] = 'master';
-        }
-      } else if (currentUser.role === 'master' && order.assignedMasterId === currentUser.id) {
-        const conversation = getOrCreateConversation(currentUser.id, order.clientId, order.id);
-        
-        if (!conversation.participantNames) {
-          conversation.participantNames = {};
-        }
-        conversation.participantNames[currentUser.id] = currentUser.name || 'Майстер';
-        conversation.participantNames[order.clientId] = order.clientName || 'Клієнт';
-        
-        if (!conversation.participantRoles) {
-          conversation.participantRoles = {};
-        }
-        conversation.participantRoles[currentUser.id] = 'master';
-        conversation.participantRoles[order.clientId] = 'client';
-      }
-    });
-
-      const updatedConversations = getUserConversations(currentUser.id);
-      setConversations(updatedConversations);
+      const convs = await getConversations();
+      setConversations(convs);
     } catch (error) {
       console.error('Помилка завантаження розмов:', error);
       setConversations([]);
     }
-  }, [currentUser, masters, orders]);
+  }, [currentUser?.id]);
 
   const filteredConversations = useMemo(() => {
     if (!searchQuery.trim()) return conversations;

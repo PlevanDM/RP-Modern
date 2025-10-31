@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import ModernNavigation from './components/layout/ModernNavigation';
 import ModernLandingPage from './components/pages/ModernLandingPage';
-import ModernMasterDashboard from './components/features/master/MasterDashboard/ModernMasterDashboard';
-import ModernClientDashboard from './components/features/client/ClientDashboard/ModernClientDashboard';
+const ModernMasterDashboard = React.lazy(() => import('./components/features/master/MasterDashboard/ModernMasterDashboard'));
+const ModernClientDashboard = React.lazy(() => import('./components/features/client/ClientDashboard/ModernClientDashboard'));
 import { MyDevices } from './components/features/client/MyDevices';
 import { DeviceCatalog } from './components/features/client/DeviceCatalog';
-import { AdminDashboard } from './components/features/admin/AdminDashboard';
-import SuperadminDashboard from './components/features/superadmin/SuperadminDashboard';
+const AdminDashboard = React.lazy(() => import('./components/features/admin/AdminDashboard'));
+const SuperadminDashboard = React.lazy(() => import('./components/features/superadmin/SuperadminDashboard'));
 import { SettingsConfiguration } from './components/features/admin/SettingsConfiguration';
 import { ModernUsersPanel } from './components/features/admin/ModernUsersPanel';
 import { ModernFinancialPanel } from './components/features/admin/ModernFinancialPanel';
@@ -219,7 +219,7 @@ function App() {
     if (currentUser) {
       fetchUsers();
     }
-  }, [currentUser, fetchOrders, fetchNotifications]);
+  }, [currentUser?.id, fetchOrders, fetchNotifications]);
 
   // Оптимізовано: оновлюємо час тільки кожну хвилину замість кожної секунди
   useEffect(() => {
@@ -409,59 +409,61 @@ function App() {
             </div>
           </div>
           <div className="pl-2 pr-4 lg:pl-3 lg:pr-6 py-2 w-full">
-            {activeItem === 'dashboard' &&
-              (currentUser.role === 'master' ? (
-                <ModernMasterDashboard
-                  currentUser={currentUser}
-                  stats={{
-                    activeOrders: safeOrders.filter((o) => o.status === 'in_progress').length,
-                    completedOrders: safeOrders.filter(
-                      (o) => o.status === 'completed' || o.status === 'paid'
-                    ).length,
-                    totalEarned: 125000,
-                    rating: currentUser.rating || 4.9,
-                  }}
-                  orders={safeOrders}
-                  tasks={safeOrders.map((o) => ({
-                    id: o.id,
-                    title: o.title,
-                    client: o.clientName || o.clientId,
-                    status: o.status === 'in_progress' ? 'in-progress' : o.status === 'completed' ? 'completed' : 'pending' as 'pending' | 'in-progress' | 'completed',
-                    priority: o.urgency,
-                    deadline: o.deadline ? o.deadline.toISOString().split('T')[0] : '',
-                    progress: 0, // Default progress since Order doesn't have this field
-                  }))}
-                  notifications={notifications}
-                  revenueData={[
-                    { month: 'Jan', value: 85 },
-                    { month: 'Feb', value: 72 },
-                    { month: 'Mar', value: 90 },
-                    { month: 'Apr', value: 78 },
-                    { month: 'May', value: 95 },
-                    { month: 'Jun', value: 88 },
-                  ]}
-                  setActiveItem={setActiveItem}
-                  setSelectedOrder={setSelectedOrder}
-                />
-              ) : currentUser.role === 'client' ? (
-                <ModernClientDashboard
-                  currentUser={currentUser}
-                  orders={clientOrders}
-                  notifications={notifications}
-                  setActiveItem={setActiveItem}
-                  createOrder={createOrder}
-                  setSelectedOrder={setSelectedOrder}
-                />
-              ) : currentUser.role === 'admin' ? (
-                <AdminDashboard />
-              ) : currentUser.role === 'superadmin' ? (
-                <SuperadminDashboard />
-              ) : (
-                <div className="text-center p-8">
-                  <h1 className="text-2xl font-bold mb-4">{t('common.platformName') || 'RepairHub'}</h1>
-                  <p className="text-gray-600">Оберіть роль для продовження роботи.</p>
-                </div>
-              ))}
+            <Suspense fallback={<div className="p-8"><div className="animate-pulse">Завантаження панелі...</div></div>}>
+              {activeItem === 'dashboard' &&
+                (currentUser.role === 'master' ? (
+                  <ModernMasterDashboard
+                    currentUser={currentUser}
+                    stats={{
+                      activeOrders: safeOrders.filter((o) => o.status === 'in_progress').length,
+                      completedOrders: safeOrders.filter(
+                        (o) => o.status === 'completed' || o.status === 'paid'
+                      ).length,
+                      totalEarned: 125000,
+                      rating: currentUser.rating || 4.9,
+                    }}
+                    orders={safeOrders}
+                    tasks={safeOrders.map((o) => ({
+                      id: o.id,
+                      title: o.title,
+                      client: o.clientName || o.clientId,
+                      status: o.status === 'in_progress' ? 'in-progress' : o.status === 'completed' ? 'completed' : 'pending' as 'pending' | 'in-progress' | 'completed',
+                      priority: o.urgency,
+                      deadline: o.deadline ? o.deadline.toISOString().split('T')[0] : '',
+                      progress: 0, // Default progress since Order doesn't have this field
+                    }))}
+                    notifications={notifications}
+                    revenueData={[
+                      { month: 'Jan', value: 85 },
+                      { month: 'Feb', value: 72 },
+                      { month: 'Mar', value: 90 },
+                      { month: 'Apr', value: 78 },
+                      { month: 'May', value: 95 },
+                      { month: 'Jun', value: 88 },
+                    ]}
+                    setActiveItem={setActiveItem}
+                    setSelectedOrder={setSelectedOrder}
+                  />
+                ) : currentUser.role === 'client' ? (
+                  <ModernClientDashboard
+                    currentUser={currentUser}
+                    orders={clientOrders}
+                    notifications={notifications}
+                    setActiveItem={setActiveItem}
+                    createOrder={createOrder}
+                    setSelectedOrder={setSelectedOrder}
+                  />
+                ) : currentUser.role === 'admin' ? (
+                  <AdminDashboard />
+                ) : currentUser.role === 'superadmin' ? (
+                  <SuperadminDashboard />
+                ) : (
+                  <div className="text-center p-8">
+                    <h1 className="text-2xl font-bold mb-4">{t('common.platformName') || 'RepairHub'}</h1>
+                    <p className="text-gray-600">Оберіть роль для продовження роботи.</p>
+                  </div>
+                ))}
+            </Suspense>
 
             {activeItem === 'catalog' && <DeviceCatalog onCreateOrder={handleCreateOrder} />}
 

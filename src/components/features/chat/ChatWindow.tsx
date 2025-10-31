@@ -5,7 +5,6 @@ import { Message, Conversation } from '../../../types/models';
 import { 
   sendMessage as sendMessageService, 
   getMessages, 
-  markMessageAsRead, 
   markConversationAsRead,
   editMessage, 
   deleteMessage, 
@@ -55,14 +54,7 @@ export function ChatWindow({
   const loadMessages = useCallback(() => {
     const loadedMessages = getMessages(conversation.id);
     setMessages(loadedMessages);
-    
-    // Позначаємо непрочитані повідомлення як прочитані
-    loadedMessages.forEach(msg => {
-      if (msg.recipientId === currentUserId && !msg.read) {
-        markMessageAsRead(msg.id);
-      }
-    });
-  }, [conversation.id, currentUserId]);
+  }, [conversation.id]);
 
   useEffect(() => {
     loadMessages();

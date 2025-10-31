@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-import { User, Order, Offer, Dispute, Review, Payment, Notification, Part } from '../src/types/models';
+import { User, Order, Offer, Dispute, Review, Payment, Notification, Part, Conversation, Message } from '../src/types/models';
 import { allDevicesDatabase } from './data/deviceDatabase.js';
 import * as businessLogic from './businessLogic.js';
 
@@ -37,19 +37,21 @@ interface DbData {
   reviews: Review[];
   notifications: Notification[];
   errorLogs?: ErrorLog[];
+  conversations: Conversation[];
+  messages: Message[];
 }
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const file = path.join(__dirname, 'db.json');
 const adapter = new JSONFile<DbData>(file);
-const defaultData: DbData = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [], errorLogs: [] };
+const defaultData: DbData = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [], errorLogs: [], conversations: [], messages: [] };
 const db = new Low<DbData>(adapter, defaultData);
 
 async function initializeDatabase() {
   await db.read();
   if (!db.data) {
-    db.data = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [], errorLogs: [] };
+    db.data = { users: [], orders: [], offers: [], payments: [], disputes: [], reviews: [], notifications: [], errorLogs: [], conversations: [], messages: [] };
     await db.write();
   }
   
@@ -1519,6 +1521,268 @@ app.delete('/api/inventory/:partId', authMiddleware, requireRole(['master']), as
 
     await db.write();
     res.status(204).send();
+});
+
+// --- CHAT API ---
+
+// 1. Get user's conversations
+app.get('/api/conversations', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    await db.read();
+    const conversations = db.data.conversations.filter(c => c.participants.includes(user.id));
+    res.json(conversations);
+});
+
+// 2. Create a new conversation
+app.post('/api/conversations', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { recipientId } = req.body;
+
+    if (!recipientId) {
+        return res.status(400).json({ message: 'Recipient ID is required.' });
+    }
+
+    await db.read();
+
+    const recipient = db.data.users.find(u => u.id === recipientId);
+
+    if (!recipient) {
+        return res.status(404).json({ message: 'Recipient not found.' });
+    }
+
+    const participants = [user.id, recipientId].sort();
+    const conversationId = `conv_${participants[0]}_${participants[1]}`;
+
+    let conversation = db.data.conversations.find(c => c.id === conversationId);
+
+    if (conversation) {
+        return res.status(200).json(conversation);
+    }
+
+    conversation = {
+        id: conversationId,
+        participants: participants,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        unreadCount: {
+            [user.id]: 0,
+            [recipientId]: 0,
+        },
+    };
+
+    db.data.conversations.push(conversation);
+    await db.write();
+
+    res.status(201).json(conversation);
+});
+
+// 3. Get messages for a conversation
+app.get('/api/messages', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { conversationId } = req.query;
+
+    if (!conversationId) {
+        return res.status(400).json({ message: 'Conversation ID is required.' });
+    }
+
+    await db.read();
+
+    const conversation = db.data.conversations.find(c => c.id === conversationId);
+
+    if (!conversation) {
+        return res.status(404).json({ message: 'Conversation not found.' });
+    }
+
+    if (!conversation.participants.includes(user.id)) {
+        return res.status(403).json({ message: 'You are not a participant in this conversation.' });
+    }
+
+    const messages = db.data.messages.filter(m => m.conversationId === conversationId);
+    res.json(messages);
+});
+
+// 4. Send a new message
+app.post('/api/messages', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { conversationId, recipientId, content } = req.body;
+
+    if (!conversationId || !recipientId || !content) {
+        return res.status(400).json({ message: 'Conversation ID, recipient ID, and content are required.' });
+    }
+
+    await db.read();
+
+    const conversation = db.data.conversations.find(c => c.id === conversationId);
+
+    if (!conversation) {
+        return res.status(404).json({ message: 'Conversation not found.' });
+    }
+
+    if (!conversation.participants.includes(user.id)) {
+        return res.status(403).json({ message: 'You are not a participant in this conversation.' });
+    }
+
+    const message: Message = {
+        id: `msg-${Date.now()}`,
+        conversationId,
+        senderId: user.id,
+        recipientId,
+        content,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        read: false,
+    };
+
+    db.data.messages.push(message);
+
+    conversation.lastMessage = message;
+    conversation.lastMessageAt = message.createdAt;
+    conversation.updatedAt = new Date();
+
+    if (conversation.unreadCount[recipientId] !== undefined) {
+        conversation.unreadCount[recipientId]++;
+    } else {
+        conversation.unreadCount[recipientId] = 1;
+    }
+
+    await db.write();
+
+    res.status(201).json(message);
+});
+
+// 5. Mark a conversation as read
+app.post('/api/conversations/:id/read', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { id } = req.params;
+
+    await db.read();
+
+    const conversation = db.data.conversations.find(c => c.id === id);
+
+    if (!conversation) {
+        return res.status(404).json({ message: 'Conversation not found.' });
+    }
+
+    if (!conversation.participants.includes(user.id)) {
+        return res.status(403).json({ message: 'You are not a participant in this conversation.' });
+    }
+
+    // Mark all messages in the conversation as read for the current user
+    db.data.messages.forEach(message => {
+        if (message.conversationId === id && message.recipientId === user.id) {
+            message.read = true;
+        }
+    });
+
+    // Reset the unread count for the current user
+    if (conversation.unreadCount[user.id] !== undefined) {
+        conversation.unreadCount[user.id] = 0;
+    }
+
+    await db.write();
+
+    res.status(200).json({ message: 'Conversation marked as read.' });
+});
+
+// 6. Edit a message
+app.patch('/api/messages/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { id } = req.params;
+    const { content } = req.body;
+
+    if (!content) {
+        return res.status(400).json({ message: 'Content is required.' });
+    }
+
+    await db.read();
+
+    const message = db.data.messages.find(m => m.id === id);
+
+    if (!message) {
+        return res.status(404).json({ message: 'Message not found.' });
+    }
+
+    if (message.senderId !== user.id) {
+        return res.status(403).json({ message: 'You can only edit your own messages.' });
+    }
+
+    message.content = content;
+    message.updatedAt = new Date();
+    message.edited = true;
+
+    await db.write();
+
+    res.json(message);
+});
+
+// 7. Delete a message
+app.delete('/api/messages/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { id } = req.params;
+
+    await db.read();
+
+    const message = db.data.messages.find(m => m.id === id);
+
+    if (!message) {
+        return res.status(404).json({ message: 'Message not found.' });
+    }
+
+    if (message.senderId !== user.id) {
+        return res.status(403).json({ message: 'You can only delete your own messages.' });
+    }
+
+    // Soft delete
+    message.deleted = true;
+    message.content = 'Повідомлення видалено';
+    message.updatedAt = new Date();
+
+    await db.write();
+
+    res.status(204).send();
+});
+
+// 8. Add a reaction to a message
+app.post('/api/messages/:id/reactions', authMiddleware, async (req: AuthRequest, res: Response) => {
+    const user = req.user!;
+    const { id } = req.params;
+    const { emoji } = req.body;
+
+    if (!emoji) {
+        return res.status(400).json({ message: 'Emoji is required.' });
+    }
+
+    await db.read();
+
+    const message = db.data.messages.find(m => m.id === id);
+
+    if (!message) {
+        return res.status(404).json({ message: 'Message not found.' });
+    }
+
+    if (!message.reactions) {
+        message.reactions = [];
+    }
+
+    // Check if the user has already reacted with this emoji
+    const existingReactionIndex = message.reactions.findIndex(r => r.userId === user.id && r.emoji === emoji);
+
+    if (existingReactionIndex > -1) {
+        // Remove the reaction
+        message.reactions.splice(existingReactionIndex, 1);
+    } else {
+        // Add the reaction
+        message.reactions.push({
+            userId: user.id,
+            emoji,
+            createdAt: new Date(),
+            userName: user.name,
+        });
+    }
+
+    await db.write();
+
+    res.json(message);
 });
 
 
