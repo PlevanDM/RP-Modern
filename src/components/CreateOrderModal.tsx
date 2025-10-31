@@ -6,7 +6,7 @@ import { UnifiedModal, UnifiedButton, UnifiedModalFooter } from './common/Unifie
 import { FormField, FormSection } from './common/FormField';
 import { SUPPORTED_BRANDS, COMMON_ISSUES, DEVICE_TYPES } from '../utils/brands';
 import { searchModels } from '../utils/appleModels';
-import { User as UserIcon, Mail, Phone, MapPin, Smartphone, DollarSign, FileText, Calendar } from 'lucide-react';
+import { User as UserIcon, Mail, Phone, MapPin, Smartphone, DollarSign, FileText } from 'lucide-react';
 
 interface CreateOrderModalProps {
   isOpen: boolean;

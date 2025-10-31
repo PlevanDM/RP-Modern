@@ -97,7 +97,7 @@ export function Profile({ currentUser }: ProfileProps) {
       
       // Показуємо успішне повідомлення
       toast.success(t('profile.updateSuccess') || 'Профіль успішно оновлено!', 3000);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to update profile:', error);
       
       // Показуємо більш інформативне повідомлення через toast

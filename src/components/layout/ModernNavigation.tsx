@@ -87,6 +87,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   setActiveItem,
   unviewedOrdersCount,
   onCreateOrder,
+  onLogout: _onLogout,
 }) => {
   const { t } = useTranslation();
   const [isCollapsed, _setIsCollapsed] = React.useState(false); // По умолчанию развернуто
@@ -314,7 +315,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
     );
   };
 
-  const NavigationMenu = ({ collapsed }: { collapsed: boolean }) => {
+  const NavigationMenu = ({ collapsed: _collapsed }: { collapsed: boolean }) => {
     return (
       <>
         <ScrollArea className="flex-1 px-3 sm:px-2">

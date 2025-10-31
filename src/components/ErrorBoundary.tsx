@@ -17,7 +17,7 @@ const ErrorFallback: React.FC<{ onReload: () => void; error?: Error }> = ({ onRe
     try {
       const translated = i18n.t(key);
       return translated && translated !== key ? translated : defaultValue;
-    } catch (error) {
+    } catch {
       return defaultValue;
     }
   };

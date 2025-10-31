@@ -323,7 +323,7 @@ const getOrder = async (req: AuthRequest, res: Response, next: NextFunction) => 
   if (!order) {
     return res.status(404).json({ message: 'Order not found.' });
   }
-  (req as any).order = order; // Attach order to request
+  (req as AuthRequest & { order: Order }).order = order; // Attach order to request
   next();
 };
 
@@ -339,7 +339,7 @@ const getOffer = async (req: AuthRequest, res: Response, next: NextFunction) => 
 };
 
 // 3. Check order ownership (for protected order operations)
-const checkOrderOwnership = async (req: AuthRequest, res: Response, next: NextFunction) => {
+const _checkOrderOwnership = async (req: AuthRequest, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const user = req.user!;
     
@@ -361,7 +361,7 @@ const checkOrderOwnership = async (req: AuthRequest, res: Response, next: NextFu
         return res.status(403).json({ message: 'You do not have permission to access this order.' });
     }
     
-    (req as any).order = order;
+    (req as AuthRequest & { order: Order }).order = order;
     next();
 };
 
@@ -893,7 +893,7 @@ app.patch('/api/users/profile', authMiddleware, async (req: AuthRequest, res: Re
 
     await db.write();
 
-    const { password, ...updatedUser } = userToUpdate;
+    const { password: _password, ...updatedUser } = userToUpdate;
     res.json(updatedUser);
 });
 
@@ -946,7 +946,7 @@ const getUser = async (req: AuthRequest, res: Response, next: NextFunction) => {
 app.get('/api/users', authMiddleware, async (req: AuthRequest, res: Response) => {
     await db.read();
     const users = db.data.users.map(u => {
-        const { password, ...user } = u;
+        const { password: _password, ...user } = u;
         return user;
     });
     res.json(users);
@@ -956,7 +956,7 @@ app.get('/api/users', authMiddleware, async (req: AuthRequest, res: Response) =>
 app.get('/api/admin/users', authMiddleware, requireRole(['admin', 'superadmin']), async (req: AuthRequest, res: Response) => {
     await db.read();
     const users = db.data.users.map(u => {
-        const { password, ...user } = u;
+        const { password: _password, ...user } = u;
         return user;
     });
     res.json(users);
@@ -980,19 +980,21 @@ app.patch('/api/admin/users/:id', authMiddleware, requireRole(['admin', 'superad
     if (blocked !== undefined) userToUpdate.blocked = blocked;
 
     await db.write();
-    const { password, ...updatedUser } = userToUpdate;
+    const { password: _password, ...updatedUser } = userToUpdate;
     res.json(updatedUser);
 });
 
 // 4. Ban/Unban a user
 app.post('/api/admin/users/:id/ban', authMiddleware, requireRole(['admin', 'superadmin']), getUser, async (req: AuthRequest, res: Response) => {
-    (req as any).targetUser.blocked = true;
+    const targetUser = (req as AuthRequest & { targetUser: User }).targetUser;
+    targetUser.blocked = true;
     await db.write();
     res.json({ message: 'User has been banned.' });
 });
 
 app.post('/api/admin/users/:id/unban', authMiddleware, requireRole(['admin', 'superadmin']), getUser, async (req: AuthRequest, res: Response) => {
-    (req as any).targetUser.blocked = false;
+    const targetUser = (req as AuthRequest & { targetUser: User }).targetUser;
+    targetUser.blocked = false;
     await db.write();
     res.json({ message: 'User has been unbanned.' });
 });
@@ -1055,7 +1057,7 @@ app.patch('/api/superadmin/users/:id/role', authMiddleware, requireRole(['supera
 
     await db.write();
 
-    const { password, ...updatedUser } = userToUpdate;
+    const { password: _password, ...updatedUser } = userToUpdate;
     res.json(updatedUser);
 });
 
