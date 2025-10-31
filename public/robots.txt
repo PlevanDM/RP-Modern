@@ -1,0 +1,6 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow: /admin
+Disallow: /messages
+
+Sitemap: https://repairhub.pro/sitemap.xml

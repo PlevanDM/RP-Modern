@@ -1,0 +1,180 @@
+/* Material Design 3 (Material You) - Тренди 2026 */
+:root {
+  /* Material You Primary Colors */
+  --md-primary: #1976d2;
+  --md-primary-hover: #1565c0;
+  --md-primary-light: #e3f2fd;
+  
+  /* Material You Surface */
+  --md-surface: #ffffff;
+  --md-surface-container: #f8f9fa;
+  --md-surface-variant: #f0f0f0;
+  
+  /* Material You Elevation (softer shadows) */
+  --md-elevation-0: none;
+  --md-elevation-1: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --md-elevation-2: 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --md-elevation-3: 0 4px 8px 0 rgba(0, 0, 0, 0.08);
+  
+  /* Material You Radius */
+  --md-radius-xs: 8px;
+  --md-radius-sm: 12px;
+  --md-radius-md: 16px;
+  --md-radius-lg: 20px;
+  --md-radius-xl: 24px;
+  
+  /* Material You Spacing */
+  --md-space-1: 4px;
+  --md-space-2: 8px;
+  --md-space-3: 12px;
+  --md-space-4: 16px;
+  --md-space-5: 20px;
+  --md-space-6: 24px;
+  --md-space-8: 32px;
+}
+
+/* Material You Card (Soft shadows + rounded corners) */
+.material-card {
+  background: var(--md-surface);
+  border-radius: var(--md-radius-lg);
+  box-shadow: var(--md-elevation-1);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.material-card:hover {
+  box-shadow: var(--md-elevation-2);
+  transform: translateY(-1px);
+}
+
+/* Material You Button (Pill shape + soft animations) */
+.material-button {
+  padding: 10px 24px;
+  border-radius: 24px;
+  font-weight: 500;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.material-button:active {
+  transform: scale(0.96);
+}
+
+.material-button-primary {
+  background: var(--md-primary);
+  color: white;
+  box-shadow: 0 1px 3px rgba(25, 118, 210, 0.3);
+}
+
+.material-button-primary:hover {
+  background: var(--md-primary-hover);
+  box-shadow: 0 2px 6px rgba(25, 118, 210, 0.4);
+}
+
+/* Material You Input (Filled variant with soft background) */
+.material-input {
+  background: var(--md-surface-variant);
+  border: none;
+  border-radius: var(--md-radius-sm);
+  padding: 12px 16px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.material-input:focus {
+  background: var(--md-surface);
+  box-shadow: 0 0 0 2px var(--md-primary);
+  outline: none;
+}
+
+/* Material You Typography (2026 trends: larger, softer) */
+.material-headline {
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 36px;
+}
+
+.material-title {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 24px;
+}
+
+.material-body {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/* Glassmorphism (2026 trend) */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+}
+
+/* Soft Glow (Neumorphism 2026) */
+.soft-glow {
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.soft-glow:hover {
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Bento Grid (2026 layout trend) */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.bento-item {
+  border-radius: var(--md-radius-lg);
+  background: var(--md-surface);
+  box-shadow: var(--md-elevation-1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bento-item:hover {
+  box-shadow: var(--md-elevation-3);
+  transform: translateY(-2px);
+}
+
+/* Smooth Animations (2026) */
+.smooth-animate {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Large Touch Targets (2026 accessibility) */
+.touch-target {
+  min-height: 48px;
+  min-width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Generative Art (2026 decorative) */
+.generative-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  opacity: 0.03;
+  position: absolute;
+  inset: 0;
+  border-radius: var(--md-radius-lg);
+}
+
+

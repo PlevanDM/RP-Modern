@@ -1,0 +1,303 @@
+/* Tailwind CSS v3 imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Light theme variables */
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+/* Dark theme variables */
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* Tailwind base styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 0%, 100% 100%;
+  }
+  50% {
+    background-position: 100% 100%, 0% 0%;
+  }
+  100% {
+    background-position: 0% 0%, 100% 100%;
+  }
+}
+
+@layer utilities {
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  /* Hide scrollbars */
+  .overflow-y-auto::-webkit-scrollbar,
+  .overflow-x-auto::-webkit-scrollbar,
+  .overflow-hidden::-webkit-scrollbar {
+    display: none;
+  }
+
+  .overflow-y-auto,
+  .overflow-x-auto {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Blob animation */
+  @keyframes blob {
+    0%, 100% {
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+  }
+
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  /* ============================================ */
+  /* УНІФІКОВАНІ ДИЗАЙН-КЛАСИ */
+  /* ============================================ */
+  
+  /* Уніфікована картка */
+  .unified-card {
+    @apply bg-white rounded-xl border border-gray-200;
+    @apply shadow-[0_2px_4px_0_rgba(0,0,0,0.06)];
+    @apply transition-all duration-200;
+  }
+  
+  .unified-card-hover {
+    @apply hover:shadow-[0_4px_8px_0_rgba(0,0,0,0.08)];
+    @apply hover:-translate-y-0.5;
+  }
+  
+  /* Уніфікована кнопка */
+  .unified-btn {
+    @apply inline-flex items-center justify-center font-medium;
+    @apply transition-all duration-200 ease-in-out;
+    @apply active:scale-[0.97];
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100;
+  }
+  
+  .unified-btn-primary {
+    @apply bg-[#1976d2] text-white hover:bg-[#1565c0];
+    @apply shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30;
+    @apply focus:ring-[#1976d2];
+  }
+  
+  .unified-btn-secondary {
+    @apply bg-gray-100 text-gray-900 hover:bg-gray-200;
+    @apply shadow-sm hover:shadow-md;
+    @apply focus:ring-gray-400;
+  }
+  
+  .unified-btn-danger {
+    @apply bg-[#d32f2f] text-white hover:bg-[#c62828];
+    @apply shadow-lg shadow-red-500/20 hover:shadow-xl hover:shadow-red-500/30;
+    @apply focus:ring-[#d32f2f];
+  }
+  
+  .unified-btn-outline {
+    @apply border-2 border-gray-300 text-gray-700;
+    @apply hover:bg-gray-50/80 hover:border-gray-400;
+    @apply shadow-sm;
+    @apply focus:ring-[#1976d2];
+  }
+  
+  .unified-btn-ghost {
+    @apply text-gray-700 hover:bg-gray-100/80 hover:text-gray-900;
+    @apply focus:ring-gray-400;
+  }
+  
+  .unified-btn-sm {
+    @apply px-4 py-2 text-sm rounded-xl min-h-[40px];
+  }
+  
+  .unified-btn-md {
+    @apply px-6 py-3 text-sm rounded-xl min-h-[48px];
+  }
+  
+  .unified-btn-lg {
+    @apply px-8 py-4 text-base rounded-xl min-h-[52px];
+  }
+  
+  .unified-btn-xl {
+    @apply px-10 py-5 text-lg rounded-xl min-h-[56px];
+  }
+  
+  /* Уніфіковані баджі */
+  .unified-badge {
+    @apply inline-flex items-center font-medium rounded-lg border;
+  }
+  
+  .unified-badge-success {
+    @apply bg-[#e8f5e9] text-[#1b5e20] border-[#2e7d32];
+  }
+  
+  .unified-badge-warning {
+    @apply bg-[#fff3e0] text-[#e65100] border-[#ed6c02];
+  }
+  
+  .unified-badge-error {
+    @apply bg-[#ffebee] text-[#c62828] border-[#d32f2f];
+  }
+  
+  .unified-badge-info {
+    @apply bg-[#e1f5fe] text-[#01579b] border-[#0288d1];
+  }
+  
+  .unified-badge-neutral {
+    @apply bg-gray-100 text-gray-700 border-gray-300;
+  }
+  
+  /* Уніфікований інпут */
+  .unified-input {
+    @apply w-full px-4 py-3 rounded-xl;
+    @apply border-2 border-gray-300 transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-[#1976d2] focus:border-[#1976d2];
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .unified-input-error {
+    @apply border-[#d32f2f] focus:ring-[#d32f2f] focus:border-[#d32f2f];
+  }
+
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  body {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Better touch targets */
+  button, a, input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent text zoom on iOS */
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+  
+  /* Viewport height fix */
+  html {
+    height: 100%;
+  }
+  
+  body {
+    min-height: 100%;
+    min-height: -webkit-fill-available;
+  }
+}
+

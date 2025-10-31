@@ -1,0 +1,153 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+*.local
+
+# Archives
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Test files
+test-*.html
+TEST-*.txt
+TEST-*.md
+test-results/
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Temporary scripts (except production)
+test-tunnel.ps1
+start-cloudflare.ps1
+start-public.bat
+start-public.ps1
+start-backend.bat
+restart-all.ps1
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Deployment scripts (keep only production-ready)
+*-OLD.sh
+*-old.ps1
+*BACKUP*
+
+# Documentation - keep only essential production docs
+# Note: These documentation files are kept:
+# - ARCHITECTURE.md
+# - ARCHITECTURE_COMPLIANCE_REPORT.md
+# - PROJECT_STATUS.md
+# - PERFORMANCE_OPTIMIZATION.md
+# - API_ENDPOINTS_V2.md
+# - DESIGN_SYSTEM.md
+*-GUIDE.*
+*-INSTRUCTIONS.*
+MANUAL-*
+LAST-*
+FULL-*
+QUICK-*
+VNC-*
+AUTO-*
+DEBUG-*
+CHECK-*
+*-INFO.*
+*-COMMANDS.*
+*-COPY-PASTE.*
+*-THIS.*
+*-NOW.*
+*-STEP.*
+*-FIX.*
+*-DEPLOY.*
+*-UPDATE.*
+*-SETUP.*
+*-DNS.*
+*-CLOUDFLARE.*
+*-GODADDY.*
+*-NAMESERVERS.*
+*-RESET.*
+*-ACCESS.*
+*-TROUBLESHOOTING.*
+*-SOLUTION.*
+*-SCHEDULE.*
+*-COMPLETE.*
+*-SUCCESS.*
+
+# Test results and temporary files
+TEST-*
+test-*
+*-test.*
+CHAT_TESTING_REPORT.md
+*-TESTING*.md
+*-REPORT*.md
+
+# Temporary verification and scratch files
+jules-scratch/
+*.py
+
+# Temporary documentation files
+FIX_TRANSLATIONS_SUMMARY.md
+GITHUB_CLEANUP_SUMMARY.md
+GITHUB_SETUP.md
+TESTING_TASKS.md
+TRANSLATION_FIXES_PROGRESS.md
+TRANSLATION_FIXES_SUMMARY.md
+
+# Old deployment scripts (except our production scripts)
+*-OLD.sh
+*-old.ps1
+*BACKUP*
+
+# Keep these scripts:
+# - fix.sh
+# - check-logs.sh
+# - auto-deploy.sh
+# - deploy-production.sh
+# - audit-project.sh
+# - check-frontend.sh
+# - check-backend.sh
+# - security-audit.sh
+# - comprehensive-audit.sh
+
+# Keep only these essential files:
+# - deploy-production.sh
+# - PRODUCTION-DEPLOY.md
+# - README.md
+# - docker-compose.yml
+# - Dockerfile
+# - nginx.conf
+# - package.json
+# - src/
+# - public/
+# - COMPREHENSIVE-SETUP.md
+# - fix.sh
+# - check-logs.sh
+# - auto-deploy.sh
