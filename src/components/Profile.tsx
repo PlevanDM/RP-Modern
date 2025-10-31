@@ -105,12 +105,17 @@ export function Profile({ currentUser }: ProfileProps) {
         error.response && typeof error.response === 'object' && 'data' in error.response &&
         error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data
         ? String(error.response.data.message) : 
-                          error?.message || 
-                          t('errors.updateProfileFailed') || 
-                          'Не вдалося оновити профіль. Спробуйте ще раз.';
+        (error instanceof Error ? error.message : null)) || 
+        t('errors.updateProfileFailed') || 
+        'Не вдалося оновити профіль. Спробуйте ще раз.';
       
       // Для тестування: якщо endpoint не існує, просто оновлюємо локально
-      if (error?.response?.status === 404 || error?.code === 'ERR_NETWORK') {
+      const hasNetworkError = error && typeof error === 'object' && (
+        ('response' in error && error.response && typeof error.response === 'object' && 
+         'status' in error.response && error.response.status === 404) ||
+        ('code' in error && error.code === 'ERR_NETWORK')
+      );
+      if (hasNetworkError) {
         console.warn('API endpoint not available, updating locally');
         setProfile(formData);
         updateCurrentUser({ ...currentUser, ...formData } as UserType);
