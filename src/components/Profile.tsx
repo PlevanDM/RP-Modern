@@ -101,7 +101,10 @@ export function Profile({ currentUser }: ProfileProps) {
       console.error('Failed to update profile:', error);
       
       // Показуємо більш інформативне повідомлення через toast
-      const errorMessage = error?.response?.data?.message || 
+      const errorMessage = (error && typeof error === 'object' && 'response' in error && 
+        error.response && typeof error.response === 'object' && 'data' in error.response &&
+        error.response.data && typeof error.response.data === 'object' && 'message' in error.response.data
+        ? String(error.response.data.message) : 
                           error?.message || 
                           t('errors.updateProfileFailed') || 
                           'Не вдалося оновити профіль. Спробуйте ще раз.';

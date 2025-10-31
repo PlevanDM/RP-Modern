@@ -48,7 +48,7 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
     if (error) {
       setError('');
     }
-  }, [email, password]);
+  }, [email, password, error]);
   
   const login = useAuthStore((state) => state.login);
 
@@ -69,9 +69,13 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
       // Login with email and password (password is required)
       await login(email, password);
       onClose(); // Close modal on success - App.tsx will handle navigation
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Login error:', err);
-      setError(err?.response?.data?.message || t('auth.invalidCredentials') || 'Невірний email або пароль');
+      const errorMessage = (err && typeof err === 'object' && 'response' in err && 
+        err.response && typeof err.response === 'object' && 'data' in err.response &&
+        err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data
+        ? String(err.response.data.message) : null) || t('auth.invalidCredentials') || 'Невірний email або пароль';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

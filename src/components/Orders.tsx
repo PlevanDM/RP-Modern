@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import MessageIcon from '@mui/icons-material/Message';
 import EditIcon from '@mui/icons-material/Edit';
@@ -159,9 +159,7 @@ export function Orders({ currentUser, masters = [] }: OrdersProps) {
     toggleActiveSearch(order.id);
   };
 
-  const handleStatusChange = (order: Order, newStatus: string) => {
-    updateOrderStatus(order.id, newStatus as Order['status']);
-  };
+  // Removed unused handleStatusChange - status changes are handled via order actions
 
   const statuses = [
     { value: 'all', label: 'Усі замовлення' },

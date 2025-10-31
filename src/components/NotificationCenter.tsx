@@ -45,7 +45,7 @@ export const NotificationCenter: React.FC = () => {
                     {(() => {
                       try {
                         return new Date(notification.createdAt).toLocaleString('uk-UA');
-                      } catch (e) {
+                      } catch {
                         return new Date(notification.createdAt).toISOString();
                       }
                     })()}

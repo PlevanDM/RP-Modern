@@ -42,7 +42,7 @@ export function CreateOrderModal({
 
   useEffect(() => {
     if (formData.brand === 'apple' && formData.deviceType) {
-      const categoryMap: Record<string, any> = {
+      const categoryMap: Record<string, string> = {
         'smartphone': 'iPhone',
         'tablet': 'iPad',
         'laptop': 'MacBook',
@@ -66,13 +66,7 @@ export function CreateOrderModal({
     }
   }, [formData.brand, formData.deviceType]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  // Removed unused handleInputChange - form fields handle their own onChange
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -233,7 +227,7 @@ export function CreateOrderModal({
             value={formData.deviceType}
             onChange={(v) => {
               const newValue = String(v);
-              setFormData({ ...formData, deviceType: newValue as any });
+              setFormData({ ...formData, deviceType: newValue });
             }}
             placeholder="Оберіть тип..."
             required
@@ -377,7 +371,7 @@ export function CreateOrderModal({
               name="urgency"
               type="select"
               value={formData.urgency}
-              onChange={(v) => setFormData({ ...formData, urgency: String(v) as any })}
+              onChange={(v) => setFormData({ ...formData, urgency: String(v) as 'low' | 'medium' | 'high' })}
               placeholder="Середня"
               options={[
                 { value: 'low', label: 'Низька' },

@@ -1037,7 +1037,7 @@ app.post('/api/admin/escrow/:orderId/refund', authMiddleware, requireRole(['admi
 
 // Update a user's role (superadmin only)
 app.patch('/api/superadmin/users/:id/role', authMiddleware, requireRole(['superadmin']), getUser, async (req: AuthRequest, res: Response) => {
-    const userToUpdate = (req as any).targetUser as User;
+    const userToUpdate = (req as AuthRequest & { targetUser: User }).targetUser;
     const { role } = req.body;
 
     const allowedRoles: Array<User['role']> = ['client', 'master', 'admin'];
@@ -1174,7 +1174,7 @@ app.post('/api/disputes/:id/resolve', authMiddleware, requireRole(['admin', 'sup
     } else if (decision === 'master_wins') {
         // Full release to master (same as normal release)
         const earnings = payment.amount * (1 - payment.commission);
-        const platformEarnings = payment.amount * payment.commission;
+        const _platformEarnings = payment.amount * payment.commission;
         
         master.balance += earnings;
         master.completedOrders = (master.completedOrders || 0) + 1;
@@ -1616,7 +1616,7 @@ app.post('/api/errors', async (req, res) => {
     let userId: string | undefined;
     if (token) {
       try {
-        const decoded = jwt.verify(token, JWT_SECRET) as any;
+        const decoded = jwt.verify(token, JWT_SECRET) as { userId?: string };
         userId = decoded.userId;
       } catch {
         // Токен невалідний, але це не критично для логування помилок
