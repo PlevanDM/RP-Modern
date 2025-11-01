@@ -1,7 +1,9 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import ModernNavigation from './components/layout/ModernNavigation';
 import ModernLandingPage from './components/pages/ModernLandingPage';
-const ModernMasterDashboard = React.lazy(() => import('./components/features/master/MasterDashboard/ModernMasterDashboard'));
+// const ModernMasterDashboard = React.lazy(() => import('./components/features/master/MasterDashboard/ModernMasterDashboard'));
+import { EnhancedMasterDashboard } from './components/features/master/EnhancedMasterDashboard';
+import { EnhancedOrdersBoard } from './components/features/master/EnhancedOrdersBoard';
 const ModernClientDashboard = React.lazy(() => import('./components/features/client/ClientDashboard/ModernClientDashboard'));
 import { MyDevices } from './components/features/client/MyDevices';
 import { DeviceCatalog } from './components/features/client/DeviceCatalog';
@@ -410,7 +412,7 @@ function App() {
             <Suspense fallback={<div className="p-8"><div className="animate-pulse">Завантаження панелі...</div></div>}>
               {activeItem === 'dashboard' &&
                 (currentUser.role === 'master' ? (
-                  <ModernMasterDashboard
+                  <EnhancedMasterDashboard
                     currentUser={currentUser}
                     stats={{
                       activeOrders: safeOrders.filter((o) => o.status === 'in_progress').length,
@@ -421,26 +423,7 @@ function App() {
                       rating: currentUser.rating || 4.9,
                     }}
                     orders={safeOrders}
-                    tasks={safeOrders.map((o) => ({
-                      id: o.id,
-                      title: o.title,
-                      client: o.clientName || o.clientId,
-                      status: o.status === 'in_progress' ? 'in-progress' : o.status === 'completed' ? 'completed' : 'pending' as 'pending' | 'in-progress' | 'completed',
-                      priority: o.urgency,
-                      deadline: o.deadline ? o.deadline.toISOString().split('T')[0] : '',
-                      progress: 0, // Default progress since Order doesn't have this field
-                    }))}
                     notifications={notifications}
-                    revenueData={[
-                      { month: 'Jan', value: 85 },
-                      { month: 'Feb', value: 72 },
-                      { month: 'Mar', value: 90 },
-                      { month: 'Apr', value: 78 },
-                      { month: 'May', value: 95 },
-                      { month: 'Jun', value: 88 },
-                    ]}
-                    setActiveItem={setActiveItem}
-                    setSelectedOrder={setSelectedOrder}
                   />
                 ) : currentUser.role === 'client' ? (
                   <ModernClientDashboard
@@ -506,7 +489,7 @@ function App() {
 
             {activeItem === 'myOrders' && (
               currentUser?.role === 'master' ? (
-                <MasterOrdersBoard />
+                <EnhancedOrdersBoard orders={safeOrders} />
               ) : (
                 <Orders
                   currentUser={currentUser}
