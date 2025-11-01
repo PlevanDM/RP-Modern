@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, User, Wrench, AlertCircle, ChevronRight, Smartphone, Monitor, Laptop, ArrowLeft, Building2, Home, Car } from 'lucide-react';
+import { X, User, Wrench, AlertCircle, ChevronRight, ArrowLeft, Building2, Home, Car } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { User as UserType } from '../../types';
 
@@ -355,20 +355,92 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
         );
       } else {
         // Master registration - multi-step questionnaire
+        // Brand logos as SVG components
+        const BrandIcon = ({ brand, className = "" }: { brand: string; className?: string }) => {
+          const icons: Record<string, JSX.Element> = {
+            apple: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+              </svg>
+            ),
+            samsung: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M3 3h18v18H3V3m15.5 2.5h-13v13h13v-13m-1.5 11h-10v-9h10v9z"/>
+              </svg>
+            ),
+            xiaomi: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M19.96 20a.32.32 0 01-.32-.32V4.32a.32.32 0 01.32-.32h3.71a.32.32 0 01.32.32v15.36a.32.32 0 01-.32.32h-3.71zM.33 4.32A.32.32 0 01.65 4h3.71a.32.32 0 01.32.32v9.03c0 .18.14.32.32.32h3.87a.32.32 0 00.32-.32V4.32A.32.32 0 019.51 4h3.71a.32.32 0 01.32.32v15.36a.32.32 0 01-.32.32H9.51a.32.32 0 01-.32-.32v-3.55a.32.32 0 00-.32-.32H.65a.32.32 0 01-.32-.32V4.32z"/>
+              </svg>
+            ),
+            huawei: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M12 3L2 12h3v8h5v-6h4v6h5v-8h3L12 3z"/>
+              </svg>
+            ),
+            oppo: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+              </svg>
+            ),
+            google: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/>
+              </svg>
+            ),
+            sony: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M8.5 8.5h7v7h-7v-7M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+              </svg>
+            ),
+            lg: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+              </svg>
+            ),
+            motorola: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18l7.45 3.73L12 11.82 4.55 7.91 12 4.18zM4 9.09l7 3.5v7.32l-7-3.5V9.09zm16 7.32l-7 3.5v-7.32l7-3.5v7.32z"/>
+              </svg>
+            ),
+            asus: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M3 4h18v4H3V4m0 6h18v4H3v-4m0 6h18v4H3v-4z"/>
+              </svg>
+            ),
+            lenovo: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M4 6h16v2H4V6m0 4h16v2H4v-2m0 4h10v2H4v-2z"/>
+              </svg>
+            ),
+            hp: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18l7.45 3.73L12 11.82 4.55 7.91 12 4.18z"/>
+              </svg>
+            ),
+            dell: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M3 3h18v18H3V3m2 2v14h14V5H5z"/>
+              </svg>
+            ),
+          };
+          return icons[brand] || icons.apple;
+        };
+
         const brands = [
-          { id: 'apple', label: 'Apple', icon: '🍎' },
-          { id: 'samsung', label: 'Samsung', icon: '📱' },
-          { id: 'xiaomi', label: 'Xiaomi', icon: '📲' },
-          { id: 'huawei', label: 'Huawei', icon: '📱' },
-          { id: 'oppo', label: 'Oppo', icon: '📱' },
-          { id: 'google', label: 'Google Pixel', icon: '📱' },
-          { id: 'sony', label: 'Sony', icon: '📱' },
-          { id: 'lg', label: 'LG', icon: '📱' },
-          { id: 'motorola', label: 'Motorola', icon: '📱' },
-          { id: 'asus', label: 'ASUS', icon: '💻' },
-          { id: 'lenovo', label: 'Lenovo', icon: '💻' },
-          { id: 'hp', label: 'HP', icon: '💻' },
-          { id: 'dell', label: 'Dell', icon: '💻' },
+          { id: 'apple', label: 'Apple' },
+          { id: 'samsung', label: 'Samsung' },
+          { id: 'xiaomi', label: 'Xiaomi' },
+          { id: 'huawei', label: 'Huawei' },
+          { id: 'oppo', label: 'Oppo' },
+          { id: 'google', label: 'Google Pixel' },
+          { id: 'sony', label: 'Sony' },
+          { id: 'lg', label: 'LG' },
+          { id: 'motorola', label: 'Motorola' },
+          { id: 'asus', label: 'ASUS' },
+          { id: 'lenovo', label: 'Lenovo' },
+          { id: 'hp', label: 'HP' },
+          { id: 'dell', label: 'Dell' },
         ];
 
         const repairTypesOptions = [
@@ -382,11 +454,37 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
           { id: 'audio', label: 'Аудіо', description: 'Динаміки, мікрофони' },
         ];
 
+        const ExperienceIcon = ({ level, className = "" }: { level: string; className?: string }) => {
+          const icons: Record<string, JSX.Element> = {
+            beginner: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            ),
+            intermediate: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+              </svg>
+            ),
+            advanced: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>
+              </svg>
+            ),
+            expert: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            ),
+          };
+          return icons[level] || icons.beginner;
+        };
+
         const experienceLevels = [
-          { id: 'beginner', label: 'Новачок', desc: 'Менше 1 року', icon: '🌱' },
-          { id: 'intermediate', label: 'Досвідчений', desc: '1-3 роки', icon: '⭐' },
-          { id: 'advanced', label: 'Професіонал', desc: '3-5 років', icon: '🔥' },
-          { id: 'expert', label: 'Експерт', desc: 'Більше 5 років', icon: '👑' },
+          { id: 'beginner', label: 'Новачок', desc: 'Менше 1 року' },
+          { id: 'intermediate', label: 'Досвідчений', desc: '1-3 роки' },
+          { id: 'advanced', label: 'Професіонал', desc: '3-5 років' },
+          { id: 'expert', label: 'Експерт', desc: 'Більше 5 років' },
         ];
 
         const toggleBrand = (brandId: string) => {
@@ -488,7 +586,10 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                         }`}
                       >
                         <div className="flex flex-col items-center">
-                          <div className="text-2xl mb-2">{brand.icon}</div>
+                          <BrandIcon 
+                            brand={brand.id}
+                            className={`w-8 h-8 mb-2 ${isSelected ? 'text-orange-600' : 'text-gray-600'}`}
+                          />
                           <div className={`font-medium text-xs ${isSelected ? 'text-orange-700' : 'text-gray-900'}`}>
                             {brand.label}
                           </div>
@@ -550,7 +651,12 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                       }`}
                     >
                       <div className="text-center">
-                        <div className="text-3xl mb-2">{level.icon}</div>
+                        <div className="flex justify-center mb-2">
+                          <ExperienceIcon 
+                            level={level.id}
+                            className={`w-10 h-10 ${experience === level.id ? 'text-orange-600' : 'text-gray-600'}`}
+                          />
+                        </div>
                         <div className={`font-semibold text-sm mb-1 ${
                           experience === level.id ? 'text-orange-700' : 'text-gray-900'
                         }`}>
