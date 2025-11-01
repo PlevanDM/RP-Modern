@@ -8,15 +8,13 @@ import {
   Search,
   User as UserIcon,
   Moon,
-  Sun,
   Globe,
   HelpCircle,
-  Zap,
   Clock,
-  Calendar
+  Calendar,
+  Wrench
 } from 'lucide-react';
 import { User } from '../../types/models';
-import { Logo } from '../Logo';
 import { Badge } from '../ui/badge';
 import { PRIMARY_GRADIENT } from '../../theme/colors';
 
@@ -118,27 +116,17 @@ export const EnhancedNavbarHeader: React.FC<NavbarHeaderProps> = ({
           <div className="flex items-center gap-3 sm:gap-4">
             {/* Logo */}
             <motion.div
-              className="flex items-center gap-2 sm:gap-3 cursor-pointer group"
+              className="flex items-center gap-2 cursor-pointer group"
               onClick={onDashboardClick}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <div className="relative">
-                <Logo />
-                <motion.div
-                  className="absolute -inset-1 bg-white/20 rounded-full blur-md -z-10"
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                />
+              <div className="w-9 h-9 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                <Wrench className="w-5 h-5 text-white" strokeWidth={2.5} />
               </div>
-              <div className="hidden sm:block">
-                <h1 className="text-base sm:text-lg font-bold leading-tight group-hover:text-blue-100 transition">
-                  RepairHub
-                </h1>
-                <p className="text-[10px] sm:text-xs text-blue-100 opacity-90">
-                  Платформа для ремонту
-                </p>
-              </div>
+              <span className="hidden sm:inline text-lg font-bold">
+                RepairHub
+              </span>
             </motion.div>
 
             {/* Time & Date Widget */}
@@ -187,15 +175,6 @@ export const EnhancedNavbarHeader: React.FC<NavbarHeaderProps> = ({
 
           {/* Right: Widgets + Actions */}
           <div className="flex items-center gap-1 sm:gap-2">
-            {/* Quick Stats (only on large screens) */}
-            <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg backdrop-blur-sm mr-2">
-              <Zap className="w-4 h-4 text-yellow-300" />
-              <div className="text-xs">
-                <div className="font-semibold">Активність</div>
-                <div className="text-blue-100 text-[10px]">Високa</div>
-              </div>
-            </div>
-
             {/* Language Selector */}
             <motion.button
               className="hidden sm:flex items-center gap-1 p-2 hover:bg-white/10 rounded-lg transition-all"
