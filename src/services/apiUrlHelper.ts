@@ -5,14 +5,16 @@ export const getApiUrl = (): string => {
   // Prefer configured backend URL from settings store when available
   try {
     // Lazy import to avoid circular deps in SSR/build
-    const settingsStore = (window as Window & typeof globalThis & { useSettingsStore?: () => { getState: () => { settings: { backendUrl: string } } } })?.useSettingsStore || undefined;
-    if (!settingsStore && typeof window !== 'undefined') {
-      // Attempt dynamic import only in browser
-      // Note: this is best-effort; failures fall through to env/auto-detect
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      // dynamic import avoided here to keep this helper synchronous
+    interface SettingsStore {
+      getState: () => { settings: { backendUrl?: string } };
     }
+    
+    type WindowWithStore = Window & typeof globalThis & { 
+      useSettingsStore?: () => SettingsStore 
+    };
+    
+    const settingsStore = (window as WindowWithStore)?.useSettingsStore?.();
+    
     // If zustand store is attached globally by app bootstrap
     const settings = settingsStore?.getState?.().settings;
     if (settings?.backendUrl) {

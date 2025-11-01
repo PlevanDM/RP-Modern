@@ -90,13 +90,17 @@ class ApiUserService {
           const parsed = JSON.parse(authStorage);
           token = parsed?.state?.token || parsed?.token;
         } catch {
-          console.warn('Failed to parse auth storage');
+          if (import.meta.env.DEV) {
+            console.warn('Failed to parse auth storage');
+          }
         }
       }
     }
 
     if (!token) {
-      console.warn('No authentication token found. Attempting to update without auth.');
+      if (import.meta.env.DEV) {
+        console.warn('No authentication token found. Attempting to update without auth.');
+      }
       // Спробуємо без токену (для локального тестування)
     }
 

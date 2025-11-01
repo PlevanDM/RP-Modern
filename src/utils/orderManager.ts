@@ -28,7 +28,9 @@ export function loadOrdersFromStorage(): Order[] {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
   } catch (error) {
-    console.error('Помилка при завантаженні замовлень:', error);
+    if (import.meta.env.DEV) {
+      console.error('Помилка при завантаженні замовлень:', error);
+    }
     return [];
   }
 }
@@ -37,7 +39,9 @@ export function saveOrdersToStorage(orders: Order[]): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
   } catch (error) {
-    console.error('Помилка при збереженні замовлень:', error);
+    if (import.meta.env.DEV) {
+      console.error('Помилка при збереженні замовлень:', error);
+    }
   }
 }
 
@@ -218,7 +222,9 @@ export function logAuditAction(
     logs.push(entry);
     localStorage.setItem(AUDIT_LOG_KEY, JSON.stringify(logs));
   } catch (error) {
-    console.error('Помилка при логуванні дії:', error);
+    if (import.meta.env.DEV) {
+      console.error('Помилка при логуванні дії:', error);
+    }
   }
 }
 
@@ -227,7 +233,9 @@ export function getOrderAuditLog(orderId: string): AuditLogEntry[] {
     const logs: AuditLogEntry[] = JSON.parse(localStorage.getItem(AUDIT_LOG_KEY) || '[]');
     return logs.filter(log => log.orderId === orderId);
   } catch (error) {
-    console.error('Помилка при завантаженні audit log:', error);
+    if (import.meta.env.DEV) {
+      console.error('Помилка при завантаженні audit log:', error);
+    }
     return [];
   }
 }

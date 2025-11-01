@@ -42,7 +42,9 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
       await login(email, password);
       onClose(); // Close modal on success - App.tsx will handle navigation
     } catch (err: unknown) {
-      console.error('Login error:', err);
+      if (import.meta.env.DEV) {
+        console.error('Login error:', err);
+      }
       const errorMessage = (err && typeof err === 'object' && 'response' in err && 
         err.response && typeof err.response === 'object' && 'data' in err.response &&
         err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data

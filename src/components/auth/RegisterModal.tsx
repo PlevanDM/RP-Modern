@@ -129,7 +129,9 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
       
       try {
         const registeredUser = await register(registrationData);
-        console.log('User registered:', registeredUser);
+        if (import.meta.env.DEV) {
+          console.log('User registered:', registeredUser);
+        }
         // Якщо всі дані заповнені, автоматично завершуємо onboarding
         if (hasCompleteData) {
           useAuthStore.setState({ 
@@ -138,7 +140,9 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
           });
         }
       } catch (registerErr) {
-        console.warn('Register failed, setting directly:', registerErr);
+        if (import.meta.env.DEV) {
+          console.warn('Register failed, setting directly:', registerErr);
+        }
         // Якщо register не спрацював, встановлюємо напряму
         useAuthStore.setState({ 
           currentUser: registrationData as UserType, 
@@ -149,7 +153,9 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
       onClose();
       window.location.reload();
     } catch (err) {
-      console.error('Registration error:', err);
+      if (import.meta.env.DEV) {
+        console.error('Registration error:', err);
+      }
       setError('Помилка реєстрації. Спробуйте ще раз.');
     }
   };

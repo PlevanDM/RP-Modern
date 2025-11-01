@@ -32,7 +32,9 @@ apiClient.interceptors.request.use((config) => {
         }
       }
     } catch (e) {
-      console.error('Failed to parse auth storage:', e);
+      if (import.meta.env.DEV) {
+        console.error('Failed to parse auth storage:', e);
+      }
     }
   }
   return config;

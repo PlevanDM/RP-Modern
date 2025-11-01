@@ -11,7 +11,9 @@ export function loadSubscriptions(): PremiumSubscription[] {
     const stored = localStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
   } catch (error) {
-    console.error('Помилка при завантаженні підписок:', error);
+    if (import.meta.env.DEV) {
+      console.error('Помилка при завантаженні підписок:', error);
+    }
     return [];
   }
 }
@@ -21,7 +23,9 @@ export function saveSubscriptions(subscriptions: PremiumSubscription[]): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(subscriptions));
   } catch (error) {
-    console.error('Помилка при збереженні підписок:', error);
+    if (import.meta.env.DEV) {
+      console.error('Помилка при збереженні підписок:', error);
+    }
   }
 }
 
@@ -117,7 +121,9 @@ export function loadReceipts(userId: string): Receipt[] {
     const allReceipts: Receipt[] = stored ? JSON.parse(stored) : [];
     return allReceipts.filter(receipt => receipt.userId === userId);
   } catch (error) {
-    console.error('Помилка при завантаженні чеків:', error);
+    if (import.meta.env.DEV) {
+      console.error('Помилка при завантаженні чеків:', error);
+    }
     return [];
   }
 }
@@ -136,7 +142,9 @@ export function saveReceipt(receipt: Receipt): void {
     
     localStorage.setItem(RECEIPTS_STORAGE_KEY, JSON.stringify(allReceipts));
   } catch (error) {
-    console.error('Помилка при збереженні чека:', error);
+    if (import.meta.env.DEV) {
+      console.error('Помилка при збереженні чека:', error);
+    }
   }
 }
 
@@ -147,7 +155,9 @@ export function deleteReceipt(receiptId: string): void {
     const filtered = allReceipts.filter(r => r.id !== receiptId);
     localStorage.setItem(RECEIPTS_STORAGE_KEY, JSON.stringify(filtered));
   } catch (error) {
-    console.error('Помилка при видаленні чека:', error);
+    if (import.meta.env.DEV) {
+      console.error('Помилка при видаленні чека:', error);
+    }
   }
 }
 
@@ -157,7 +167,9 @@ export function getReceipt(receiptId: string): Receipt | null {
     const allReceipts: Receipt[] = stored ? JSON.parse(stored) : [];
     return allReceipts.find(r => r.id === receiptId) || null;
   } catch (error) {
-    console.error('Помилка при отриманні чека:', error);
+    if (import.meta.env.DEV) {
+      console.error('Помилка при отриманні чека:', error);
+    }
     return null;
   }
 }

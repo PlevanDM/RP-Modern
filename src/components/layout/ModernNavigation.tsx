@@ -347,7 +347,9 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                 data-testid={`nav-${getRouteKey(item.key)}`}
                 onClick={() => {
                     const routeKey = getRouteKey(item.key);
-                    console.log('Navigation click:', { navKey: item.key, routeKey });
+                    if (import.meta.env.DEV) {
+                      console.log('Navigation click:', { navKey: item.key, routeKey });
+                    }
                     setActiveItem(routeKey);
                     setIsMobileMenuOpen(false);
                 }}
@@ -439,7 +441,9 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                 transition={{ delay: index * 0.05 }}
                 onClick={() => {
                   const routeKey = getRouteKey(item.key);
-                  console.log('Mobile Navigation click:', { navKey: item.key, routeKey });
+                  if (import.meta.env.DEV) {
+                    console.log('Mobile Navigation click:', { navKey: item.key, routeKey });
+                  }
                   setActiveItem(routeKey);
                   setIsMobileMenuOpen(false);
                 }}

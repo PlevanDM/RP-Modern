@@ -136,7 +136,9 @@ export function Profile({ currentUser, orders = [] }: ProfileProps) {
       // Показуємо успішне повідомлення
       toast.success(t('profile.updateSuccess') || 'Профіль успішно оновлено!', 3000);
     } catch (error) {
-      console.error('Failed to update profile:', error);
+      if (import.meta.env.DEV) {
+        console.error('Failed to update profile:', error);
+      }
       
       // Показуємо помилку через toast
       const errorMessage = error?.response?.data?.message || 
@@ -148,7 +150,9 @@ export function Profile({ currentUser, orders = [] }: ProfileProps) {
       
       // Для тестування: якщо endpoint не існує, просто оновлюємо локально
       if (error?.response?.status === 404 || error?.code === 'ERR_NETWORK') {
-        console.warn('API endpoint not available, updating locally');
+        if (import.meta.env.DEV) {
+          console.warn('API endpoint not available, updating locally');
+        }
         setProfile(formData);
         updateCurrentUser({ ...currentUser, ...formData } as UserType);
         setIsEditing(false);

@@ -47,7 +47,9 @@ export async function getAdminStats(): Promise<AdminStats> {
     });
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch admin stats:', error);
+    if (import.meta.env.DEV) {
+      console.error('Failed to fetch admin stats:', error);
+    }
     // Return default stats if API fails
     return {
       totalUsers: 0,
@@ -72,7 +74,9 @@ export async function getFinancialData(period: 'week' | 'month' | 'year' = 'mont
     });
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch financial data:', error);
+    if (import.meta.env.DEV) {
+      console.error('Failed to fetch financial data:', error);
+    }
     return [];
   }
 }
@@ -86,7 +90,9 @@ export async function getTransactions(limit: number = 10): Promise<TransactionDa
     });
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch transactions:', error);
+    if (import.meta.env.DEV) {
+      console.error('Failed to fetch transactions:', error);
+    }
     return [];
   }
 }
@@ -100,7 +106,9 @@ export async function getTopMasters(limit: number = 5): Promise<TopMasterData[]>
     });
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch top masters:', error);
+    if (import.meta.env.DEV) {
+      console.error('Failed to fetch top masters:', error);
+    }
     return [];
   }
 }
@@ -114,7 +122,9 @@ export async function getUsersForAdmin(page: number = 1, limit: number = 10) {
     });
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch users:', error);
+    if (import.meta.env.DEV) {
+      console.error('Failed to fetch users:', error);
+    }
     return { users: [], total: 0 };
   }
 }
@@ -128,7 +138,9 @@ export async function updateUserStatus(userId: string, status: 'active' | 'block
     );
     return response.data;
   } catch (error) {
-    console.error('Failed to update user status:', error);
+    if (import.meta.env.DEV) {
+      console.error('Failed to update user status:', error);
+    }
     throw error;
   }
 }

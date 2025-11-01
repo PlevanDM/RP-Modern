@@ -213,7 +213,9 @@ export function Orders({
         setActiveItem?.('reviews');
         break;
       default:
-        console.log('Unknown action:', actionId);
+        if (import.meta.env.DEV) {
+          console.log('Unknown action:', actionId);
+        }
     }
   };
 
