@@ -69,44 +69,34 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
   const [isCreateOrderModalOpen, setCreateOrderModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
 
-  // Calculate real statistics
-  const inProgressCount = clientOrders.filter((o) => o.status === 'in_progress').length;
-  const completedCount = clientOrders.filter((o) => o.status === 'completed').length;
-  const totalSpent = clientOrders
-    .filter((o) => o.status === 'completed')
-    .reduce((acc, o) => acc + (o.price || 0), 0);
-  
-  // Calculate percentage changes (simplified - no historical data, so show current vs potential)
-  const inProgressChange = clientOrders.length > 0 ? Math.round((inProgressCount / clientOrders.length) * 100) : 0;
-  const completedChange = clientOrders.length > 0 ? Math.round((completedCount / clientOrders.length) * 100) : 0;
-  const avgOrderValue = clientOrders.length > 0 ? Math.round(totalSpent / clientOrders.length) : 0;
-
   const stats: StatCard[] = [
     {
       title: t('common.totalOrders'),
       value: clientOrders.length.toString(),
-      change: clientOrders.length > 0 ? `${inProgressCount} активних` : 'немає замовлень',
+      change: '+12%',
       icon: <Package className="w-5 h-5" />,
       trend: 'up',
     },
     {
       title: t('status.in_progress'),
-      value: inProgressCount.toString(),
-      change: clientOrders.length > 0 ? `${inProgressChange}% від усіх` : '-',
+      value: clientOrders.filter((o) => o.status === 'in_progress').length.toString(),
+      change: '+2',
       icon: <Clock className="w-5 h-5" />,
       trend: 'up',
     },
     {
       title: t('status.completed'),
-      value: completedCount.toString(),
-      change: clientOrders.length > 0 ? `${completedChange}% від усіх` : '-',
+      value: clientOrders.filter((o) => o.status === 'completed').length.toString(),
+      change: '+5',
       icon: <CheckCircle2 className="w-5 h-5" />,
       trend: 'up',
     },
     {
       title: t('common.spent'),
-      value: `₴${safeLocaleCurrency(totalSpent)}`,
-      change: avgOrderValue > 0 ? `avg: ₴${safeLocaleCurrency(avgOrderValue)}` : 'немає витрат',
+      value: `₴${safeLocaleCurrency(clientOrders
+        .filter((o) => o.status === 'completed')
+        .reduce((acc, o) => acc + (o.price || 0), 0))}`,
+      change: '+18%',
       icon: <DollarSign className="w-5 h-5" />,
       trend: 'up',
     },
