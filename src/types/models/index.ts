@@ -367,6 +367,9 @@ export interface FreelanceProposal {
   escrowId?: string;
 }
 
+// Alias for compatibility
+export type Proposal = FreelanceProposal;
+
 // Device and Photo types
 export interface DevicePhoto {
   id: string;

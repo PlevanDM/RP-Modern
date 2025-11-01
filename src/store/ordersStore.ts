@@ -80,24 +80,9 @@ export const useOrdersStore = create<OrdersState>()(
         try {
           const { orders, totalPages, currentPage, totalOrders } = await apiOrderService.getOrders(page, limit, searchTerm, status, sortBy);
           set({ orders, totalPages, currentPage, totalOrders });
-          
-          try {
-            const localOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
-            const updatedLocalOrders = [...orders, ...localOrders.filter((o: Order) => !orders.find(no => no.id === o.id))];
-            localStorage.setItem('repair_master_orders', JSON.stringify(updatedLocalOrders));
-          } catch {
-            console.warn('Не вдалося синхронізувати з localStorage');
-          }
         } catch (error) {
-          // Якщо API не працює, завантажуємо з localStorage
-          console.warn('API недоступний, завантажуємо з localStorage:', error);
-          try {
-            const localOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
-            set({ orders: localOrders });
-          } catch (e) {
-            console.error('Помилка завантаження з localStorage:', e);
-            set({ orders: [] });
-          }
+          console.error('Помилка завантаження замовлень з API:', error);
+          throw error;
         }
       },
       createOrder: async (order) => {
@@ -110,95 +95,14 @@ export const useOrdersStore = create<OrdersState>()(
             updatedAt: order.updatedAt || new Date().toISOString(),
           };
           
-          let newOrder: Order;
-          try {
-            // Пробуємо створити через API
-            newOrder = await apiOrderService.createOrder(orderWithId as Order);
-          } catch (apiError) {
-            // Якщо API не працює, створюємо локально
-            console.warn('API недоступний, створюємо локально:', apiError);
-            newOrder = orderWithId as Order;
-          }
+          // Створюємо через API
+          const newOrder = await apiOrderService.createOrder(orderWithId as Order);
           
           // Оновлюємо store
           set((state) => {
             const updatedOrders = [...state.orders, newOrder];
             return { orders: updatedOrders };
           });
-          
-          // Синхронізуємо з localStorage
-          try {
-            const existingOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
-            const updatedOrders = [newOrder, ...existingOrders.filter((o: Order) => o.id !== newOrder.id)];
-            localStorage.setItem('repair_master_orders', JSON.stringify(updatedOrders));
-            window.dispatchEvent(new CustomEvent('ordersUpdated'));
-          } catch (storageError) {
-            console.warn('Не вдалося синхронізувати з localStorage:', storageError);
-          }
-          
-          // Create notifications for masters using master matching (as per ARCHITECTURE.md)
-          try {
-            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]') as User[];
-            const allMasters = users.filter((u: User) => u.role === 'master' && !u.blocked && (u.verified !== false));
-            
-            // Use master matching service to find best matches
-            let matchingMasters: User[] = [];
-            try {
-              const currentUser = useAuthStore.getState().currentUser;
-              
-              const clientPreferences = {
-                preferredBrands: newOrder.brand ? [newOrder.brand.toLowerCase()] : undefined,
-                preferredRepairTypes: newOrder.issue ? [newOrder.issue.toLowerCase()] : undefined,
-                city: newOrder.city,
-                preferredWorkLocation: currentUser?.preferredPriority?.includes('speed') ? 'mobile' : undefined,
-                clientMobileOS: currentUser?.clientMobileOS,
-                clientComputerOS: currentUser?.clientComputerOS,
-                skillLevel: currentUser?.skillLevel,
-                budgetRange: currentUser?.budgetRange,
-              };
-              
-              const masterProfiles = allMasters.map((u: User) => ({
-                id: u.id,
-                repairBrands: u.repairBrands,
-                repairTypes: u.repairTypes,
-                workLocation: u.workLocation,
-                isMobile: u.isMobile,
-                city: u.city,
-                rating: u.rating,
-                completedOrders: u.completedOrders,
-                workExperience: u.workExperience,
-                workingRadius: u.workingRadius,
-              }));
-              
-              const matched = findMatchingMasters(clientPreferences, masterProfiles, 20);
-              matchingMasters = matched.map(m => allMasters.find((u: User) => u.id === m.master.id)).filter(Boolean) as User[];
-            } catch (error) {
-              console.warn('Помилка master matching, використовуємо простий фільтр:', error);
-              // Fallback to simple filtering
-              matchingMasters = allMasters.filter((u: User) =>
-                (!newOrder.brand || !u.repairBrands || u.repairBrands.length === 0 || 
-                 u.repairBrands.some((brand: string) => 
-                   brand.toLowerCase().includes(newOrder.brand?.toLowerCase() || '')))
-              );
-            }
-            
-            const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
-            matchingMasters.forEach((master: User) => {
-              notifications.push({
-                id: `notif-${Date.now()}-${master.id}`,
-                userId: master.id,
-                message: `Нове замовлення доступне: "${newOrder.title}" (${newOrder.device})`,
-                type: 'order',
-                read: false,
-                createdAt: new Date(),
-              });
-            });
-            if (matchingMasters.length > 0) {
-              localStorage.setItem('repairhub_notifications', JSON.stringify(notifications));
-            }
-          } catch (error) {
-            console.warn('Не вдалося створити уведомлення для майстрів:', error);
-          }
           
           useUIStore.getState().showNotification('Замовлення успішно створено!');
           console.log('✅ Замовлення створено:', newOrder);

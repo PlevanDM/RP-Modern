@@ -1,5 +1,4 @@
-// Modern Financial Dashboard Panel
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   DollarSign, TrendingUp, CreditCard,
   Banknote, PieChart, BarChart3,
@@ -14,123 +13,34 @@ import {
   Badge,
   ProgressBar
 } from './AdminDesignSystem';
+import apiAdminService, { FinancialData, TransactionData } from '../../../services/apiAdminService';
 
 export const ModernFinancialPanel = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('month');
   const [selectedCurrency, setSelectedCurrency] = useState('UAH');
+  const [financialData, setFinancialData] = useState<FinancialData[]>([]);
+  const [transactions, setTransactions] = useState<TransactionData[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const financialStats = [
-    {
-      title: 'Загальний дохід',
-      value: '₴125,430',
-      change: '+23.5%',
-      changeType: 'positive',
-      icon: DollarSign,
-      color: 'text-green-600',
-      trend: [30, 25, 45, 38, 52, 48, 65]
-    },
-    {
-      title: 'Комісія платформи',
-      value: '₴8,765',
-      change: '+18.2%',
-      changeType: 'positive',
-      icon: PieChart,
-      color: 'text-blue-600',
-      trend: [20, 28, 35, 32, 42, 38, 48]
-    },
-    {
-      title: 'Виплати майстрам',
-      value: '₴98,450',
-      change: '+15.8%',
-      changeType: 'positive',
-      icon: Banknote,
-      color: 'text-purple-600',
-      trend: [15, 22, 28, 25, 35, 40, 45]
-    },
-    {
-      title: 'Чистий прибуток',
-      value: '₴18,215',
-      change: '+12.3%',
-      changeType: 'positive',
-      icon: Target,
-      color: 'text-orange-600',
-      trend: [85, 87, 90, 88, 92, 94, 95]
-    }
-  ];
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        const [finData, txData] = await Promise.all([
+          apiAdminService.getFinancialData(selectedPeriod as 'week' | 'month' | 'year'),
+          apiAdminService.getTransactions(10)
+        ]);
+        setFinancialData(finData);
+        setTransactions(txData);
+      } catch (error) {
+        console.error('Failed to load financial data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const transactions = [
-    {
-      id: 1,
-      type: 'income',
-      description: 'Комісія з замовлення #RH-2024-001',
-      amount: 315,
-      currency: 'UAH',
-      date: '2024-01-15',
-      status: 'completed',
-      client: 'Анна Коваленко',
-      method: 'card'
-    },
-    {
-      id: 2,
-      type: 'expense',
-      description: 'Виплата майстру Олександр Петренко',
-      amount: 4500,
-      currency: 'UAH',
-      date: '2024-01-15',
-      status: 'completed',
-      client: 'Анна Коваленко',
-      method: 'bank_transfer'
-    },
-    {
-      id: 3,
-      type: 'income',
-      description: 'Комісія з замовлення #RH-2024-002',
-      amount: 595,
-      currency: 'UAH',
-      date: '2024-01-14',
-      status: 'completed',
-      client: 'Марія Сидоренко',
-      method: 'card'
-    },
-    {
-      id: 4,
-      type: 'expense',
-      description: 'Виплата майстру Максим Іванов',
-      amount: 8500,
-      currency: 'UAH',
-      date: '2024-01-14',
-      status: 'pending',
-      client: 'Марія Сидоренко',
-      method: 'crypto'
-    },
-    {
-      id: 5,
-      type: 'income',
-      description: 'Комісія з замовлення #RH-2024-003',
-      amount: 154,
-      currency: 'UAH',
-      date: '2024-01-13',
-      status: 'completed',
-      client: 'Ігор Мельник',
-      method: 'card'
-    }
-  ];
-
-  const monthlyData = [
-    { month: 'Січень', income: 125430, expenses: 107215, profit: 18215 },
-    { month: 'Грудень', income: 108920, expenses: 92340, profit: 16580 },
-    { month: 'Листопад', income: 95680, expenses: 81200, profit: 14480 },
-    { month: 'Жовтень', income: 89240, expenses: 75600, profit: 13640 },
-    { month: 'Вересень', income: 78450, expenses: 67200, profit: 11250 },
-    { month: 'Серпень', income: 72300, expenses: 61800, profit: 10500 }
-  ];
-
-  const paymentMethods = [
-    { method: 'Банківські карти', amount: 45680, percentage: 36.4, color: 'bg-blue-500' },
-    { method: 'Криптовалюта', amount: 32150, percentage: 25.6, color: 'bg-purple-500' },
-    { method: 'Банківські перекази', amount: 28900, percentage: 23.0, color: 'bg-green-500' },
-    { method: 'Монобанк', amount: 18700, percentage: 14.9, color: 'bg-yellow-500' }
-  ];
+    loadData();
+  }, [selectedPeriod]);
 
   const formatAmount = (amount: number) => {
     return `₴${amount.toLocaleString()}`;
@@ -152,6 +62,45 @@ export const ModernFinancialPanel = () => {
       default: return 'neutral';
     }
   };
+
+  const totalIncome = financialData.reduce((sum, d) => sum + d.income, 0);
+  const totalExpenses = financialData.reduce((sum, d) => sum + d.expenses, 0);
+  const totalProfit = financialData.reduce((sum, d) => sum + d.profit, 0);
+
+  const financialStats = [
+    {
+      title: 'Загальний дохід',
+      value: formatAmount(totalIncome),
+      change: '+23.5%',
+      changeType: 'positive' as const,
+      icon: DollarSign,
+      color: 'text-green-600'
+    },
+    {
+      title: 'Комісія платформи',
+      value: formatAmount(Math.round(totalIncome * 0.1)),
+      change: '+18.2%',
+      changeType: 'positive' as const,
+      icon: PieChart,
+      color: 'text-blue-600'
+    },
+    {
+      title: 'Виплати майстрам',
+      value: formatAmount(totalExpenses),
+      change: '+15.8%',
+      changeType: 'positive' as const,
+      icon: Banknote,
+      color: 'text-purple-600'
+    },
+    {
+      title: 'Чистий прибуток',
+      value: formatAmount(totalProfit),
+      change: '+12.3%',
+      changeType: 'positive' as const,
+      icon: Target,
+      color: 'text-orange-600'
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 p-6">
@@ -176,7 +125,6 @@ export const ModernFinancialPanel = () => {
                 options={[
                   { value: 'week', label: 'Тиждень' },
                   { value: 'month', label: 'Місяць' },
-                  { value: 'quarter', label: 'Квартал' },
                   { value: 'year', label: 'Рік' }
                 ]}
                 className="w-40"
@@ -195,158 +143,147 @@ export const ModernFinancialPanel = () => {
             </div>
             
             <div className="flex gap-2 ml-auto">
+              <AdminButton variant="secondary" onClick={() => window.location.reload()}>
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Оновити
+              </AdminButton>
               <AdminButton variant="secondary">
                 <Download className="w-4 h-4 mr-2" />
                 Експорт
-              </AdminButton>
-              <AdminButton variant="secondary">
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Оновити
               </AdminButton>
             </div>
           </div>
         </AdminCard>
 
-        {/* Financial Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {financialStats.map((stat, index) => (
-            <AdminCard key={index} className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg`}>
-                  <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                </div>
-                <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/20">
-                  <TrendingUp className="w-3 h-3 text-green-500" />
-                  <span className="text-xs font-semibold text-green-500">{stat.change}</span>
-                </div>
-              </div>
-              <h3 className="text-sm text-gray-500 dark:text-gray-400 mb-2">{stat.title}</h3>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{stat.value}</p>
-              
-              {/* Mini Chart */}
-              <div className="flex gap-1 h-8">
-                {stat.trend.map((val, i) => (
-                  <div
-                    key={i}
-                    className={`flex-1 rounded-sm ${
-                      val > 40 ? 'bg-green-500' :
-                      val > 25 ? 'bg-blue-500' : 'bg-gray-300'
-                    }`}
-                    style={{ opacity: 0.3 + (val / 100) * 0.7 }}
-                  />
-                ))}
-              </div>
-            </AdminCard>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Transactions */}
-          <div className="lg:col-span-2">
-            <AdminCard className="p-6">
-              <SectionHeader 
-                title="Останні транзакції" 
-                subtitle="Історія фінансових операцій"
-                icon={Receipt}
-              />
-              
-              <div className="space-y-3">
-                {transactions.map((transaction) => {
-                  const Icon = getTransactionIcon(transaction.type);
-                  return (
-                    <div
-                      key={transaction.id}
-                      className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className={`p-2 rounded-lg ${
-                          transaction.type === 'income' ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'
-                        }`}>
-                          <Icon className={`w-5 h-5 ${getTransactionColor(transaction.type)}`} />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">{transaction.description}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {transaction.client} • {new Date(transaction.date).toLocaleDateString('uk-UA')}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className={`text-sm font-medium ${getTransactionColor(transaction.type)}`}>
-                          {transaction.type === 'income' ? '+' : '-'}{formatAmount(transaction.amount)}
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500">Завантаження даних...</p>
+          </div>
+        ) : (
+          <>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              {financialStats.map((stat) => {
+                const Icon = stat.icon;
+                return (
+                  <AdminCard key={stat.title} className="p-6">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+                          {stat.title}
                         </p>
-                        <Badge variant={getStatusColor(transaction.status)} size="sm">
-                          {transaction.status === 'completed' ? 'Завершено' :
-                           transaction.status === 'pending' ? 'Очікує' : 'Помилка'}
-                        </Badge>
+                        <p className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                          {stat.value}
+                        </p>
+                        <span className={`text-sm font-medium flex items-center gap-1 ${
+                          stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
+                        }`}>
+                          <TrendingUp className="w-4 h-4" />
+                          {stat.change}
+                        </span>
+                      </div>
+                      <div className={`p-3 rounded-lg bg-gray-100 dark:bg-gray-800 ${stat.color}`}>
+                        <Icon className="w-6 h-6" />
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            </AdminCard>
-          </div>
+                  </AdminCard>
+                );
+              })}
+            </div>
 
-          {/* Payment Methods */}
-          <div className="space-y-6">
-            <AdminCard className="p-6">
-              <SectionHeader title="Методи оплати" icon={CreditCard} />
-              
-              <div className="space-y-4">
-                {paymentMethods.map((method, index) => (
-                  <div key={index}>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">{method.method}</span>
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">{formatAmount(method.amount)}</span>
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              {/* Monthly Chart */}
+              <AdminCard className="lg:col-span-2 p-6">
+                <SectionHeader title="Дохід та видатки" />
+                <div className="mt-6 h-80 bg-gray-50 dark:bg-gray-900 rounded-lg flex items-center justify-center">
+                  <p className="text-gray-400">Діаграма фінансових показників</p>
+                </div>
+              </AdminCard>
+
+              {/* Payment Methods */}
+              <AdminCard className="p-6">
+                <SectionHeader title="Способи оплати" />
+                <div className="space-y-3 mt-4">
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Банківські карти</span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">36.4%</span>
                     </div>
-                    <ProgressBar value={method.percentage} />
+                    <ProgressBar value={36.4} max={100} color="bg-blue-500" />
                   </div>
-                ))}
-              </div>
-            </AdminCard>
-
-            <AdminCard className="p-6">
-              <SectionHeader title="Місячний звіт" icon={BarChart3} />
-              
-              <div className="space-y-4">
-                {monthlyData.slice(0, 4).map((month, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">{month.month}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Прибуток: {formatAmount(month.profit)}</p>
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Криптовалюта</span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">25.6%</span>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-green-600">{formatAmount(month.income)}</p>
-                      <p className="text-xs text-red-500">{formatAmount(month.expenses)}</p>
-                    </div>
+                    <ProgressBar value={25.6} max={100} color="bg-purple-500" />
                   </div>
-                ))}
-              </div>
-            </AdminCard>
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Банківські перекази</span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">23.0%</span>
+                    </div>
+                    <ProgressBar value={23.0} max={100} color="bg-green-500" />
+                  </div>
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Монобанк</span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">14.9%</span>
+                    </div>
+                    <ProgressBar value={14.9} max={100} color="bg-yellow-500" />
+                  </div>
+                </div>
+              </AdminCard>
+            </div>
 
+            {/* Recent Transactions */}
             <AdminCard className="p-6">
-              <SectionHeader title="Швидкі дії" icon={Zap} />
-              
-              <div className="space-y-3">
-                <AdminButton className="w-full justify-start">
-                  <Wallet className="w-4 h-4 mr-2" />
-                  Виплатити майстрам
-                </AdminButton>
-                <AdminButton variant="secondary" className="w-full justify-start">
-                  <Receipt className="w-4 h-4 mr-2" />
-                  Створити рахунок
-                </AdminButton>
-                <AdminButton variant="secondary" className="w-full justify-start">
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Згенерувати звіт
-                </AdminButton>
+              <SectionHeader title="Останні транзакції" />
+              <div className="overflow-x-auto mt-6">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-200 dark:border-gray-700">
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Опис</th>
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Сума</th>
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Дата</th>
+                      <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Статус</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transactions.map((tx) => {
+                      const Icon = getTransactionIcon(tx.type);
+                      return (
+                        <tr key={tx.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition">
+                          <td className="py-3 px-4">
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg bg-gray-100 dark:bg-gray-800 ${getTransactionColor(tx.type)}`}>
+                                <Icon className="w-4 h-4" />
+                              </div>
+                              <span className="text-sm font-medium text-gray-900 dark:text-white">{tx.description}</span>
+                            </div>
+                          </td>
+                          <td className={`py-3 px-4 text-sm font-semibold ${getTransactionColor(tx.type)}`}>
+                            {tx.type === 'income' ? '+' : '-'}₴{tx.amount.toLocaleString()}
+                          </td>
+                          <td className="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
+                            {new Date(tx.date).toLocaleDateString('uk-UA')}
+                          </td>
+                          <td className="py-3 px-4">
+                            <Badge variant={getStatusColor(tx.status)}>
+                              {tx.status === 'completed' ? '✓ Завершено' : tx.status === 'pending' ? '⏱ Очікування' : '✕ Помилка'}
+                            </Badge>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
             </AdminCard>
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );
 };
-
-export default ModernFinancialPanel;

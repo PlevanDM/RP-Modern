@@ -4,8 +4,11 @@
   "type": "module",
   "scripts": {
     "start": "tsx server.ts"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
+    "validator": "^13.15.20"
   }
 }
-
-
-

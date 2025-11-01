@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { AdminDashboard } from '../admin/AdminDashboard';
+import AdminDashboard from '../admin/AdminDashboard';
 import { UserRoleManager } from './UserRoleManager';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
 

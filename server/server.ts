@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+import helmet from 'helmet';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { Low } from 'lowdb';
@@ -57,86 +59,12 @@ async function initializeDatabase() {
   
   // Initialize test users if empty
   if (db.data.users.length === 0) {
-    console.log('📝 Initializing test users...');
-    
-    const testUsers: User[] = [
-      {
-        id: 'test-client-1',
-        name: 'Test Client',
-        email: 'client@test.com',
-        role: 'client',
-        city: 'Київ',
-        phone: '+380501234567',
-        avatar: '',
-        balance: 0,
-        skills: [],
-        specialization: 'Client',
-        verified: true,
-        blocked: false,
-        completedOrders: 0,
-        rating: 0
-      },
-      {
-        id: 'test-master-1',
-        name: 'Test Master',
-        email: 'master@test.com',
-        role: 'master',
-        city: 'Київ',
-        phone: '+380509876543',
-        avatar: '',
-        balance: 0,
-        skills: ['iPhone Repair', 'Screen Replacement'],
-        specialization: 'iPhone Specialist',
-        verified: true,
-        blocked: false,
-        completedOrders: 0,
-        rating: 4.8
-      },
-      {
-        id: 'test-admin-1',
-        name: 'Admin',
-        email: 'admin@test.com',
-        role: 'admin',
-        city: 'Київ',
-        phone: '+380500000000',
-        avatar: '',
-        balance: 0,
-        skills: [],
-        specialization: 'Administrator',
-        verified: true,
-        blocked: false,
-        completedOrders: 0,
-        rating: 0
-      },
-      {
-        id: 'test-superadmin-1',
-        name: 'Super Admin',
-        email: 'superadmin@test.com',
-        role: 'superadmin',
-        city: 'Київ',
-        phone: '+380500000001',
-        avatar: '',
-        balance: 0,
-        skills: [],
-        specialization: 'Super Administrator',
-        verified: true,
-        blocked: false,
-        completedOrders: 0,
-        rating: 0
-      }
-    ];
-    
-    // Hash passwords
-    for (const user of testUsers) {
-      user.password = await bcrypt.hash('password123', 10);
-      db.data.users.push(user);
-    }
-    
+    console.log('📝 Database is empty. Users must register to use the platform.');
+    // Don't create test users - require actual registration
     await db.write();
-    console.log('✅ Test users initialized:', testUsers.length);
   }
   
-  console.log('✅ Database initialized.');
+  console.log('✅ Database initialized. Ready for user registration.');
 }
 
 // --- NOTIFICATION HELPER ---
@@ -269,6 +197,62 @@ app.post('/api/auth/login', async (req, res) => {
   // Return all necessary user data (without password)
   const { password: _, ...userData } = user;
   res.json({ token, user: userData });
+});
+
+
+// Initialize admin user (only if no admins exist)
+app.post('/api/auth/init-admin', async (req, res) => {
+  const { email, password, name } = req.body;
+
+  if (!email || !password || !name) {
+    return res.status(400).json({ message: 'Email, password, and name are required.' });
+  }
+
+  await db.read();
+  
+  // Check if any admin exists
+  const adminExists = db.data.users.some(u => u.role === 'admin' || u.role === 'superadmin');
+  if (adminExists) {
+    return res.status(403).json({ message: 'Admin user already exists. Cannot create another admin.' });
+  }
+
+  // Check if user with this email already exists
+  const existingUser = db.data.users.find(u => u.email === email);
+  if (existingUser) {
+    return res.status(409).json({ message: 'User with this email already exists.' });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newAdmin: User = {
+    id: `user-${Date.now()}`,
+    email,
+    password: hashedPassword,
+    name,
+    role: 'superadmin',
+    city: '',
+    phone: '',
+    avatar: '',
+    balance: 0,
+    skills: [],
+    specialization: 'Administrator',
+    verified: true,
+    blocked: false,
+    completedOrders: 0,
+    rating: 0,
+    createdAt: new Date(),
+  };
+
+  db.data.users.push(newAdmin);
+  await db.write();
+
+  const token = jwt.sign({ userId: newAdmin.id, role: newAdmin.role, email: newAdmin.email }, JWT_SECRET, { expiresIn: '7d' });
+  const { password: _, ...userData } = newAdmin;
+  
+  res.status(201).json({ 
+    message: 'Admin user created successfully',
+    token, 
+    user: userData 
+  });
 });
 
 
@@ -1940,6 +1924,161 @@ app.get('/api/admin/errors', authMiddleware, requireRole(['admin', 'superadmin']
   );
   
   res.json(filteredErrors.slice(0, Number(limit)));
+});
+
+// --- ADMIN STATISTICS ENDPOINTS ---
+// Get admin dashboard statistics
+app.get('/api/admin/stats', authMiddleware, requireRole(['admin', 'superadmin']), async (req: AuthRequest, res: Response) => {
+  await db.read();
+  
+  const users = db.data.users || [];
+  const orders = db.data.orders || [];
+  const reviews = db.data.reviews || [];
+  
+  const totalUsers = users.length;
+  const totalMasters = users.filter(u => u.role === 'master').length;
+  const totalClients = users.filter(u => u.role === 'client').length;
+  
+  const totalOrders = orders.length;
+  const activeRepairs = orders.filter(o => ['in_progress', 'accepted'].includes(o.status)).length;
+  const completedRepairs = orders.filter(o => o.status === 'completed').length;
+  
+  const totalRevenue = orders.reduce((sum, order) => {
+    if (order.paymentStatus === 'released' || order.paymentStatus === 'escrowed') {
+      return sum + (order.budget || 0);
+    }
+    return sum;
+  }, 0);
+  
+  const platformCommission = totalRevenue * 0.1; // 10% commission
+  
+  const avgRating = reviews.length > 0 
+    ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length 
+    : 0;
+  
+  res.json({
+    totalUsers,
+    totalOrders,
+    totalRevenue,
+    activeRepairs,
+    completedRepairs,
+    totalMasters,
+    totalClients,
+    platformCommission,
+    avgRating: Math.round(avgRating * 10) / 10
+  });
+});
+
+// Get financial data
+app.get('/api/admin/financials', authMiddleware, requireRole(['admin', 'superadmin']), async (req: AuthRequest, res: Response) => {
+  await db.read();
+  
+  const { period = 'month' } = req.query;
+  const orders = db.data.orders || [];
+  
+  // Simple financial simulation based on orders
+  const now = new Date();
+  const data = [];
+  const dayCount = period === 'week' ? 7 : period === 'year' ? 12 : 30;
+  const isMonthly = period === 'year';
+  
+  for (let i = dayCount - 1; i >= 0; i--) {
+    const date = new Date(now);
+    if (isMonthly) {
+      date.setMonth(date.getMonth() - i);
+    } else {
+      date.setDate(date.getDate() - i);
+    }
+    
+    const periodOrders = orders.filter(o => {
+      const orderDate = new Date(o.createdAt);
+      if (isMonthly) {
+        return orderDate.getMonth() === date.getMonth() && orderDate.getFullYear() === date.getFullYear();
+      } else {
+        return orderDate.toDateString() === date.toDateString();
+      }
+    });
+    
+    const income = periodOrders.reduce((sum, o) => {
+      if (o.paymentStatus === 'released' || o.paymentStatus === 'escrowed') {
+        return sum + (o.budget || 0);
+      }
+      return sum;
+    }, 0);
+    
+    const expenses = income * 0.9;
+    const profit = income * 0.1;
+    
+    const label = isMonthly 
+      ? date.toLocaleString('uk-UA', { month: 'short' })
+      : date.toLocaleString('uk-UA', { weekday: 'short' });
+    
+    data.push({
+      period: label,
+      income: Math.round(income),
+      expenses: Math.round(expenses),
+      profit: Math.round(profit)
+    });
+  }
+  
+  res.json(data);
+});
+
+// Get recent transactions
+app.get('/api/admin/transactions', authMiddleware, requireRole(['admin', 'superadmin']), async (req: AuthRequest, res: Response) => {
+  await db.read();
+  
+  const { limit = '10' } = req.query;
+  const payments = db.data.payments || [];
+  const orders = db.data.orders || [];
+  const transactions = [];
+  
+  for (const payment of payments.slice(-20)) {
+    const order = orders.find(o => o.id === payment.orderId);
+    transactions.push({
+      id: payment.id,
+      type: payment.status === 'released' ? 'income' : 'expense',
+      description: payment.status === 'released' 
+        ? `Комісія з замовлення #${order?.id.slice(-5).toUpperCase()}`
+        : `Виплата за замовлення #${order?.id.slice(-5).toUpperCase()}`,
+      amount: payment.amount || order?.budget || 0,
+      date: new Date(payment.createdAt).toISOString(),
+      status: payment.status === 'released' ? 'completed' : payment.status === 'frozen' ? 'pending' : 'failed'
+    });
+  }
+  
+  res.json(transactions.slice(0, Number(limit)));
+});
+
+// Get top masters by rating and orders
+app.get('/api/admin/top-masters', authMiddleware, requireRole(['admin', 'superadmin']), async (req: AuthRequest, res: Response) => {
+  await db.read();
+  
+  const { limit = '5' } = req.query;
+  const users = db.data.users || [];
+  const orders = db.data.orders || [];
+  const reviews = db.data.reviews || [];
+  
+  const masters = users.filter(u => u.role === 'master').map(master => {
+    const masterOrders = orders.filter(o => o.masterId === master.id && o.status === 'completed');
+    const masterReviews = reviews.filter(r => r.masterId === master.id);
+    
+    const totalRevenue = masterOrders.reduce((sum, o) => sum + (o.budget || 0), 0);
+    const avgRating = masterReviews.length > 0
+      ? masterReviews.reduce((sum, r) => sum + r.rating, 0) / masterReviews.length
+      : 0;
+    
+    return {
+      id: master.id,
+      name: master.name || 'Unknown',
+      repairs: masterOrders.length,
+      rating: Math.round(avgRating * 10) / 10,
+      avatar: master.avatar || `https://i.pravatar.cc/96?img=${Math.floor(Math.random() * 70)}`,
+      revenue: totalRevenue
+    };
+  }).sort((a, b) => b.rating - a.rating || b.repairs - a.repairs);
+  
+  res.json(masters.slice(0, Number(limit)));
 });
 
 // --- SERVER INITIALIZATION ---

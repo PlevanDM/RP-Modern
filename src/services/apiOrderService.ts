@@ -25,9 +25,11 @@ apiClient.interceptors.request.use((config) => {
       const parsed = JSON.parse(authStorage);
       const user = parsed.state?.currentUser;
       if (user) {
-        // Get token from localStorage or use a mock token for testing
-        const token = localStorage.getItem('jwt-token') || 'test-token';
-        config.headers.Authorization = `Bearer ${token}`;
+        // Get token from localStorage - required for API requests
+        const token = localStorage.getItem('jwt-token');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
       }
     } catch (e) {
       console.error('Failed to parse auth storage:', e);

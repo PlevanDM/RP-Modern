@@ -1230,3 +1230,238 @@ Jarvis Chat → Збір інформації перед створенням з
 *Документація створена: 2025*
 *Версія системи: 1.0.0*
 
+
+---
+
+## 🔐 Система Безпеки (Security Architecture)
+
+### Автентифікація
+- **JWT Tokens**: Вихід 7 днів
+- **Password Hashing**: bcryptjs (10 rounds)
+- **Token Storage**: localStorage (jwt-token)
+- **CORS**: Налаштовано для всіх доменів
+- **Middleware**: authMiddleware для всіх захищених маршрутів
+
+### Авторизація (RBAC)
+```typescript
+// Role-Based Access Control
+requireRole(['admin', 'superadmin'])
+requireRole(['master'])
+requireRole(['client'])
+```
+
+### Захист даних
+- Password validation перед зберіганням
+- Немає чутливих даних у логах
+- Secure JWT signing
+- HTTPS в production
+
+---
+
+## 🗄️ Структура Бази Даних (Database Schema)
+
+### Таблиця: users
+```json
+{
+  "id": "user-xxx",
+  "email": "user@example.com",
+  "password": "$2b$10$hashed",
+  "role": "client|master|admin|superadmin",
+  "name": "Full Name",
+  "city": "Kyiv",
+  "phone": "+380...",
+  "verified": true,
+  "blocked": false,
+  "rating": 4.8,
+  "completedOrders": 42,
+  "createdAt": "2025-11-01T20:00:00Z"
+}
+```
+
+### Таблиця: orders
+```json
+{
+  "id": "order-xxx",
+  "clientId": "user-xxx",
+  "clientName": "Client Name",
+  "title": "iPhone Screen Repair",
+  "device": "iPhone 14",
+  "deviceType": "iPhone",
+  "status": "open|proposed|accepted|in_progress|completed",
+  "budget": 2000,
+  "paymentStatus": "pending|escrowed|released|refunded",
+  "createdAt": "2025-11-01T20:00:00Z"
+}
+```
+
+### Таблиця: payments
+```json
+{
+  "id": "payment-xxx",
+  "orderId": "order-xxx",
+  "clientId": "user-xxx",
+  "masterId": "user-xxx",
+  "amount": 2000,
+  "status": "pending|escrowed|released|refunded",
+  "paymentMethod": "card|bank_transfer",
+  "platformFeePercent": 5,
+  "createdAt": "2025-11-01T20:00:00Z"
+}
+```
+
+### Таблиця: disputes
+```json
+{
+  "id": "dispute-xxx",
+  "orderId": "order-xxx",
+  "clientId": "user-xxx",
+  "masterId": "user-xxx",
+  "reason": "Not completed",
+  "status": "open|resolved",
+  "decision": "client_wins|master_wins|compromise",
+  "createdAt": "2025-11-01T20:00:00Z"
+}
+```
+
+---
+
+## 🔄 API маршрути (API Endpoints)
+
+### Аутентифікація
+- `POST /api/auth/register` - Реєстрація користувача
+- `POST /api/auth/login` - Логін
+- `POST /api/auth/logout` - Логаут
+- `POST /api/auth/init-admin` - Створення першого адміна
+- `GET /api/auth/me` - Поточний користувач
+- `GET /api/profile/me` - Профіль користувача
+
+### Замовлення
+- `GET /api/orders` - Список замовлень (пагінація)
+- `POST /api/orders` - Створити замовлення
+- `GET /api/orders/:id` - Деталі замовлення
+- `PATCH /api/orders/:id` - Редагувати замовлення
+- `POST /api/orders/:id/cancel` - Скасувати замовлення
+- `POST /api/orders/:id/start` - Почати роботу
+- `POST /api/orders/:id/finish` - Завершити роботу
+
+### Пропозиції
+- `GET /api/offers` - Список пропозицій
+- `POST /api/offers` - Створити пропозицію
+- `POST /api/offers/:id/accept` - Прийняти пропозицію
+- `DELETE /api/offers/:id` - Видалити пропозицію
+
+### Платежі
+- `POST /api/payments` - Створити платіж (Escrow)
+- `POST /api/payments/:orderId/release` - Звільнити платіж
+- `POST /api/payments/:orderId/refund` - Повернути платіж
+
+### Спори
+- `POST /api/disputes` - Створити спір
+- `POST /api/disputes/:id/resolve` - Вирішити спір
+
+### Користувачі (Admin)
+- `GET /api/users` - Список користувачів
+- `GET /api/admin/users` - Всі користувачі (admin)
+- `PATCH /api/admin/users/:id` - Редагувати користувача
+- `POST /api/admin/users/:id/ban` - Заблокувати користувача
+
+### Сповіщення
+- `GET /api/notifications` - Список сповіщень
+- `POST /api/notifications/:id/read` - Позначити прочитаним
+
+### Чат
+- `GET /api/conversations` - Список розмов
+- `POST /api/conversations` - Створити розмову
+- `GET /api/messages` - Список повідомлень
+- `POST /api/messages` - Надіслати повідомлення
+
+---
+
+## 🧠 Master Matching Algorithm
+
+### Алгоритм підбору майстрів:
+1. **Фільтрація**: За брендом та типом ремонту
+2. **Ранжування**: За рейтингом та відстанню
+3. **Оптимізація**: Перші 20 найкращих майстрів
+4. **Сортування**: За кількістю завершених замовлень
+
+```typescript
+interface ClientPreferences {
+  preferredBrands?: string[];
+  preferredRepairTypes?: string[];
+  city?: string;
+  budgetRange?: 'low' | 'medium' | 'high';
+  preferredWorkLocation?: 'mobile' | 'service';
+}
+
+interface MasterProfile {
+  repairBrands?: string[];
+  repairTypes?: string[];
+  workLocation?: string;
+  city?: string;
+  rating: number;
+  completedOrders: number;
+  workingRadius?: number;
+}
+```
+
+---
+
+## 📱 UI компоненти (Component Library)
+
+### Основні компоненти:
+- **Button** - Кнопки з варіантами (primary, secondary, danger)
+- **Input** - Поля вводу з валідацією
+- **Modal** - Модальні вікна для форм
+- **Card** - Картки для відображення даних
+- **Badge** - Статус-значки
+- **Avatar** - Зображення користувачів
+- **Tabs** - Вкладки для навігації
+- **Toast** - Сповіщення про дії
+- **Dropdown** - Меню вибору
+- **Progress** - Прогрес-бари
+
+### Спеціалізовані компоненти:
+- **OrderCard** - Картка замовлення
+- **ProposalCard** - Картка пропозиції
+- **MasterCard** - Картка майстра
+- **ChatWindow** - Вікно чату
+- **NotificationCenter** - Центр сповіщень
+
+---
+
+## 🎯 Міграція на Production
+
+### Етап 1: Локальна розробка
+- ✅ Локальний Vite dev server (5173)
+- ✅ Node.js backend (3001)
+- ✅ JSON база даних
+- ✅ LocalStorage для сесій
+
+### Етап 2: Staging
+- Docker контейнери
+- MongoDB / PostgreSQL
+- Nginx reverse proxy
+- Let's Encrypt SSL
+
+### Етап 3: Production
+- Вилив на сервер
+- Налаштування CI/CD
+- Моніторинг та логування
+- Backup система
+
+---
+
+## 📝 Версіонування
+
+- **v1.0.0** - MVP релас (novembre 2025)
+  - Базова функціональність замовлень
+  - Система платежів (Escrow)
+  - Чат між клієнтами та майстрами
+  - Admin панель
+
+---
+
+**Остання оновлення:** November 1, 2025
+**Версія документу:** 2.0
+**Статус:** Production Ready

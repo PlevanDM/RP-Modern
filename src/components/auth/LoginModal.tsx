@@ -1,47 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { X, AlertCircle, HelpCircle, Copy, Check } from 'lucide-react';
+import { X, AlertCircle, HelpCircle } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
-import { initializeTestUsers } from '../../utils/testLoginUsers';
 
 interface LoginModalProps {
   onClose: () => void;
   onSwitchToRegister?: () => void;
 }
 
-// Test users data with translation keys
-const TEST_USERS_DATA = [
-  { email: 'admin@test.com', password: 'admin123', roleKey: 'auth.testUsers.admin.role', nameKey: 'auth.testUsers.admin.name' },
-  { email: 'master1@test.com', password: 'master123', roleKey: 'auth.testUsers.master1.role', nameKey: 'auth.testUsers.master1.name' },
-  { email: 'master2@test.com', password: 'master123', roleKey: 'auth.testUsers.master2.role', nameKey: 'auth.testUsers.master2.name' },
-  { email: 'master3@test.com', password: 'master123', roleKey: 'auth.testUsers.master3.role', nameKey: 'auth.testUsers.master3.name' },
-  { email: 'client1@test.com', password: 'client123', roleKey: 'auth.testUsers.client1.role', nameKey: 'auth.testUsers.client1.name' },
-  { email: 'client2@test.com', password: 'client123', roleKey: 'auth.testUsers.client2.role', nameKey: 'auth.testUsers.client2.name' },
-  { email: 'client3@test.com', password: 'client123', roleKey: 'auth.testUsers.client3.role', nameKey: 'auth.testUsers.client3.name' },
-  { email: 'client4@test.com', password: 'client123', roleKey: 'auth.testUsers.client4.role', nameKey: 'auth.testUsers.client4.name' },
-  { email: 'superadmin@test.com', password: 'admin123', roleKey: 'auth.testUsers.superadmin.role', nameKey: 'auth.testUsers.superadmin.name' },
-  { email: 'test@test.com', password: 'test123', roleKey: 'auth.testUsers.test.role', nameKey: 'auth.testUsers.test.name' },
-];
-
 export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
   const { t } = useTranslation();
-  const TEST_USERS = TEST_USERS_DATA.map(user => ({
-    email: user.email,
-    password: user.password,
-    role: t(user.roleKey),
-    name: t(user.nameKey)
-  }));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showTestUsers, setShowTestUsers] = useState(false);
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-  
-  // Ініціалізуємо тестових користувачів при відкритті модального вікна
-  useEffect(() => {
-    initializeTestUsers();
-  }, []);
 
   // Clear error when typing
   useEffect(() => {
@@ -81,23 +53,6 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
     }
   };
 
-  const handleUseTestUser = (testEmail: string, testPassword: string) => {
-    setEmail(testEmail);
-    setPassword(testPassword);
-    setShowTestUsers(false);
-  };
-
-  const handleCopyCredentials = async (testEmail: string, testPassword: string, index: number) => {
-    const text = `${testEmail}:${testPassword}`;
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedIndex(index);
-      setTimeout(() => setCopiedIndex(null), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
-    }
-  };
-
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-3 sm:p-4">
       <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl shadow-black/20 w-full max-w-md relative animate-in fade-in slide-in-from-bottom-4 duration-300 overflow-hidden max-h-[95vh] flex flex-col">
@@ -113,68 +68,13 @@ export function LoginModal({ onClose, onSwitchToRegister }: LoginModalProps) {
           
           <div className="flex items-start justify-between gap-4 pr-12">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{t('auth.login') || 'Вхід'}</h2>
-                <button
-                  type="button"
-                  onClick={() => setShowTestUsers(!showTestUsers)}
-                  className="p-1.5 hover:bg-blue-100 rounded-lg transition text-gray-500 hover:text-blue-600"
-                  title={t('auth.testUsersTitle') || 'Тестові користувачі'}
-                >
-                  <HelpCircle className="w-5 h-5" />
-                </button>
-              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{t('auth.login') || 'Вхід'}</h2>
               <p className="text-gray-600 text-sm sm:text-base">{t('auth.loginDescription') || t('auth.login')}</p>
             </div>
           </div>
         </div>
 
         <div className="px-5 sm:px-6 md:px-8 pb-5 sm:pb-6 md:pb-8 overflow-y-auto flex-1">
-
-          {/* Тестові користувачі */}
-          {showTestUsers && (
-            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
-              <h3 className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                <HelpCircle className="w-4 h-4" />
-                {t('auth.testUsersTitle') || 'Тестові користувачі'}
-              </h3>
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {TEST_USERS.map((user, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-2 bg-white rounded-lg border border-blue-100 hover:border-blue-300 transition"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-semibold text-gray-900 truncate">{user.name}</p>
-                      <p className="text-xs text-gray-600 truncate">{user.email}</p>
-                      <p className="text-xs text-gray-500">{t('auth.password')}: {user.password}</p>
-                    </div>
-                    <div className="flex gap-1 ml-2">
-                      <button
-                        type="button"
-                        onClick={() => handleCopyCredentials(user.email, user.password, index)}
-                        className="p-1.5 hover:bg-blue-100 rounded text-blue-600 transition"
-                        title={t('common.copy') || 'Копіювати'}
-                      >
-                        {copiedIndex === index ? (
-                          <Check className="w-4 h-4 text-green-600" />
-                        ) : (
-                          <Copy className="w-4 h-4" />
-                        )}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleUseTestUser(user.email, user.password)}
-                        className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                      >
-                        {t('common.use') || 'Використати'}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl flex items-center gap-3">

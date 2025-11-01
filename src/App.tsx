@@ -34,8 +34,7 @@ import { useNotificationsStore } from './store/notificationsStore';
 import { NotificationCenter } from './components/NotificationCenter';
 import { OnboardingWizard } from './components/OnboardingWizard';
 import LanguageSwitcher from './components/LanguageSwitcher';
-import { Order, User } from './types/models';
-import { Notification } from './types';
+import { Order, User, Notification } from './types/models';
 import { ClientProfileStep } from './components/onboarding/ClientProfileStep';
 import { DeviceStep } from './components/onboarding/DeviceStep';
 import { OnboardingCompletionStep } from './components/onboarding/OnboardingCompletionStep';
@@ -113,7 +112,7 @@ function App() {
     title: string;
     description: string;
     device: string;
-    deviceType: string;
+    deviceType: 'iPhone' | 'iPad' | 'Mac' | 'Apple Watch' | 'Other';
     issue: string;
     budget: number;
     urgency?: 'low' | 'medium' | 'high';
@@ -127,13 +126,13 @@ function App() {
       deviceType: orderData.deviceType,
       issue: orderData.issue,
       budget: orderData.budget,
-      city: orderData.city,
+      city: currentUser?.city || '',
       status: 'open',
-      urgency: orderData.urgency,
+      urgency: orderData.urgency || 'medium',
       createdAt: new Date(),
       updatedAt: new Date(),
-      clientId: orderData.clientId,
-      clientName: orderData.clientName,
+      clientId: currentUser?.id || '',
+      clientName: currentUser?.name || '',
       proposalCount: 0,
       paymentStatus: 'pending',
       paymentAmount: 0,
@@ -163,6 +162,10 @@ function App() {
   const [users, setUsers] = useState<User[]>([]);
 
   const { fetchNotifications } = useNotificationsStore();
+
+  const setSelectedOrder = (order: Order | null) => {
+    _setSelectedOrder(order);
+  };
 
   // Автооновлення замовлень кожні 10 секунд
   useAutoRefresh({
@@ -200,13 +203,6 @@ function App() {
       try {
         const allUsers = await apiUserService.getUsers();
         setUsers(allUsers);
-        
-        // Initialize test data if needed
-        const orders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
-        if (orders.length === 0) {
-          const { initializeTestData } = await import('./utils/testData');
-          initializeTestData();
-        }
       } catch (error: unknown) {
         // Тиха обробка помилок - не ламаємо рендеринг
         const errorMessage = error instanceof Error ? error.message : String(error);
@@ -277,15 +273,8 @@ function App() {
     }) => {
       if (currentUser) {
         try {
-          // Оновлюємо дані користувача в localStorage
-          const users = JSON.parse(localStorage.getItem('app_users') || '[]');
-          const userIndex = users.findIndex((u: User) => u.id === currentUser.id);
-          
-          if (userIndex !== -1) {
-            users[userIndex] = { ...users[userIndex], ...data };
-            localStorage.setItem('app_users', JSON.stringify(users));
-          }
-          
+          // Оновлюємо дані користувача через API
+          await apiUserService.updateUserProfile(currentUser.id, data);
           completeOnboarding();
         } catch (error) {
           console.error('Error saving onboarding data:', error);
@@ -417,7 +406,7 @@ function App() {
                     stats={{
                       activeOrders: safeOrders.filter((o) => o.status === 'in_progress').length,
                       completedOrders: safeOrders.filter(
-                        (o) => o.status === 'completed' || o.status === 'paid'
+                        (o) => o.status === 'completed'
                       ).length,
                       totalEarned: 125000,
                       rating: currentUser.rating || 4.9,

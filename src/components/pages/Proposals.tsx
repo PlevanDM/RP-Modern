@@ -11,7 +11,7 @@ import {
   Check,
   Ban
 } from 'lucide-react';
-import { Proposal } from '../..//models';
+import { Proposal } from '../../types/models';
 
 interface Order {
   id: string;
@@ -378,7 +378,7 @@ export function Proposals({
                 onClick={() => setShowCancelModal(false)}
                 className="text-gray-400 hover:text-gray-600"
               >
-                <CloseIcon sx={{ fontSize: 24 }} />
+                <X size={24} />
               </button>
             </div>
             
@@ -406,7 +406,7 @@ export function Proposals({
                 onClick={handleConfirmCancel}
                 className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 flex items-center gap-2"
               >
-                <CancelIcon sx={{ fontSize: 20 }} /> {t('proposals.confirmCancel')}
+                <X size={20} /> {t('proposals.confirmCancel')}
               </button>
             </div>
           </div>
@@ -423,7 +423,7 @@ export function Proposals({
                 onClick={() => setShowRejectModal(false)}
                 className="text-gray-400 hover:text-gray-600"
               >
-                <CloseIcon sx={{ fontSize: 24 }} />
+                <X size={24} />
               </button>
             </div>
             
@@ -451,7 +451,7 @@ export function Proposals({
                 onClick={handleConfirmReject}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center gap-2"
               >
-                <CancelIcon sx={{ fontSize: 20 }} /> {t('proposals.confirmReject')}
+                <X size={20} /> {t('proposals.confirmReject')}
               </button>
             </div>
           </div>

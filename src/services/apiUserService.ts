@@ -16,24 +16,8 @@ class ApiUserService {
   }
 
   public async getUsers(): Promise<User[]> {
-    try {
-      const response = await axios.get(`${getApiUrl()}/users`, { headers: getAuthHeaders(), withCredentials: true });
-      return response.data;
-    } catch (error) {
-      // Якщо помилка авторизації, спробуємо без токену (для тестування)
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        console.warn('Auth error getting users, trying without token');
-        try {
-          const response = await axios.get(`${getApiUrl()}/users`);
-          return response.data;
-        } catch (error) {
-          // Якщо все одно не працює, повертаємо пустий масив
-          console.error('Failed to get users:', error);
-          return [];
-        }
-      }
-      throw error;
-    }
+    const response = await axios.get(`${getApiUrl()}/users`, { headers: getAuthHeaders(), withCredentials: true });
+    return response.data;
   }
   
   private getAuthToken(): string | null {
@@ -49,31 +33,11 @@ class ApiUserService {
   }
 
   public async getUserById(userId: string): Promise<User | undefined> {
-    try {
-      const token = this.getAuthToken();
-      const headers: { [key: string]: string } = { 'Content-Type': 'application/json' };
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-      
-      const response = await axios.get(`${getApiUrl()}/users/${userId}`, { 
-        headers: { ...headers, ...getAuthHeaders() },
-        withCredentials: true 
-      });
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        console.warn('Auth error getting user, trying without token');
-        try {
-          const response = await axios.get(`${getApiUrl()}/users/${userId}`);
-          return response.data;
-        } catch (error) {
-          console.error('Failed to get user:', error);
-          return undefined;
-        }
-      }
-      throw error;
-    }
+    const response = await axios.get(`${getApiUrl()}/users/${userId}`, { 
+      headers: getAuthHeaders(),
+      withCredentials: true 
+    });
+    return response.data;
   }
 
   public async createUser(user: User): Promise<User> {

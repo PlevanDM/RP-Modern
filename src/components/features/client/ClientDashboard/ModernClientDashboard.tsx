@@ -19,14 +19,12 @@ import { Badge } from '../../../ui/badge';
 import { Progress } from '../../../ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '../../../ui/avatar';
 import { CreateOrderModal } from '../../../CreateOrderModal';
-import { User } from '../../../../types/models';
+import { User, Order, Notification } from '../../../../types/models';
 import { useTranslation } from '../../../../hooks/useTranslation';
 import { safeLocaleCurrency, safeLocaleDate } from '../../../../utils/localeUtils';
 
-interface Order {
-  id: string;
-  title: string;
-  status: 'pending' | 'in-progress' | 'completed' | 'cancelled' | 'open' | 'accepted' | 'proposed';
+// Extended interfaces for this component
+interface ExtendedOrder extends Order {
   progress?: number;
   master?: {
     name: string;
@@ -34,18 +32,12 @@ interface Order {
     rating: number;
   };
   date?: string;
-  createdAt?: Date | string;
-  price?: number;
   category?: string;
-  location?: string;
 }
 
-interface Notification {
-  id: string;
-  type: 'info' | 'success' | 'warning';
-  message: string;
-  time: string;
-  read: boolean;
+interface ExtendedNotification extends Notification {
+  type?: 'info' | 'success' | 'warning';
+  time?: string;
 }
 
 interface StatCard {
@@ -58,11 +50,11 @@ interface StatCard {
 
 interface ModernClientDashboardProps {
   currentUser: User;
-  orders: Order[];
-  notifications: Notification[];
+  orders: ExtendedOrder[];
+  notifications: ExtendedNotification[];
   setActiveItem: (item: string) => void;
-  createOrder: (order: Omit<Order, 'id'>) => void;
-  setSelectedOrder: (order: Order | null) => void;
+  createOrder: (order: Omit<ExtendedOrder, 'id'>) => void;
+  setSelectedOrder: (order: ExtendedOrder | null) => void;
 }
 
 const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
@@ -87,7 +79,7 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
     },
     {
       title: t('status.in_progress'),
-      value: clientOrders.filter((o) => o.status === 'in-progress').length.toString(),
+      value: clientOrders.filter((o) => o.status === 'in_progress').length.toString(),
       change: '+2',
       icon: <Clock className="w-5 h-5" />,
       trend: 'up',
@@ -111,15 +103,15 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
   ];
 
   const orders = clientOrders
-    .filter((order) => ['in-progress', 'pending', 'open', 'proposed'].includes(order.status))
+    .filter((order) => ['in_progress', 'pending', 'open', 'proposed'].includes(order.status))
     .filter((order) => statusFilter === 'all' || order.status === statusFilter);
-  const orderHistory = clientOrders.filter((order) => ['completed', 'paid'].includes(order.status));
+  const orderHistory = clientOrders.filter((order) => ['completed'].includes(order.status));
 
-  const getStatusColor = (status: Order['status']) => {
+  const getStatusColor = (status: ExtendedOrder['status']) => {
     switch (status) {
       case 'pending':
         return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
-      case 'in-progress':
+      case 'in_progress':
         return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
       case 'completed':
         return 'bg-green-500/10 text-green-500 border-green-500/20';
@@ -136,11 +128,11 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
     }
   };
 
-  const getStatusText = (status: Order['status']) => {
+  const getStatusText = (status: ExtendedOrder['status']) => {
     switch (status) {
       case 'pending':
         return t('status.pending');
-      case 'in-progress':
+      case 'in_progress':
         return t('status.in_progress');
       case 'completed':
         return t('status.completed');
@@ -486,4 +478,4 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
   );
 };
 
-export { ModernClientDashboard as default };
+export default ModernClientDashboard;
