@@ -55,6 +55,7 @@ interface ModernNavigationProps {
 // Мапінг ключів навігації на activeItem
 const ROUTE_MAP: Record<string, string> = {
   'navigation.dashboard': 'dashboard',
+  'navigation.novapost': 'novapost',
   'navigation.createOrder': 'catalog',
   'navigation.findMasters': 'priceComparison',
   'navigation.myOrders': 'myOrders',
@@ -128,7 +129,8 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { key: 'navigation.payments', label: t('navigation.payments'), href: "#", icon: CreditCard },
         { key: 'navigation.messages', label: t('navigation.messages'), href: "#", icon: MessageSquare },
         { key: 'navigation.portfolio', label: t('navigation.portfolio'), href: "#", icon: Briefcase },
-        { key: 'navigation.support', label: t('navigation.support'), href: "#", icon: HelpCircle }
+        { key: 'navigation.support', label: t('navigation.support'), href: "#", icon: HelpCircle },
+        { key: 'navigation.novapost', label: 'Нова Пошта', href: "#", icon: Package }
       ];
     } else if (currentUser?.role === 'client') {
       // Client menu
@@ -140,7 +142,8 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         { key: 'navigation.myDevices', label: t('navigation.myDevices'), href: "#", icon: Smartphone },
         { key: 'navigation.proposals', label: t('navigation.proposals'), href: "#", icon: Tag },
         { key: 'navigation.payments', label: t('navigation.payments'), href: "#", icon: CreditCard },
-        { key: 'navigation.messages', label: t('navigation.messages'), href: "#", icon: MessageSquare }
+        { key: 'navigation.messages', label: t('navigation.messages'), href: "#", icon: MessageSquare },
+        { key: 'navigation.novapost', label: 'Нова Пошта', href: "#", icon: Package }
       ];
     }
 
