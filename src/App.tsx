@@ -30,7 +30,8 @@ import { MasterOrdersBoard } from './components/features/master/MasterOrdersBoar
 // import { MasterInventory } from './components/MasterInventory';
 // import MasterPartsMarketplace from './components/features/master/MasterPartsMarketplace';
 import { SparePartsMarketplace } from './components/features/marketplace/SparePartsMarketplace';
-import { SellerDashboard } from './components/features/marketplace/SellerDashboard';
+// import { SellerDashboard } from './components/features/marketplace/SellerDashboard';
+import { EnhancedSellerDashboard } from './components/features/marketplace/EnhancedSellerDashboard';
 // import { ExchangeManager } from './components/features/marketplace/ExchangeManager';
 import { EnhancedExchangeManager } from './components/features/marketplace/EnhancedExchangeManager';
 import { MasterSupportPanel } from './components/features/master/MasterSupportPanel';
@@ -506,7 +507,7 @@ function App() {
             )}
             
             {activeItem === 'sellerDashboard' && (
-              <SellerDashboard />
+              <EnhancedSellerDashboard />
             )}
             
             {activeItem === 'exchangeParts' && (
