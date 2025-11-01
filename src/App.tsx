@@ -26,7 +26,10 @@ import { PaymentManagement } from './components/pages/PaymentManagement';
 import PortfolioPage from './components/features/master/portfolio/PortfolioPage';
 import { MasterOrdersBoard } from './components/features/master/MasterOrdersBoard/MasterOrdersBoard';
 // import { MasterInventory } from './components/MasterInventory';
-import MasterPartsMarketplace from './components/features/master/MasterPartsMarketplace';
+// import MasterPartsMarketplace from './components/features/master/MasterPartsMarketplace';
+import { SparePartsMarketplace } from './components/features/marketplace/SparePartsMarketplace';
+import { SellerDashboard } from './components/features/marketplace/SellerDashboard';
+import { ExchangeManager } from './components/features/marketplace/ExchangeManager';
 import { MasterSupportPanel } from './components/features/master/MasterSupportPanel';
 import { useAuthStore } from './store/authStore';
 import { useOrdersStore } from './store/ordersStore';
@@ -515,7 +518,18 @@ function App() {
             {activeItem === 'myDevices' && <MyDevices />}
 
             {activeItem === 'inventory' && (
-              <MasterPartsMarketplace />
+              <SparePartsMarketplace />
+            )}
+            
+            {activeItem === 'sellerDashboard' && (
+              <SellerDashboard />
+            )}
+            
+            {activeItem === 'exchangeParts' && (
+              <ExchangeManager 
+                userParts={[]}
+                availableForExchange={[]}
+              />
             )}
 
             {activeItem === 'partsInventory' && (

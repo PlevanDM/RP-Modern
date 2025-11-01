@@ -24,6 +24,9 @@ import {
   Activity,
   Database,
   HelpCircle,
+  Store,
+  RefreshCw,
+  DollarSign,
 } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { ScrollArea } from "../ui/scroll-area";
@@ -69,6 +72,9 @@ const ROUTE_MAP: Record<string, string> = {
   'navigation.reports': 'reviews', // Виправлено: reports -> reviews
   'navigation.portfolio': 'portfolio',
   'navigation.inventory': 'inventory',
+  'navigation.marketplace': 'inventory', // Новий маркетплейс
+  'navigation.sellerDashboard': 'sellerDashboard', // Кабінет продавця
+  'navigation.exchangeParts': 'exchangeParts', // Обмін запчастинами
   'navigation.myParts': 'inventory',
   'navigation.partsInventory': 'partsInventory',
   'navigation.users': 'users',
@@ -123,7 +129,9 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
           badge: unviewedOrdersCount > 0 ? { text: `${unviewedOrdersCount}`, variant: "destructive" } : undefined
         },
         { key: 'navigation.reports', label: t('navigation.reports'), href: "#", icon: Star },
-        { key: 'navigation.myParts', label: t('navigation.myParts'), href: "#", icon: Wrench },
+        { key: 'navigation.marketplace', label: '🛒 Торгова Майданка', href: "#", icon: Store },
+        { key: 'navigation.sellerDashboard', label: '💼 Кабінет Продавця', href: "#", icon: DollarSign },
+        { key: 'navigation.exchangeParts', label: '🔄 Обмін Запчастин', href: "#", icon: RefreshCw },
         { key: 'navigation.partsInventory', label: t('navigation.partsInventory'), href: "#", icon: Package },
         { key: 'navigation.myProposals', label: t('navigation.myProposals'), href: "#", icon: Tag },
         { key: 'navigation.payments', label: t('navigation.payments'), href: "#", icon: CreditCard },
