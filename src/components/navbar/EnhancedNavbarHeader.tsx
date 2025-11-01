@@ -105,13 +105,13 @@ export const EnhancedNavbarHeader: React.FC<NavbarHeaderProps> = ({
 
   return (
     <motion.div
-      className={`sticky top-0 z-50 bg-gradient-to-r ${PRIMARY_GRADIENT.bg} text-white shadow-xl backdrop-blur-lg`}
-      initial={{ y: -100 }}
+      className="sticky top-0 z-50 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white shadow-lg"
+      initial={{ y: -60 }}
       animate={{ y: 0 }}
-      transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+      transition={{ duration: 0.3 }}
     >
-      <div className="max-w-full mx-auto">
-        <div className="flex items-center justify-between h-16 px-4 sm:px-6 gap-3 sm:gap-4">
+      <div className="w-full">
+        <div className="flex items-center justify-between h-14 px-4 sm:px-6 gap-3 sm:gap-4">
           {/* Left: Logo + Time/Date */}
           <div className="flex items-center gap-3 sm:gap-4">
             {/* Logo */}

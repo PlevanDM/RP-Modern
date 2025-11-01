@@ -338,7 +338,15 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="flex h-screen">
+      <EnhancedNavbarHeader
+        currentUser={currentUser}
+        unviewedOrdersCount={notifications.filter(n => !n.read).length}
+        onSettingsClick={() => setActiveItem('settings')}
+        onLogout={logout}
+        onDashboardClick={() => setActiveItem('dashboard')}
+        onProfileClick={() => setActiveItem('profile')}
+      />
+      <div className="flex h-screen pt-14">
         <ModernNavigation
           currentUser={currentUser}
           activeItem={activeItem}
@@ -348,14 +356,6 @@ function App() {
           onCreateOrder={handleCreateOrder}
         />
         <div className="flex-1 md:ml-56 overflow-y-auto overflow-x-hidden h-screen relative">
-          <EnhancedNavbarHeader
-            currentUser={currentUser}
-            unviewedOrdersCount={notifications.filter(n => !n.read).length}
-            onSettingsClick={() => setActiveItem('settings')}
-            onLogout={logout}
-            onDashboardClick={() => setActiveItem('dashboard')}
-            onProfileClick={() => setActiveItem('profile')}
-          />
           <div className="pl-2 pr-4 lg:pl-3 lg:pr-6 py-2 w-full">
             <Suspense fallback={<div className="p-8"><div className="animate-pulse">Завантаження панелі...</div></div>}>
               {activeItem === 'dashboard' &&
