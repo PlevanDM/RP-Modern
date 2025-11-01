@@ -262,7 +262,7 @@
       "description": "Сучасний підхід до ремонту техніки. Візуалізуйте проблему та отримайте швидке рішення від професіоналів.",
       "cta": {
         "client": "Залишити заявку",
-        "master": "Стати майстром", 
+        "master": "Стати майстром",
         "findMaster": "Знайти майстра",
         "startEarning": "Почати заробляти"
       },
@@ -459,49 +459,7 @@
     "loginDescription": "Увійдіть у свій обліковий запис",
     "testUsersTitle": "Тестові користувачі",
     "emailPlaceholder": "Введіть email",
-    "loggingIn": "Вхід...",
-    "testUsers": {
-      "admin": {
-        "name": "Адмін Тест",
-        "role": "Адміністратор"
-      },
-      "superadmin": {
-        "name": "Суперадмін Тест",
-        "role": "СуперАдміністратор"
-      },
-      "master1": {
-        "name": "Майстер Сервісний",
-        "role": "Майстер (сервісний центр)"
-      },
-      "master2": {
-        "name": "Майстер Виїздний",
-        "role": "Майстер (виїзна служба)"
-      },
-      "master3": {
-        "name": "Майстер Домашній",
-        "role": "Майстер (домашній)"
-      },
-      "client1": {
-        "name": "Клієнт iOS",
-        "role": "Клієнт (iOS/Mac)"
-      },
-      "client2": {
-        "name": "Клієнт Android",
-        "role": "Клієнт (Android/Windows)"
-      },
-      "client3": {
-        "name": "Клієнт Windows",
-        "role": "Клієнт (Android/Windows)"
-      },
-      "client4": {
-        "name": "Клієнт Mac",
-        "role": "Клієнт (iOS/Mac)"
-      },
-      "test": {
-        "name": "Тестовий Користувач",
-        "role": "Клієнт"
-      }
-    }
+    "loggingIn": "Вхід..."
   },
   "common": {
     "platformName": "RepairHub",
@@ -537,7 +495,7 @@
     "cookiesDescription": "Ми використовуємо cookies для покращення вашого досвіду.",
     "modernPlatform": "Сучасна платформа для ремонту мобільної електроніки",
     "revenue": "Дохід за місяць",
-    "rating": "Середній рейтинг",
+    "rating": "Рейтинг",
     "completedOrders": "Завершено замовлень",
     "privacyPolicy": "Політикою конфіденційності",
     "next": "Далі",
@@ -573,7 +531,7 @@
       "february": "Лютий",
       "march": "Березень",
       "april": "Квітень",
-      "may": "Травень",
+      "may": "Тра",
       "june": "Червень",
       "july": "Липень",
       "august": "Серпень",
@@ -585,7 +543,6 @@
       "feb": "Лют",
       "mar": "Бер",
       "apr": "Кві",
-      "may": "Тра",
       "jun": "Чер",
       "jul": "Лип",
       "aug": "Сер",
@@ -624,7 +581,6 @@
     "favorite": "Улюблене",
     "share": "Поділитися",
     "memberSince": "Член з",
-    "completed": "Завершено",
     "roleClient": "Клієнт",
     "roleMaster": "Майстер",
     "roleService": "Сервіс",
@@ -640,15 +596,12 @@
     "phone": "Телефон",
     "city": "Місто",
     "status": "Статус",
-    "rating": "Рейтинг",
     "actions": "Дії",
     "editProfile": "Редагувати профіль",
     "messages": "Повідомлення",
     "confirm": "Підтвердити",
-    "fillAllFields": "Заповніть всі поля",
     "viewAll": "Всі →",
     "view": "Переглянути",
-    "search": "Пошук",
     "help": "Допомога",
     "about": "Про додаток"
   },
@@ -702,7 +655,7 @@
     "submit": "Розмістити",
     "all": "Всі",
     "pending": "Очікуючі",
-    "accepted": "Прийняті",
+    "accepted": "Пропозиція прийнята! Майстер розпочне роботу.",
     "noProposals": "Немає пропозицій",
     "days": "днів",
     "accept": "Прийняти",
@@ -719,7 +672,6 @@
     "enterCancelReason": "Вкажіть причину скасування",
     "enterRejectReason": "Вкажіть причину відхилення",
     "deleteConfirm": "Видалити пропозицію?",
-    "accepted": "Пропозиція прийнята! Майстер розпочне роботу.",
     "rejected": "Пропозиція відхилена. Причина"
   },
   "workExperience": {
@@ -828,12 +780,12 @@
   },
   "orderCreation": {
     "selectDevice": "Виберіть тип пристрою",
-    "enterModel": "Вкажіть модель",
+    "enterModel": "Введіть модель",
     "describeProblem": "Опишіть проблему",
     "minLength": "Мінімум 10 символів",
-    "enterBudget": "Вкажіть бюджет",
+    "enterBudget": "Введіть суму (₴)",
     "enterLocation": "Вкажіть місцеположення",
-    "selectType": "Виберіть тип...",
+    "selectType": "Оберіть тип",
     "createOrder": "Створити Замовлення",
     "uploadPhotos": "Завантажте фотографії",
     "reviewData": "Перевірте дані",
@@ -843,14 +795,11 @@
     "orderTitle": "Назва замовлення",
     "orderTitlePlaceholder": "Наприклад: Ремонт дисплея iPhone",
     "deviceType": "Тип пристрою",
-    "selectType": "Оберіть тип",
     "brand": "Бренд",
     "selectBrand": "Оберіть бренд",
     "deviceModel": "Модель пристрою",
     "selectModel": "Оберіть модель",
-    "enterModel": "Введіть модель",
     "budget": "Бюджет на ремонт",
-    "enterBudget": "Введіть суму (₴)",
     "problemType": "Тип проблеми",
     "selectProblem": "Оберіть проблему",
     "problemDescription": "Опис проблеми",
