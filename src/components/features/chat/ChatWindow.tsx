@@ -41,6 +41,17 @@ export function ChatWindow({
   const [editingMessage, setEditingMessage] = useState<Message | null>(null);
   const [showReactions, setShowReactions] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
+  const [otherUserTyping, setOtherUserTyping] = useState(false);
+  const typingTimeoutRef = useRef<NodeJS.Timeout>();
+  
+  const [searchQuery, setSearchQuery] = useState('');
+  const filteredMessages = searchQuery.trim() === '' 
+    ? messages 
+    : messages.filter(m => 
+        m.text?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        m.content?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -54,6 +65,26 @@ export function ChatWindow({
   const loadMessages = useCallback(() => {
     const loadedMessages = getMessages(conversation.id);
     setMessages(loadedMessages);
+  }, [conversation.id]);
+
+  
+  // Auto-save draft to localStorage
+  useEffect(() => {
+    const draftKey = `chat-draft-${conversation.id}`;
+    if (inputValue.trim()) {
+      localStorage.setItem(draftKey, inputValue);
+    } else {
+      localStorage.removeItem(draftKey);
+    }
+  }, [inputValue, conversation.id]);
+
+  // Load draft on mount
+  useEffect(() => {
+    const draftKey = `chat-draft-${conversation.id}`;
+    const savedDraft = localStorage.getItem(draftKey);
+    if (savedDraft) {
+      setInputValue(savedDraft);
+    }
   }, [conversation.id]);
 
   useEffect(() => {
