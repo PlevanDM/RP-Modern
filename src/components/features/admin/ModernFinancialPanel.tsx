@@ -67,36 +67,43 @@ export const ModernFinancialPanel = () => {
   const totalExpenses = financialData.reduce((sum, d) => sum + d.expenses, 0);
   const totalProfit = financialData.reduce((sum, d) => sum + d.profit, 0);
 
+  // Calculate changes based on actual data
+  const incomeChange = totalIncome > 0 ? `+${totalIncome}` : '0';
+  const commissionAmount = Math.round(totalIncome * 0.1);
+  const commissionChange = commissionAmount > 0 ? `+${commissionAmount}` : '0';
+  const expensesChange = totalExpenses > 0 ? `+${totalExpenses}` : '0';
+  const profitChange = totalProfit > 0 ? `+${totalProfit}` : totalProfit < 0 ? `${totalProfit}` : '0';
+
   const financialStats = [
     {
       title: 'Загальний дохід',
       value: formatAmount(totalIncome),
-      change: '+23.5%',
-      changeType: 'positive' as const,
+      change: incomeChange,
+      changeType: totalIncome > 0 ? 'positive' as const : 'neutral' as const,
       icon: DollarSign,
       color: 'text-green-600'
     },
     {
       title: 'Комісія платформи',
-      value: formatAmount(Math.round(totalIncome * 0.1)),
-      change: '+18.2%',
-      changeType: 'positive' as const,
+      value: formatAmount(commissionAmount),
+      change: commissionChange,
+      changeType: commissionAmount > 0 ? 'positive' as const : 'neutral' as const,
       icon: PieChart,
       color: 'text-blue-600'
     },
     {
       title: 'Виплати майстрам',
       value: formatAmount(totalExpenses),
-      change: '+15.8%',
-      changeType: 'positive' as const,
+      change: expensesChange,
+      changeType: totalExpenses > 0 ? 'positive' as const : 'neutral' as const,
       icon: Banknote,
       color: 'text-purple-600'
     },
     {
       title: 'Чистий прибуток',
       value: formatAmount(totalProfit),
-      change: '+12.3%',
-      changeType: 'positive' as const,
+      change: profitChange,
+      changeType: totalProfit > 0 ? 'positive' as const : totalProfit < 0 ? 'negative' as const : 'neutral' as const,
       icon: Target,
       color: 'text-orange-600'
     }

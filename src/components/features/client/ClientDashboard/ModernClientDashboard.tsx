@@ -73,32 +73,32 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
     {
       title: t('common.totalOrders'),
       value: clientOrders.length.toString(),
-      change: '+12%',
+      change: clientOrders.length > 0 ? `+${clientOrders.length}` : t('common.noOrders'),
       icon: <Package className="w-5 h-5" />,
-      trend: 'up',
+      trend: clientOrders.length > 0 ? 'up' : 'down',
     },
     {
       title: t('status.in_progress'),
       value: clientOrders.filter((o) => o.status === 'in_progress').length.toString(),
-      change: '+2',
+      change: clientOrders.filter((o) => o.status === 'in_progress').length > 0 ? `+${clientOrders.filter((o) => o.status === 'in_progress').length}` : '-',
       icon: <Clock className="w-5 h-5" />,
-      trend: 'up',
+      trend: clientOrders.filter((o) => o.status === 'in_progress').length > 0 ? 'up' : 'down',
     },
     {
       title: t('status.completed'),
       value: clientOrders.filter((o) => o.status === 'completed').length.toString(),
-      change: '+5',
+      change: clientOrders.filter((o) => o.status === 'completed').length > 0 ? `+${clientOrders.filter((o) => o.status === 'completed').length}` : '-',
       icon: <CheckCircle2 className="w-5 h-5" />,
-      trend: 'up',
+      trend: clientOrders.filter((o) => o.status === 'completed').length > 0 ? 'up' : 'down',
     },
     {
       title: t('common.spent'),
       value: `₴${safeLocaleCurrency(clientOrders
         .filter((o) => o.status === 'completed')
         .reduce((acc, o) => acc + (o.price || 0), 0))}`,
-      change: '+18%',
+      change: clientOrders.filter((o) => o.status === 'completed').reduce((acc, o) => acc + (o.price || 0), 0) > 0 ? `+₴${safeLocaleCurrency(clientOrders.filter((o) => o.status === 'completed').reduce((acc, o) => acc + (o.price || 0), 0))}` : t('common.noExpenses'),
       icon: <DollarSign className="w-5 h-5" />,
-      trend: 'up',
+      trend: clientOrders.filter((o) => o.status === 'completed').reduce((acc, o) => acc + (o.price || 0), 0) > 0 ? 'up' : 'down',
     },
   ];
 

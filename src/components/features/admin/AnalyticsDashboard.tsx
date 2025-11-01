@@ -45,10 +45,10 @@ export function AnalyticsDashboard() {
   }, []);
 
   const kpis = [
-    { name: 'Всього користувачів', value: stats.totalUsers.toString(), change: '+15%', icon: Users },
-    { name: 'Активні користувачі', value: stats.activeUsers.toString(), change: '+8%', icon: UserCheck },
-    { name: 'Майстрів', value: stats.totalMasters.toString(), change: '+12%', icon: Users },
-    { name: 'Всього замовлень', value: stats.totalOrders.toString(), change: '+20%', icon: Clock }
+    { name: 'Всього користувачів', value: stats.totalUsers.toString(), change: stats.totalUsers > 0 ? `+${stats.totalUsers}` : '0', icon: Users },
+    { name: 'Активні користувачі', value: stats.activeUsers.toString(), change: stats.activeUsers > 0 ? `+${stats.activeUsers}` : '0', icon: UserCheck },
+    { name: 'Майстрів', value: stats.totalMasters.toString(), change: stats.totalMasters > 0 ? `+${stats.totalMasters}` : '0', icon: Users },
+    { name: 'Всього замовлень', value: stats.totalOrders.toString(), change: stats.totalOrders > 0 ? `+${stats.totalOrders}` : '0', icon: Clock }
   ];
 
   if (loading) {
