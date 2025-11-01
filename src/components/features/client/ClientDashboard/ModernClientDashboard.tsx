@@ -1,4 +1,4 @@
-import React, { useState, cloneElement, isValidElement } from 'react';
+import React, { useState, useMemo, cloneElement, isValidElement } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Plus, 
@@ -69,36 +69,50 @@ const ModernClientDashboard: React.FC<ModernClientDashboardProps> = ({
   const [isCreateOrderModalOpen, setCreateOrderModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
 
+  // Оптимизация: кешируем вычисления с useMemo
+  const orderStats = useMemo(() => {
+    const inProgressCount = clientOrders.filter((o) => o.status === 'in_progress').length;
+    const completedCount = clientOrders.filter((o) => o.status === 'completed').length;
+    const totalSpent = clientOrders
+      .filter((o) => o.status === 'completed')
+      .reduce((acc, o) => acc + (o.price || 0), 0);
+    
+    return {
+      total: clientOrders.length,
+      inProgress: inProgressCount,
+      completed: completedCount,
+      spent: totalSpent
+    };
+  }, [clientOrders]);
+
   const stats: StatCard[] = [
     {
       title: t('common.totalOrders'),
-      value: clientOrders.length.toString(),
-      change: clientOrders.length > 0 ? `+${clientOrders.length}` : t('common.noOrders'),
+      value: orderStats.total.toString(),
+      change: orderStats.total > 0 ? `+${orderStats.total}` : t('common.noOrders'),
       icon: <Package className="w-5 h-5" />,
-      trend: clientOrders.length > 0 ? 'up' : 'down',
+      trend: orderStats.total > 0 ? 'up' : 'down',
     },
     {
       title: t('status.in_progress'),
-      value: clientOrders.filter((o) => o.status === 'in_progress').length.toString(),
-      change: clientOrders.filter((o) => o.status === 'in_progress').length > 0 ? `+${clientOrders.filter((o) => o.status === 'in_progress').length}` : '-',
+      value: orderStats.inProgress.toString(),
+      change: orderStats.inProgress > 0 ? `+${orderStats.inProgress}` : '-',
       icon: <Clock className="w-5 h-5" />,
-      trend: clientOrders.filter((o) => o.status === 'in_progress').length > 0 ? 'up' : 'down',
+      trend: orderStats.inProgress > 0 ? 'up' : 'down',
     },
     {
       title: t('status.completed'),
-      value: clientOrders.filter((o) => o.status === 'completed').length.toString(),
-      change: clientOrders.filter((o) => o.status === 'completed').length > 0 ? `+${clientOrders.filter((o) => o.status === 'completed').length}` : '-',
+      value: orderStats.completed.toString(),
+      change: orderStats.completed > 0 ? `+${orderStats.completed}` : '-',
       icon: <CheckCircle2 className="w-5 h-5" />,
-      trend: clientOrders.filter((o) => o.status === 'completed').length > 0 ? 'up' : 'down',
+      trend: orderStats.completed > 0 ? 'up' : 'down',
     },
     {
       title: t('common.spent'),
-      value: `₴${safeLocaleCurrency(clientOrders
-        .filter((o) => o.status === 'completed')
-        .reduce((acc, o) => acc + (o.price || 0), 0))}`,
-      change: clientOrders.filter((o) => o.status === 'completed').reduce((acc, o) => acc + (o.price || 0), 0) > 0 ? `+₴${safeLocaleCurrency(clientOrders.filter((o) => o.status === 'completed').reduce((acc, o) => acc + (o.price || 0), 0))}` : t('common.noExpenses'),
+      value: `₴${safeLocaleCurrency(orderStats.spent)}`,
+      change: orderStats.spent > 0 ? `+₴${safeLocaleCurrency(orderStats.spent)}` : t('common.noExpenses'),
       icon: <DollarSign className="w-5 h-5" />,
-      trend: clientOrders.filter((o) => o.status === 'completed').reduce((acc, o) => acc + (o.price || 0), 0) > 0 ? 'up' : 'down',
+      trend: orderStats.spent > 0 ? 'up' : 'down',
     },
   ];
 

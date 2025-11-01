@@ -56,7 +56,11 @@ class ApiAuthService {
         headers: getAuthHeaders(),
       });
       return response.data?.user || null;
-    } catch {
+    } catch (error) {
+      // Логируем только в dev режиме
+      if (import.meta.env.DEV) {
+        console.warn('Failed to fetch current user:', error);
+      }
       return null;
     }
   }
@@ -67,9 +71,13 @@ class ApiAuthService {
         withCredentials: true,
         headers: getAuthHeaders(),
       });
-    } catch {
-      // ignore
+    } catch (error) {
+      // Логируем ошибку logout только в dev
+      if (import.meta.env.DEV) {
+        console.warn('Logout API call failed (non-critical):', error);
+      }
     } finally {
+      // Всегда удаляем токен локально
       localStorage.removeItem('jwt-token');
     }
   }

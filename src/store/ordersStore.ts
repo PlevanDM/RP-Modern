@@ -81,7 +81,9 @@ export const useOrdersStore = create<OrdersState>()(
           const { orders, totalPages, currentPage, totalOrders } = await apiOrderService.getOrders(page, limit, searchTerm, status, sortBy);
           set({ orders, totalPages, currentPage, totalOrders });
         } catch (error) {
-          console.error('Помилка завантаження замовлень з API:', error);
+          if (import.meta.env.DEV) {
+            console.error('Помилка завантаження замовлень з API:', error);
+          }
           throw error;
         }
       },

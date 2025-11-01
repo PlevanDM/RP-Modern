@@ -27,7 +27,9 @@ export function MessagesNew({ currentUser, masters = [], orders = [] }: Messages
       const convs = await getConversations();
       setConversations(convs);
     } catch (error) {
-      console.error('Помилка завантаження розмов:', error);
+      if (import.meta.env.DEV) {
+        console.error('Помилка завантаження розмов:', error);
+      }
       setConversations([]);
     }
   }, [currentUser?.id]);
