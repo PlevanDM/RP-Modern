@@ -15,8 +15,6 @@ import {
   Briefcase,
   User,
   Settings,
-  Pin,
-  PinOff,
   Smartphone,
   Search,
   BarChart3,
@@ -103,7 +101,6 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
 }) => {
   const { t } = useTranslation();
   const [isCollapsed, _setIsCollapsed] = React.useState(false); // По умолчанию развернуто
-  const [isPinned, setIsPinned] = React.useState(true); // По умолчанию закреплено
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [openSubmenus, setOpenSubmenus] = React.useState<Set<string>>(new Set()); // Відкриті підменю
 
@@ -134,7 +131,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         },
         {
           key: 'navigation.orders',
-          label: '📦 Замовлення',
+          label: t('navigation.orders') || 'Замовлення',
           href: "#",
           icon: ShoppingCart,
           badge: unviewedOrdersCount > 0 ? { text: `${unviewedOrdersCount}`, variant: "destructive" } : undefined,
@@ -155,25 +152,25 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         },
         {
           key: 'navigation.marketplace',
-          label: '🛒 Маркетплейс',
+          label: t('navigation.marketplace') || 'Маркетплейс',
           href: "#",
           icon: Store,
           submenu: [
             {
               key: 'navigation.marketplaceBrowse',
-              label: 'Торгова Майданка',
+              label: t('navigation.marketplaceBrowse') || 'Торгова Майданка',
               href: "#",
               icon: Store
             },
             {
               key: 'navigation.sellerDashboard',
-              label: 'Кабінет Продавця',
+              label: t('navigation.sellerDashboard') || 'Кабінет Продавця',
               href: "#",
               icon: DollarSign
             },
             {
               key: 'navigation.exchangeParts',
-              label: 'Обмін Запчастин',
+              label: t('navigation.exchangeParts') || 'Обмін Запчастин',
               href: "#",
               icon: RefreshCw
             },
@@ -187,7 +184,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         },
         {
           key: 'navigation.finance',
-          label: '💰 Фінанси',
+          label: t('navigation.finance') || 'Фінанси',
           href: "#",
           icon: Wallet,
           submenu: [
@@ -219,7 +216,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         },
         { 
           key: 'navigation.novapost', 
-          label: '📮 Нова Пошта', 
+          label: t('navigation.novapost') || 'Нова Пошта', 
           href: "#", 
           icon: Package 
         },
@@ -281,121 +278,38 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
 
   const Logo = ({ collapsed }: { collapsed: boolean }) => {
     return (
-      <div className="flex items-center justify-between gap-2 sm:gap-3 px-2 sm:px-4 py-3 sm:py-6">
-        {/* Enhanced Logo with premium design */}
+      <div className="flex items-center gap-3 px-2 sm:px-4 py-3 sm:py-6">
+        {/* Simple modern logo */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.5, y: -20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 15 }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
           className="flex items-center gap-3"
         >
-          {/* Premium logo with animated gradient and glow */}
+          {/* Icon */}
           <motion.div
-            className="relative w-12 h-12 flex items-center justify-center"
-            whileHover={{ scale: 1.15, rotate: [0, -5, 5, 0] }}
-            transition={{ type: "spring", stiffness: 400, damping: 15 }}
+            className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {/* Animated glow effect */}
-            <motion.div
-              animate={{ 
-                opacity: [0.3, 0.7, 0.3],
-                scale: [1, 1.2, 1],
-                rotate: [0, 180, 360]
-              }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-2xl blur-lg opacity-60"
-            />
-
-            {/* Secondary glow layer */}
-            <motion.div
-              animate={{ 
-                opacity: [0.2, 0.5, 0.2],
-                scale: [1.1, 1.3, 1.1]
-              }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0 bg-gradient-to-br from-purple-600 via-blue-600 to-cyan-500 rounded-2xl blur-md opacity-50"
-            />
-
-            {/* Main icon container with premium design */}
-            <motion.div
-              whileHover={{ y: -2 }}
-              className="relative z-10 w-full h-full bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/60 ring-2 ring-white/20"
-            >
-              {/* Shine effect on hover */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileHover={{ opacity: 1 }}
-                className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/20 to-transparent pointer-events-none"
-              />
-              
-              <Wrench className="h-6 w-6 text-white drop-shadow-lg" strokeWidth={2.5} />
-              
-              {/* Animated sparkles */}
-              <motion.div
-                animate={{ 
-                  scale: [0.8, 1.2, 0.8],
-                  opacity: [0, 1, 0],
-                  rotate: [0, 180, 360]
-                }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full blur-sm"
-              />
-              <motion.div
-                animate={{ 
-                  scale: [0.8, 1.2, 0.8],
-                  opacity: [0, 0.8, 0],
-                  rotate: [0, -180, -360]
-                }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                className="absolute -bottom-1 -left-1 w-2 h-2 bg-cyan-400 rounded-full blur-sm"
-              />
-            </motion.div>
+            <Wrench className="h-5 w-5 text-white" strokeWidth={2.5} />
           </motion.div>
 
+          {/* Text */}
           <AnimatePresence mode="wait">
             {!collapsed && (
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
+              <motion.span 
+                initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
-                className="flex flex-col"
+                exit={{ opacity: 0, x: -10 }}
+                transition={{ duration: 0.2 }}
+                className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
               >
-                {/* Main text with animated gradient */}
-                <motion.span 
-                  className="text-2xl font-extrabold tracking-tight"
-                  style={{
-                    background: "linear-gradient(135deg, #3B82F6 0%, #8B5CF6 50%, #06B6D4 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}
-                >
-                  {t('common.platformName') || 'RepairHub'}
-                </motion.span>
-              </motion.div>
+                RepairHub
+              </motion.span>
             )}
           </AnimatePresence>
         </motion.div>
-        <AnimatePresence mode="wait">
-          {!collapsed && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => setIsPinned(!isPinned)}
-              className="p-1.5 hover:bg-accent rounded-lg transition-colors hover:scale-110"
-              title={isPinned ? t('navigation.autoHideMenu') : t('navigation.keepMenuOpen')}
-            >
-              {isPinned ? (
-                <Pin className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <PinOff className="h-4 w-4 text-muted-foreground" />
-              )}
-            </motion.button>
-          )}
-        </AnimatePresence>
       </div>
     );
   };
