@@ -26,7 +26,9 @@ export const useAuthStore = create<AuthState>()(
         if (user) {
           // Перевіряємо чи користувач має всі необхідні дані для автоматичного завершення онбордингу
           const hasCompleteProfile = user.name && user.city && user.phone;
-          console.log('🔐 Login user:', { email, name: user.name, city: user.city, phone: user.phone, hasCompleteProfile });
+          if (import.meta.env.DEV) {
+            console.log('🔐 Login user:', { email, name: user.name, city: user.city, phone: user.phone, hasCompleteProfile });
+          }
           const token = localStorage.getItem('jwt-token');
           set({
             currentUser: user,

@@ -187,8 +187,10 @@ function App() {
           }
         }
       } catch (error) {
-        // Критичні помилки логуються
-        console.error('Auto-refresh error:', error);
+        // Критичні помилки логуються тільки в DEV
+        if (import.meta.env.DEV) {
+          console.error('Auto-refresh error:', error);
+        }
       }
     },
     dependencies: [currentUser?.id],
@@ -206,7 +208,9 @@ function App() {
       } catch (error: unknown) {
         // Тиха обробка помилок - не ламаємо рендеринг
         const errorMessage = error instanceof Error ? error.message : String(error);
-        console.warn('Failed to fetch users (non-critical):', errorMessage);
+        if (import.meta.env.DEV) {
+          console.warn('Failed to fetch users (non-critical):', errorMessage);
+        }
         // Якщо не вдалося завантажити, залишаємо порожній масив
         setUsers([]);
       }
@@ -277,7 +281,9 @@ function App() {
           await apiUserService.updateUserProfile(currentUser.id, data);
           completeOnboarding();
         } catch (error) {
-          console.error('Error saving onboarding data:', error);
+          if (import.meta.env.DEV) {
+            console.error('Error saving onboarding data:', error);
+          }
           completeOnboarding();
         }
       } else {
@@ -583,7 +589,11 @@ function App() {
                   onUpdateProposal={useOrdersStore.getState().updateProposal}
                   onAcceptProposal={useOrdersStore.getState().acceptProposal}
                   onRejectProposal={useOrdersStore.getState().rejectProposal}
-                  onShowToast={(msg) => console.log(msg)}
+                  onShowToast={(msg) => {
+                    if (import.meta.env.DEV) {
+                      console.log(msg);
+                    }
+                  }}
                 />
               </div>
             )}
