@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { X, User, Wrench, AlertCircle, ChevronRight, ArrowLeft, Building2, Home, Car } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { User as UserType } from '../../types';
+import * as simpleIcons from 'simple-icons';
 
 interface RegisterModalProps {
   onClose: () => void;
@@ -355,76 +356,41 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
         );
       } else {
         // Master registration - multi-step questionnaire
-        // Brand logos as SVG components
+        // Brand logos from Simple Icons (open source)
         const BrandIcon = ({ brand, className = "" }: { brand: string; className?: string }) => {
-          const icons: Record<string, JSX.Element> = {
-            apple: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-              </svg>
-            ),
-            samsung: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M3 3h18v18H3V3m15.5 2.5h-13v13h13v-13m-1.5 11h-10v-9h10v9z"/>
-              </svg>
-            ),
-            xiaomi: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M19.96 20a.32.32 0 01-.32-.32V4.32a.32.32 0 01.32-.32h3.71a.32.32 0 01.32.32v15.36a.32.32 0 01-.32.32h-3.71zM.33 4.32A.32.32 0 01.65 4h3.71a.32.32 0 01.32.32v9.03c0 .18.14.32.32.32h3.87a.32.32 0 00.32-.32V4.32A.32.32 0 019.51 4h3.71a.32.32 0 01.32.32v15.36a.32.32 0 01-.32.32H9.51a.32.32 0 01-.32-.32v-3.55a.32.32 0 00-.32-.32H.65a.32.32 0 01-.32-.32V4.32z"/>
-              </svg>
-            ),
-            huawei: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M12 3L2 12h3v8h5v-6h4v6h5v-8h3L12 3z"/>
-              </svg>
-            ),
-            oppo: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-              </svg>
-            ),
-            google: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/>
-              </svg>
-            ),
-            sony: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M8.5 8.5h7v7h-7v-7M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-              </svg>
-            ),
-            lg: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
-              </svg>
-            ),
-            motorola: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18l7.45 3.73L12 11.82 4.55 7.91 12 4.18zM4 9.09l7 3.5v7.32l-7-3.5V9.09zm16 7.32l-7 3.5v-7.32l7-3.5v7.32z"/>
-              </svg>
-            ),
-            asus: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M3 4h18v4H3V4m0 6h18v4H3v-4m0 6h18v4H3v-4z"/>
-              </svg>
-            ),
-            lenovo: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M4 6h16v2H4V6m0 4h16v2H4v-2m0 4h10v2H4v-2z"/>
-              </svg>
-            ),
-            hp: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18l7.45 3.73L12 11.82 4.55 7.91 12 4.18z"/>
-              </svg>
-            ),
-            dell: (
-              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
-                <path d="M3 3h18v18H3V3m2 2v14h14V5H5z"/>
-              </svg>
-            ),
+          const iconMap: Record<string, string> = {
+            apple: 'siApple',
+            samsung: 'siSamsung',
+            xiaomi: 'siXiaomi',
+            huawei: 'siHuawei',
+            oppo: 'siOppo',
+            google: 'siGoogle',
+            sony: 'siSony',
+            lg: 'siLg',
+            motorola: 'siMotorola',
+            asus: 'siAsus',
+            lenovo: 'siLenovo',
+            hp: 'siHp',
+            dell: 'siDell',
           };
-          return icons[brand] || icons.apple;
+          
+          const iconKey = iconMap[brand];
+          const icon = iconKey ? simpleIcons[iconKey as keyof typeof simpleIcons] : simpleIcons.siApple;
+          
+          if (!icon || typeof icon !== 'object' || !('path' in icon)) {
+            return null;
+          }
+          
+          return (
+            <svg 
+              viewBox="0 0 24 24" 
+              className={className} 
+              fill="currentColor"
+              role="img"
+            >
+              <path d={icon.path} />
+            </svg>
+          );
         };
 
         const brands = [
