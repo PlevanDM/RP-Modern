@@ -116,6 +116,44 @@
     "keepMenuOpen": "Zostaw menu otwarte",
     "support": "Техпідтримка"
   },
+  "tooltips": {
+    "navigation": {
+      "dashboard": "Przegląd Twoich zamówień i aktywności",
+      "createOrder": "Opisz problem urządzenia i otrzymaj propozycje",
+      "findMasters": "Wyszukaj specjalistów w Twoim mieście według oceny",
+      "myOrders": "Historia i status wszystkich Twoich zamówień",
+      "myDevices": "Lista Twoich gadżetów i ich specyfikacja",
+      "orders": "Wszystkie aktywne zamówienia i ich szczegóły",
+      "statistics": "Analityka i statystyka Twojej pracy",
+      "messages": "Bezpośredni kontakt z mistrzami i klientami",
+      "profile": "Twoje dane osobowe i reputacja",
+      "reports": "Opinie klientów i Twoja ocena",
+      "orderHistory": "Archiwum ukończonych zamówień",
+      "portfolio": "Twoje ukończone projekty i prace",
+      "inventory": "Twój katalog części zamiennych i dostępność",
+      "myParts": "Zarządzaj swoimi częściami zamiennymi",
+      "partsInventory": "Zarządzanie zapasami części zamiennych",
+      "proposals": "Propozycje od mistrzów na Twoje zamówienia",
+      "myProposals": "Twoje propozycje i ich status",
+      "payments": "Zarządzaj płatościami i escrow",
+      "paymentMethods": "Skonfiguruj metody płatności",
+      "priceComparison": "Porównaj ceny od różnych mistrzów",
+      "mastersInventory": "Dostępność magazynowa mistrzów",
+      "outsourceOrders": "Zamówienia do wykonania przez strony trzecie",
+      "transactionHistory": "Pełna historia wszystkich transakcji",
+      "bookingCalendar": "Kalendarz rezerwacji usług",
+      "users": "Zarządzaj użytkownikami systemu",
+      "analytics": "Szczegółowa analityka i raporty",
+      "finance": "Wskaźniki finansowe i przychody",
+      "security": "Ustawienia bezpieczeństwa i prywatności",
+      "activity": "Dziennik aktywności systemu",
+      "database": "Zarządzanie bazą danych",
+      "settings": "Ogólne ustawienia systemu",
+      "ordersBoard": "Tablica aktywnych zamówień",
+      "novapost": "Śledź przesyłki i dostawy",
+      "support": "Wsparcie i dokumentacja"
+    }
+  },
   "auth": {
     "loginError": "Błąd logowania",
     "invalidCredentials": "Nieprawidłowy email lub hasło",
@@ -867,7 +905,7 @@
     "orderStatistics": "Statystyki Zleceń",
     "activityFeed": "Kanał Aktywności",
     "activeTasks": "Активні задачі",
-    "manageCurrentOrders": "Управління поточними замовленнями"
+    "manageCurrentOrders": "Управlіння поточними замовленнями"
   },
   "adminDashboard": {
     "title": "Panel Administratora",
