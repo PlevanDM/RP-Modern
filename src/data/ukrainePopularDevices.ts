@@ -166,6 +166,50 @@ export const allUkraineDevices: UkraineDeviceModel[] = [
   ...msiDevices,
 ];
 
+// ============================================================
+// HELPER FUNCTIONS
+// ============================================================
+
+// Отримати всі бренди
+export const getAllBrands = (): string[] => {
+  const brands = new Set(allUkraineDevices.map(d => d.brand));
+  return Array.from(brands).sort();
+};
+
+// Отримати моделі по бренду
+export const getModelsByBrand = (brand: string): UkraineDeviceModel[] => {
+  return allUkraineDevices.filter(d => d.brand === brand);
+};
+
+// Отримати моделі по категорії
+export const getModelsByCategory = (category: 'Smartphone' | 'Laptop' | 'Tablet'): UkraineDeviceModel[] => {
+  return allUkraineDevices.filter(d => d.category === category);
+};
+
+// Отримати моделі по ціновому діапазону
+export const getModelsByPriceRange = (priceRange: 'budget' | 'mid' | 'premium'): UkraineDeviceModel[] => {
+  return allUkraineDevices.filter(d => d.priceRange === priceRange);
+};
+
+// Пошук моделей
+export const searchModels = (query: string): UkraineDeviceModel[] => {
+  const lowerQuery = query.toLowerCase();
+  return allUkraineDevices.filter(d => 
+    d.name.toLowerCase().includes(lowerQuery) ||
+    d.brand.toLowerCase().includes(lowerQuery)
+  );
+};
+
+// Отримати популярні моделі
+export const getPopularModels = (): UkraineDeviceModel[] => {
+  return allUkraineDevices.filter(d => d.popular);
+};
+
+// Отримати нові моделі (2024-2025)
+export const getNewModels = (): UkraineDeviceModel[] => {
+  return allUkraineDevices.filter(d => d.year >= 2024);
+};
+
 // Статистика
 export const ukraineDeviceStats = {
   totalModels: allUkraineDevices.length,
@@ -191,11 +235,13 @@ export const ukraineDeviceStats = {
   }
 };
 
-console.log('📱 Ukraine Popular Devices Database:');
-console.log(`✅ Total models: ${ukraineDeviceStats.totalModels}`);
-console.log(`✅ Smartphones: ${ukraineDeviceStats.categories.smartphones}`);
-console.log(`✅ Laptops: ${ukraineDeviceStats.categories.laptops}`);
-console.log(`✅ Budget: ${ukraineDeviceStats.priceRanges.budget}`);
-console.log(`✅ Mid-range: ${ukraineDeviceStats.priceRanges.mid}`);
-console.log(`✅ Premium: ${ukraineDeviceStats.priceRanges.premium}`);
+if (import.meta.env.DEV) {
+  console.log('📱 Ukraine Popular Devices Database:');
+  console.log(`✅ Total models: ${ukraineDeviceStats.totalModels}`);
+  console.log(`✅ Smartphones: ${ukraineDeviceStats.categories.smartphones}`);
+  console.log(`✅ Laptops: ${ukraineDeviceStats.categories.laptops}`);
+  console.log(`✅ Budget: ${ukraineDeviceStats.priceRanges.budget}`);
+  console.log(`✅ Mid-range: ${ukraineDeviceStats.priceRanges.mid}`);
+  console.log(`✅ Premium: ${ukraineDeviceStats.priceRanges.premium}`);
+}
 
