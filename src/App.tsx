@@ -588,6 +588,67 @@ function App() {
               </div>
             )}
 
+            {activeItem === 'novapost' && currentUser && (
+              <div className="p-8 bg-gradient-to-b from-gray-50 to-white min-h-screen">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-12 h-12 bg-yellow-400 rounded-lg flex items-center justify-center text-2xl">🚚</div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-900">Моя Нова Пошта</h1>
+                    <p className="text-gray-600">Відстеження ваших посилок і відправлень</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-4 mb-8">
+                  <div className="p-4 rounded-lg bg-blue-100 text-blue-700">
+                    <p className="text-sm opacity-80">Всього посилок</p>
+                    <p className="text-2xl font-bold">2</p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-orange-100 text-orange-700">
+                    <p className="text-sm opacity-80">У дорозі</p>
+                    <p className="text-2xl font-bold">1</p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-green-100 text-green-700">
+                    <p className="text-sm opacity-80">Доставлено</p>
+                    <p className="text-2xl font-bold">1</p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-red-100 text-red-700">
+                    <p className="text-sm opacity-80">Проблеми</p>
+                    <p className="text-2xl font-bold">0</p>
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg shadow-lg p-8">
+                  <div className="border-2 border-yellow-200 rounded-lg p-6 bg-yellow-50 mb-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">Посилка #20241101001</h3>
+                        <p className="text-sm text-gray-600">Замовлення: ORD-20241101-001</p>
+                        <p className="text-sm text-gray-600 mt-2">Статус: 🟠 У дорозі</p>
+                        <div className="grid grid-cols-2 gap-4 mt-4 text-sm">
+                          <div><p className="text-gray-600">Від: <strong>Київ</strong></p><p className="text-xs text-gray-500">вул. Хрещатик, 1</p></div>
+                          <div><p className="text-gray-600">До: <strong>Львів</strong></p><p className="text-xs text-gray-500">вул. Fredrich Engels, 1</p></div>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-2">📦 0.5 кг • 💵 ₴65 • 📅 01.11.2024</p>
+                      </div>
+                      <button className="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold rounded-lg">Деталі</button>
+                    </div>
+                  </div>
+                  <div className="border-2 border-green-200 rounded-lg p-6 bg-green-50">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900">Посилка #20241031001</h3>
+                        <p className="text-sm text-gray-600">Замовлення: ORD-20241031-005</p>
+                        <p className="text-sm text-gray-600 mt-2">Статус: 🟢 Доставлено</p>
+                        <div className="grid grid-cols-2 gap-4 mt-4 text-sm">
+                          <div><p className="text-gray-600">Від: <strong>Харків</strong></p><p className="text-xs text-gray-500">вул. Сумська, 10</p></div>
+                          <div><p className="text-gray-600">До: <strong>Одеса</strong></p><p className="text-xs text-gray-500">вул. Deribasovska, 15</p></div>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-2">📦 0.3 кг • 💵 ₴55 • 📅 01.11.2024</p>
+                      </div>
+                      <button className="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold rounded-lg">Деталі</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             {activeItem === 'profile' && (
               <Profile
                 currentUser={currentUser}
