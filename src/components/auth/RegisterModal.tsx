@@ -359,19 +359,32 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
         // Brand logos from Simple Icons (open source)
         const BrandIcon = ({ brand, className = "" }: { brand: string; className?: string }) => {
           const iconMap: Record<string, string> = {
+            // Смартфони
             apple: 'siApple',
             samsung: 'siSamsung',
             xiaomi: 'siXiaomi',
-            huawei: 'siHuawei',
+            realme: 'siRealme',
+            oneplus: 'siOneplus',
+            poco: 'siPoco',
             oppo: 'siOppo',
+            vivo: 'siVivo',
+            nothing: 'siNothing',
             google: 'siGoogle',
+            huawei: 'siHuawei',
+            honor: 'siHonor',
+            motorola: 'siMotorola',
+            nokia: 'siNokia',
             sony: 'siSony',
             lg: 'siLg',
-            motorola: 'siMotorola',
+            zte: 'siZte',
+            tcl: 'siTcl',
+            // Ноутбуки
             asus: 'siAsus',
             lenovo: 'siLenovo',
             hp: 'siHp',
             dell: 'siDell',
+            acer: 'siAcer',
+            msi: 'siMsi',
           };
           
           const iconKey = iconMap[brand];
@@ -393,20 +406,34 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
           );
         };
 
+        // Популярні бренди в Україні (2024-2025)
         const brands = [
+          // Топ смартфони в Україні
           { id: 'apple', label: 'Apple' },
           { id: 'samsung', label: 'Samsung' },
           { id: 'xiaomi', label: 'Xiaomi' },
-          { id: 'huawei', label: 'Huawei' },
+          { id: 'realme', label: 'Realme' },
+          { id: 'oneplus', label: 'OnePlus' },
+          { id: 'poco', label: 'POCO' },
           { id: 'oppo', label: 'Oppo' },
+          { id: 'vivo', label: 'Vivo' },
+          { id: 'nothing', label: 'Nothing' },
           { id: 'google', label: 'Google Pixel' },
+          { id: 'huawei', label: 'Huawei' },
+          { id: 'honor', label: 'Honor' },
+          { id: 'motorola', label: 'Motorola' },
+          { id: 'nokia', label: 'Nokia' },
           { id: 'sony', label: 'Sony' },
           { id: 'lg', label: 'LG' },
-          { id: 'motorola', label: 'Motorola' },
+          { id: 'zte', label: 'ZTE' },
+          { id: 'tcl', label: 'TCL' },
+          // Ноутбуки та комп'ютери
           { id: 'asus', label: 'ASUS' },
           { id: 'lenovo', label: 'Lenovo' },
           { id: 'hp', label: 'HP' },
           { id: 'dell', label: 'Dell' },
+          { id: 'acer', label: 'Acer' },
+          { id: 'msi', label: 'MSI' },
         ];
 
         const repairTypesOptions = [
