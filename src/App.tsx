@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import ModernNavigation from './components/layout/ModernNavigation';
 import ModernLandingPage from './components/pages/ModernLandingPage';
-import ModernMasterDashboard from './components/features/master/MasterDashboard/ModernMasterDashboard';
-import ModernClientDashboard from './components/features/client/ClientDashboard/ModernClientDashboard';
+// const ModernMasterDashboard = React.lazy(() => import('./components/features/master/MasterDashboard/ModernMasterDashboard'));
+import { EnhancedMasterDashboard } from './components/features/master/EnhancedMasterDashboard';
+import { EnhancedOrdersBoard } from './components/features/master/EnhancedOrdersBoard';
+const ModernClientDashboard = React.lazy(() => import('./components/features/client/ClientDashboard/ModernClientDashboard'));
 import { MyDevices } from './components/features/client/MyDevices';
 import { DeviceCatalog } from './components/features/client/DeviceCatalog';
-import { AdminDashboard } from './components/features/admin/AdminDashboard';
-import SuperadminDashboard from './components/features/superadmin/SuperadminDashboard';
+const AdminDashboard = React.lazy(() => import('./components/features/admin/AdminDashboard'));
+const SuperadminDashboard = React.lazy(() => import('./components/features/superadmin/SuperadminDashboard'));
 import { SettingsConfiguration } from './components/features/admin/SettingsConfiguration';
 import { ModernUsersPanel } from './components/features/admin/ModernUsersPanel';
 import { ModernFinancialPanel } from './components/features/admin/ModernFinancialPanel';
 import { Orders } from './components/pages/Orders';
+// import { Portfolio } from './components/pages/Portfolio';
+// import { Messages } from './components/pages/Messages';
 import { MessagesNew } from './components/pages/MessagesNew';
 import { Reports } from './components/Reports';
 import { Profile } from './components/pages/Profile';
@@ -23,7 +27,13 @@ import { PartsInventory } from './components/features/parts/PartsInventory';
 import { PaymentManagement } from './components/pages/PaymentManagement';
 import PortfolioPage from './components/features/master/portfolio/PortfolioPage';
 import { MasterOrdersBoard } from './components/features/master/MasterOrdersBoard/MasterOrdersBoard';
-import MasterPartsMarketplace from './components/features/master/MasterPartsMarketplace';
+// import { MasterInventory } from './components/MasterInventory';
+// import MasterPartsMarketplace from './components/features/master/MasterPartsMarketplace';
+import { SparePartsMarketplace } from './components/features/marketplace/SparePartsMarketplace';
+// import { SellerDashboard } from './components/features/marketplace/SellerDashboard';
+import { EnhancedSellerDashboard } from './components/features/marketplace/EnhancedSellerDashboard';
+// import { ExchangeManager } from './components/features/marketplace/ExchangeManager';
+import { EnhancedExchangeManager } from './components/features/marketplace/EnhancedExchangeManager';
 import { MasterSupportPanel } from './components/features/master/MasterSupportPanel';
 import { useAuthStore } from './store/authStore';
 import { useOrdersStore } from './store/ordersStore';
@@ -31,8 +41,7 @@ import { useNotificationsStore } from './store/notificationsStore';
 import { NotificationCenter } from './components/NotificationCenter';
 import { OnboardingWizard } from './components/OnboardingWizard';
 import LanguageSwitcher from './components/LanguageSwitcher';
-import { Order, User } from './types/models';
-import { Notification } from './types';
+import { Order, User, Notification } from './types/models';
 import { ClientProfileStep } from './components/onboarding/ClientProfileStep';
 import { DeviceStep } from './components/onboarding/DeviceStep';
 import { OnboardingCompletionStep } from './components/onboarding/OnboardingCompletionStep';
@@ -43,6 +52,7 @@ import AnimatedMarquee from './components/AnimatedMarquee';
 import { apiUserService } from './services/apiUserService';
 import { useTranslation } from 'react-i18next';
 import { MobileMenuButtonInHeader } from './components/layout/MobileMenuButtonInHeader';
+import { EnhancedNavbarHeader } from './components/navbar/EnhancedNavbarHeader';
 import { useAutoRefresh } from './hooks/useAutoRefresh';
 
 function App() {
@@ -106,7 +116,16 @@ function App() {
   };
 
   // Обробник створення замовлення від Джарвіса
-  const handleCreateOrder = (orderData: { title?: string; device?: string; deviceType?: string; issue?: string; description?: string; urgency?: string; clientId?: string; clientName?: string; city?: string; status?: string; createdAt?: Date; updatedAt?: Date; proposalCount?: number; clientPhone?: string; clientEmail?: string }) => {
+  const handleCreateOrder = (orderData: {
+    title: string;
+    description: string;
+    device: string;
+    deviceType: 'iPhone' | 'iPad' | 'Mac' | 'Apple Watch' | 'Other';
+    issue: string;
+    budget: number;
+    urgency?: 'low' | 'medium' | 'high';
+    location?: string;
+  }) => {
     const newOrder: Order = {
       id: `order-${Date.now()}`,
       title: orderData.title,
@@ -115,13 +134,13 @@ function App() {
       deviceType: orderData.deviceType,
       issue: orderData.issue,
       budget: orderData.budget,
-      city: orderData.city,
+      city: currentUser?.city || '',
       status: 'open',
-      urgency: orderData.urgency,
+      urgency: orderData.urgency || 'medium',
       createdAt: new Date(),
       updatedAt: new Date(),
-      clientId: orderData.clientId,
-      clientName: orderData.clientName,
+      clientId: currentUser?.id || '',
+      clientName: currentUser?.name || '',
       proposalCount: 0,
       paymentStatus: 'pending',
       paymentAmount: 0,
@@ -143,13 +162,18 @@ function App() {
   
   // Debug: логування зміни activeItem
   useEffect(() => {
-    console.log('ActiveItem changed to:', activeItem);
+    if (import.meta.env.DEV) {
+      console.log('ActiveItem changed to:', activeItem);
+    }
   }, [activeItem]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [_selectedOrder, _setSelectedOrder] = useState<Order | null>(null);
   const [users, setUsers] = useState<User[]>([]);
 
   const { fetchNotifications } = useNotificationsStore();
+
+  const setSelectedOrder = (order: Order | null) => {
+    _setSelectedOrder(order);
+  };
 
   // Автооновлення замовлень кожні 10 секунд
   useAutoRefresh({
@@ -171,47 +195,14 @@ function App() {
           }
         }
       } catch (error) {
-        // Критичні помилки логуються
-        console.error('Auto-refresh error:', error);
+        // Критичні помилки логуються тільки в DEV
+        if (import.meta.env.DEV) {
+          console.error('Auto-refresh error:', error);
+        }
       }
     },
     dependencies: [currentUser?.id],
   });
-
-  // Відновлення токена при завантаженні сторінки
-  useEffect(() => {
-    const restoreToken = async () => {
-      const storedUser = currentUser;
-      const storedToken = localStorage.getItem('jwt-token');
-      
-      // Якщо є користувач, але немає токена - спробуємо відновити
-      if (storedUser && !storedToken) {
-        try {
-          const { getApiUrl } = await import('./services/apiUrlHelper');
-          // Спробуємо отримати токен через /auth/login
-          const response = await fetch(`${getApiUrl()}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: storedUser.email }),
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            if (data.token) {
-              localStorage.setItem('jwt-token', data.token);
-              console.log('✅ Token restored');
-            }
-          }
-        } catch (error) {
-          console.warn('⚠️ Failed to restore token:', error);
-        }
-      }
-    };
-
-    if (currentUser) {
-      restoreToken();
-    }
-  }, [currentUser]);
 
   useEffect(() => {
     if (currentUser) {
@@ -222,17 +213,12 @@ function App() {
       try {
         const allUsers = await apiUserService.getUsers();
         setUsers(allUsers);
-        
-        // Initialize test data if needed
-        const orders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
-        if (orders.length === 0) {
-          const { initializeTestData } = await import('./utils/testData');
-          initializeTestData();
-        }
       } catch (error: unknown) {
         // Тиха обробка помилок - не ламаємо рендеринг
-        const message = error instanceof Error ? error.message : 'Unknown error';
-        console.warn('Failed to fetch users (non-critical):', message);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        if (import.meta.env.DEV) {
+          console.warn('Failed to fetch users (non-critical):', errorMessage);
+        }
         // Якщо не вдалося завантажити, залишаємо порожній масив
         setUsers([]);
       }
@@ -241,7 +227,7 @@ function App() {
     if (currentUser) {
       fetchUsers();
     }
-  }, [currentUser, fetchOrders, fetchNotifications]);
+  }, [currentUser?.id, fetchOrders, fetchNotifications]);
 
   // Оптимізовано: оновлюємо час тільки кожну хвилину замість кожної секунди
   useEffect(() => {
@@ -288,21 +274,24 @@ function App() {
 
   if (!isOnboardingCompleted) {
 
-    const handleOnboardingComplete = async (data: Record<string, unknown>) => {
+    const handleOnboardingComplete = async (data: {
+      name?: string;
+      city?: string;
+      phone?: string;
+      specialization?: string[];
+      serviceAreas?: string[];
+      repairBrands?: string[];
+      repairTypes?: string[];
+    }) => {
       if (currentUser) {
         try {
-          // Оновлюємо дані користувача в localStorage
-          const users = JSON.parse(localStorage.getItem('app_users') || '[]');
-          const userIndex = users.findIndex((u: User) => u.id === currentUser.id);
-          
-          if (userIndex !== -1) {
-            users[userIndex] = { ...users[userIndex], ...data };
-            localStorage.setItem('app_users', JSON.stringify(users));
-          }
-          
+          // Оновлюємо дані користувача через API
+          await apiUserService.updateUserProfile(currentUser.id, data);
           completeOnboarding();
         } catch (error) {
-          console.error('Error saving onboarding data:', error);
+          if (import.meta.env.DEV) {
+            console.error('Error saving onboarding data:', error);
+          }
           completeOnboarding();
         }
       } else {
@@ -359,123 +348,51 @@ function App() {
           onCreateOrder={handleCreateOrder}
         />
         <div className="flex-1 md:ml-56 overflow-y-auto overflow-x-hidden h-screen relative">
-          <div className="w-full bg-white border-b border-gray-200 shadow-sm sticky top-0 z-[150] md:z-[100]">
-            <div className="flex justify-between items-center px-2 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 gap-1 sm:gap-2">
-              <div className="flex items-center gap-1 sm:gap-2 min-w-fit shrink-0">
-                <MobileMenuButtonInHeader />
-              </div>
-              <div className="text-right min-w-fit shrink-0">
-                <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 font-mono leading-tight">
-                  {currentTime.toLocaleTimeString('uk-UA', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                  })}
-                </div>
-                <div className="text-[10px] sm:text-xs md:text-sm text-gray-500 uppercase tracking-wider mt-0.5">
-                  {currentTime.toLocaleDateString(i18n.language === 'uk' ? 'uk-UA' : i18n.language === 'ru' ? 'ru-RU' : i18n.language === 'pl' ? 'pl-PL' : i18n.language === 'ro' ? 'ro-RO' : 'en-US', {
-                    weekday: 'short',
-                    day: 'numeric',
-                    month: 'short'
-                  })}
-                </div>
-              </div>
-
-              <div className="flex-1 text-center relative hidden sm:block min-w-0 mx-2">
-                <AnimatedMarquee notifications={notifications} onNotificationClick={handleNotificationClick} />
-              </div>
-
-              <div className="flex items-center gap-1 sm:gap-2 md:gap-3 min-w-fit shrink-0">
-                <NotificationCenter />
-                <LanguageSwitcher />
-                <button
-                  onClick={() => setActiveItem('profile')}
-                  className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg sm:rounded-xl transition-all min-h-[40px] min-w-[40px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center shrink-0"
-                  title={t('navigation.profile')}
-                >
-                  <svg className="w-5 h-5 sm:w-4 sm:h-4 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 12a4 4 0 100-8 4 4 0 000 8zM6.5 18a3 3 0 00-3 3v1h15v-1a3 3 0 00-3-3H6.5z" />
-                  </svg>
-                </button>
-
-                <button
-                  onClick={() => setActiveItem('settings')}
-                  className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg sm:rounded-xl transition-all min-h-[40px] min-w-[40px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center shrink-0 hidden sm:flex"
-                  title={t('navigation.settings')}
-                >
-                  <svg className="w-5 h-5 sm:w-4 sm:h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </button>
-
-                <button
-                  onClick={logout}
-                  className="p-2 hover:bg-gray-100 active:bg-gray-200 rounded-lg sm:rounded-xl transition-all text-gray-700 min-h-[40px] min-w-[40px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center shrink-0"
-                  title={t('common.logout')}
-                >
-                  <svg className="w-5 h-5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                </button>
-
-              </div>
-            </div>
-          </div>
+          <EnhancedNavbarHeader
+            currentUser={currentUser}
+            unviewedOrdersCount={notifications.filter(n => !n.read).length}
+            onSettingsClick={() => setActiveItem('settings')}
+            onLogout={logout}
+            onDashboardClick={() => setActiveItem('dashboard')}
+            onProfileClick={() => setActiveItem('profile')}
+          />
           <div className="pl-2 pr-4 lg:pl-3 lg:pr-6 py-2 w-full">
-            {activeItem === 'dashboard' &&
-              (currentUser.role === 'master' ? (
-                <ModernMasterDashboard
-                  currentUser={currentUser}
-                  stats={{
-                    activeOrders: safeOrders.filter((o) => o.status === 'in_progress').length,
-                    completedOrders: safeOrders.filter(
-                      (o) => o.status === 'completed' || o.status === 'paid'
-                    ).length,
-                    totalEarned: 125000,
-                    rating: currentUser.rating || 4.9,
-                  }}
-                  orders={safeOrders}
-                  tasks={safeOrders.map((o) => ({
-                    id: o.id,
-                    title: o.title,
-                    client: o.clientName || o.clientId,
-                    status: o.status === 'in_progress' ? 'in-progress' : o.status === 'completed' ? 'completed' : 'pending' as 'pending' | 'in-progress' | 'completed',
-                    priority: o.urgency,
-                    deadline: o.deadline ? o.deadline.toISOString().split('T')[0] : '',
-                    progress: 0, // Default progress since Order doesn't have this field
-                  }))}
-                  notifications={notifications}
-                  revenueData={[
-                    { month: 'Jan', value: 85 },
-                    { month: 'Feb', value: 72 },
-                    { month: 'Mar', value: 90 },
-                    { month: 'Apr', value: 78 },
-                    { month: 'May', value: 95 },
-                    { month: 'Jun', value: 88 },
-                  ]}
-                  setActiveItem={setActiveItem}
-                  setSelectedOrder={setSelectedOrder}
-                />
-              ) : currentUser.role === 'client' ? (
-                <ModernClientDashboard
-                  currentUser={currentUser}
-                  orders={clientOrders}
-                  notifications={notifications}
-                  setActiveItem={setActiveItem}
-                  createOrder={createOrder}
-                  setSelectedOrder={setSelectedOrder}
-                />
-              ) : currentUser.role === 'admin' ? (
-                <AdminDashboard />
-              ) : currentUser.role === 'superadmin' ? (
-                <SuperadminDashboard />
-              ) : (
-                <div className="text-center p-8">
-                  <h1 className="text-2xl font-bold mb-4">Ласкаво просимо до RepairHub Pro!</h1>
-                  <p className="text-gray-600">Оберіть роль для продовження роботи.</p>
-                </div>
-              ))}
+            <Suspense fallback={<div className="p-8"><div className="animate-pulse">Завантаження панелі...</div></div>}>
+              {activeItem === 'dashboard' &&
+                (currentUser.role === 'master' ? (
+                  <EnhancedMasterDashboard
+                    currentUser={currentUser}
+                    stats={{
+                      activeOrders: safeOrders.filter((o) => o.status === 'in_progress').length,
+                      completedOrders: safeOrders.filter(
+                        (o) => o.status === 'completed'
+                      ).length,
+                      totalEarned: 125000,
+                      rating: currentUser.rating || 4.9,
+                    }}
+                    orders={safeOrders}
+                    notifications={notifications}
+                  />
+                ) : currentUser.role === 'client' ? (
+                  <ModernClientDashboard
+                    currentUser={currentUser}
+                    orders={clientOrders}
+                    notifications={notifications}
+                    setActiveItem={setActiveItem}
+                    createOrder={createOrder}
+                    setSelectedOrder={setSelectedOrder}
+                  />
+                ) : currentUser.role === 'admin' ? (
+                  <AdminDashboard />
+                ) : currentUser.role === 'superadmin' ? (
+                  <SuperadminDashboard />
+                ) : (
+                  <div className="text-center p-8">
+                    <h1 className="text-2xl font-bold mb-4">{t('common.platformName') || 'RepairHub'}</h1>
+                    <p className="text-gray-600">Оберіть роль для продовження роботи.</p>
+                  </div>
+                ))}
+            </Suspense>
 
             {activeItem === 'catalog' && <DeviceCatalog onCreateOrder={handleCreateOrder} />}
 
@@ -520,7 +437,7 @@ function App() {
 
             {activeItem === 'myOrders' && (
               currentUser?.role === 'master' ? (
-                <MasterOrdersBoard />
+                <EnhancedOrdersBoard orders={safeOrders} />
               ) : (
                 <Orders
                   currentUser={currentUser}
@@ -532,7 +449,18 @@ function App() {
             {activeItem === 'myDevices' && <MyDevices />}
 
             {activeItem === 'inventory' && (
-              <MasterPartsMarketplace />
+              <SparePartsMarketplace />
+            )}
+            
+            {activeItem === 'sellerDashboard' && (
+              <EnhancedSellerDashboard />
+            )}
+            
+            {activeItem === 'exchangeParts' && (
+              <EnhancedExchangeManager 
+                userParts={[]}
+                availableForExchange={[]}
+              />
             )}
 
             {activeItem === 'partsInventory' && (
@@ -606,7 +534,11 @@ function App() {
                   onUpdateProposal={useOrdersStore.getState().updateProposal}
                   onAcceptProposal={useOrdersStore.getState().acceptProposal}
                   onRejectProposal={useOrdersStore.getState().rejectProposal}
-                  onShowToast={(msg) => console.log(msg)}
+                  onShowToast={(msg) => {
+                    if (import.meta.env.DEV) {
+                      console.log(msg);
+                    }
+                  }}
                 />
               </div>
             )}

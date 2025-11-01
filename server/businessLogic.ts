@@ -97,7 +97,7 @@ export async function canCreateReview(user: User, order: Order, db: Low<DbData>)
   await db.read();
   const existingReview = db.data.reviews.find(
     (r: unknown) => {
-      const review = r as { orderId: string; authorId: string };
+      const review = r as { orderId?: string; authorId?: string };
       return review.orderId === order.id && review.authorId === user.id;
     }
   );
@@ -105,7 +105,7 @@ export async function canCreateReview(user: User, order: Order, db: Low<DbData>)
   return !existingReview;
 }
 
-export function canEditReview(user: User, review: { authorId: string; createdAt: string | Date }): boolean {
+export function canEditReview(user: User, review: { authorId?: string; createdAt?: string }): boolean {
   if (review.authorId !== user.id) {
     return false;
   }

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Order, Proposal } from '../types';
+import { Order, Proposal, User } from '../types';
+import { Dispute } from '../types/models';
 import { apiOrderService } from '../services/apiOrderService';
 import { useAuthStore } from './authStore';
 import { useUIStore } from './uiStore';
@@ -79,24 +80,11 @@ export const useOrdersStore = create<OrdersState>()(
         try {
           const { orders, totalPages, currentPage, totalOrders } = await apiOrderService.getOrders(page, limit, searchTerm, status, sortBy);
           set({ orders, totalPages, currentPage, totalOrders });
-          
-          try {
-            const localOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
-            const updatedLocalOrders = [...orders, ...localOrders.filter((o: Order) => !orders.find(no => no.id === o.id))];
-            localStorage.setItem('repair_master_orders', JSON.stringify(updatedLocalOrders));
-          } catch {
-            console.warn('Не вдалося синхронізувати з localStorage');
-          }
         } catch (error) {
-          // Якщо API не працює, завантажуємо з localStorage
-          console.warn('API недоступний, завантажуємо з localStorage:', error);
-          try {
-            const localOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
-            set({ orders: localOrders });
-          } catch (e) {
-            console.error('Помилка завантаження з localStorage:', e);
-            set({ orders: [] });
+          if (import.meta.env.DEV) {
+            console.error('Помилка завантаження замовлень з API:', error);
           }
+          throw error;
         }
       },
       createOrder: async (order) => {
@@ -109,95 +97,14 @@ export const useOrdersStore = create<OrdersState>()(
             updatedAt: order.updatedAt || new Date().toISOString(),
           };
           
-          let newOrder: Order;
-          try {
-            // Пробуємо створити через API
-            newOrder = await apiOrderService.createOrder(orderWithId as Order);
-          } catch (apiError) {
-            // Якщо API не працює, створюємо локально
-            console.warn('API недоступний, створюємо локально:', apiError);
-            newOrder = orderWithId as Order;
-          }
+          // Створюємо через API
+          const newOrder = await apiOrderService.createOrder(orderWithId as Order);
           
           // Оновлюємо store
           set((state) => {
             const updatedOrders = [...state.orders, newOrder];
             return { orders: updatedOrders };
           });
-          
-          // Синхронізуємо з localStorage
-          try {
-            const existingOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
-            const updatedOrders = [newOrder, ...existingOrders.filter((o: Order) => o.id !== newOrder.id)];
-            localStorage.setItem('repair_master_orders', JSON.stringify(updatedOrders));
-            window.dispatchEvent(new CustomEvent('ordersUpdated'));
-          } catch (storageError) {
-            console.warn('Не вдалося синхронізувати з localStorage:', storageError);
-          }
-          
-          // Create notifications for masters using master matching (as per ARCHITECTURE.md)
-          try {
-            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
-            const allMasters = users.filter((u) => u.role === 'master' && !u.blocked && (u.verified !== false));
-            
-            // Use master matching service to find best matches
-            let matchingMasters: User[] = [];
-            try {
-              const currentUser = useAuthStore.getState().currentUser;
-              
-              const clientPreferences = {
-                preferredBrands: newOrder.brand ? [newOrder.brand.toLowerCase()] : undefined,
-                preferredRepairTypes: newOrder.issue ? [newOrder.issue.toLowerCase()] : undefined,
-                city: newOrder.city,
-                preferredWorkLocation: currentUser?.preferredPriority?.includes('speed') ? 'mobile' : undefined,
-                clientMobileOS: currentUser?.clientMobileOS,
-                clientComputerOS: currentUser?.clientComputerOS,
-                skillLevel: currentUser?.skillLevel,
-                budgetRange: currentUser?.budgetRange,
-              };
-              
-              const masterProfiles = allMasters.map((u) => ({
-                id: u.id,
-                repairBrands: u.repairBrands,
-                repairTypes: u.repairTypes,
-                workLocation: u.workLocation,
-                isMobile: u.isMobile,
-                city: u.city,
-                rating: u.rating,
-                completedOrders: u.completedOrders,
-                workExperience: u.workExperience,
-                workingRadius: u.workingRadius,
-              }));
-              
-              const matched = findMatchingMasters(clientPreferences, masterProfiles, 20);
-              matchingMasters = matched.map(m => allMasters.find((u) => u.id === m.master.id)).filter(Boolean) as User[];
-            } catch (error) {
-              console.warn('Помилка master matching, використовуємо простий фільтр:', error);
-              // Fallback to simple filtering
-              matchingMasters = allMasters.filter((u) => 
-                (!newOrder.brand || !u.repairBrands || u.repairBrands.length === 0 || 
-                 u.repairBrands.some((brand: string) => 
-                   brand.toLowerCase().includes(newOrder.brand?.toLowerCase() || '')))
-              );
-            }
-            
-            const notifications = JSON.parse(localStorage.getItem('repairhub_notifications') || '[]');
-            matchingMasters.forEach((master) => {
-              notifications.push({
-                id: `notif-${Date.now()}-${master.id}`,
-                userId: master.id,
-                message: `Нове замовлення доступне: "${newOrder.title}" (${newOrder.device})`,
-                type: 'order',
-                read: false,
-                createdAt: new Date(),
-              });
-            });
-            if (matchingMasters.length > 0) {
-              localStorage.setItem('repairhub_notifications', JSON.stringify(notifications));
-            }
-          } catch (error) {
-            console.warn('Не вдалося створити уведомлення для майстрів:', error);
-          }
           
           useUIStore.getState().showNotification('Замовлення успішно створено!');
           console.log('✅ Замовлення створено:', newOrder);
@@ -623,7 +530,7 @@ export const useOrdersStore = create<OrdersState>()(
         const masterId = order.assignedMasterId;
         if (masterId) {
           try {
-            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
+            const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]') as User[];
             const updatedUsers = users.map((u: User) =>
               u.id === masterId
                 ? { ...u, balance: (u.balance || 0) + masterAmount }
@@ -808,7 +715,7 @@ export const useOrdersStore = create<OrdersState>()(
           }
           
           // Notify admins
-          const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
+          const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]') as User[];
           const admins = users.filter((u: User) => u.role === 'admin' || u.role === 'superadmin');
           admins.forEach((admin: User) => {
             notifications.push({
@@ -838,7 +745,9 @@ export const useOrdersStore = create<OrdersState>()(
         
         // Find dispute
         const disputes = JSON.parse(localStorage.getItem('disputes') || '[]');
-        const dispute = disputes.find((d: Dispute) => d.id === disputeId);
+        const dispute = disputes.find((d: Dispute | Record<string, unknown>) => {
+          return (typeof d === 'object' && d !== null && 'id' in d && d.id === disputeId);
+        }) as Dispute | undefined;
         if (!dispute) {
           useUIStore.getState().showNotification('Спір не знайдено', 'error');
           return;
@@ -872,18 +781,19 @@ export const useOrdersStore = create<OrdersState>()(
           }));
           
           // Update dispute
-          const updatedDisputes = disputes.map((d: Dispute) =>
-            d.id === disputeId
+          const updatedDisputes = disputes.map((d: Dispute | Record<string, unknown>) => {
+            const disputeData = d as Dispute;
+            return disputeData.id === disputeId
               ? {
-                  ...d,
-                  status: 'resolved',
-                  decision: 'client_wins',
+                  ...disputeData,
+                  status: 'resolved' as const,
+                  decision: 'client_wins' as const,
                   resolution: explanation || 'Повний повернено клієнту',
-                  resolvedAt: new Date().toISOString(),
+                  resolvedAt: new Date(),
                   resolutionBy: currentUser.id,
                 }
-              : d
-          );
+              : disputeData;
+          });
           localStorage.setItem('disputes', JSON.stringify(updatedDisputes));
           
         } else if (decision === 'master_wins') {
@@ -908,7 +818,7 @@ export const useOrdersStore = create<OrdersState>()(
           // Update master balance
           if (order.assignedMasterId) {
             try {
-              const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]');
+              const users = JSON.parse(localStorage.getItem('repair_master_users') || '[]') as User[];
               const updatedUsers = users.map((u: User) =>
                 u.id === order.assignedMasterId
                   ? { ...u, balance: (u.balance || 0) + masterAmount }
@@ -921,18 +831,19 @@ export const useOrdersStore = create<OrdersState>()(
           }
           
           // Update dispute
-          const updatedDisputes = disputes.map((d: Dispute) =>
-            d.id === disputeId
+          const updatedDisputes = disputes.map((d: Dispute | Record<string, unknown>) => {
+            const disputeData = d as Dispute;
+            return disputeData.id === disputeId
               ? {
-                  ...d,
-                  status: 'resolved',
-                  decision: 'master_wins',
+                  ...disputeData,
+                  status: 'resolved' as const,
+                  decision: 'master_wins' as const,
                   resolution: explanation || `Оплату виплачено майстру (₴${masterAmount.toFixed(2)})`,
-                  resolvedAt: new Date().toISOString(),
+                  resolvedAt: new Date(),
                   resolutionBy: currentUser.id,
                 }
-              : d
-          );
+              : disputeData;
+          });
           localStorage.setItem('disputes', JSON.stringify(updatedDisputes));
           
         } else if (decision === 'compromise') {
@@ -951,18 +862,19 @@ export const useOrdersStore = create<OrdersState>()(
           }));
           
           // Update dispute
-          const updatedDisputes = disputes.map((d: Dispute) =>
-            d.id === disputeId
+          const updatedDisputes = disputes.map((d: Dispute | Record<string, unknown>) => {
+            const disputeData = d as Dispute;
+            return disputeData.id === disputeId
               ? {
-                  ...d,
-                  status: 'resolved',
-                  decision: 'compromise',
+                  ...disputeData,
+                  status: 'resolved' as const,
+                  decision: 'compromise' as const,
                   resolution: explanation || 'Компромісне рішення. Потрібне ручне розподілення коштів',
-                  resolvedAt: new Date().toISOString(),
+                  resolvedAt: new Date(),
                   resolutionBy: currentUser.id,
                 }
-              : d
-          );
+              : disputeData;
+          });
           localStorage.setItem('disputes', JSON.stringify(updatedDisputes));
         }
         

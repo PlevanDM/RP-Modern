@@ -80,7 +80,7 @@ export function BookingCalendar({
     const newBlockedDate: BookedDate = {
       id: `blocked_${Date.now()}`,
       date: selectedDate,
-      status: 'blocked',
+      status: 'cancelled',
       orderId: '',
       userId: ''
     };

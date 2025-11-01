@@ -282,28 +282,28 @@ const ModernDashboard: React.FC = () => {
     {
       title: 'Всього замовлень',
       value: '24',
-      change: '+12%',
+      change: 'updating',
       changeType: 'positive' as const,
       icon: <Package className="w-6 h-6" />
     },
     {
       title: 'В роботі',
       value: '3',
-      change: '+2',
+      change: '-',
       changeType: 'positive' as const,
       icon: <Wrench className="w-6 h-6" />
     },
     {
       title: 'Завершено',
       value: '18',
-      change: '+5',
+      change: '-',
       changeType: 'positive' as const,
       icon: <CheckCircle className="w-6 h-6" />
     },
     {
       title: 'Витрачено',
       value: '₴45,230',
-      change: '+18%',
+      change: '-',
       changeType: 'positive' as const,
       icon: <DollarSign className="w-6 h-6" />
     }

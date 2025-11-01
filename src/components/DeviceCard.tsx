@@ -58,11 +58,11 @@ export function DeviceCard({ device, onSelect, isMaster = false, className = '' 
         {/* Бейдж категории */}
         <div className="absolute top-2 left-2">
           <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-            device.category === 'iPhone' ? 'bg-blue-100 text-blue-800' :
-            device.category === 'iPad' ? 'bg-purple-100 text-purple-800' :
-            device.category === 'MacBook' ? 'bg-gray-100 text-gray-800' :
-            device.category === 'Apple Watch' ? 'bg-pink-100 text-pink-800' :
-            device.category === 'Dyson' ? 'bg-cyan-100 text-cyan-800' :
+            device.category === 'Smartphone' ? 'bg-blue-100 text-blue-800' :
+            device.category === 'Tablet' ? 'bg-purple-100 text-purple-800' :
+            device.category === 'Laptop' ? 'bg-gray-100 text-gray-800' :
+            device.category === 'Smartwatch' ? 'bg-pink-100 text-pink-800' :
+            device.category === 'Accessories' ? 'bg-cyan-100 text-cyan-800' :
             'bg-gray-100 text-gray-800'
           }`}>
             {device.category}

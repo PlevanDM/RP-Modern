@@ -1,77 +1,100 @@
 import { useState, useEffect } from 'react';
-import { User, Order } from '../../../../types';
+import { TrendingUp, Users, UserCheck, Clock } from 'lucide-react';
+import apiAdminService from '../../../services/apiAdminService';
+
+interface AnalyticsStats {
+  totalUsers: number;
+  activeUsers: number;
+  totalMasters: number;
+  totalOrders: number;
+  completedOrders: number;
+  avgRating: number;
+}
 
 export function AnalyticsDashboard() {
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<AnalyticsStats>({
     totalUsers: 0,
     activeUsers: 0,
-    newUsers: 0,
-    retentionRate: '0%'
+    totalMasters: 0,
+    totalOrders: 0,
+    completedOrders: 0,
+    avgRating: 0
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const users: User[] = JSON.parse(localStorage.getItem('users') || '[]');
-    const orders: Order[] = JSON.parse(localStorage.getItem('orders') || '[]');
-    
-    const totalUsers = users.length;
-    const activeUsers = users.filter((u: User) => !u.blocked).length;
-    
-    // Users created in last 30 days
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const newUsers = users.filter((u: User) => {
-      const created = new Date(u.createdAt || Date.now());
-      return created >= thirtyDaysAgo;
-    }).length;
-    
-    // Calculate retention: users who made at least 1 order
-    const usersWithOrders = new Set(orders.map((o: Order) => o.clientId));
-    const retentionRate = totalUsers > 0 ? Math.round((usersWithOrders.size / totalUsers) * 100) : 0;
-    
-    setStats({
-      totalUsers,
-      activeUsers,
-      newUsers,
-      retentionRate: `${retentionRate}%`
-    });
+    const loadStats = async () => {
+      try {
+        const adminStats = await apiAdminService.getAdminStats();
+        setStats({
+          totalUsers: adminStats.totalUsers,
+          activeUsers: adminStats.totalUsers,
+          totalMasters: adminStats.totalMasters,
+          totalOrders: adminStats.totalOrders,
+          completedOrders: adminStats.completedRepairs,
+          avgRating: adminStats.avgRating
+        });
+      } catch (error) {
+        console.error('Failed to load analytics:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadStats();
   }, []);
 
   const kpis = [
-    { name: 'Утримання Користувачів', value: stats.retentionRate, change: '+2.5%', changeType: 'positive' },
-    { name: 'Всього Користувачів', value: stats.totalUsers.toString(), change: '+15%', changeType: 'positive' },
-    { name: 'Нові Користувачі', value: stats.newUsers.toString(), change: '+15%', changeType: 'positive' },
-    { name: 'Активні Користувачі', value: stats.activeUsers.toString(), change: '+5%', changeType: 'positive' },
+    { name: 'Всього користувачів', value: stats.totalUsers.toString(), change: stats.totalUsers > 0 ? `+${stats.totalUsers}` : '0', icon: Users },
+    { name: 'Активні користувачі', value: stats.activeUsers.toString(), change: stats.activeUsers > 0 ? `+${stats.activeUsers}` : '0', icon: UserCheck },
+    { name: 'Майстрів', value: stats.totalMasters.toString(), change: stats.totalMasters > 0 ? `+${stats.totalMasters}` : '0', icon: Users },
+    { name: 'Всього замовлень', value: stats.totalOrders.toString(), change: stats.totalOrders > 0 ? `+${stats.totalOrders}` : '0', icon: Clock }
   ];
 
+  if (loading) {
+    return <div className="text-center py-8">Завантаження аналітики...</div>;
+  }
+
   return (
-    <div className="bg-white shadow rounded-lg p-6">
-      <h2 className="text-2xl font-semibold mb-4">Аналітика</h2>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {kpis.map((kpi) => (
-          <div key={kpi.name} className="relative bg-white pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden hover:shadow-md transition-shadow">
-            <dt>
-              <p className="text-sm font-medium text-gray-500 truncate">{kpi.name}</p>
-            </dt>
-            <dd className="mt-1 flex justify-between items-baseline md:block lg:flex">
-              <div className="flex items-baseline text-2xl font-semibold text-indigo-600">
-                {kpi.value}
-                <span className={`ml-2 text-sm font-medium ${kpi.changeType === 'positive' ? 'text-green-600' : 'text-red-600'}`}>
-                  {kpi.change}
-                </span>
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpis.map((kpi) => {
+          const Icon = kpi.icon;
+          return (
+            <div key={kpi.name} className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">{kpi.name}</h3>
+                <Icon className="w-5 h-5 text-blue-600" />
               </div>
-            </dd>
-          </div>
-        ))}
+              <p className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{kpi.value}</p>
+              <p className="text-sm text-green-600 flex items-center gap-1">
+                <TrendingUp className="w-4 h-4" />
+                {kpi.change}
+              </p>
+            </div>
+          );
+        })}
       </div>
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Карта Активності</h3>
-        <div className="bg-gray-100 rounded-lg p-8 text-center text-gray-500 h-64 flex items-center justify-center">
+
+      <div className="bg-white dark:bg-slate-800 rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">Показники ефективності</h3>
+        <div className="space-y-6">
           <div>
-            <p className="text-gray-400 text-lg">Карта активності користувачів</p>
-            <p className="text-gray-300 text-sm mt-2">Візуалізація активності за періодами</p>
+            <div className="flex justify-between mb-2">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Завершені замовлення</p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">{stats.completedOrders}/{stats.totalOrders}</p>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div
+                className="bg-blue-600 h-2 rounded-full"
+                style={{ width: `${stats.totalOrders > 0 ? (stats.completedOrders / stats.totalOrders) * 100 : 0}%` }}
+              />
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+export default AnalyticsDashboard;

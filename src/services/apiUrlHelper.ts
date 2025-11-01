@@ -1,29 +1,27 @@
 // Helper function to auto-detect API URL based on current host
 // This ensures API calls work correctly when accessing via IP address
 
-interface WindowWithSettingsStore extends Window {
-  useSettingsStore?: { getState?: () => { settings?: { backendUrl?: string; apiKey?: string; secretKey?: string } } };
-}
-
 export const getApiUrl = (): string => {
   // Prefer configured backend URL from settings store when available
   try {
     // Lazy import to avoid circular deps in SSR/build
-    const settingsStore = (window as WindowWithSettingsStore)?.useSettingsStore || undefined;
-    if (!settingsStore && typeof window !== 'undefined') {
-      // Attempt dynamic import only in browser
-      // Note: this is best-effort; failures fall through to env/auto-detect
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      // dynamic import avoided here to keep this helper synchronous
+    interface SettingsStore {
+      getState: () => { settings: { backendUrl?: string } };
     }
+    
+    type WindowWithStore = Window & typeof globalThis & { 
+      useSettingsStore?: () => SettingsStore 
+    };
+    
+    const settingsStore = (window as WindowWithStore)?.useSettingsStore?.();
+    
     // If zustand store is attached globally by app bootstrap
     const settings = settingsStore?.getState?.().settings;
     if (settings?.backendUrl) {
       return settings.backendUrl;
     }
   } catch {
-    // Settings store not available, continue to auto-detect
+    // ignore - fallback to auto-detect
   }
   // Auto-detect based on current hostname (priority)
   if (typeof window !== 'undefined') {
@@ -47,17 +45,23 @@ export const getApiUrl = (): string => {
 };
 
 export const getAuthHeaders = (): Record<string, string> => {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  
   try {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    
-    // Try to get settings from localStorage directly to avoid circular deps
+    // Get JWT token from localStorage
     if (typeof window !== 'undefined') {
-      // Add JWT token if available
       const token = localStorage.getItem('jwt-token');
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
-      
+    }
+  } catch {
+    // ignore if localStorage is not available
+  }
+
+  try {
+    // Try to get additional settings from localStorage
+    if (typeof window !== 'undefined') {
       const settingsStorage = localStorage.getItem('app-settings');
       if (settingsStorage) {
         const parsed = JSON.parse(settingsStorage);
@@ -67,24 +71,10 @@ export const getAuthHeaders = (): Record<string, string> => {
           if (settings.secretKey) headers['x-api-secret'] = settings.secretKey;
         }
       }
-      
-      // Fallback: try window.store approach
-      const settingsStore = (window as WindowWithSettingsStore)?.useSettingsStore;
-      const settings = settingsStore?.getState?.().settings;
-      if (settings?.apiKey) headers['x-api-key'] = settings.apiKey;
-      if (settings?.secretKey) headers['x-api-secret'] = settings.secretKey;
     }
-    
-    return headers;
   } catch {
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    // Try to add token even on error
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('jwt-token');
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-    }
-    return headers;
+    // ignore
   }
+
+  return headers;
 };

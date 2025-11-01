@@ -44,7 +44,9 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
           const userData = JSON.parse(savedUser);
           setCurrentUser(userData);
         } catch (error) {
-          console.error('Error loading user from localStorage:', error);
+          if (import.meta.env.DEV) {
+            console.error('Error loading user from localStorage:', error);
+          }
         }
       }
     }
@@ -54,7 +56,9 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
     setSelectedDevice(device);
     setSelectedColor(null);
     setSelectedStorage(null);
-    console.log('Selected device:', device);
+    if (import.meta.env.DEV) {
+      console.log('Selected device:', device);
+    }
   };
 
   const handleCloseModal = () => {
@@ -94,19 +98,25 @@ export function DeviceCatalog({ currentUser: userProp }: DeviceCatalogProps) {
       storage: selectedStorage
     };
 
-    console.log('✅ Создана заявка:', newOrder);
+    if (import.meta.env.DEV) {
+      console.log('✅ Создана заявка:', newOrder);
+    }
 
     // Сохраняем заказ в localStorage
     try {
       const existingOrders = JSON.parse(localStorage.getItem('repair_master_orders') || '[]');
       const updatedOrders = [newOrder, ...existingOrders];
       localStorage.setItem('repair_master_orders', JSON.stringify(updatedOrders));
-      console.log('💾 Заказ сохранен в localStorage');
+      if (import.meta.env.DEV) {
+        console.log('💾 Заказ сохранен в localStorage');
+      }
 
       // Отправляем событие для синхронизации между компонентами
       window.dispatchEvent(new CustomEvent('ordersUpdated'));
     } catch (error) {
-      console.error('❌ Ошибка при сохранении заказа:', error);
+      if (import.meta.env.DEV) {
+        console.error('❌ Ошибка при сохранении заказа:', error);
+      }
     }
 
     // Сохраняем данные для вывода в модальное окно

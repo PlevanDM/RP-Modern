@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { 
   Package, Search, Plus, Eye, Edit,
   Clock, CheckCircle, XCircle, AlertTriangle, MapPin,
-  Calendar, DollarSign, Phone, MessageSquare
+  Calendar, DollarSign, Phone, MessageSquare,
+  Star, MoreVertical
 } from 'lucide-react';
 import {
   AdminCard,
@@ -45,8 +46,7 @@ export const ModernOrdersPanel = () => {
                          (order.clientName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
                          (order.title || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'all' || order.status === filterStatus;
-    const orderWithPriority = order as Order & { priority?: string };
-    const matchesPriority = filterPriority === 'all' || (orderWithPriority.priority) === filterPriority;
+    const matchesPriority = filterPriority === 'all' || order.priority === filterPriority;
     
     return matchesSearch && matchesStatus && matchesPriority;
   });
@@ -88,8 +88,9 @@ export const ModernOrdersPanel = () => {
   };
 
   const formatDate = (dateValue: string | number | Date | null | undefined) => {
-    const d = typeof dateValue === 'string' || typeof dateValue === 'number' ? new Date(dateValue) : (dateValue ? new Date(dateValue) : null);
-    return d ? d.toLocaleDateString('uk-UA') : '-';
+    if (!dateValue) return '-';
+    const d = typeof dateValue === 'string' || typeof dateValue === 'number' ? new Date(dateValue) : dateValue;
+    return d instanceof Date && !isNaN(d.getTime()) ? d.toLocaleDateString('uk-UA') : '-';
   };
 
   const formatPrice = (price?: number) => {
@@ -188,9 +189,7 @@ export const ModernOrdersPanel = () => {
             />
           ) : (
             <AdminTable headers={['Замовлення', 'Клієнт', 'Майстер', 'Послуга', 'Статус', 'Пріоритет', 'Ціна', 'Прогрес', 'Дії']}>
-              {filteredOrders.map((order) => {
-                const orderWithPriority = order as Order & { priority?: string };
-                return (
+              {filteredOrders.map((order) => (
                 <TableRow key={order.id}>
                   <TableCell>
                     <div>
@@ -213,7 +212,7 @@ export const ModernOrdersPanel = () => {
                       </div>
                       <div className="flex items-center gap-2 mt-1">
                         <MapPin className="w-3 h-3 text-gray-400" />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">{order.city || '-'}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">{order.location || order.city || '-'}</span>
                       </div>
                     </div>
                   </TableCell>
@@ -222,11 +221,17 @@ export const ModernOrdersPanel = () => {
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center">
                         <span className="text-white font-semibold text-xs">
-                          {order.masterId ? 'M' : '—'}
+                          {order.assignedMasterId ? order.assignedMasterId.substring(0, 2).toUpperCase() : '—'}
                         </span>
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">{masterName}</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-white">{order.assignedMasterId ? `Мастер ${order.assignedMasterId.substring(0, 8)}` : 'Не призначено'}</p>
+                        {order.clientRating && order.clientRating > 0 && (
+                          <div className="flex items-center gap-1">
+                            <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                            <span className="text-xs text-gray-500 dark:text-gray-400">{order.clientRating}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </TableCell>
@@ -247,9 +252,9 @@ export const ModernOrdersPanel = () => {
                   </TableCell>
                   
                   <TableCell>
-                    <Badge variant={getPriorityColor((orderWithPriority.priority) || 'medium')} size="sm">
-                      {(orderWithPriority.priority) === 'high' ? 'Високий' :
-                       (orderWithPriority.priority) === 'low' ? 'Низький' : 'Середній'}
+                    <Badge variant={getPriorityColor(order.priority || 'medium')} size="sm">
+                      {order.priority === 'high' ? 'Високий' :
+                       order.priority === 'low' ? 'Низький' : 'Середній'}
                     </Badge>
                   </TableCell>
                   
@@ -287,8 +292,7 @@ export const ModernOrdersPanel = () => {
                     </div>
                   </TableCell>
                 </TableRow>
-              );
-              })}
+              ))}
             </AdminTable>
           )}
         </AdminCard>

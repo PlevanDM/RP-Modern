@@ -12,15 +12,16 @@ export default {
         'marquee': 'marquee 20s linear infinite',
         'shimmer': 'shimmer 2s linear infinite',
         'blob': 'blob 7s infinite',
-<<<<<<< HEAD
         'spotlight': 'spotlight 2s ease .75s 1 forwards',
-=======
->>>>>>> 03002c8596b208bef5a7204421b60664adce7c5a
       },
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
+        },
+        spotlight: {
+          '0%': { opacity: 0, transform: 'translate(-72%, -62%) scale(0.5)' },
+          '100%': { opacity: 1, transform: 'translate(-50%,-40%) scale(1)' },
         },
         marquee: {
           '0%': { transform: 'translateX(100%)' },
@@ -36,19 +37,6 @@ export default {
           '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
           '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
         },
-<<<<<<< HEAD
-        spotlight: {
-          '0%': {
-            opacity: '0',
-            transform: 'translate(-72%, -62%) scale(0.5)',
-          },
-          '100%': {
-            opacity: '1',
-            transform: 'translate(-50%,-40%) scale(1)',
-          },
-        },
-=======
->>>>>>> 03002c8596b208bef5a7204421b60664adce7c5a
       },
       colors: {
         border: 'oklch(var(--border))',

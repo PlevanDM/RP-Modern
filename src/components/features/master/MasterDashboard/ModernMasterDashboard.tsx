@@ -140,30 +140,30 @@ const ModernMasterDashboard: React.FC<ModernMasterDashboardProps> = ({
     {
       title: t('navigation.orders'),
       value: masterStats.activeOrders.toString(),
-      change: 12,
+      change: masterStats.activeOrders,
       icon: <Wrench className="h-4 w-4" />,
-      trend: 'up' as const,
+      trend: masterStats.activeOrders > 0 ? 'up' as const : 'down' as const,
     },
     {
       title: t('common.revenue'),
       value: `₴${masterStats.totalEarned.toLocaleString()}`,
-      change: 8,
+      change: masterStats.totalEarned,
       icon: <Wallet className="h-4 w-4" />,
-      trend: 'up' as const,
+      trend: masterStats.totalEarned > 0 ? 'up' as const : 'down' as const,
     },
     {
       title: t('common.rating'),
       value: masterStats.rating.toString(),
-      change: 5,
+      change: masterStats.rating > 4 ? Math.round((masterStats.rating - 3.5) * 10) : masterStats.rating < 3.5 ? -Math.round((3.5 - masterStats.rating) * 10) : 0,
       icon: <Star className="h-4 w-4" />,
-      trend: 'up' as const,
+      trend: masterStats.rating > 3.5 ? 'up' as const : 'down' as const,
     },
     {
       title: t('common.completedOrders'),
       value: masterStats.completedOrders.toString(),
-      change: -3,
+      change: masterStats.completedOrders,
       icon: <CheckCircle2 className="h-4 w-4" />,
-      trend: 'down' as const,
+      trend: masterStats.completedOrders > 0 ? 'up' as const : 'down' as const,
     },
   ];
 

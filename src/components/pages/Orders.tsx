@@ -213,7 +213,9 @@ export function Orders({
         setActiveItem?.('reviews');
         break;
       default:
-        console.log('Unknown action:', actionId);
+        if (import.meta.env.DEV) {
+          console.log('Unknown action:', actionId);
+        }
     }
   };
 
@@ -535,7 +537,7 @@ export function Orders({
         onClose={() => setShowCreateModal(false)}
         createOrder={(orderData) => {
           if (onCreateOrder) {
-            onCreateOrder(orderData as Partial<Order>);
+            onCreateOrder(orderData);
           }
         }}
         currentUser={currentUser}

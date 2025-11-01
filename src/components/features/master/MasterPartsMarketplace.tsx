@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Search, ShoppingCart, Store,
-  Check, X,
-  Package, Star, MapPin
+  Search, ShoppingCart, Store, 
+  Check, X, Package, Star, MapPin
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { Button } from '../../ui/button';
@@ -23,6 +22,13 @@ interface Part {
   masterRating: number;
   masterCity: string;
   condition: 'new' | 'used' | 'refurbished';
+}
+
+interface _Master {
+  id: string;
+  name: string;
+  city: string;
+  rating: number;
 }
 
 const MasterPartsMarketplace: React.FC = () => {

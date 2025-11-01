@@ -20,7 +20,7 @@ export const SplineRobotDemo = memo(function SplineRobotDemo() {
         {/* Left content - Text */}
         <div className="flex-1 p-8 relative z-10 flex flex-col justify-center">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
-            RepairHub Pro
+            {t('common.platformName') || 'RepairHub'}
           </h1>
           <p className="text-xl md:text-2xl font-bold text-gray-700 leading-relaxed">
             {t('common.modernPlatform')}

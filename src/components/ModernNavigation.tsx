@@ -14,7 +14,7 @@ import {
   CreditCard, 
   MessageSquare, 
   Briefcase, 
-  User,
+  User, 
   Settings,
   Pin,
   PinOff,
@@ -33,8 +33,10 @@ interface SidebarContextProps {
 
 const _SidebarContext = React.createContext<SidebarContextProps | undefined>(undefined);
 
+// Removed unused _useSidebar - SidebarContext is defined but not used in this component
 
 interface MenuItem {
+  key: string;
   label: string;
   href: string;
   icon: React.ElementType;
@@ -45,7 +47,13 @@ interface MenuItem {
 }
 
 interface ModernNavigationProps {
-  currentUser: { role?: string; id?: string } | null;
+  currentUser: {
+    id: string;
+    name: string;
+    email: string;
+    role: 'client' | 'master' | 'admin' | 'superadmin';
+    avatar?: string;
+  };
   activeItem: string;
   setActiveItem: (item: string) => void;
   unviewedOrdersCount: number;
@@ -54,24 +62,24 @@ interface ModernNavigationProps {
 
 // Оптимизированная карта маршрутов - дефинируется один раз вне компонента
 const ROUTE_MAP: Record<string, string> = {
-  'Дашборд': 'dashboard',
-  'Створити Заказ': 'catalog',
-  'Знайти Майстрів': 'priceComparison',
-  'Мої Замовлення': 'myOrders',
-  'Мої Пристрої': 'myDevices',
-  'Пропозиції': 'proposals',
-  'Платежі': 'payments',
-  'Чат': 'messages',
-  'Профіль': 'profile',
-  'Доска Замовлень': 'myOrders',
-  'Рейтинги & Рецензії': 'reports',
-  'Мої Запчастини': 'inventory',
-  'Мої Пропозиції': 'proposals',
-  'Портфоліо': 'portfolio',
-  'Користувачі': 'users',
-  'Замовлення': 'orders',
-  'Фінанси': 'finance',
-  'Налаштування': 'settings'
+  'navigation.dashboard': 'dashboard',
+  'navigation.createOrder': 'catalog',
+  'navigation.findMasters': 'priceComparison',
+  'navigation.myOrders': 'myOrders',
+  'navigation.myDevices': 'myDevices',
+  'navigation.proposals': 'proposals',
+  'navigation.payments': 'payments',
+  'navigation.messages': 'messages',
+  'navigation.profile': 'profile',
+  'navigation.ordersBoard': 'myOrders',
+  'navigation.reports': 'reports',
+  'navigation.inventory': 'inventory',
+  'navigation.myProposals': 'proposals',
+  'navigation.portfolio': 'portfolio',
+  'navigation.users': 'users',
+  'navigation.orders': 'orders',
+  'navigation.finance': 'finance',
+  'navigation.settings': 'settings'
 };
 
 const ModernNavigation: React.FC<ModernNavigationProps> = ({
@@ -89,41 +97,42 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   // Оптимизация: используем useMemo чтобы не пересчитывать меню на каждый рендер
   const menuItems = React.useMemo(() => {
     const baseItems: MenuItem[] = [
-      { label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
-      { label: t('navigation.createOrder'), href: "#", icon: Package },
+      { key: 'navigation.dashboard', label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
+      { key: 'navigation.createOrder', label: t('navigation.createOrder'), href: "#", icon: Package },
     ];
 
     if (currentUser?.role === 'master') {
       baseItems.push(
         { 
+          key: 'navigation.ordersBoard',
           label: t('navigation.ordersBoard'), 
           href: "#", 
           icon: ShoppingCart,
           badge: unviewedOrdersCount > 0 ? { text: `${unviewedOrdersCount} ${t('common.new') || 'new'}`, variant: "destructive" } : undefined
         },
-        { label: t('navigation.reports'), href: "#", icon: Star },
-        { label: t('navigation.myParts'), href: "#", icon: Wrench },
-        { label: t('navigation.myProposals'), href: "#", icon: Tag },
-        { label: t('navigation.payments'), href: "#", icon: CreditCard },
-        { label: t('navigation.messages'), href: "#", icon: MessageSquare },
-        { label: t('navigation.portfolio'), href: "#", icon: Briefcase }
+        { key: 'navigation.reports', label: t('navigation.reports'), href: "#", icon: Star },
+        { key: 'navigation.myParts', label: t('navigation.myParts'), href: "#", icon: Wrench },
+        { key: 'navigation.myProposals', label: t('navigation.myProposals'), href: "#", icon: Tag },
+        { key: 'navigation.payments', label: t('navigation.payments'), href: "#", icon: CreditCard },
+        { key: 'navigation.messages', label: t('navigation.messages'), href: "#", icon: MessageSquare },
+        { key: 'navigation.portfolio', label: t('navigation.portfolio'), href: "#", icon: Briefcase }
       );
     } else if (currentUser?.role === 'client') {
       baseItems.push(
-        { label: t('navigation.findMasters'), href: "#", icon: Search },
-        { label: t('navigation.myOrders'), href: "#", icon: ShoppingCart },
-        { label: t('navigation.myDevices'), href: "#", icon: Smartphone },
-        { label: t('navigation.proposals'), href: "#", icon: Tag },
-        { label: t('navigation.payments'), href: "#", icon: CreditCard },
-        { label: t('navigation.messages'), href: "#", icon: MessageSquare }
+        { key: 'navigation.findMasters', label: t('navigation.findMasters'), href: "#", icon: Search },
+        { key: 'navigation.myOrders', label: t('navigation.myOrders'), href: "#", icon: ShoppingCart },
+        { key: 'navigation.myDevices', label: t('navigation.myDevices'), href: "#", icon: Smartphone },
+        { key: 'navigation.proposals', label: t('navigation.proposals'), href: "#", icon: Tag },
+        { key: 'navigation.payments', label: t('navigation.payments'), href: "#", icon: CreditCard },
+        { key: 'navigation.messages', label: t('navigation.messages'), href: "#", icon: MessageSquare }
       );
     } else if (currentUser?.role === 'admin' || currentUser?.role === 'superadmin') {
       baseItems.push(
-        { label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
-        { label: t('navigation.users'), href: "#", icon: User },
-        { label: t('navigation.analytics'), href: "#", icon: BarChart3 },
-        { label: t('navigation.finance'), href: "#", icon: CreditCard },
-        { label: t('navigation.settings'), href: "#", icon: Settings }
+        { key: 'navigation.dashboard', label: t('navigation.dashboard'), href: "#", icon: LayoutDashboard },
+        { key: 'navigation.users', label: t('navigation.users'), href: "#", icon: User },
+        { key: 'navigation.analytics', label: t('navigation.analytics'), href: "#", icon: BarChart3 },
+        { key: 'navigation.finance', label: t('navigation.finance'), href: "#", icon: CreditCard },
+        { key: 'navigation.settings', label: t('navigation.settings'), href: "#", icon: Settings }
       );
     }
 
@@ -131,8 +140,8 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   }, [currentUser?.role, unviewedOrdersCount, t]);
 
   // Оптимизация: функция getRouteKey теперь использует кешированную константу
-  const getRouteKey = React.useCallback((label: string): string => {
-    return ROUTE_MAP[label] || label.toLowerCase();
+  const getRouteKey = React.useCallback((key: string): string => {
+    return ROUTE_MAP[key] || key.toLowerCase();
   }, []);
 
   const sidebarVariants = {
@@ -240,14 +249,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
                   animate={{ backgroundPosition: ["0%", "100%", "0%"] }}
                   transition={{ duration: 8, repeat: Infinity }}
                 >
-                  Repair HUB
-                </motion.span>
-                <motion.span 
-                  className="text-xs text-muted-foreground font-medium"
-                  animate={{ opacity: [0.7, 1, 0.7] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  Pro
+                  {t('common.platformName') || 'RepairHub'}
                 </motion.span>
               </motion.div>
             )}
@@ -330,7 +332,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
               <motion.button
                 key={item.label}
                 onClick={() => {
-                    setActiveItem(getRouteKey(item.label));
+                    setActiveItem(getRouteKey(item.key));
                     setIsMobileMenuOpen(false);
                 }}
                 className={cn(

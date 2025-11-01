@@ -1,4 +1,4 @@
-# Multi-stage build for RepairHub Pro
+# Multi-stage build for RepairHub
 # Stage 1: Build
 FROM node:20-alpine AS builder
 

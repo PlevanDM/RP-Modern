@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import * as React from 'react';
 import { motion } from 'framer-motion';
 import {
   HelpCircle,
@@ -66,13 +67,7 @@ export function MasterSupportPanel() {
     isActive: true,
   });
 
-  useEffect(() => {
-    if (currentUser?.id) {
-      loadData();
-    }
-  }, [currentUser, loadData]);
-
-  const loadData = useCallback(() => {
+  const loadData = React.useCallback(() => {
     if (!currentUser?.id) return;
     
     const masterId = currentUser.id;
@@ -104,6 +99,12 @@ export function MasterSupportPanel() {
       setSettings(masterSettings);
     }
   }, [currentUser?.id]);
+
+  useEffect(() => {
+    if (currentUser?.id) {
+      loadData();
+    }
+  }, [currentUser?.id, loadData]);
 
   const handleSaveSchedule = () => {
     if (!currentUser?.id || !newSchedule.dayOfWeek || !newSchedule.startTime || !newSchedule.endTime) return;
@@ -254,7 +255,7 @@ export function MasterSupportPanel() {
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as 'schedule' | 'tickets' | 'stats' | 'settings')}
+              onClick={() => setActiveTab(tab.id as string)}
               className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-md transition-all ${
                 activeTab === tab.id
                   ? 'bg-white text-blue-600 shadow-md font-semibold'
@@ -578,7 +579,7 @@ export function MasterSupportPanel() {
                 <label className="text-sm font-medium text-gray-700 block mb-2">День тижня</label>
                 <select
                   value={newSchedule.dayOfWeek}
-                  onChange={(e) => setNewSchedule({ ...newSchedule, dayOfWeek: parseInt(e.target.value) as 0 | 1 | 2 | 3 | 4 | 5 | 6 })}
+                  onChange={(e) => setNewSchedule({ ...newSchedule, dayOfWeek: parseInt(e.target.value) as number })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                 >
                   {DAYS_OF_WEEK.map(day => (

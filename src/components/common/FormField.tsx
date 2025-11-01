@@ -63,6 +63,8 @@ export const FormField: React.FC<FormFieldProps> = ({
   rows,
   className = '',
   inputClassName = '',
+  options = [],
+  children,
 }) => {
   const [touched, setTouched] = useState(false);
   const [focused, setFocused] = useState(false);

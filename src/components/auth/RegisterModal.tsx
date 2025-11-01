@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { X, User, Wrench, AlertCircle, ChevronRight, Smartphone, Monitor, Laptop, ArrowLeft, Building2, Home, Car } from 'lucide-react';
+import { X, User, Wrench, AlertCircle, ChevronRight, ArrowLeft, Building2, Home, Car } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
+import { User as UserType } from '../../types';
+import * as simpleIcons from 'simple-icons';
 
 interface RegisterModalProps {
   onClose: () => void;
@@ -128,19 +130,23 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
       
       try {
         const registeredUser = await register(registrationData);
-        console.log('User registered:', registeredUser);
+        if (import.meta.env.DEV) {
+          console.log('User registered:', registeredUser);
+        }
         // Якщо всі дані заповнені, автоматично завершуємо onboarding
         if (hasCompleteData) {
           useAuthStore.setState({ 
-            currentUser: registeredUser || registrationData as User, 
+            currentUser: registrationData as UserType, 
             isOnboardingCompleted: true 
           });
         }
       } catch (registerErr) {
-        console.warn('Register failed, setting directly:', registerErr);
+        if (import.meta.env.DEV) {
+          console.warn('Register failed, setting directly:', registerErr);
+        }
         // Якщо register не спрацював, встановлюємо напряму
         useAuthStore.setState({ 
-          currentUser: registrationData as User, 
+          currentUser: registrationData as UserType, 
           isOnboardingCompleted: hasCompleteData 
         });
       }
@@ -148,7 +154,9 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
       onClose();
       window.location.reload();
     } catch (err) {
-      console.error('Registration error:', err);
+      if (import.meta.env.DEV) {
+        console.error('Registration error:', err);
+      }
       setError('Помилка реєстрації. Спробуйте ще раз.');
     }
   };
@@ -348,20 +356,84 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
         );
       } else {
         // Master registration - multi-step questionnaire
+        // Brand logos from Simple Icons (open source)
+        const BrandIcon = ({ brand, className = "" }: { brand: string; className?: string }) => {
+          const iconMap: Record<string, string> = {
+            // Смартфони
+            apple: 'siApple',
+            samsung: 'siSamsung',
+            xiaomi: 'siXiaomi',
+            realme: 'siRealme',
+            oneplus: 'siOneplus',
+            poco: 'siPoco',
+            oppo: 'siOppo',
+            vivo: 'siVivo',
+            nothing: 'siNothing',
+            google: 'siGoogle',
+            huawei: 'siHuawei',
+            honor: 'siHonor',
+            motorola: 'siMotorola',
+            nokia: 'siNokia',
+            sony: 'siSony',
+            lg: 'siLg',
+            zte: 'siZte',
+            tcl: 'siTcl',
+            // Ноутбуки
+            asus: 'siAsus',
+            lenovo: 'siLenovo',
+            hp: 'siHp',
+            dell: 'siDell',
+            acer: 'siAcer',
+            msi: 'siMsi',
+          };
+          
+          const iconKey = iconMap[brand];
+          const icon = iconKey ? simpleIcons[iconKey as keyof typeof simpleIcons] : simpleIcons.siApple;
+          
+          if (!icon || typeof icon !== 'object' || !('path' in icon)) {
+            return null;
+          }
+          
+          return (
+            <svg 
+              viewBox="0 0 24 24" 
+              className={className} 
+              fill="currentColor"
+              role="img"
+            >
+              <path d={icon.path} />
+            </svg>
+          );
+        };
+
+        // Популярні бренди в Україні (2024-2025)
         const brands = [
-          { id: 'apple', label: 'Apple', icon: '🍎' },
-          { id: 'samsung', label: 'Samsung', icon: '📱' },
-          { id: 'xiaomi', label: 'Xiaomi', icon: '📲' },
-          { id: 'huawei', label: 'Huawei', icon: '📱' },
-          { id: 'oppo', label: 'Oppo', icon: '📱' },
-          { id: 'google', label: 'Google Pixel', icon: '📱' },
-          { id: 'sony', label: 'Sony', icon: '📱' },
-          { id: 'lg', label: 'LG', icon: '📱' },
-          { id: 'motorola', label: 'Motorola', icon: '📱' },
-          { id: 'asus', label: 'ASUS', icon: '💻' },
-          { id: 'lenovo', label: 'Lenovo', icon: '💻' },
-          { id: 'hp', label: 'HP', icon: '💻' },
-          { id: 'dell', label: 'Dell', icon: '💻' },
+          // Топ смартфони в Україні
+          { id: 'apple', label: 'Apple' },
+          { id: 'samsung', label: 'Samsung' },
+          { id: 'xiaomi', label: 'Xiaomi' },
+          { id: 'realme', label: 'Realme' },
+          { id: 'oneplus', label: 'OnePlus' },
+          { id: 'poco', label: 'POCO' },
+          { id: 'oppo', label: 'Oppo' },
+          { id: 'vivo', label: 'Vivo' },
+          { id: 'nothing', label: 'Nothing' },
+          { id: 'google', label: 'Google Pixel' },
+          { id: 'huawei', label: 'Huawei' },
+          { id: 'honor', label: 'Honor' },
+          { id: 'motorola', label: 'Motorola' },
+          { id: 'nokia', label: 'Nokia' },
+          { id: 'sony', label: 'Sony' },
+          { id: 'lg', label: 'LG' },
+          { id: 'zte', label: 'ZTE' },
+          { id: 'tcl', label: 'TCL' },
+          // Ноутбуки та комп'ютери
+          { id: 'asus', label: 'ASUS' },
+          { id: 'lenovo', label: 'Lenovo' },
+          { id: 'hp', label: 'HP' },
+          { id: 'dell', label: 'Dell' },
+          { id: 'acer', label: 'Acer' },
+          { id: 'msi', label: 'MSI' },
         ];
 
         const repairTypesOptions = [
@@ -375,11 +447,37 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
           { id: 'audio', label: 'Аудіо', description: 'Динаміки, мікрофони' },
         ];
 
+        const ExperienceIcon = ({ level, className = "" }: { level: string; className?: string }) => {
+          const icons: Record<string, JSX.Element> = {
+            beginner: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            ),
+            intermediate: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+              </svg>
+            ),
+            advanced: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>
+              </svg>
+            ),
+            expert: (
+              <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            ),
+          };
+          return icons[level] || icons.beginner;
+        };
+
         const experienceLevels = [
-          { id: 'beginner', label: 'Новачок', desc: 'Менше 1 року', icon: '🌱' },
-          { id: 'intermediate', label: 'Досвідчений', desc: '1-3 роки', icon: '⭐' },
-          { id: 'advanced', label: 'Професіонал', desc: '3-5 років', icon: '🔥' },
-          { id: 'expert', label: 'Експерт', desc: 'Більше 5 років', icon: '👑' },
+          { id: 'beginner', label: 'Новачок', desc: 'Менше 1 року' },
+          { id: 'intermediate', label: 'Досвідчений', desc: '1-3 роки' },
+          { id: 'advanced', label: 'Професіонал', desc: '3-5 років' },
+          { id: 'expert', label: 'Експерт', desc: 'Більше 5 років' },
         ];
 
         const toggleBrand = (brandId: string) => {
@@ -481,7 +579,10 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                         }`}
                       >
                         <div className="flex flex-col items-center">
-                          <div className="text-2xl mb-2">{brand.icon}</div>
+                          <BrandIcon 
+                            brand={brand.id}
+                            className={`w-8 h-8 mb-2 ${isSelected ? 'text-orange-600' : 'text-gray-600'}`}
+                          />
                           <div className={`font-medium text-xs ${isSelected ? 'text-orange-700' : 'text-gray-900'}`}>
                             {brand.label}
                           </div>
@@ -543,7 +644,12 @@ export function RegisterModal({ onClose, onSwitchToLogin, initialRole }: Registe
                       }`}
                     >
                       <div className="text-center">
-                        <div className="text-3xl mb-2">{level.icon}</div>
+                        <div className="flex justify-center mb-2">
+                          <ExperienceIcon 
+                            level={level.id}
+                            className={`w-10 h-10 ${experience === level.id ? 'text-orange-600' : 'text-gray-600'}`}
+                          />
+                        </div>
                         <div className={`font-semibold text-sm mb-1 ${
                           experience === level.id ? 'text-orange-700' : 'text-gray-900'
                         }`}>
