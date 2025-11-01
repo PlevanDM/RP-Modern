@@ -19,6 +19,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 import { Button } from '../../ui/button';
 import { useTranslation } from 'react-i18next';
+import { User, Order, Notification } from '../../../types/models';
 
 interface StatCard {
   title: string;
@@ -29,15 +30,37 @@ interface StatCard {
   color: string;
 }
 
-export function EnhancedMasterDashboard() {
+interface EnhancedMasterDashboardProps {
+  currentUser?: User;
+  stats?: {
+    activeOrders: number;
+    completedOrders: number;
+    totalEarned: number;
+    rating: number;
+  };
+  orders?: Order[];
+  notifications?: Notification[];
+}
+
+export function EnhancedMasterDashboard({ 
+  currentUser,
+  stats: propsStats,
+  orders = [],
+  notifications = []
+}: EnhancedMasterDashboardProps) {
   const { t } = useTranslation();
   const [period, setPeriod] = useState<'day' | 'week' | 'month' | 'year'>('month');
 
-  // Mock data - буде замінено на реальні дані з API
-  const stats: StatCard[] = useMemo(() => [
+  // Використовуємо реальні дані якщо є, інакше mock
+  const activeOrders = propsStats?.activeOrders ?? 8;
+  const completedOrders = propsStats?.completedOrders ?? 156;
+  const totalEarned = propsStats?.totalEarned ?? 45230;
+  const rating = propsStats?.rating ?? 4.9;
+
+  const statsCards: StatCard[] = useMemo(() => [
     {
       title: 'Загальний дохід',
-      value: '₴45,230',
+      value: `₴${totalEarned.toLocaleString()}`,
       change: '+12.5%',
       trend: 'up',
       icon: <DollarSign className="w-6 h-6" />,
@@ -45,23 +68,23 @@ export function EnhancedMasterDashboard() {
     },
     {
       title: 'Активні замовлення',
-      value: 8,
-      change: '+3',
+      value: activeOrders,
+      change: `+${activeOrders > 5 ? 3 : 1}`,
       trend: 'up',
       icon: <Package className="w-6 h-6" />,
       color: 'from-blue-500 to-cyan-600'
     },
     {
       title: 'Завершено',
-      value: 156,
-      change: '+24',
+      value: completedOrders,
+      change: `+${Math.floor(completedOrders * 0.15)}`,
       trend: 'up',
       icon: <CheckCircle className="w-6 h-6" />,
       color: 'from-purple-500 to-pink-600'
     },
     {
       title: 'Рейтинг',
-      value: '4.9',
+      value: rating.toFixed(1),
       change: '+0.2',
       trend: 'up',
       icon: <Star className="w-6 h-6" />,
@@ -77,43 +100,70 @@ export function EnhancedMasterDashboard() {
     },
     {
       title: 'Нові клієнти',
-      value: 23,
+      value: Math.floor(completedOrders * 0.15),
       change: '+8',
       trend: 'up',
       icon: <Users className="w-6 h-6" />,
       color: 'from-pink-500 to-rose-600'
     }
-  ], []);
+  ], [activeOrders, completedOrders, totalEarned, rating]);
 
-  const recentOrders = [
-    {
-      id: '1',
-      client: 'Іван Петренко',
-      device: 'iPhone 14 Pro',
-      issue: 'Заміна екрану',
-      price: 8500,
-      status: 'in_progress',
-      time: '2 год тому'
-    },
-    {
-      id: '2',
-      client: 'Марія Коваль',
-      device: 'Samsung S23 Ultra',
-      issue: 'Заміна батареї',
-      price: 1200,
-      status: 'pending',
-      time: '5 год тому'
-    },
-    {
-      id: '3',
-      client: 'Олександр Сидоренко',
-      device: 'MacBook Pro',
-      issue: 'Чистка від пилу',
-      price: 800,
-      status: 'completed',
-      time: '1 день тому'
+  // Використовуємо реальні замовлення якщо є
+  const recentOrders = useMemo(() => {
+    if (orders.length > 0) {
+      return orders.slice(0, 3).map(order => ({
+        id: order.id,
+        client: order.clientName || 'Клієнт',
+        device: order.device || 'Пристрій',
+        issue: order.issue || order.title,
+        price: order.price || order.budget || 0,
+        status: order.status,
+        time: getTimeAgo(order.createdAt)
+      }));
     }
-  ];
+    // Mock data якщо немає реальних замовлень
+    return [
+      {
+        id: '1',
+        client: 'Іван Петренко',
+        device: 'iPhone 14 Pro',
+        issue: 'Заміна екрану',
+        price: 8500,
+        status: 'in_progress',
+        time: '2 год тому'
+      },
+      {
+        id: '2',
+        client: 'Марія Коваль',
+        device: 'Samsung S23 Ultra',
+        issue: 'Заміна батареї',
+        price: 1200,
+        status: 'pending',
+        time: '5 год тому'
+      },
+      {
+        id: '3',
+        client: 'Олександр Сидоренко',
+        device: 'MacBook Pro',
+        issue: 'Чистка від пилу',
+        price: 800,
+        status: 'completed',
+        time: '1 день тому'
+      }
+    ];
+  }, [orders]);
+
+  // Helper function для часу
+  function getTimeAgo(date: Date): string {
+    const now = new Date();
+    const diff = now.getTime() - new Date(date).getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(hours / 24);
+    
+    if (days > 0) return `${days} ${days === 1 ? 'день' : 'дні'} тому`;
+    if (hours > 0) return `${hours} год тому`;
+    return 'Щойно';
+  }
 
   const quickActions = [
     { label: 'Нове замовлення', icon: <Package className="w-5 h-5" />, color: 'bg-blue-500' },
