@@ -31,7 +31,8 @@ import { MasterOrdersBoard } from './components/features/master/MasterOrdersBoar
 // import MasterPartsMarketplace from './components/features/master/MasterPartsMarketplace';
 import { SparePartsMarketplace } from './components/features/marketplace/SparePartsMarketplace';
 import { SellerDashboard } from './components/features/marketplace/SellerDashboard';
-import { ExchangeManager } from './components/features/marketplace/ExchangeManager';
+// import { ExchangeManager } from './components/features/marketplace/ExchangeManager';
+import { EnhancedExchangeManager } from './components/features/marketplace/EnhancedExchangeManager';
 import { MasterSupportPanel } from './components/features/master/MasterSupportPanel';
 import { useAuthStore } from './store/authStore';
 import { useOrdersStore } from './store/ordersStore';
@@ -509,7 +510,7 @@ function App() {
             )}
             
             {activeItem === 'exchangeParts' && (
-              <ExchangeManager 
+              <EnhancedExchangeManager 
                 userParts={[]}
                 availableForExchange={[]}
               />
