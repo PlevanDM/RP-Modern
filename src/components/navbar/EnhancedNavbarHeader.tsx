@@ -105,30 +105,15 @@ export const EnhancedNavbarHeader: React.FC<NavbarHeaderProps> = ({
 
   return (
     <motion.div
-      className="sticky top-0 z-50 bg-gradient-to-r from-slate-700 via-slate-600 to-slate-700 text-white shadow-lg"
-      initial={{ y: -60 }}
+      className="sticky top-0 z-50 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 text-white shadow-xl backdrop-blur-lg"
+      initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ type: 'spring', stiffness: 100, damping: 20 }}
     >
       <div className="w-full">
-        <div className="flex items-center justify-between h-14 px-4 sm:px-6 gap-3 sm:gap-4">
-          {/* Left: Logo + Time/Date */}
+        <div className="flex items-center justify-between h-16 px-4 sm:px-6 gap-3 sm:gap-4">
+          {/* Left: Time/Date */}
           <div className="flex items-center gap-3 sm:gap-4">
-            {/* Logo */}
-            <motion.div
-              className="flex items-center gap-2 cursor-pointer group"
-              onClick={onDashboardClick}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <div className="w-9 h-9 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                <Wrench className="w-5 h-5 text-white" strokeWidth={2.5} />
-              </div>
-              <span className="hidden sm:inline text-lg font-bold">
-                RepairHub
-              </span>
-            </motion.div>
-
             {/* Time & Date Widget */}
             <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-lg backdrop-blur-sm">
               <div className="flex items-center gap-1.5">
