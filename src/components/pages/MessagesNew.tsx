@@ -20,6 +20,19 @@ export function MessagesNew({ currentUser, masters = [], orders = [] }: Messages
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Define loadConversations BEFORE useEffect
+  const loadConversations = useCallback(async () => {
+    try {
+      if (!currentUser?.id) return;
+      const convs = await getConversations();
+      setConversations(convs);
+    } catch (error) {
+      console.error('Помилка завантаження розмов:', error);
+      setConversations([]);
+    }
+  }, [currentUser?.id]);
+
+  // NOW use it in useEffect
   useEffect(() => {
     if (currentUser?.id) {
       loadConversations();
@@ -31,17 +44,6 @@ export function MessagesNew({ currentUser, masters = [], orders = [] }: Messages
       return () => clearInterval(interval);
     }
   }, [currentUser?.id, loadConversations]);
-
-  const loadConversations = useCallback(async () => {
-    try {
-      if (!currentUser?.id) return;
-      const convs = await getConversations();
-      setConversations(convs);
-    } catch (error) {
-      console.error('Помилка завантаження розмов:', error);
-      setConversations([]);
-    }
-  }, [currentUser?.id]);
 
   const filteredConversations = useMemo(() => {
     if (!searchQuery.trim()) return conversations;
